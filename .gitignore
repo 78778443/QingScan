@@ -1,0 +1,16 @@
+/vendor/
+.idea/
+/tmp/*
+/edge/tmp/
+/fastDev/
+/logs/*
+/docker/google-chrome-stable_current_amd64.deb
+/venv/
+/edge/logs/
+edge/nohup.out
+lock.txt
+!/tools/index.php
+!/tools/redis/
+/think/icon/
+/think/public/screenshot/
+!/tools/pocs/

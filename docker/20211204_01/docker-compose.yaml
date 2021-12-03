@@ -1,0 +1,12 @@
+version: "3.2"
+services:
+  qingscan:
+    image: daxia/qingscan:20211204_02
+    container_name: qingscan
+    network_mode: "host"
+    stdin_open: true
+    tty: true
+    command: /bin/bash -c "service mysql start  && cd /root/qingscan && php safe.php"
+
+
+#docker-compose up -d   运行五个容器

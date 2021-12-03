@@ -1,0 +1,24 @@
+version: "3.2"
+services:
+  awvs:
+    image: xrsec/awvs:latest
+    container_name: fahai_awvs
+    network_mode: "host"
+    restart: always
+  center:
+    image: registry.cn-hangzhou.aliyuncs.com/daxia/qingscan:211111_01
+    container_name: qingscan
+    environment:
+      - branch=develop
+    network_mode: "host"
+    volumes:
+      - type: bind
+        source: "../../"
+        target: "/root/qingscan"
+      - type: bind
+        source: "/data"
+        target: "/data"
+      - type: bind
+        source: "/data/tools"
+        target: "../../tools"
+#docker-compose up -d   运行五个容器
