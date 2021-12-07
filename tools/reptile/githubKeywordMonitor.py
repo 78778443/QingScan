@@ -1,13 +1,18 @@
-import re, ssl
-
-# 全局取消证书验证
-ssl._create_default_https_context = ssl._create_unverified_context
+import ssl
 import requests
 import pymysql
 import time
 import datetime
 import yaml
+import urllib3
 from fun import dingding
+from fun import db
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+# 全局取消证书验证
+ssl._create_default_https_context = ssl._create_unverified_context
+
+db = db()
+cur = db.cursor(cursor=pymysql.cursors.DictCursor)
 
 with open("config.yaml", encoding="utf-8") as f:
     config = yaml.load(f, Loader=yaml.SafeLoader)
@@ -24,17 +29,6 @@ timeStamp = int(time.mktime(threeDayAgo.timetuple()))
 # 转换为其他字符串格式
 where_scan_time = threeDayAgo.strftime("%Y-%m-%d %H:%M:%S")
 
-mysql_config = config['mysql']
-db = pymysql.connect(
-    host=mysql_config['host'],
-    port=mysql_config['port'],
-    user=mysql_config['username'],
-    passwd=mysql_config['password'],
-    db=mysql_config['database']
-)
-# 通过 cursor() 创建游标对象，并让查询结果以字典格式输出
-cur = db.cursor(cursor=pymysql.cursors.DictCursor)
-# 使用 execute() 执行sql
 sql = "select id,user_id,title from github_keyword_monitor where scan_time <= '" + where_scan_time + "'"
 cur.execute(sql)
 # 使用 fetchall() 获取所有查询结果
