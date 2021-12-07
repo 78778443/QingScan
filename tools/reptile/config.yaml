@@ -1,8 +1,8 @@
 mysql:
-  host: DB_HOST
+  host: qingscan
   port: 3306
   username: "qingscan"
-  password: "password"
+  password: "123"
   database: "QingScan"
 github:
   token: "ghp_ROJvYR9Q"

@@ -26,7 +26,7 @@ return [
             // 主机地址
             'hostname' => '127.0.0.1',
             // 用户名
-            'username' => 'root',
+            'username' => 'qingscan',
             'password' => '123',
             // 数据库名
             'database' => 'QingScan',
@@ -61,7 +61,7 @@ return [
             // 主机地址
             'hostname' => '127.0.0.1',
             // 用户名
-            'username' => 'root',
+            'username' => 'qingscan',
             'password' => '123',
             // 数据库名
             'database' => 'kunlun',
