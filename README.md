@@ -26,9 +26,9 @@ QingScan 是一款聚合扫描器，本身不生产安全扫描功能，但会�
 4. 浏览器访问  http://127.0.0.1:8000/ 自动进入登录界面
 5. 初始账号: `test1` 密码: `123456`
 
-GitHub：https://github.com/78778443/QingScan
-码云地址：https://gitee.com/songboy/QingScan
-详细文档：http://wiki.qingscan.songboy.site
+- GitHub：https://github.com/78778443/QingScan
+- 码云地址：https://gitee.com/songboy/QingScan
+- 详细文档：http://wiki.qingscan.songboy.site
 
 > 1. fortify 涉及许可证问题，镜像内不包含，需要自己将Linux版本的fortify放到`/data/tools`文件夹中
 > 2. AWVS 调用主要通过API，需要自己将API配置系统，配置管理中去
