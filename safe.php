@@ -6,8 +6,8 @@
 
 // 定义grep关键词,和需要执行的命令
 $keyList = [
-    'scan safe' => 'cd /root/qingscan/think  &&  php think scan safe  >> /tmp/safe.txt & ',
-    'think run' => 'cd /root/qingscan/think  &&  php think run  >> /tmp/run.txt & ',
+    'scan safe' => 'cd /root/qingscan/code  &&  php think scan safe  >> /tmp/safe.txt & ',
+    'think run' => 'cd /root/qingscan/code  &&  php think run  >> /tmp/run.txt & ',
 ];
 
 // 死循环不断监听任务是不是挂了
@@ -24,7 +24,7 @@ while (true) {
         if (count($result) == 0) {
             // 执行命令
             exec($value);
-            print_r("{$key} 进场已结束，正在重启此进程...");
+            print_r("{$key} 进程已结束，正在重启此进程...");
             print_r( $value);
         }
     }
