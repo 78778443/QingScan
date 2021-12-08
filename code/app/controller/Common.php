@@ -114,7 +114,6 @@ class Common extends BaseController
             $is_auth = false;
             foreach ($user_auth_rule as $v) {
                 if (strtolower($name) == strtolower($v['href'])) {
-                    var_dump($v);exit;
                     $is_auth = true;
                 }
             }
