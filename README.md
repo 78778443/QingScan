@@ -12,7 +12,7 @@ QingScan 是一款聚合扫描器，本身不生产安全扫描功能，但会�
 
 微信交流群
 
-![](http://oss.songboy.site/blog/65f4b8b780cf2b613b214364340bef3.jpg)
+![](http://oss.songboy.site/blog/b5d43ea2473167be951306d72190f3e.jpg)
 
 个人微信
 
