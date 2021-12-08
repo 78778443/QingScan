@@ -264,7 +264,7 @@ class AppModel extends BaseModel
         if ($data['is_awvs'] == 0) {
             $data['awvs_scan_time'] = $datetime;
         }
-        if ($data['is_wappalyzer'] == 0) {
+        if ($data['is_whatweb'] == 0) {
             $data['whatweb_scan_time'] = $datetime;
         }
         if ($data['is_one_for_all'] == 0) {
