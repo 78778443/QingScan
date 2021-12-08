@@ -21,10 +21,13 @@ QingScan 是一款聚合扫描器，本身不生产安全扫描功能，但会�
 #### 安装教程
 
 1.  需要安装docker、docker-compose
-2. `cd QingScan/docker/20211204_01  && docker-compose up `
-3. 浏览器访问  http://127.0.0.1:8000/ 自动进入登录界面
-4. 初始账号: `test1` 密码: `123456`
+2. 启动容器`cd QingScan/docker/20211204_01  && docker-compose up -d `
+3. 启动内置MySQL数据库`docker exec  qingscan sh -c 'service mysql start'`
+4. 浏览器访问  http://127.0.0.1:8000/ 自动进入登录界面
+5. 初始账号: `test1` 密码: `123456`
 
+GitHub：https://github.com/78778443/QingScan
+码云地址：https://gitee.com/songboy/QingScan
 详细文档：http://wiki.qingscan.songboy.site
 
 > 1. fortify 涉及许可证问题，镜像内不包含，需要自己将Linux版本的fortify放到`/data/tools`文件夹中
