@@ -71,7 +71,7 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="vul-title-wrapper clearfix">
-                    <h1 class="pull-left" id="j-vul-title" data-vul-id="99367">
+                    <h1 >
                        <span class="pull-titile">
                           <?php echo $info['cve_num']; ?>
                        </span>
@@ -101,7 +101,7 @@
         <div class="row a-ts">
             <div class="a-st">
                 <div class="bug-msg">
-                    <section class="vul-basic-info" id="j-vul-basic-info">
+                    <section class="vul-basic-info" >
                         <div class="clearfix">
                             <h3 class="pull-left">
                                 内容

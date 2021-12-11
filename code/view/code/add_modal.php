@@ -14,6 +14,13 @@
                         <input type="text" name="name" class="form-control" placeholder="应用名称" required>
                     </div>
                     <div class="mb-3">
+                        <label class="form-label">是否私有仓库</label>
+                        <select name="is_private" class="form-select" aria-label="Default select example">
+                            <option value="1">私有仓库</option>
+                            <option value="0">公共仓库</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
                         <label class="form-label">拉取方式</label>
                         <select name="pulling_mode" class="form-select" aria-label="Default select example">
                             <option value="SSH">SSH</option>
@@ -30,7 +37,11 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label">密码</label>
-                        <input type="text" name="password" class="form-control" placeholder="URL">
+                        <input type="text" name="password" class="form-control" placeholder="密码">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">私钥</label>
+                        <input type="text" name="private_key" class="form-control" placeholder="私钥">
                     </div>
                     <div class="mb-3">
                         <label class="form-label">是否fortify扫描</label>

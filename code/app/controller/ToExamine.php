@@ -221,4 +221,26 @@ class ToExamine extends Common
             return $this->apiReturn(0, [], '操作失败');
         }
     }
+
+    public function code_webshell()
+    {
+        $id = getParam('id');
+        $check_status = intval(getParam('check_status'));
+        if (!$id) {
+            return $this->apiReturn(0, [], '缺少参数');
+        }
+        if (!in_array($check_status, [0, 1,2])) {
+            return $this->apiReturn(0, [], '请先选择审核状态');
+        }
+        $info = Db::name('code_webshell')->where('auth_rule_id', $id)->find();
+        if (!$info) {
+            return $this->apiReturn(0, [], '数据不存在');
+        }
+
+        if (Db::name('code_webshell')->where('id', $id)->update(['menu_status' => $check_status])) {
+            return $this->apiReturn(1, [], '操作成功');
+        } else {
+            return $this->apiReturn(0, [], '操作失败');
+        }
+    }
 }

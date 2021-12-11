@@ -20,9 +20,13 @@ class Code extends Common
 
         $where[] = ['is_delete', '=', 0];
         $map = [];
-        if ($this->auth_group_id != 5 && !in_array($this->userId,config('app.ADMINISTRATOR'))) {
-            $where[] = ['user_id','=',$this->userId];
-            $map[] = ['user_id','=',$this->userId];
+        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
+            $where[] = ['user_id', '=', $this->userId];
+            $map[] = ['user_id', '=', $this->userId];
+        }
+        $search = getParam('search');
+        if (!empty($search)) {
+            $where[] = ['name', 'like', "%{$search}%"];
         }
         $list = Db::table('code')->where($where)->order('scan_time', 'desc')->paginate($pageSize);
 
@@ -43,9 +47,9 @@ class Code extends Common
     public function code_del()
     {
         $id = getParam('id');
-        $map[] = ['id','=',$id];
-        if ($this->auth_group_id != 5 && !in_array($this->userId,config('app.ADMINISTRATOR'))) {
-            $map[] = ['user_id','=',$this->userId];
+        $map[] = ['id', '=', $id];
+        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
+            $map[] = ['user_id', '=', $this->userId];
         }
         if (Db::name('code')->where($map)->update(['is_delete' => 1])) {
             return redirect($_SERVER['HTTP_REFERER']);
@@ -64,7 +68,7 @@ class Code extends Common
         $Folder = getParam('Folder');
         $Category = getParam('Category');
         $Primary_filename = getParam('Primary_filename');
-        $check_status = getParam('check_status','-2');
+        $check_status = getParam('check_status', '-2');
 
         //准备查询条件
         //$where = ['check_status' => 0];
@@ -76,13 +80,13 @@ class Code extends Common
         if (!empty($search)) {
             $where[] = ['Primary', 'like', "%{$search}%"];
         }
-        if (in_array($check_status,[0,1,2])) {
+        if (in_array($check_status, [0, 1, 2])) {
             $where = array_merge($where, ['check_status' => $check_status]);
         }
-        $map[] = ['is_delete','=',0];
-        if ($this->auth_group_id != 5 && !in_array($this->userId,config('app.ADMINISTRATOR'))) {
+        $map[] = ['is_delete', '=', 0];
+        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
             $where = array_merge($where, ['user_id' => $this->userId]);
-            $map[] = ['user_id','=',$this->userId];
+            $map[] = ['user_id', '=', $this->userId];
         }
 
         $fortifyApi = Db::table('fortify')->where($where)->order('id', 'desc');;
@@ -101,8 +105,8 @@ class Code extends Common
         $fortifyProjectList = Db::table('fortify')->where($where)->where("Folder != 'Low'")->field('project_id')->group('project_id')->select()->toArray();
         $fortifyProjectList = array_column($fortifyProjectList, 'project_id');
         $fortifyProjectList = Db::table('code')->whereIn('id', $fortifyProjectList)->field('id,name')->select()->toArray();
-        $fortifyProjectList = array_column($fortifyProjectList, 'name','id');
-        $objData = $fortifyApi->order('id', 'desc')->paginate(['list_rows'=>$pageSize,'query'=>request()->param()]);
+        $fortifyProjectList = array_column($fortifyProjectList, 'name', 'id');
+        $objData = $fortifyApi->order('id', 'desc')->paginate(['list_rows' => $pageSize, 'query' => request()->param()]);
         $list = $objData->items();
         $pageRaw = $objData->render();
         //获取列表数据
@@ -137,11 +141,11 @@ class Code extends Common
         if (!$id) {
             $this->error('参数不能为空');
         }
-        $where[] = ['id','=',$id];
+        $where[] = ['id', '=', $id];
         $map = [];
-        if ($this->auth_group_id != 5 && !in_array($this->userId,config('app.ADMINISTRATOR'))) {
-            $where[] = ['user_id','=',$this->userId];
-            $map[] = ['user_id','=',$this->userId];
+        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
+            $where[] = ['user_id', '=', $this->userId];
+            $map[] = ['user_id', '=', $this->userId];
         }
         $info = Db::table('fortify')->where($where)->find();
         if (!$info) {
@@ -168,9 +172,9 @@ class Code extends Common
     public function bug_del()
     {
         $id = getParam('id');
-        $map[] = ['id','=',$id];
-        if ($this->auth_group_id != 5 && !in_array($this->userId,config('app.ADMINISTRATOR'))) {
-            $map[] = ['user_id','=',$this->userId];
+        $map[] = ['id', '=', $id];
+        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
+            $map[] = ['user_id', '=', $this->userId];
         }
         if (Db::name('fortify')->where($map)->update(['is_delete' => 1])) {
             return redirect($_SERVER['HTTP_REFERER']);
@@ -185,11 +189,11 @@ class Code extends Common
         if (!$id) {
             $this->error('参数不能为空');
         }
-        $where[] = ['id','=',$id];
+        $where[] = ['id', '=', $id];
         $map = [];
-        if ($this->auth_group_id != 5 && !in_array($this->userId,config('app.ADMINISTRATOR'))) {
-            $where[] = ['user_id','=',$this->userId];
-            $map[] = ['user_id','=',$this->userId];
+        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
+            $where[] = ['user_id', '=', $this->userId];
+            $map[] = ['user_id', '=', $this->userId];
         }
         $info = Db::table('semgrep')->where($where)->find();
         if (!$info) {
@@ -199,7 +203,9 @@ class Code extends Common
         $info['upper_id'] = $upper_id ?: $id;
         $lower_id = Db::name('semgrep')->where('id', '>', $id)->where($map)->order('id', 'asc')->value('id');
         $info['lower_id'] = $lower_id ?: $id;
-        $info['project_name'] = Db::name('code')->where($map)->where('id', $info['code_id'])->value('name');
+        $projectInfo = Db::name('code')->where($map)->where('id', $info['code_id'])->find();
+        $data['project'] = $projectInfo;
+        $info['project_name'] = $projectInfo['name'] ?? '';
 
         $data['info'] = $info;
         return View::fetch('semgrep_details', $data);
@@ -233,9 +239,9 @@ class Code extends Common
             $where[] = ['check_status', '=', $check_status];
         }
         $map = [];
-        if ($this->auth_group_id != 5 && !in_array($this->userId,config('app.ADMINISTRATOR'))) {
-            $where[] = ['user_id','=',$this->userId];
-            $map[] = ['user_id','=',$this->userId];
+        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
+            $where[] = ['user_id', '=', $this->userId];
+            $map[] = ['user_id', '=', $this->userId];
         }
         $semgrepApi = Db::connect('kunlun')->table("index_scanresulttask");
 
@@ -263,9 +269,9 @@ class Code extends Common
         }
         $where[] = ['id', '=', $id];
         $map = [];
-        if ($this->auth_group_id != 5 && !in_array($this->userId,config('app.ADMINISTRATOR'))) {
-            $where[] = ['user_id','=',$this->userId];
-            $map[] = ['user_id','=',$this->userId];
+        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
+            $where[] = ['user_id', '=', $this->userId];
+            $map[] = ['user_id', '=', $this->userId];
         }
         $semgrepApi = Db::connect('kunlun')->table("index_scanresulttask");
         $info = $semgrepApi->where($where)->find();
@@ -285,9 +291,9 @@ class Code extends Common
     public function kunlun_del()
     {
         $id = getParam('id');
-        $map[] = ['id','=',$id];
-        if ($this->auth_group_id != 5 && !in_array($this->userId,config('app.ADMINISTRATOR'))) {
-            $map[] = ['user_id','=',$this->userId];
+        $map[] = ['id', '=', $id];
+        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
+            $map[] = ['user_id', '=', $this->userId];
         }
         if (Db::connect('kunlun')->table("index_scanresulttask")->where($map)->update(['is_delete' => 1])) {
             return redirect($_SERVER['HTTP_REFERER']);
@@ -327,11 +333,11 @@ class Code extends Common
             $where[] = ['check_id', 'like', "%{$search}%"];
         }
         $map = [];
-        if ($this->auth_group_id != 5 && !in_array($this->userId,config('app.ADMINISTRATOR'))) {
-            $where[] = ['user_id','=',$this->userId];
-            $map[] = ['user_id','=',$this->userId];
+        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
+            $where[] = ['user_id', '=', $this->userId];
+            $map[] = ['user_id', '=', $this->userId];
         }
-        $list = Db::table('semgrep')->where($where)->order('id', 'desc')->paginate($pageSize);
+        $list = Db::table('semgrep')->where($where)->order('id', 'desc')->paginate(['list_rows' => $pageSize, 'query' => request()->param()]);
         $data['list'] = $list->toArray()['data'];
         $data['page'] = $list->render();
 
@@ -339,10 +345,13 @@ class Code extends Common
         $projectArr = array_column($projectArr, null, 'id');
         $data['projectArr'] = $projectArr;
         $data['CategoryList'] = Db::table('semgrep')->where($where)->group('check_id')->column('check_id');
-        $data['projectList'] = Db::table('semgrep')->where($where)->group('code_id')->column('code_id');
+
         $data['fileList'] = Db::table('semgrep')->where($where)->group('path')->column('path');
         $data['check_status_list'] = ['未审计', '有效漏洞', '无效漏洞'];
-
+        //查询项目列表
+        $projectList = Db::table('semgrep')->where($where)->group('code_id')->column('code_id');
+        $projectList = Db::table('code')->whereIn('id', $projectList)->field('id,name')->select()->toArray();
+        $data['projectList'] = array_column($projectList, 'name', 'id');
 
         return View::fetch('semgrep_list', $data);
     }
@@ -350,9 +359,9 @@ class Code extends Common
     public function semgrep_del()
     {
         $id = getParam('id');
-        $map[] = ['id','=',$id];
-        if ($this->auth_group_id != 5 && !in_array($this->userId,config('app.ADMINISTRATOR'))) {
-            $map[] = ['user_id','=',$this->userId];
+        $map[] = ['id', '=', $id];
+        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
+            $map[] = ['user_id', '=', $this->userId];
         }
         if (Db::name('semgrep')->where($map)->update(['is_delete' => 1])) {
             return redirect($_SERVER['HTTP_REFERER']);
@@ -381,8 +390,25 @@ class Code extends Common
     {
         if (request()->isPost()) {
             $data = $_POST;
-            $date = date('Y-m-d H:i:s', time() + 86400 * 365);
-            if ($data['is_fortify_scan']) {
+            //$date = date('Y-m-d H:i:s', time() + 86400 * 365);
+
+            $is_private = getParam('is_private');
+            if ($is_private) {
+                $username = getParam('username');
+                $password = getParam('password');
+                $private_key = getParam('private_key');
+                $pulling_mode = getParam('pulling_mode');
+                if (strtolower($pulling_mode) == 'ssh') {
+                    if (!$private_key) {
+                        $this->error('私钥不能为空');
+                    }
+                } else {
+                    if (!$username || !$password) {
+                        $this->error('用户名密码不能为空');
+                    }
+                }
+            }
+            /*if ($data['is_fortify_scan']) {
                 $data['sonar_scan_time'] = $date;
             }
             if ($data['is_kunlun_scan']) {
@@ -390,7 +416,7 @@ class Code extends Common
             }
             if ($data['is_semgrep_scan']) {
                 $data['semgrep_scan_time'] = $date;
-            }
+            }*/
             /*$map = [];
             if ($this->auth_group_id != 5 && !in_array($this->userId,config('app.ADMINISTRATOR'))) {
                 $map[] = ['user_id','=',$this->userId];
@@ -495,6 +521,22 @@ class Code extends Common
 
     public function _add_code()
     {
+        $is_private = getParam('is_private');
+        if ($is_private) {
+            $username = getParam('username');
+            $password = getParam('password');
+            $private_key = getParam('private_key');
+            $pulling_mode = getParam('pulling_mode');
+            if (strtolower($pulling_mode) == 'ssh') {
+                if (!$private_key) {
+                    $this->error('私钥不能为空');
+                }
+            } else {
+                if (!$username || !$password) {
+                    $this->error('用户名密码不能为空');
+                }
+            }
+        }
         CodeModel::addData($_POST);
 
         $this->success('添加成功', 'code/index');
@@ -552,7 +594,7 @@ class Code extends Common
         $cmd = "ls /data/fortify_result/*.xml";
         $fortifyRetDir = "/data/fortify_result";
 
-        exec($cmd, $result);
+        execLog($cmd, $result);
         foreach ($result as $value) {
 
             $fullPath = $value;

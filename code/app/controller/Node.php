@@ -12,7 +12,7 @@ class Node extends Common
     {
         /*echo '<pre>';
         $cmd = "pocsuite -r ./cms/thinkphp/thinkphp_5_0_x_remote_code_execution.py -u http://127.0.0.1:8000 --verify";
-        exec($cmd, $output);
+        execLog($cmd, $output);
         //$result = implode("\n", $result);
 
         var_dump(json_encode($output));

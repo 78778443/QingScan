@@ -27,20 +27,30 @@ $searchArr = [
                 <th>漏洞类型</th>
                 <th>危险等级</th>
                 <th>污染来源</th>
-                <th>执行位置</th>
+                <th>代码行号</th>
                 <th>所属项目</th>
                 <th>创建时间</th>
                 <th>状态</th>
                 <th style="width: 200px">操作</th>
             </tr>
             </thead>
-            <?php foreach ($list as $value) { ?>
+            <?php foreach ($list as $value) {
+                $project = $projectArr[$value['code_id']];
+                ?>
                 <tr>
                     <td><?php echo $value['id'] ?></td>
                     <td><?php echo str_replace('data.tools.semgrep.', "", $value['check_id']) ?></td>
                     <td><?php echo $value['extra_severity'] ?></td>
-                    <td><?php echo str_replace('/data/codeCheck', "", $value['path']) ?></td>
-                    <td></td>
+                    <td>
+                        <?php
+                        $path = preg_replace("/\/data\/codeCheck\/[a-zA-Z0-9]*\//", "", $value['path']);
+                        $url = getGitAddr($project['name'], $project['ssh_url'], $value['path'], $value['end_line']);
+                        ?>
+                        <a title="<?php echo htmlentities($value['extra_lines']) ?>" href="<?php echo $url ?>"
+                           target="_blank"><?php echo $path ?>
+                        </a>
+                    </td>
+                    <td>{$value['end_line']}</td>
                     <td><?php echo isset($projectArr[$value['code_id']]) ? $projectArr[$value['code_id']]['name'] : '' ?></td>
                     <td><?php echo $value['create_time'] ?></td>
                     <td><select class="changCheckStatus form-select" data-id="<?php echo $value['id'] ?>">

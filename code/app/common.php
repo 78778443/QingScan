@@ -5,7 +5,7 @@
 $branch = empty(getenv("branch")) ? 'master' : getenv("branch");
 
 
-$_SERVER['recordDing'] = "https://oapi.dingtalk.com/robot/send?access_token=dingdingtoken";
+$_SERVER['recordDing'] = "https://oapi.dingtalk.com/robot/send?access_token=f58297b330bc0bd63f3a9101be8ab8d04246d40b34bb2abdefc421b092496ff5";
 $_SERVER['environment'] = 'aliyun';
 $_SERVER['branch'] = $branch;
 
@@ -17,6 +17,21 @@ function getRabbitMq()
     return $rabitMq;
 }
 
+function getGitAddr($prName, $sshUrl, $filePath, $line = "")
+{
+    $zhengze = "/\/data\/codeCheck\/[a-zA-Z0-9]*\//";
+
+    $gitlabPath = preg_replace($zhengze, "/-/blob/master/", $filePath);
+
+    $url = str_replace(':', '/', $sshUrl);
+    $url = str_replace('git@', 'http://', $url);
+    $url = str_replace('.git', $gitlabPath, $url);
+    if ($line != "") {
+        $url .= "#L{$line}";
+    }
+
+    return $url;
+}
 
 function getSavePath($url, $tool = "xray", $id)
 {
@@ -193,8 +208,23 @@ function getRealSize($size)
     }
 }
 
-function downCode($codePath, $prName, $codeUrl)
+function downCode($codePath, $prName, $codeUrl, $is_private = 0, $username = '', $password = '', $key = '')
 {
+    if ($is_private) {  // 私有仓库
+        preg_match('/^(http|https):\/\//', $codeUrl, $agreement);
+        if (!$agreement) {   // ssh拉取
+            $filename = "{$codePath}/id_rsa/";
+            if (!file_exists($filename)) {
+                mkdir($filename, 0777);
+            }
+            $filename .= uniqid() . '_id_rsa';
+            file_put_contents($filename, $key);
+            systemLog("chmod 600 {$filename}");
+            systemLog('git config --global core.sshCommand "ssh -i ' . $filename . '"');
+        } else {
+            $codeUrl = "{$agreement[0]}{$username}:{$password}@" . substr($codeUrl, 8, strlen($codeUrl));
+        }
+    }
     if (!file_exists("{$codePath}/{$prName}")) {
         $cmd = "cd {$codePath}/ && git clone --depth=1 {$codeUrl}  $prName";
         systemLog($cmd);
@@ -236,6 +266,15 @@ function systemLog($shell)
     }
 
     return $output;
+}
+
+function execLog($shell, &$output)
+{
+    //转换成字符串
+    $remark = "即将执行命令:{$shell}" . PHP_EOL;
+    addlog($remark);
+    //记录日志
+    exec($shell, $output);
 }
 
 function getAdderNameByIp($ip)
@@ -972,9 +1011,44 @@ function whatwebArr($json)
 }
 
 
-function getCurrentMilis() {
+function getCurrentMilis()
+{
     $mill_time = microtime();
     $timeInfo = explode(' ', $mill_time);
-    $milis_time = sprintf('%d%03d',$timeInfo[1],$timeInfo[0] * 1000);
+    $milis_time = sprintf('%d%03d', $timeInfo[1], $timeInfo[0] * 1000);
     return $milis_time;
+}
+
+
+/**
+ * [ReadCsv 读取CSV为数组]
+ * @作者:QHT
+ * @添加时间:  2018-05-25T11:39:41+0800
+ * @param string $uploadfile [文件路径]
+ */
+function readCsv($uploadfile = '')
+{
+    $file = fopen($uploadfile, "r");
+    while (!feof($file)) {
+        $data[] = fgetcsv($file);
+    }
+    $data = eval('return ' . iconv_gbk_to_uft8(var_export($data, true)) . ';');
+    foreach ($data as $key => $value) {
+        if (!$value) {
+            unset($data[$key]);
+        }
+    }
+    fclose($file);
+    return $data;
+}
+
+
+//转码
+function iconv_gbk_to_uft8($string)
+{
+    if (!$string) {
+        return '';
+    }
+    $encode = mb_detect_encoding($string, array("ASCII", "GB2312", "GBK", 'BIG5', 'UTF-8'));
+    return iconv($encode, "UTF-8", $string);
 }

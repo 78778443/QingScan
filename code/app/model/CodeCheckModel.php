@@ -233,7 +233,7 @@ class CodeCheckModel extends BaseModel
                 $codeUrl = $value['ssh_url'];
                 addlog("开始执行扫描代码任务:{$prName}..." . PHP_EOL);
                 //1. 拉取代码
-                downCode($codePath, $prName, $codeUrl);
+                downCode($codePath, $prName, $codeUrl,$value['is_private'],$value['username'],$value['password'],$value['private_key']);
 
                 //2. 扫描代码
                 FortifyModel::startScan("{$codePath}/{$prName}", "{$fortifyRetDir}/{$prName}");
@@ -277,7 +277,7 @@ class CodeCheckModel extends BaseModel
 
                 $codeUrl = $value['ssh_url'];
                 //1. 拉取代码
-                downCode($codePath, $prName, $codeUrl);
+                downCode($codePath, $prName, $codeUrl,$value['is_private'],$value['username'],$value['password'],$value['private_key']);
 
                 //扫描代码
                 $result = KunlunModel::startScan("{$codePath}/{$prName}");
@@ -306,7 +306,7 @@ class CodeCheckModel extends BaseModel
                 $prName = cleanString($value['name']);
                 $codeUrl = $value['ssh_url'];
                 //1. 拉取代码
-                downCode($codePath, $prName, $codeUrl);
+                downCode($codePath, $prName, $codeUrl,$value['is_private'],$value['username'],$value['password'],$value['private_key']);
 
                 //2. 扫描代码
                 $outJson = "{$fortifyRetDir}/{$prName}.json";

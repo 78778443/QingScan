@@ -99,7 +99,12 @@ class Common extends BaseController
             }*/
             View::assign('menu_list',$menu_list);
         }
-        //View::assign('href',$href);
+        View::assign('href',$href);
+        $rule = Db::name('auth_rule')->where('href',$href)->field('pid,level,title')->find();
+        if ($rule['level'] == 3) {
+            $rule = Db::name('auth_rule')->where('auth_rule_id',$rule['pid'])->field('pid,level,title')->find();
+        }
+        View::assign('title',$rule['title'].' QingScan');
     }
 
     // 权限判断

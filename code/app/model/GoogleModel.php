@@ -64,7 +64,7 @@ class GoogleModel extends BaseModel
 //                $filename = "{$file_path}{$host}.png";
 //                $cmd = "/usr/bin/google-chrome --headless --screenshot='{$filename}' '{$v['url']}'";
 //                echo $cmd.PHP_EOL;
-//                exec($cmd);
+//                execLog($cmd);
 //                $data['url_screenshot'] = $filename;
 
 

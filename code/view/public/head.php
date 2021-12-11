@@ -1,6 +1,6 @@
 <html>
 <head>
-    <title>QingScan 扫描系统</title>
+    <title><?php echo $title?></title>
     <link rel="shortcut icon" href="/static/favicon.svg" type="image/x-icon"/>
     <script src="/static/js/jquery.min.js"></script>
     <!--    <script src="/static/js/bootstrap.min.js"></script>-->
@@ -78,7 +78,7 @@
                             <ul class="dropdown-menu" aria-labelledby="dropdown08">
                                 <?php foreach ($v['children'] as $key => $val) { ?>
                                     <li>
-                                        <a class="dropdown-item" href="<?php echo url($val['href']) ?>">
+                                        <a class="dropdown-item" href="<?php echo url($val['href']) ?>" style="<?php echo $href == $val['href']?'color:red':''?>">
                                             <?php echo $val['title'] ?>
                                         </a>
                                     </li>

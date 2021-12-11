@@ -42,7 +42,7 @@ $searchArr = [
                     <td><?php echo $value['create_time'] ?></td>
                     <!--                        <td>--><? //= $statusArr[$value['scan_status']] ?><!--</td>-->
                     <td>
-                        <a href="/index.php?s=host/bug_list&task_id=<?php echo $value['id'] ?>"
+                        <a href="<?php echo url('code/bug_list',['id'=>$value['id']])?>"
                            class="btn btn-sm btn-outline-primary">查看详情</a>
                         <a href="#" class="btn btn-sm btn-outline-danger">删除</a>
                     </td>
@@ -54,12 +54,12 @@ $searchArr = [
 </div>
 
 {include file='public/fenye' /}
-<script>
+<!--<script>
     $("#starScan").click(function () {
-        $.get("/index.php?s=host/_start_scan&url_id=<?php echo $value['id'] ?>", function (result) {
+        $.get("/index.php?s=host/_start_scan&url_id=<?php /*echo $value['id'] */?>", function (result) {
             alert("操作成功")
             location.reload();
         });
     });
-</script>
+</script>-->
 {include file='public/footer' /}

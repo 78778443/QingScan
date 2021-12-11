@@ -14,3 +14,4 @@ lock.txt
 /think/icon/
 /think/public/screenshot/
 !/tools/pocs/
+code/runtime/temp/

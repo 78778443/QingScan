@@ -71,7 +71,7 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="vul-title-wrapper clearfix">
-                    <h1 class="pull-left" id="j-vul-title" data-vul-id="99367">
+                    <h1 >
                    <span class="pull-titile">
                       <?php echo $info['host'];?>
                    </span>
@@ -101,7 +101,7 @@
             <div class="a-st">
                 <!--漏洞基本信息 begin-->
                 <div class="bug-msg">
-                    <section class="vul-basic-info" id="j-vul-basic-info">
+                    <section class="vul-basic-info" >
                         <div class="row">
                             <div class="col-md-4">
                                 <dl>
@@ -148,7 +148,7 @@
                 <!--漏洞详情 end-->
 
                 <!--漏洞 PoC begin-->
-                <section class="vul-detail-section vul-poc">
+                <section >
                     <div class="clearfix">
                         <h3 class="pull-left">html
                         </h3>

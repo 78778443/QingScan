@@ -358,7 +358,7 @@ class AppModel extends BaseModel
                             $pocfile = '/data/'.$pocfile;
                         }
                         $cmd = "pocsuite -r {$pocfile} -u {$url} --verify";
-                        exec($cmd, $output);
+                        execLog($cmd, $output);
                         addlog(["poc验证结束", $val['id'], $url, $cmd, json_encode($output)]);
 
                         $data = [

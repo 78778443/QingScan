@@ -8,10 +8,12 @@
 // +----------------------------------------------------------------------
 // | Author: liu21st <liu21st@gmail.com>
 // +----------------------------------------------------------------------
-
 // [ 应用入口文件 ]
 namespace think;
 
+if (!file_exists(__DIR__."/install/install.lock")) {
+    header("location:/install/step1.php");exit();
+}
 require __DIR__ . '/../vendor/autoload.php';
 
 // 执行HTTP应用并响应

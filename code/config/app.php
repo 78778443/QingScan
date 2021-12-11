@@ -35,7 +35,7 @@ return [
     'UC_AUTH_KEY' => 'xt1l3a21uo0tu2oxtds3wWte23dsxix2d3in7yuhui32yuapatmdsnnzdazh1612ongxxin2z',
     'ADMINISTRATOR' => [1, 2],
     'not_del' => [],
-    'NOT_AUTH_ACTION' => ['index/index'],
+    'NOT_AUTH_ACTION' => ['index/index','auth/user_info','auth/user_password'],
     'backup' => [
         'path' => '/data/tools/backup/',//数据库备份路径
         'part' => 20971520,//数据库备份卷大小

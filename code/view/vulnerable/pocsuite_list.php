@@ -33,8 +33,8 @@ $searchArr = [
                     <td><?php echo $value['cms'] ?></td>
 
                     <td>
-                        <a href="/index.php?s=code_check/bug_detail&id=<?php echo $value['id'] ?>"
-                           class="btn btn-sm btn-outline-primary">查看漏洞</a>
+<!--                        <a href="/index.php?s=code_check/bug_detail&id=--><?php //echo $value['id'] ?><!--"-->
+<!--                           class="btn btn-sm btn-outline-primary">查看漏洞</a>-->
                         <a href="<?php echo url('vulnerable/pocsuite_del',['id'=>$value['id']])?>" class="btn btn-sm btn-outline-danger">删除</a>
                     </td>
                 </tr>

@@ -37,7 +37,7 @@ class Auth extends Common
             $data['nickname'] = getParam('nickname');
             $data['auth_group_id'] = getParam('auth_group_id');
             $data['status'] = getParam('status');
-            $data['sex'] = getParam('sex');
+            $data['sex'] = getParam('sex',0);
             $data['phone'] = getParam('phone');
             $data['dd_token'] = getParam('dd_token');
             $data['email'] = getParam('email');
@@ -79,7 +79,7 @@ class Auth extends Common
             $data['nickname'] = getParam('nickname');
             $data['auth_group_id'] = getParam('auth_group_id');
             $data['status'] = getParam('status');
-            $data['sex'] = getParam('sex');
+            $data['sex'] = getParam('sex',0);
             $data['phone'] = getParam('phone');
             $data['dd_token'] = getParam('dd_token');
             $data['email'] = getParam('email');

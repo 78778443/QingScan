@@ -363,7 +363,7 @@
                                                     <?php echo date('Y-m-d H:i:s', substr($info['create_time'], 0, 10)) ?>
                                                 </td>
                                                 <td class="ant-table-column-has-actions ant-table-column-has-sorters">
-                                                    <select  class="changCheckStatus form-select" style="padding: 0px 12px;height:22px;" data-id="<?php echo $info['id'] ?>">
+                                                    <select  class="changCheckStatus form-select"  data-id="<?php echo $info['id'] ?>">
                                                         <option value="0" <?php echo $info['check_status'] == 0 ? 'selected' : ''; ?> >未审核</option>
                                                         <option value="1" <?php echo $info['check_status'] == 1 ? 'selected' : ''; ?> >有效漏洞</option>
                                                         <option value="2" <?php echo $info['check_status'] == 2 ? 'selected' : ''; ?> >无效漏洞</option>

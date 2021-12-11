@@ -72,7 +72,7 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="vul-title-wrapper clearfix">
-                    <h1 class="pull-left" id="j-vul-title" data-vul-id="99367">
+                    <h1 >
                        <span class="pull-titile">
                           <?php echo $info['vt_name'];?>
                        </span>
@@ -109,7 +109,7 @@
             <div class="a-st">
                 <!--漏洞基本信息 begin-->
                 <div class="bug-msg">
-                    <section class="vul-basic-info" id="j-vul-basic-info">
+                    <section class="vul-basic-info" >
                         <div class="row">
                             <div class="col-md-4">
                                 <dl>
@@ -119,7 +119,7 @@
                                 <dl>
                                     <dt>审核状态：</dt>
                                     <dd class="text-gray">
-                                        <select  class="changCheckStatus form-select" style="padding: 0px 12px;height:22px;" data-id="<?php echo $info['id'] ?>">
+                                        <select  class="changCheckStatus form-select"  data-id="<?php echo $info['id'] ?>">
                                             <option value="0" <?php echo $info['check_status'] == 0 ? 'selected' : ''; ?> >未审核</option>
                                             <option value="1" <?php echo $info['check_status'] == 1 ? 'selected' : ''; ?> >有效漏洞</option>
                                             <option value="2" <?php echo $info['check_status'] == 2 ? 'selected' : ''; ?> >无效漏洞</option>
@@ -217,7 +217,7 @@
                 </section>
 
                 <!--漏洞 PoC begin-->
-                <section class="vul-detail-section vul-poc">
+                <section >
                     <div class="clearfix">
                         <h3 class="pull-left">此漏洞的影响
                         </h3>

@@ -131,7 +131,7 @@ class HostPort extends Common
         foreach ($redisList as $value) {
             $cmd = "cd {$redisPath}  && python3 unauthorized.py -u {$value['host']} -p  {$value['port']}";
             $result = [];
-            exec($cmd, $result);
+            execLog($cmd, $result);
 
             if ($result[0] ?? '' == '存在Redis未授权访问') {
                 $data = ['category' => 'Redis unauthorized', 'host' => $value['host'], 'name' => "{$value['host']}  Redis未授权漏洞"];

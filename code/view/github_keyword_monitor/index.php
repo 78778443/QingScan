@@ -49,8 +49,8 @@ $dengjiArr = ['Low', 'Medium', 'High', 'Critical'];
                         <td><?php echo $value['title'] ?></td>
                         <td><?php echo $value['create_time'] ?></td>
                         <td>
-                            <a href="<?php echo url('edit',['id'=>$value['id']])?>"
-                               class="btn btn-sm btn-outline-success">编辑</a>
+<!--                            <a href="--><?php //echo url('edit',['id'=>$value['id']])?><!--"-->
+<!--                               class="btn btn-sm btn-outline-success">编辑</a>-->
                             <a href="<?php echo url('del',['id'=>$value['id']])?>" class="btn btn-sm btn-outline-danger">删除</a>
                         </td>
                     </tr>

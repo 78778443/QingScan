@@ -30,8 +30,7 @@ class App extends Common
 
     }
 
-    public function index()
-    {
+    public function index(){
         $pageSize = 15;
         $page = getParam('page', 1);
         $statusCode = getParam('statuscode');
@@ -55,7 +54,13 @@ class App extends Common
         $data['cmsArr'] = array_column($data['cmsArr'], 'cms');
         $data['serverArr'] = Db::table('app')->Join('app_info info', 'app.id = info.app_id')->where($where)->order('id', 'desc')->group('info.server')->field('server')->select()->toArray();
         $data['serverArr'] = array_column($data['serverArr'], 'server');
-
+        foreach ($data['list'] as &$v) {
+            $v['is_waf'] = '否';
+            $wafw00f = Db::name('app_wafw00f')->where('app_id',$v['id'])->find();
+            if ($wafw00f && $wafw00f['detected']) {
+                $v['is_waf'] = '是';
+            }
+        }
         $data['pageSize'] = $pageSize;
         $data['count'] = Db::table('app')->Join('app_info info', 'app.id = info.app_id')->where($where)->count();
         $configArr = ConfigModel::getNameArr();
@@ -190,7 +195,7 @@ class App extends Common
 
             foreach ($appList as $value) {
                 $cmd = "cd {$radPath} && ./rad -t {$value['url']}  -json {$retPath}";
-                exec($cmd);
+                systemLog($cmd);
                 $urlList = json_decode(file_get_contents($retPath), true);
                 var_dump($cmd, array_column($urlList, 'URL'));
                 unlink($retPath);
@@ -233,7 +238,7 @@ class App extends Common
                 file_exists($retPath) && unlink($retPath);
                 $cmd = "cd {$radPath} && ./xray webscan --url  '{$urlInfo['url']}'   --json-output {$retPath}";
                 echo $cmd . PHP_EOL;
-                exec($cmd);
+                systemLog($cmd);
 
                 if (file_exists($retPath) == false) {
                     echo "没有输出, {$urlInfo['url']} " . PHP_EOL;
@@ -300,7 +305,7 @@ class App extends Common
 
             $survivalUrl = [];
             $cmd = "cd {$urlCheck} && python3 url_survival_check_min.py {$tempUrlFile}";
-            exec($cmd, $survivalUrl);
+            execLog($cmd, $survivalUrl);
 
             foreach ($survivalUrl as $url) {
                 if (strstr($url, 'Not')) {
@@ -337,7 +342,7 @@ class App extends Common
 
             file_put_contents($tempUrlFile, $urlStr);
             $cmd = "cd {$urlCheck} && python3 url_survival_check_min.py {$tempUrlFile}";
-            exec($cmd, $survivalUrl);
+            execLog($cmd, $survivalUrl);
 
             foreach ($survivalUrl as $url) {
                 if (strstr($url, 'Not') == false) {
@@ -379,7 +384,7 @@ class App extends Common
 
 
             $cmd = "cd {$urlCheck} && ./Ehole3.0-linux -l {$tempUrlFile} -json {$jsonInfoFile}";
-            exec($cmd);
+            systemLog($cmd);
             $jsonStr = trim(file_get_contents($jsonInfoFile));
             $jsonArr = array_filter(explode("\n", $jsonStr));
 
@@ -438,25 +443,21 @@ class App extends Common
         if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
             $where[] = ['user_id', '=', $this->userId];
         }
-        $info = Db::name('app')->where($where)->field('id,xray_agent_prot')->find();
+        $info = Db::name('app')->where($where)->field('id')->find();
         if (!$info) {
             return $this->apiReturn(0, [], '数据不存在');
         }
-        // 执行命令查看任务是否已经执行
-        $cmd = "ps -ef | grep 'xray_" . $info['id'] . "_" . $info['xray_agent_prot'] . "' | grep -v ' grep'";
-        $result = [];
-        exec($cmd, $result);
-        // 如果返回值长度是0说明任务没有执行
-        if (count($result) == 0) {
-            $port = rangeCrearePort();
-            Db::name('app')->where('id', $id)->update(['xray_agent_prot' => $port]);
-            $agent = "/data/tools/xray/";
-            $cmd = "cd {$agent} && nohup ./xray_linux_amd64 webscan --listen 0.0.0.0:{$port} --json-output {$info['id']}.json   xray_{$info['id']}_{$port} >> /dev/null 2>&1";
-            // 执行命令
-            systemLog($cmd);
-            return $this->apiReturn(1, [], "xray代理模式已启动,端口号：{$port}");
-        } else {
-            return $this->apiReturn(1, [], "xray代理模式已启动,端口号：{$info['xray_agent_prot']}");
+        $port = rangeCrearePort();
+        $map[] = ['app_id','=',$id];
+        $map[] = ['xray_agent_prot','=',$port];
+        if (!Db::name('app_xray_agent_port')->where($map)->count('id')) {
+            $data = [
+                'app_id'=>$id,
+                'xray_agent_prot'=>$port,
+                'create_time'=>date('Y-m-d H:i:s',time()),
+            ];
+            Db::name('app_xray_agent_port')->insert($data);
         }
+        return $this->apiReturn(1, [], "xray代理模式端口号：{$port}");
     }
 }

@@ -38,11 +38,11 @@ class ProcessSafeModel extends BaseModel
                 // 执行命令查看任务是否已经执行
                 $cmd = "ps -ef | grep '{$key}' | grep -v ' grep'";
                 $result = [];
-                exec($cmd, $result);
+                execLog($cmd, $result);
                 // 如果返回值长度是0说明任务没有执行
                 if (count($result) == 0) {
                     // 执行命令
-                    exec($value);
+                    systemLog($value);
                     print_r("{$key} 进场已结束，正在重启此进程...");
                     print_r($value);
                 }

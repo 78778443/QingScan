@@ -35,6 +35,7 @@
                     <th>状态码</th>
                     <th>服务组件</th>
                     <th style="width: 70px">状态</th>
+                    <th>是否存在waf</th>
                     <th>创建时间</th>
                     <th>awvs</th>
                     <th>whatweb</th>
@@ -63,6 +64,7 @@
                         <td><?php echo $value['statuscode'] ?? '' ?></td>
                         <td><?php echo $value['server'] ?? '' ?></td>
                         <td><?php echo $statusArr[$value['status']] ?? '' ?></td>
+                        <td><?php echo $value['is_waf'] ?></td>
                         <td><?php echo date('Y-m-d H:i', strtotime($value['create_time'])) ?></td>
                         <td><?php echo date('m-d H:i', strtotime($value['awvs_scan_time'])) ?></td>
                         <td><?php echo date('m-d H:i', strtotime($value['whatweb_scan_time'])) ?></td>

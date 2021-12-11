@@ -63,7 +63,7 @@ class WebScanModel extends BaseModel
                 addlog(["开始执行抓取URL地址命令", $cmd]);
 
                 $result = [];
-                exec($cmd, $result);
+                execLog($cmd, $result);
 
                 $result = implode("\n", $result);
                 $urlList = json_decode(file_get_contents($pathArr['tool_result']), true);
@@ -101,7 +101,7 @@ class WebScanModel extends BaseModel
                 $url = $val['url'];
                 $id = $val['id'];
                 $user_id = $val['user_id'];
-                addlog(["XRAY开始执行扫描任务", $id, $url]);
+                //addlog(["XRAY开始执行扫描任务", $id, $url]);
                 $path = "cd /data/tools/xray/ && ";
                 $pathArr = getSavePath($url, "xray", $id);
 
@@ -118,7 +118,6 @@ class WebScanModel extends BaseModel
                     $filename = '/data/tools/xray/config.yaml';
                     $arr = @yaml_parse_file($filename);
                     if ($arr) {
-                        $arr['http']['proxy_rule'][0]['match'] = '*';
                         $proxyArr = Db::name('proxy')->where('status', 1)->limit(10)->orderRand()->select();
                         foreach ($proxyArr as $v) {
                             $result = testAgent($v['host'], $v['port']);
@@ -126,6 +125,7 @@ class WebScanModel extends BaseModel
                                 $proxy[] = 'http://' . $v['host'] . ":{$v['port']}";
                             }
                         }
+                        $arr['http']['proxy_rule'][0]['match'] = '*';
                         $arr['http']['proxy_rule'][0]['servers'] = [];
                         $weight = random_split(10,count($proxy));
                         foreach ($proxy as $k=>$v) {
@@ -141,7 +141,7 @@ class WebScanModel extends BaseModel
                     addlog(["开始执行漏洞扫描命令", base64_encode($cmd)]);
 
                     $result = [];
-                    exec($cmd, $result);
+                    execLog($cmd, $result);
                     $result = implode("\n", $result);
                     addlog(["漏洞扫描结束", $id, $url, $cmd, base64_encode($result)]);
 
@@ -179,39 +179,58 @@ class WebScanModel extends BaseModel
         }
     }
 
+    public static function startXrayAgent()
+    {
+        while (true) {
+            $list = Db::name('app_xray_agent_port')->where('start_up',0)->limit(10)->orderRand()->select()->toArray();
+            foreach ($list as $v) {
+                // 执行命令查看任务是否已经执行
+                $cmd = "ps -ef | grep 'xray_" . $v['app_id'] . "_" . $v['xray_agent_prot'] . "' | grep -v ' grep'";
+                $result = [];
+                execLog($cmd, $result);
+                // 如果返回值长度是0说明任务没有执行
+                if (count($result) == 0) {
+                    Db::name('app_xray_agent_port')->where('id',$v['id'])->update(['start_up'=>1]);
+
+                    $agent = "/data/tools/xray/";
+                    $cmd = "cd {$agent} && nohup ./xray_linux_amd64 webscan --listen 0.0.0.0:{$v['xray_agent_prot']} --json-output {$v['app_id']}.json   xray_{$v['app_id']}_{$v['xray_agent_prot']} >> /dev/null 2>&1";
+                    // 执行命令
+                    systemLog($cmd);
+                    addlog(["xray代理模式启动", json_encode($cmd)]);
+                }
+            }
+            sleep(3);
+        }
+    }
+
     public static function xrayAgentResult(){
         ini_set('max_execution_time', 0);
         $agent = "/data/tools/xray/";
         while (true) {
-            $list = Db::table('app')->where('xray_agent_prot','<>',0)->where('is_delete',0)->limit(2)->orderRand()->select()->toArray();
-            foreach ($list as $k=>$v) {
-                $filename = $agent.$v['id'].'.json';
+            $list = Db::table('app_xray_agent_port')->where('start_up',1)->where('is_get_result',0)->limit(10)->orderRand()->select()->toArray();
+            foreach ($list as $v) {
+                $filename = $agent.$v['app_id'].'.json';
                 if (!file_exists($filename)) {
                     addlog(["文件不存在:{$filename}"]);
                     continue;
                 }
-                $data = json_decode(file_get_contents($agent.$v['id']), true);
+                $user_id = Db::name('app')->where('id',$v['app_id'])->value('user_id');
+                $data = json_decode(file_get_contents($filename), true);
                 foreach ($data as $value) {
                     $newData = [
+                        'create_time' => substr($value['create_time'], 0, 10),
                         'detail' => json_encode($value['detail']),
                         'plugin' => json_encode($value['plugin']),
                         'target' => json_encode($value['target']),
+                        'url' => $value['detail']['addr'],
                         'app_id' => $v['app_id'],
-                        'user_id'=>$v['user_id'],
-                        'xray_id'=>$v['id'],
+                        'user_id'=>$user_id,
+                        'poc' => $value['detail']['payload']
                     ];
-                    if ($v['user_id']) {
-                        $where[] = ['user_id','=',$v['user_id']];
-                    }
-                    $where[] = ['app_id','=',$v['app_id']];
-                    $where[] = ['xray_id','=',$v['id']];
-                    if (Db::name('xray_agent_result')->where($where)->count('id')) {
-                        Db::name('xray_agent_result')->where($where)->update($newData);
-                    } else {
-                        $newData['create_time'] = substr($value['create_time'], 0, 10);
-                        Db::name('xray_agent_result')->insert($newData);
-                    }
+                    echo "添加漏洞结果:" . json_encode($newData) . PHP_EOL;
+                    XrayModel::addXray($newData);
                 }
+                Db::table('app_xray_agent_port')->where('id',$v['id'])->update(['is_get_result'=>1]);
             }
             sleep(120);
         }

@@ -20,11 +20,11 @@ class SemgrepModel extends BaseModel
     {
         $cmd = "semgrep -f /data/tools/semgrep/rules.yaml {$codePath} --json  -o {$outPath}";
 
-        exec($cmd, $result);
+        $result = systemLog($cmd);
 
     }
 
-    public static function addDataAll(int $codeId, string $jsonPath,$user_id=0)
+    public static function addDataAll(int $codeId, string $jsonPath, $user_id = 0)
     {
         $data = json_decode(file_get_contents($jsonPath), true);
 

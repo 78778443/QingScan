@@ -19,6 +19,15 @@
                                value="<?php echo $info['name'] ?>">
                     </div>
                     <div class="mb-3">
+                        <label class="form-label">是否私有仓库</label>
+                        <select name="is_private" class="form-select">
+                            <option value="1" <?php if ($info['is_private'] == 1) echo 'selected' ?>>私有仓库
+                            </option>
+                            <option value="0" <?php if ($info['is_private'] == 0) echo 'selected' ?>>公共仓库
+                            </option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
                         <label class="form-label">拉取方式</label>
                         <select name="pulling_mode" class="form-select">
                             <option value="SSH" <?php if ($info['pulling_mode'] == 'SSH') echo 'selected' ?>>SSH
@@ -39,8 +48,14 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label">密码</label>
-                        <input type="text" name="password" class="form-control" placeholder="URL"
+                        <input type="text" name="password" class="form-control" placeholder="密码"
                                value="<?php echo $info['password'] ?>">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">私钥</label>
+                        <textarea name="private_key" id="" cols="100" rows="15"><?php echo $info['private_key'] ?></textarea>
+                        <!--<input type="text" name="private_key" class="form-control" placeholder="私钥"
+                               value="<?php /*echo $info['private_key'] */?>">-->
                     </div>
                     <div class="mb-3">
                         <label class="form-label">下次fortify扫描时间</label>

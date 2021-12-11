@@ -5,10 +5,12 @@ namespace app\command;
 
 use app\model\AppDirmapModel;
 use app\model\AppModel;
+use app\model\AppWafw00fModel;
 use app\model\AwvsModel;
 use app\model\CodeCheckModel;
 use app\model\CodeJavaModel;
 use app\model\CodeModel;
+use app\model\CodeWebshellModel;
 use app\model\ConfigModel;
 use app\model\CveModel;
 use app\model\GithubKeywordMonitorModel;
@@ -109,6 +111,14 @@ class Scan extends Command
             AppModel::whatwebPocTest();
         } elseif ($func == 'xrayAgentResult'){
             WebScanModel::xrayAgentResult();
+        } elseif ($func == 'startXrayAgent') {
+            WebScanModel::startXrayAgent();
+        } elseif($func == 'code_webshell_scan'){
+            CodeWebshellModel::code_webshell_scan();
+        } elseif($func == 'wafw00fScan'){
+            AppWafw00fModel::wafw00fScan();
+        } elseif($func == 'vulmapPocTest'){
+            WebScanModel::vulmapPocTest();
         }
 
         // 指令输出

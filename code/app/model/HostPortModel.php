@@ -275,7 +275,7 @@ class HostPortModel extends BaseModel
                 $result = [];
                 $cmd = "nmap -sS -Pn -T4  -p {$value['port']} {$value['host']} | grep open | grep -v Discovered |grep -v grep";
                 echo $cmd . PHP_EOL;
-                exec($cmd, $result);
+                execLog($cmd, $result);
 
                 foreach ($result as $item) {
                     $item = str_replace("  ", " ", $item);
@@ -306,7 +306,7 @@ class HostPortModel extends BaseModel
 
         echo $cmd;
 
-        exec($cmd, $result);
+        execLog($cmd, $result);
 
         file_put_contents("11.txt", json_encode($result));
         $result = json_decode(file_get_contents("11.txt"), true);
@@ -336,7 +336,7 @@ class HostPortModel extends BaseModel
 
                 $cmd = "masscan --ports {$portStr} {$host}  --max-rate 2000 |grep Discovered";
 
-                exec($cmd, $result);
+                execLog($cmd, $result);
 
                 foreach ($result as $value) {
                     $aaa = explode(" ", $value);
@@ -416,7 +416,7 @@ class HostPortModel extends BaseModel
 
         foreach ($data as $val) {
             $cmd = "masscan --ports {$portStr} {$val}/24  --max-rate 2000 |grep Discovered";
-            exec($cmd, $result);
+            execLog($cmd, $result);
 
             foreach ($result as $value) {
                 $aaa = explode(" ", $value);

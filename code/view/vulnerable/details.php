@@ -71,7 +71,7 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="vul-title-wrapper clearfix">
-                    <h1 class="pull-left" id="j-vul-title" data-vul-id="99367">
+                    <h1 >
                        <span class="pull-titile">
                           <?php echo $info['name'];?>
                        </span>
@@ -101,7 +101,7 @@
             <div class="a-st">
                 <!--漏洞基本信息 begin-->
                 <div class="bug-msg">
-                    <section class="vul-basic-info" id="j-vul-basic-info">
+                    <section class="vul-basic-info" >
                         <div class="row">
                             <div class="col-md-4">
                                 <dl>
@@ -191,283 +191,283 @@
                         </div>
                     </section>
                 </div>
-                <section class="vul-detail-section vul-poc">
+                <section >
                     <div class="clearfix">
                         <h3 class="pull-left">cvss_vector</h3>
                     </div>
                     <div class="padding-md">
-                        <section class="vul-need-contribute">
+                        <section>
                             <div class="circle"><?php echo $info['cvss_vector']?></div>
                         </section>
                         <br>
                     </div>
 
                 </section>
-                <section class="vul-detail-section vul-poc">
+                <section >
                     <div class="clearfix">
                         <h3 class="pull-left">vul_repair_time</h3>
                     </div>
                     <div class="padding-md">
-                        <section class="vul-need-contribute">
+                        <section>
                             <div class="circle"><?php echo $info['vul_repair_time']?></div>
                         </section>
                         <br>
                     </div>
 
                 </section>
-                <section class="vul-detail-section vul-poc">
+                <section >
                     <div class="clearfix">
                         <h3 class="pull-left">vul_source</h3>
                     </div>
                     <div class="padding-md">
-                        <section class="vul-need-contribute">
+                        <section>
                             <div class="circle"><?php echo $info['vul_source']?></div>
                         </section>
                         <br>
                     </div>
 
                 </section>
-                <section class="vul-detail-section vul-poc">
+                <section >
                     <div class="clearfix">
                         <h3 class="pull-left">temp_plan_s3</h3>
                     </div>
                     <div class="padding-md">
-                        <section class="vul-need-contribute">
+                        <section>
                             <div class="circle"><?php echo $info['temp_plan_s3']?></div>
                         </section>
                         <br>
                     </div>
 
                 </section>
-                <section class="vul-detail-section vul-poc">
+                <section >
                     <div class="clearfix">
                         <h3 class="pull-left">formal_plan</h3>
                     </div>
                     <div class="padding-md">
-                        <section class="vul-need-contribute">
+                        <section>
                             <div class="circle"><?php echo $info['formal_plan']?></div>
                         </section>
                         <br>
                     </div>
 
                 </section>
-                <section class="vul-detail-section vul-poc">
+                <section >
                     <div class="clearfix">
                         <h3 class="pull-left">patch_s3</h3>
                     </div>
                     <div class="padding-md">
-                        <section class="vul-need-contribute">
+                        <section>
                             <div class="circle"><?php echo $info['patch_s3']?></div>
                         </section>
                         <br>
                     </div>
 
                 </section>
-                <section class="vul-detail-section vul-poc">
+                <section >
                     <div class="clearfix">
                         <h3 class="pull-left">cpe</h3>
                     </div>
                     <div class="padding-md">
-                        <section class="vul-need-contribute">
+                        <section>
                             <div class="circle"><?php echo $info['cpe']?></div>
                         </section>
                         <br>
                     </div>
 
                 </section>
-                <section class="vul-detail-section vul-poc">
+                <section >
                     <div class="clearfix">
                         <h3 class="pull-left">store_website</h3>
                     </div>
                     <div class="padding-md">
-                        <section class="vul-need-contribute">
+                        <section>
                             <div class="circle"><?php echo $info['store_website']?></div>
                         </section>
                         <br>
                     </div>
                 </section>
-                <section class="vul-detail-section vul-poc">
+                <section >
                     <div class="clearfix">
                         <h3 class="pull-left">product_store</h3>
                     </div>
                     <div class="padding-md">
-                        <section class="vul-need-contribute">
+                        <section>
                             <div class="circle"><?php echo $info['product_store']?></div>
                         </section>
                         <br>
                     </div>
                 </section>
-                <section class="vul-detail-section vul-poc">
+                <section >
                     <div class="clearfix">
                         <h3 class="pull-left">assem_name</h3>
                     </div>
                     <div class="padding-md">
-                        <section class="vul-need-contribute">
+                        <section>
                             <div class="circle"><?php echo $info['assem_name']?></div>
                         </section>
                         <br>
                     </div>
                 </section>
-                <section class="vul-detail-section vul-poc">
+                <section >
                     <div class="clearfix">
                         <h3 class="pull-left">affect_ver</h3>
                     </div>
                     <div class="padding-md">
-                        <section class="vul-need-contribute">
+                        <section>
                             <div class="circle"><?php echo $info['affect_ver']?></div>
                         </section>
                         <br>
                     </div>
                 </section>
-                <section class="vul-detail-section vul-poc">
+                <section >
                     <div class="clearfix">
                         <h3 class="pull-left">ver_open_date</h3>
                     </div>
                     <div class="padding-md">
-                        <section class="vul-need-contribute">
+                        <section>
                             <div class="circle"><?php echo $info['ver_open_date']?></div>
                         </section>
                         <br>
                     </div>
                 </section>
-                <section class="vul-detail-section vul-poc">
+                <section >
                     <div class="clearfix">
                         <h3 class="pull-left">sub_update_url</h3>
                     </div>
                     <div class="padding-md">
-                        <section class="vul-need-contribute">
+                        <section>
                             <div class="circle"><?php echo $info['sub_update_url']?></div>
                         </section>
                         <br>
                     </div>
                 </section>
-                <section class="vul-detail-section vul-poc">
+                <section >
                     <div class="clearfix">
                         <h3 class="pull-left">git_url</h3>
                     </div>
                     <div class="padding-md">
-                        <section class="vul-need-contribute">
+                        <section>
                             <div class="circle"><?php echo $info['git_url']?></div>
                         </section>
                         <br>
                     </div>
                 </section>
-                <section class="vul-detail-section vul-poc">
+                <section >
                     <div class="clearfix">
                         <h3 class="pull-left">git_commit_id</h3>
                     </div>
                     <div class="padding-md">
-                        <section class="vul-need-contribute">
+                        <section>
                             <div class="circle"><?php echo $info['git_commit_id']?></div>
                         </section>
                         <br>
                     </div>
                 </section>
-                <section class="vul-detail-section vul-poc">
+                <section >
                     <div class="clearfix">
                         <h3 class="pull-left">git_fixed_commit_id</h3>
                     </div>
                     <div class="padding-md">
-                        <section class="vul-need-contribute">
+                        <section>
                             <div class="circle"><?php echo $info['git_fixed_commit_id']?></div>
                         </section>
                         <br>
                     </div>
                 </section>
-                <section class="vul-detail-section vul-poc">
+                <section >
                     <div class="clearfix">
                         <h3 class="pull-left">fofa_con</h3>
                     </div>
                     <div class="padding-md">
-                        <section class="vul-need-contribute">
+                        <section>
                             <div class="circle"><?php echo $info['fofa_con']?></div>
                         </section>
                         <br>
                     </div>
                 </section>
-                <section class="vul-detail-section vul-poc">
+                <section >
                     <div class="clearfix">
                         <h3 class="pull-left">is_sub_attack</h3>
                     </div>
                     <div class="padding-md">
-                        <section class="vul-need-contribute">
+                        <section>
                             <div class="circle"><?php echo $info['is_sub_attack']?></div>
                         </section>
                         <br>
                     </div>
                 </section>
-                <section class="vul-detail-section vul-poc">
+                <section >
                     <div class="clearfix">
                         <h3 class="pull-left">temp_plan_s3_hash</h3>
                     </div>
                     <div class="padding-md">
-                        <section class="vul-need-contribute">
+                        <section>
                             <div class="circle"><?php echo $info['temp_plan_s3_hash']?></div>
                         </section>
                         <br>
                     </div>
                 </section>
-                <section class="vul-detail-section vul-poc">
+                <section >
                     <div class="clearfix">
                         <h3 class="pull-left">patch_s3_hash</h3>
                     </div>
                     <div class="padding-md">
-                        <section class="vul-need-contribute">
+                        <section>
                             <div class="circle"><?php echo $info['patch_s3_hash']?></div>
                         </section>
                         <br>
                     </div>
                 </section>
-                <section class="vul-detail-section vul-poc">
+                <section >
                     <div class="clearfix">
                         <h3 class="pull-left">is_pass_attack</h3>
                     </div>
                     <div class="padding-md">
-                        <section class="vul-need-contribute">
+                        <section>
                             <div class="circle"><?php echo $info['is_pass_attack']?></div>
                         </section>
                         <br>
                     </div>
                 </section>
-                <section class="vul-detail-section vul-poc">
+                <section >
                     <div class="clearfix">
                         <h3 class="pull-left">auditor</h3>
                     </div>
                     <div class="padding-md">
-                        <section class="vul-need-contribute">
+                        <section>
                             <div class="circle"><?php echo $info['auditor']?></div>
                         </section>
                         <br>
                     </div>
                 </section>
-                <section class="vul-detail-section vul-poc">
+                <section >
                     <div class="clearfix">
                         <h3 class="pull-left">cause</h3>
                     </div>
                     <div class="padding-md">
-                        <section class="vul-need-contribute">
+                        <section>
                             <div class="circle"><?php echo $info['cause']?></div>
                         </section>
                         <br>
                     </div>
                 </section>
-                <section class="vul-detail-section vul-poc">
+                <section >
                     <div class="clearfix">
                         <h3 class="pull-left">scan_time</h3>
                     </div>
                     <div class="padding-md">
-                        <section class="vul-need-contribute">
+                        <section>
                             <div class="circle"><?php echo $info['scan_time']?></div>
                         </section>
                         <br>
                     </div>
                 </section>
-                <section class="vul-detail-section vul-poc">
+                <section >
                     <div class="clearfix">
                         <h3 class="pull-left">来源</h3>
                     </div>
                     <div class="padding-md">
-                        <section class="vul-need-contribute">
+                        <section>
                             <div class="circle"><?php echo $info['patch_url']?></div>
                         </section>
                         <br>
