@@ -14,24 +14,33 @@ use think\facade\Db;
     <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-        <title>轻松渗透测试系统</title>
+        <title>QingScan 安装step3</title>
         <link href="../../static/bootstrap-5.1.3/css/bootstrap.min.css" rel="stylesheet">
     </head>
     <body>
     <div class="container">
-        <?php
-        error_reporting(E_ALL);
-        //检查数据库参数是否正确，修改系统配置文件
-        writingConf();
+        <div class="row">
+            <div class="col-3"></div>
+            <div class="col-6">
+                <div style="height:160px"></div>
+                <div>
+                    <?php
+                    error_reporting(E_ALL);
+                    //检查数据库参数是否正确，修改系统配置文件
+                    writingConf();
 
-        //从SQL文件中提取SQL语句
-        $sqlArr = getSQLArr();
+                    //从SQL文件中提取SQL语句
+                    $sqlArr = getSQLArr();
 
-        //批量执行SQL语句
-//        batchExecuteSql($sqlArr);
+                    //批量执行SQL语句
+                    batchExecuteSql($sqlArr);
 
-        addOldData();
-        ?>
+                    addOldData();
+                    ?>
+                </div>
+            </div>
+            <div class="col-3"></div>
+        </div>
     </div>
     </body>
     </html>
@@ -57,16 +66,13 @@ function addOldData()
     $str = $_POST['password'] . $_POST['username'];
     $password = '' === $str ? '' : md5(md5(sha1($str) . 'xt1l3a21uo0tu2oxtds3wWte23dsxix2d3in7yuhui32yuapatmdsnnzdazh1612ongxxin2z') . '###xt');;
     //导入最新的数据格式
-    $sql = "UPDATE  user SET username='{$_POST['username']}',password='$password' ORDER BY id ASC LIMIT 1";
-    echo $sql;
-    Db::execute($sql);
-//    if (Db::execute($sql) === 1) {
-        echo "导入数据成功!" . PHP_EOL;
-        echo "<form action='/'>
-                <input class=\"btn btn-outline-success\" type='submit' value='进入首页'/>
-              </form>";
+    $sql = "UPDATE  user SET username=?,password=? ORDER BY id ASC LIMIT 1";
+
+    $result = Db::execute($sql,[$_POST['username'],$password]);
+    if ($result) {
+        echo " <a class=\"btn btn-lg btn-outline-success\" href='/' >导入数据成功!,进入首页</a>";
         file_put_contents('install.lock', '');
-//    }
+    }
 }
 
 function getSqlArr()

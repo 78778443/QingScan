@@ -9,7 +9,7 @@ if (!basename($path) == 'step1.php') {
 ?>
 <html>
 <head>
-    <title>QingScan系统</title>
+    <title>QingScan 安装step2</title>
     <link href="../../static/bootstrap-5.1.3/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
@@ -20,8 +20,8 @@ if (!basename($path) == 'step1.php') {
             <h2>填写配置信息</h2>
             <form class="form-horizontal" action='step3.php' method='post'>
                 数据库地址：<input class="form-control" type='text' name='DB_HOST' value='127.0.0.1'/><br/>
-                数据库用户名：<input class="form-control" type='text' name='DB_USER' value='root'/><br/>
-                数据库密码：<input class="form-control" type='password' name='DB_PASS'/><br/>
+                数据库用户名：<input class="form-control" type='text' name='DB_USER' value='qingscan'/><br/>
+                数据库密码：<input class="form-control" type='password' name='DB_PASS' value="123" /><br/>
                 数据库名称：<input class="form-control" type='text' name='DB_NAME' value='QingScan'/><br/>
                 数据库字符集：<input class="form-control" type='text' name='DB_CHARSET' value='utf8'/><br/>
 
