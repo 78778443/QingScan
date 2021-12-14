@@ -898,6 +898,42 @@ CREATE TABLE `process_safe`  (
 -- ----------------------------
 -- Records of process_safe
 -- ----------------------------
+INSERT INTO `QingScan`.`process_safe`(`id`, `key`, `value`, `status`, `note`, `update_time`) VALUES (2, 'scan xray', 'cd /root/qingscan/code  &&  php think scan xray  >> /tmp/xray.txt & ', 0, '', NULL);
+INSERT INTO `QingScan`.`process_safe`(`id`, `key`, `value`, `status`, `note`, `update_time`) VALUES (3, 'scan awvs', 'cd /root/qingscan/code  &&  php think scan awvs  >> /tmp/awvs.txt & ', 0, '', NULL);
+INSERT INTO `QingScan`.`process_safe`(`id`, `key`, `value`, `status`, `note`, `update_time`) VALUES (4, 'scan rad', 'cd /root/qingscan/code  &&  php think scan rad  >> /tmp/rad.txt & ', 0, '', NULL);
+INSERT INTO `QingScan`.`process_safe`(`id`, `key`, `value`, `status`, `note`, `update_time`) VALUES (5, 'scan host', 'cd /root/qingscan/code  &&  php think scan host  >> /tmp/host.txt & ', 1, '', NULL);
+INSERT INTO `QingScan`.`process_safe`(`id`, `key`, `value`, `status`, `note`, `update_time`) VALUES (6, 'scan port', 'cd /root/qingscan/code  &&  php think scan port  >> /tmp/port.txt & ', 1, '', NULL);
+INSERT INTO `QingScan`.`process_safe`(`id`, `key`, `value`, `status`, `note`, `update_time`) VALUES (7, 'scan nmap', 'cd /root/qingscan/code  &&  php think scan nmap  >> /tmp/nmap.txt & ', 0, '', NULL);
+INSERT INTO `QingScan`.`process_safe`(`id`, `key`, `value`, `status`, `note`, `update_time`) VALUES (8, 'scan fortify', 'cd /root/qingscan/code  &&  php think scan fortify  >> /tmp/fortify.txt & ', 0, '', NULL);
+INSERT INTO `QingScan`.`process_safe`(`id`, `key`, `value`, `status`, `note`, `update_time`) VALUES (9, 'scan kunlun', 'cd /root/qingscan/code  &&  php think scan kunlun  >> /tmp/kunlun.txt & ', 1, '', NULL);
+INSERT INTO `QingScan`.`process_safe`(`id`, `key`, `value`, `status`, `note`, `update_time`) VALUES (10, 'scan semgrep', 'cd /root/qingscan/code  &&  php think scan semgrep  >> /tmp/semgrep.txt & ', 1, '', NULL);
+INSERT INTO `QingScan`.`process_safe`(`id`, `key`, `value`, `status`, `note`, `update_time`) VALUES (11, 'think run', 'cd /root/qingscan/code  &&  php think run  >> /tmp/run.txt & ', 0, '', NULL);
+INSERT INTO `QingScan`.`process_safe`(`id`, `key`, `value`, `status`, `note`, `update_time`) VALUES (12, 'scan kafka', 'cd /root/qingscan/code  &&  php think scan kafka  >> /tmp/kafka.txt & ', 0, '', NULL);
+INSERT INTO `QingScan`.`process_safe`(`id`, `key`, `value`, `status`, `note`, `update_time`) VALUES (13, 'scan google', 'cd /root/qingscan/code  &&  php think scan google >> /tmp/google.txt & ', 0, '', '2021-12-14 11:51:56');
+INSERT INTO `QingScan`.`process_safe`(`id`, `key`, `value`, `status`, `note`, `update_time`) VALUES (14, 'scan upadteRegion', 'cd /root/qingscan/code  &&  php think scan upadteRegion >> /tmp/upadteRegion.txt & ', 0, '', '2021-12-14 11:51:54');
+INSERT INTO `QingScan`.`process_safe`(`id`, `key`, `value`, `status`, `note`, `update_time`) VALUES (15, 'scan whatweb', 'cd /root/qingscan/code  &&  php think scan whatweb >> /tmp/whatweb.txt & ', 0, '', '2021-12-14 11:51:53');
+INSERT INTO `QingScan`.`process_safe`(`id`, `key`, `value`, `status`, `note`, `update_time`) VALUES (16, 'scan subdomainScan', 'cd /root/qingscan/code  &&  php think scan subdomainScan >> /tmp/subdomainScan.txt & ', 0, '', NULL);
+INSERT INTO `QingScan`.`process_safe`(`id`, `key`, `value`, `status`, `note`, `update_time`) VALUES (17, 'scan hydra', 'cd /root/qingscan/code  &&  php think scan hydra >> /tmp/hydra.txt & ', 0, '', NULL);
+INSERT INTO `QingScan`.`process_safe`(`id`, `key`, `value`, `status`, `note`, `update_time`) VALUES (18, 'scan sqlmapScan', 'cd /root/qingscan/code  &&  php think scan sqlmapScan >> /tmp/sqlmapScan.txt & ', 0, '', NULL);
+INSERT INTO `QingScan`.`process_safe`(`id`, `key`, `value`, `status`, `note`, `update_time`) VALUES (20, 'scan fofa', 'cd /root/qingscan/code  &&  php think scan fofa >> /tmp/fofa.txt & ', 0, '', NULL);
+INSERT INTO `QingScan`.`process_safe`(`id`, `key`, `value`, `status`, `note`, `update_time`) VALUES (21, 'scan dirmapScan', 'cd /root/qingscan/code  &&  php think scan dirmapScan >> /tmp/dirmapScan.txt & ', 0, '', NULL);
+INSERT INTO `QingScan`.`process_safe`(`id`, `key`, `value`, `status`, `note`, `update_time`) VALUES (22, 'scan getNotice', 'cd /root/qingscan/code  &&  php think scan getNotice >> /tmp/getNotice.txt & ', 0, '', NULL);
+INSERT INTO `QingScan`.`process_safe`(`id`, `key`, `value`, `status`, `note`, `update_time`) VALUES (23, 'scan backup', 'cd /root/qingscan/code  &&  php think scan backup>> /tmp/backup.txt & ', 1, '数据库备份', NULL);
+INSERT INTO `QingScan`.`process_safe`(`id`, `key`, `value`, `status`, `note`, `update_time`) VALUES (24, 'scan getProjectComposer', 'cd /root/qingscan/code  &&  php think scan getProjectComposer>> /tmp/composer.txt & ', 0, '获取composer组件', '2021-12-14 11:52:02');
+INSERT INTO `QingScan`.`process_safe`(`id`, `key`, `value`, `status`, `note`, `update_time`) VALUES (25, 'scan code_python', 'cd /root/qingscan/code  &&  php think scan code_python>> /tmp/code_python.txt & ', 0, '获取python组件', '2021-12-14 11:52:04');
+INSERT INTO `QingScan`.`process_safe`(`id`, `key`, `value`, `status`, `note`, `update_time`) VALUES (26, 'scan code_java', 'cd /root/qingscan/code  &&  php think scan code_java>> /tmp/code_java.txt & ', 0, '获取java组件', '2021-12-14 11:52:04');
+INSERT INTO `QingScan`.`process_safe`(`id`, `key`, `value`, `status`, `note`, `update_time`) VALUES (27, 'scan giteeProject', 'cd /root/qingscan/code  &&  php think scan giteeProject>> /tmp/giteeProject.txt & ', 0, '获取码云项目', '2021-12-14 11:52:16');
+INSERT INTO `QingScan`.`process_safe`(`id`, `key`, `value`, `status`, `note`, `update_time`) VALUES (28, 'scan freeAgent', 'cd /root/qingscan/code  &&  php think scan freeAgent>> /tmp/freeAgent.txt & ', 1, '获取免费代理', NULL);
+INSERT INTO `QingScan`.`process_safe`(`id`, `key`, `value`, `status`, `note`, `update_time`) VALUES (29, 'scan github_keyword_monitor', 'cd /root/qingscan/think  &&  php think scan github_keyword_monitor>> /tmp/github_keyword_monitor.txt & ', 0, 'github关键字监控', NULL);
+INSERT INTO `QingScan`.`process_safe`(`id`, `key`, `value`, `status`, `note`, `update_time`) VALUES (30, 'scan whatwebPocTest', 'cd /root/qingscan/think  &&  php think scan whatwebPocTest>> /tmp/whatwebPocTest.txt & ', 0, 'whatweb组件识别poc验证', NULL);
+INSERT INTO `QingScan`.`process_safe`(`id`, `key`, `value`, `status`, `note`, `update_time`) VALUES (31, 'scan xrayAgentResult', 'cd /root/qingscan/think  &&  php think scan xrayAgentResult>> /tmp/xrayAgentResult.txt & ', 0, '获取xray代理模式结果数据', NULL);
+INSERT INTO `QingScan`.`process_safe`(`id`, `key`, `value`, `status`, `note`, `update_time`) VALUES (32, 'scan startXrayAgent', 'cd /root/qingscan/think  &&  php think scan startXrayAgent>> /tmp/startXrayAgent.txt & ', 0, '启动xray代理模式', NULL);
+INSERT INTO `QingScan`.`process_safe`(`id`, `key`, `value`, `status`, `note`, `update_time`) VALUES (33, 'scan code_webshell_scan', 'cd /root/qingscan/think  &&  php think scan code_webshell_scan>> /tmp/code_webshell_scan.txt & ', 0, '河马webshell检测', NULL);
+INSERT INTO `QingScan`.`process_safe`(`id`, `key`, `value`, `status`, `note`, `update_time`) VALUES (34, 'scan wafw00fScan', 'cd /root/qingscan/think  &&  php think scan wafw00fScan>> /tmp/wafw00fScan.txt & ', 0, 'waf指纹识别', NULL);
+INSERT INTO `QingScan`.`process_safe`(`id`, `key`, `value`, `status`, `note`, `update_time`) VALUES (36, 'scan nucleiScan', 'cd /root/qingscan/think  &&  php think scan nucleiScan>> /tmp/nucleiScan.txt & ', 0, 'nuclei扫描', NULL);
+INSERT INTO `QingScan`.`process_safe`(`id`, `key`, `value`, `status`, `note`, `update_time`) VALUES (38, 'scan vulmapPocTest', 'cd /root/qingscan/think  &&  php think scan vulmapPocTest>> /tmp/vulmapPocTest.txt & ', 0, 'vulmap漏洞扫描POC测试', NULL);
+INSERT INTO `QingScan`.`process_safe`(`id`, `key`, `value`, `status`, `note`, `update_time`) VALUES (39, 'scan dismapScan', 'cd /root/qingscan/think  &&  php think scan dismapScan>> /tmp/dismapScan.txt & ', 0, 'dismap指纹识别', NULL);
+
 
 -- ----------------------------
 -- Table structure for proxy
@@ -1167,14 +1203,6 @@ CREATE TABLE `user`  (
 INSERT INTO `user` VALUES (1, 'test', 'ed04f8ec326fa29e2ebb413729fc92d2', '', '测试', 8, 1635494087, '', 0, 1, 1638004150, 0, 0, '', '', '', '1ca4725c34758183af3fd1f723f07a31', '');
 INSERT INTO `user` VALUES (2, 'test1', 'fd5ff2881a30c41fe72a3c04d23db614', '', '测试1', 8, 1635494087, '', 0, 1, 1637157187, 0, 1, '15100000000', 'dfsdfsdfsd', 'admin@admin.com', '', '');
 INSERT INTO `user` VALUES (3, 'lj', 'fd5ff2881a30c41fe72a3c04d23db614', '', '辣鸡321', 5, 1635494087, '', 0, 0, 1636115005, 0, 1, '', '', '', '', '');
-INSERT INTO `user` VALUES (4, 'test2', '80fe8dbea7cd9063eed7edcbdf4469af', '', '测试2', 5, 1635494087, '', 0, 1, 1635756775, 0, 0, '', '', '', '', '');
-INSERT INTO `user` VALUES (5, 'daxia', 'fd5ff2881a30c41fe72a3c04d23db614', '', '大侠', 5, 1635928348, '', 0, 1, 1635928348, 0, 0, '', '', '', '', '');
-INSERT INTO `user` VALUES (6, 'chenting', '7493f20df350862a32bad50f38a54040', '', '陈婷', 5, 1637052562, '', 0, 1, 1637156724, 0, 0, '13925964554', '', '', '', '');
-INSERT INTO `user` VALUES (7, 'tangqingsong', '716ddf5f9f6ae83b0359a7f34d67bb4a', '', '汤青松', 5, 1637052672, '', 0, 1, 1637053121, 0, 0, '17600225914', '', '78778443@qq.com', '', '');
-INSERT INTO `user` VALUES (9, 'test3', '54926c54fdbd0ced50800fa65c39412b', '', '测试3', 7, 1637052824, '', 0, 1, 1637052824, 0, 1, '', '', '', '', '');
-INSERT INTO `user` VALUES (10, 'test4', 'e88b5a54160f1eda19eb07efe08901ca', '', 'test4', 7, 1637677202, '', 0, 1, 0, 0, 0, '', '', '', '', '');
-INSERT INTO `user` VALUES (11, 'zhangsan', 'a2c588e99d7017782bfc06c74c6816c4', '', '123456', 7, 1637679752, '', 0, 1, 0, 0, 0, '', '', '', '', '');
-INSERT INTO `user` VALUES (12, 'q805336837', 'ada5b0d97983dab2f24490ce812b3944', '', 'azrael', 7, 1638091433, '', 0, 1, 0, 0, 0, '', '', '', '', '');
 
 -- ----------------------------
 -- Table structure for vulnerable
