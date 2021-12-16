@@ -885,15 +885,15 @@ CREATE TABLE `pocsuite3`  (
 -- Table structure for process_safe
 -- ----------------------------
 DROP TABLE IF EXISTS `process_safe`;
-CREATE TABLE `process_safe`  (
-                                 `id` int(11) NOT NULL AUTO_INCREMENT,
-                                 `key` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
-                                 `value` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
-                                 `status` int(4) NOT NULL DEFAULT 1 COMMENT '0 失效   1启用',
-                                 `note` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
-                                 `update_time` datetime(0) NOT NULL ON UPDATE CURRENT_TIMESTAMP(0),
-                                 PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 33 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = Compact;
+CREATE TABLE `process_safe` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `key` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL,
+  `value` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL,
+  `status` int(4) NOT NULL DEFAULT '1' COMMENT '0 失效   1启用',
+  `note` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL COMMENT '描述',
+  `update_time` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=42 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 -- ----------------------------
 -- Records of process_safe
