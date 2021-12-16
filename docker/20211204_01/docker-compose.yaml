@@ -1,12 +1,11 @@
 version: "3.2"
 services:
   qingscan:
-    image: daxia/qingscan:20211209_01
+    image: daxia/qingscan:20211216_01
     container_name: qingscan
 #    network_mode: "host"
     ports:
       - "8000:8000"
     stdin_open: true
     tty: true
-    #command: /bin/bash -c "cd /root/qingscan  && git fetch && git reset --hard origin/main &&  php /root/qingscan/safe.php"
-    command: /bin/bash -c "cd /root/qingscan && git remote set-url origin https://gitee.com/songboy/QingScan && git fetch && git reset --hard origin/main &&  php /root/qingscan/safe.php"
+    command: /bin/bash -c "php /root/qingscan/safe.php"

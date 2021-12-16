@@ -19,6 +19,7 @@ QingScan 是一款聚合扫描器，本身不生产安全扫描功能，但会�
 
 1.  需要安装docker、docker-compose
 2. 启动容器`cd QingScan/docker/20211204_01  && docker-compose up -d `
+2. 首次启动需要更新容器内代码`docker exec  qingscan sh -c 'cd /root/qingscan && git fetch && git reset --hard origin/main' `
 3. 启动内置MySQL数据库`docker exec  qingscan sh -c 'service mysql start'`
 4. 浏览器访问  http://127.0.0.1:8000/ 自动进入登录界面
 5. 初始账号: `test1` 密码: `123456`
