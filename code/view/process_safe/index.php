@@ -8,15 +8,19 @@ $searchArr = [
     'action' => $_SERVER['REQUEST_URI'],
     'method' => 'get',
     'inputs' => [
-        ['type' => 'text', 'name' => 'search', 'placeholder' => "search"],
     ],
     'btnArr' => [
         ['text' => '添加守护进程', 'ext' => [
             "href" => url('add'),
             "class" => "btn btn-outline-success"
-        ]
-        ]
-    ]]; ?>
+        ]],
+        ['text' => '查看进程', 'ext' => [
+            "href" => url('showProcess'),
+            "class" => "btn btn-outline-info"
+        ]]
+    ]
+
+]; ?>
 {include file='public/search' /}
 <div class="col-md-12 ">
     <div class="row tuchu">

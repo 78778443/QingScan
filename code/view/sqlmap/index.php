@@ -21,27 +21,24 @@ $searchArr = [
                 <tr>
                     <th>ID</th>
                     <th>urls</th>
-                    <th>param</th>
                     <th>type</th>
                     <th>title</th>
                     <th>payload</th>
+                    <th>dbms</th>
+                    <th>application</th>
                     <th>时间</th>
-                    <th style="width: 200px">操作</th>
                 </tr>
                 </thead>
                 <?php foreach ($list as $value) { ?>
                     <tr>
                         <td><?php echo $value['id'] ?></td>
-                        <td><?php echo $value['urls'] ?></td>
+                        <td><?php echo $value['urls_id'] ?></td>
                         <td><?php echo $value['type'] ?></td>
                         <td><?php echo $value['title'] ?></td>
-                        <td><?php echo $value['payload'] ?></td>
+                        <td  class="AutoNewline"><?php echo $value['payload'] ?></td>
+                        <td><?php echo $value['dbms'] ?></td>
+                        <td><?php echo $value['application'] ?></td>
                         <td><?php echo $value['create_time'] ?></td>
-                        <td>
-                            <a href="<?php echo url('xray/details',['id'=>$value['id']])?>"
-                               class="btn btn-sm btn-outline-primary">查看漏洞</a>
-                            <a href="<?php echo url('xray/del',['id'=>$value['id']])?>" class="btn btn-sm btn-outline-danger">删除</a>
-                        </td>
                     </tr>
                 <?php } ?>
             </table>

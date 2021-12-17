@@ -15,11 +15,12 @@ class CodeWebshellModel extends BaseModel
             //$list = Db::name('code')->where('id',1517)->select();
             foreach ($list as $v) {
                 $codePath = "/data/codeCheck/";
-                $filepath = $codePath.cleanString($v['name']);
-                if (!file_exists($filepath)) {
-                    addlog(["项目目录不存在:{$codePath}"]);
-                    continue;
-                }
+                $value = $v;
+                $prName = cleanString($value['name']);
+                $codeUrl = $value['ssh_url'];
+                downCode($codePath, $prName, $codeUrl, $value['is_private'], $value['username'], $value['password'], $value['private_key']);
+                $filepath = "/data/codeCheck/{$prName}";
+
                 $filename = $tools.'/result.csv';
                 @unlink($filename);
                 $cmd = "cd {$tools} && ./hm scan {$filepath}";

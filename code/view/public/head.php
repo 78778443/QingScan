@@ -1,13 +1,16 @@
 <html>
 <head>
-    <title><?php echo $title?></title>
+    <title><?php echo $title ?? 'QingScan'?></title>
     <link rel="shortcut icon" href="/static/favicon.svg" type="image/x-icon"/>
     <script src="/static/js/jquery.min.js"></script>
     <!--    <script src="/static/js/bootstrap.min.js"></script>-->
     <link href="/static/bootstrap-5.1.3/css/bootstrap.min.css" rel="stylesheet">
     <script src="/static/bootstrap-5.1.3/js/bootstrap.min.js"></script>
-
-    <style>
+    <style type="text/css">
+        .AutoNewline
+        {
+            Word-break: break-all;/*必须*/
+        }
         header a:hover {
             text-decoration: none;
         }

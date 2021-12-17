@@ -35,7 +35,7 @@
                     </div>
                     <div class="row" style="height: 10px"></div>
                     <button type="submit" class="btn btn-outline-success">提交</button>
-                    <a href="/index.php?s=urls/index" class="btn btn-outline-info">返回</a>
+                    <a href="<?php echo url('urls/index')?>" class="btn btn-outline-info">返回</a>
                 </form>
             </div>
             <div class="col-md-3"></div>

@@ -299,17 +299,20 @@ class CodeModel extends BaseModel
 
     public static function getProjectComposer()
     {
+        $codePath = "/data/codeCheck";
         while (true) {
             ini_set('max_execution_time', 0);
             $list = Db::name('code')->whereTime('composer_scan_time', '<=', date('Y-m-d H:i:s', time() - (86400 * 15)))
-                ->where('is_delete', 0)->limit(1)->orderRand()->field('id,name,user_id')->select()->toArray();
+                ->where('is_delete', 0)->limit(1)->orderRand()->select()->toArray();
             foreach ($list as $k => $v) {
-                self::scanTime('code',$v['id'],'composer_scan_time');
-
-                $filepath = "/data/codeCheck/{$v['name']}";
-                $fileArr = getFilePath($filepath,'composer.lock');
+                $value = $v;
+                $prName = cleanString($value['name']);
+                $codeUrl = $value['ssh_url'];
+                downCode($codePath, $prName, $codeUrl, $value['is_private'], $value['username'], $value['password'], $value['private_key']);
+                $filepath = "/data/codeCheck/{$prName}";
+                $fileArr = getFilePath($filepath, 'composer.json');
                 if (!$fileArr) {
-                    addlog("项目目录不存在:{$filepath}");
+                    addlog("扫描composer依赖失败,composer.json依赖文件不存在:{$filepath}");
                     continue;
                 }
                 foreach ($fileArr as $value) {
@@ -342,12 +345,14 @@ class CodeModel extends BaseModel
                         Db::name('code_composer')->insert($data);
                     }
                 }
+                self::scanTime('code', $v['id'], 'composer_scan_time');
             }
             sleep(10);
         }
     }
 
-    public static function giteeProject(){
+    public static function giteeProject()
+    {
         while (true) {
             ini_set('max_execution_time', 0);
 

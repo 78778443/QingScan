@@ -216,7 +216,7 @@ class HostModel extends BaseModel
     public static function autoAddHost()
     {
         while (true) {
-            $appList = Db::table('app')->where(['status' => 1])->limit(1)->orderRand()->select()->toArray();
+            $appList = Db::table('app')->where(['status' => 1])->limit(100)->order('id','desc')->select()->toArray();
             foreach ($appList as $app) {
                 $domain = parse_url($app['url'])['host'];
                 $host = gethostbyname($domain);

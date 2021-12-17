@@ -162,6 +162,8 @@ function addlog($content, $out = false)
         'app' => 'qing-scan-center',
         'content' => is_array($content1) ? var_export($content1, true) : $content1,
     ];
+
+    $dataArr['content'] = substr($dataArr['content'], 0, 1024);
     \think\facade\Db::name('log')->insert($dataArr);
 
     //删除5天前的日志
@@ -169,7 +171,7 @@ function addlog($content, $out = false)
     $list = Db::table('log')->whereTime('create_time', '<=', $endTime)->delete();
 
     if ($out or is_cli()) {
-        echo $data;
+        echo var_export($content, true) . PHP_EOL;
     }
 }
 
@@ -255,12 +257,11 @@ function addlogRaw($content)
 function systemLog($shell)
 {
     //转换成字符串
-    $remark = "即将执行命令:{$shell}" . PHP_EOL;
-    echo $remark;
+    $remark = "即将执行命令:{$shell}";
     addlog($remark);
     //记录日志
     exec($shell, $output);
-
+    addlog(["命令执行结果", $shell, $output]);
     if ($output) {
         echo implode("\n", $output) . PHP_EOL;
     }
@@ -275,6 +276,7 @@ function execLog($shell, &$output)
     addlog($remark);
     //记录日志
     exec($shell, $output);
+    addlog(["命令执行结果", $shell, $output]);
 }
 
 function getAdderNameByIp($ip)
@@ -467,8 +469,8 @@ function getBaiduCity($ip)
     if (file_exists($cacheName)) {
         return json_decode(file_get_contents($cacheName), true);
     }
-
-    $url = "http://api.map.baidu.com/location/ip?ip={$ip}&ak=Ik6CvCEkr44Qx0qFoxnVHFAR7R4Uaiza&coor=bd09ll";
+    $ak = \app\model\ConfigModel::value('baidu_ak');
+    $url = "http://api.map.baidu.com/location/ip?ip={$ip}&ak={$ak}&coor=bd09ll";
 
     $result = BaseModel::curlExec($url, 'GET', $url);
     $result_arr = json_decode($result, true)['content'];
@@ -1022,8 +1024,6 @@ function getCurrentMilis()
 
 /**
  * [ReadCsv 读取CSV为数组]
- * @作者:QHT
- * @添加时间:  2018-05-25T11:39:41+0800
  * @param string $uploadfile [文件路径]
  */
 function readCsv($uploadfile = '')

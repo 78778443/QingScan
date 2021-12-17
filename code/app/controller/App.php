@@ -60,6 +60,11 @@ class App extends Common
             if ($wafw00f && $wafw00f['detected']) {
                 $v['is_waf'] = '是';
             }
+            if ($v['is_intranet']) {
+                $v['is_intranet'] = '是';
+            } else {
+                $v['is_intranet'] = '否';
+            }
         }
         $data['pageSize'] = $pageSize;
         $data['count'] = Db::table('app')->Join('app_info info', 'app.id = info.app_id')->where($where)->count();
@@ -84,7 +89,7 @@ class App extends Common
         }
         AppModel::addData($_POST);
 
-        $this->success('添加成功', 'app/index');
+        return redirect(url('app/index'));
     }
 
     //开始抓取
@@ -138,7 +143,17 @@ class App extends Common
             $map[] = ['user_id', '=', $this->userId];
         }
 
-        if (Db::name('app')->where($map)->update(['is_delete' => 1, 'status' => -1])) {
+        Db::table('app_whatweb')->where(['app_id' => $id])->delete();
+        Db::table('one_for_all')->where(['app_id' => $id])->delete();
+        Db::table('host_hydra_scan_details')->where(['app_id' => $id])->delete();
+        Db::table('app_dirmap')->where(['app_id' => $id])->delete();
+        Db::table('urls_sqlmap')->where(['app_id' => $id])->delete();
+        Db::table('app_vulmap')->where(['app_id' => $id])->delete();
+        Db::table('host')->where(['app_id' => $id])->delete();
+        Db::table('host_port')->where(['app_id' => $id])->delete();
+
+
+        if (Db::name('app')->where($map)->delete()) {
             return redirect($_SERVER['HTTP_REFERER']);
         } else {
             $this->error('删除失败');
@@ -174,7 +189,7 @@ class App extends Common
                 'rad' => 1,
                 'xray' => 1,
                 'contact' => "汤青松",
-                'phone' => "17600225914",
+                'phone' => "17600001122",
                 'department' => "信息安全",
                 'code_path' => "",
                 'code_scan_last' => date('Y-m-d H:i:s', strtotime('2018-06-01')),
@@ -432,8 +447,44 @@ class App extends Common
         $data['hydra'] = Db::table('host_hydra_scan_details')->where($where)->order("id", 'desc')->limit(0, 15)->select()->toArray();
         $data['dirmap'] = Db::table('app_dirmap')->where($where)->where($where1)->order("id", 'desc')->limit(0, 15)->select()->toArray();
         $data['sqlmap'] = Db::table('urls_sqlmap')->where($where)->order("id", 'desc')->limit(0, 15)->select()->toArray();
+        $data['app_info'] = Db::table('app_info')->where($where)->order("app_id", 'desc')->limit(0, 15)->select()->toArray();
+        $data['app_vulmap'] = Db::table('app_vulmap')->where($where)->order("app_id", 'desc')->limit(0, 15)->select()->toArray();
+        //获取此域名对应主机的端口信息
+        $urlInfo = parse_url($data['info']['url']);
+        $ip = gethostbyname($urlInfo['host']);
+        $data['host_port'] = Db::table('host_port')->where(['host' => $ip])->order("app_id", 'desc')->limit(0, 15)->select()->toArray();
+
         return View::fetch('details', $data);
     }
+
+    public function qingkong()
+    {
+        $id = getParam('id');
+        $array = array(
+            'crawler_time' => '2000-01-01 00:00:00',
+            'awvs_scan_time' => '2000-01-01 00:00:00',
+            'subdomain_time' => '2000-01-01 00:00:00',
+            'whatweb_scan_time' => '2000-01-01 00:00:00',
+            'subdomain_scan_time' => '2000-01-01 00:00:00',
+            'screenshot_time' => '2000-01-01 00:00:00',
+            'xray_scan_time' => '2000-01-01 00:00:00',
+            'dirmap_scan_time' => '2000-01-01 00:00:00',
+            'wafw00f_scan_time' => '2000-01-01 00:00:00',
+        );
+
+        Db::table('app')->where(['id' => $id])->save($array);
+        Db::table('app_whatweb')->where(['app_id' => $id])->delete();
+        Db::table('one_for_all')->where(['app_id' => $id])->delete();
+        Db::table('host_hydra_scan_details')->where(['app_id' => $id])->delete();
+        Db::table('app_dirmap')->where(['app_id' => $id])->delete();
+        Db::table('urls_sqlmap')->where(['app_id' => $id])->delete();
+        Db::table('app_vulmap')->where(['app_id' => $id])->delete();
+        Db::table('host')->where(['app_id' => $id])->delete();
+        Db::table('host_port')->where(['app_id' => $id])->delete();
+
+        return redirect($_SERVER['HTTP_REFERER'] ?? '/');
+    }
+
 
     public function start_agent()
     {

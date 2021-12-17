@@ -34,7 +34,8 @@ $searchArr = [
                     <td><?php echo $value['id'] ?></td>
                     <td><?php echo $value['domain'] ?></td>
                     <td><?php echo $value['host'] ?></td>
-                    <td><?php echo $appArr[$value['app_id']] ?></td>
+<!--                    <td>--><?php //echo $appArr[$value['app_id']] ?><!--</td>-->
+                    <td><?php echo $value['app_id'] ?></td>
                     <td><?php echo $value['country'] ?></td>
                     <td><?php echo $value['region'] ?></td>
                     <td><?php echo $value['city'] ?></td>

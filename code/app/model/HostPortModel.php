@@ -327,7 +327,7 @@ class HostPortModel extends BaseModel
 
     public static function scanHostPort()
     {
-        $portStr = "21,22,23,25,53,80,81,110,111,123,135,137,139,161,389,443,445,465,500,515,520,523,548,623,636,873,902,1080,1099,1433,1521,1604,1645,1701,1883,1900,2049,2181,2375,2379,2425,3128,3306,3389,4730,5060,5222,5351,5353,5432,5555,5601,5672,5683,5900,5938,5984,6000,6379,7001,7077,8080,8081,8443,8545,8686,9000,9001,9042,9092,9100,9200,9418,9999,11211,27017,37777,50000,50070,61616";
+        $portStr = "21,22,23,25,53,80,81,110,111,123,135,137,139,161,389,443,445,465,500,515,520,523,548,623,636,873,902,1080,1099,1433,1521,1604,1645,1701,1883,1900,2049,2181,2375,2379,2425,3128,3306,3389,4730,5060,5222,5351,5353,5432,5555,5601,5672,5683,5900,5938,5984,6000,6379,7001,7077,8000,8001,8080,8081,8443,8545,8686,8888,9000,9001,9042,9092,9100,9200,9418,9999,11211,27017,37777,50000,50070,61616";
         while (true) {
             $endTime = date('Y-m-d', time() - 86400 * 15);
             $hostLit = Db::table('host')->whereTime('port_scan_time', '<=', $endTime)->limit(5)->orderRand()->select()->toArray();
@@ -343,10 +343,9 @@ class HostPortModel extends BaseModel
 
                     $typeArr = explode("/", $aaa[3]);
                     $data = ['host' => $aaa[5], 'type' => $typeArr[1], 'port' => $typeArr[0]];
+                    addlog(["发现主机开放端口", $data]);
+                    Db::table('host_port')->extra("IGNORE")->insert($data);
 
-                    if (empty(Db::table('host_port')->where($data)->find())) {
-                        Db::table('host_port')->save($data);
-                    }
                 }
 
                 Db::table('host')->where(['id' => $val['id']])->save(['port_scan_time' => date('Y-m-d H:i:s')]);
@@ -381,13 +380,13 @@ class HostPortModel extends BaseModel
                     $v['city'] = $result['city'];
                     $v['area'] = $result['area'];
                     $v['isp'] = $result['isp'];
-                    $v['ip_scan_time'] = date('Y-m-d H:i:s',time());
+                    $v['ip_scan_time'] = date('Y-m-d H:i:s', time());
                     Db::table('host')->save($v);
                 }
             }
 
-            addlog(["更新IP信息完成，休息10秒..."]);
-            sleep(10);
+            addlog(["更新IP信息完成，休息30秒..."]);
+            sleep(30);
         }
     }
 

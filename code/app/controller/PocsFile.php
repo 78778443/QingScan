@@ -24,28 +24,16 @@ class PocsFile extends Common
         if (request()->isPost()) {
             $data['cve_num'] = getParam('cve_num');
             $data['status'] = getParam('status');
-            $data['is_yaml'] = getParam('is_yaml');
-            $data['filename'] = getParam('filename');
-            $content = input('content');
-            if (!$content || !$data['cve_num'] || !$data['filename']) {
+            $data['tools'] = getParam('tools');
+            $data['name'] = getParam('name');
+            $data['content'] = input('content');
+            if (empty($data['content'])   || !$data['name']) {
                 $this->error('数据不能为空');
             }
-            if (Db::name('pocs_file')->where('filename',$data['filename'])->count('id')) {
-                $this->error('文件名已存在');
+            if (Db::name('pocs_file')->where('name',$data['name'])->count('id')) {
+                $this->error('POC名字已存在');
             }
-            if ($data['is_yaml']) {
-                if (!@yaml_parse($content)) {
-                    $this->error('yaml文件格式错误');
-                }
-            }
-            $filename = '/data/tools/pocs/custom/'.$data['filename'];
-            $data['poc_file'] = $filename;
-            if( ($res = fopen($filename,'w+')) === false){
-                $this->error('文件创建失败');
-            }
-            if(!fwrite ($res,$content)){ //将信息写入文件
-                $this->error('文件内容写入失败');
-            }
+
             //添加
             if (Db::name('pocs_file')->insert($data)) {
                 $this->success('添加成功','index');
@@ -66,27 +54,14 @@ class PocsFile extends Common
             $this->error('数据不存在');
         }
         if (request()->isPost()) {
-            /*$content = getParam('content');
-            $filename = $info['poc_file'];
-            if( ($res = fopen($filename,'w+')) === false){
-                $this->error('文件创建失败');
-            }
-            if(!fwrite ($res,$content)){ //将信息写入文件
-                $this->error('文件内容写入失败');
-            }*/
-            //$data['is_yaml'] = getParam('is_yaml');
             $data['status'] = getParam('status');
+            $data['content'] = getParam('content');
             if (Db::name('pocs_file')->where($map)->update($data)) {
                 $this->success('编辑成功','index');
             } else {
                 $this->error('编辑失败');
             }
         } else {
-            $filename = $info['poc_file'];
-            if (strpos($filename,'/data/') === false) {
-                $filename = '/data/'.$filename;
-            }
-            $info['content'] = @file_get_contents($filename);
             $data['info'] = $info;
             return View::fetch('edit',$data);
         }
@@ -103,11 +78,6 @@ class PocsFile extends Common
         $info['upper_id'] = $upper_id ?: $id;
         $lower_id = Db::name('pocs_file')->where('id', '>', $id)->order('id', 'asc')->value('id');
         $info['lower_id'] = $lower_id ?: $id;
-        $filename = $info['poc_file'];
-        if (strpos($filename,'/data/') === false) {
-            $filename = '/data/'.$filename;
-        }
-        $info['content'] = @file_get_contents($filename);
         $data['info'] = $info;
         return View::fetch('details',$data);
     }

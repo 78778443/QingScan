@@ -10,17 +10,20 @@ class CodeJavaModel extends BaseModel
 {
     public static function code_java()
     {
+        $codePath = "/data/codeCheck";
         while (true) {
             ini_set('max_execution_time', 0);
             $list = Db::name('code')->whereTime('java_scan_time', '<=', date('Y-m-d H:i:s', time() - (86400 * 15)))
-                ->where('is_delete', 0)->limit(1)->orderRand()->field('id,name,user_id')->select()->toArray();
+                ->where('is_delete', 0)->limit(1)->orderRand()->select()->toArray();
             foreach ($list as $k => $v) {
-                self::scanTime('code',$v['id'],'java_scan_time');
-
-                $filepath = "/data/codeCheck/{$v['name']}";
+                $value = $v;
+                $prName = cleanString($value['name']);
+                $codeUrl = $value['ssh_url'];
+                downCode($codePath, $prName, $codeUrl, $value['is_private'], $value['username'], $value['password'], $value['private_key']);
+                $filepath = "/data/codeCheck/{$prName}";
                 $fileArr = getFilePath($filepath,'pom.xml');
                 if (!$fileArr) {
-                    addlog("项目目录不存在:{$filepath}");
+                    addlog("JAVA依赖扫描失败,未找到依赖文件:{$filepath}");
                     continue;
                 }
                 foreach ($fileArr as $val) {
@@ -45,10 +48,10 @@ class CodeJavaModel extends BaseModel
                         ];
                         Db::name('code_java')->insert($data);
                     } else {
-                        addlog("项目文件内容为空:{$val['file']}");
-                        continue;
+                        addlog("JAVA依赖扫描失败,项目文件内容为空:{$val['file']}");
                     }
                 }
+                self::scanTime('code',$v['id'],'java_scan_time');
             }
             sleep(10);
         }

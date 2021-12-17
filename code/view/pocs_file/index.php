@@ -28,7 +28,7 @@ $searchArr = [
                 <tr>
                     <th>ID</th>
                     <th>cve_num</th>
-                    <th>poc_file</th>
+                    <th>名称</th>
                     <th>状态</th>
                     <th>创建时间</th>
                     <th style="width: 200px">操作</th>
@@ -38,12 +38,10 @@ $searchArr = [
                     <tr>
                         <td><?php echo $value['id'] ?></td>
                         <td><?php echo $value['cve_num'] ?></td>
-                        <td><?php echo $value['poc_file'] ?></td>
+                        <td><?php echo $value['name'] ?></td>
                         <td><?php echo $value['status'] == 1 ? '正常' : '禁用' ?></td>
                         <td><?php echo $value['create_time'] ?></td>
                         <td>
-                            <a href="<?php echo url('details', ['id' => $value['id']]) ?>"
-                               class="btn btn-sm btn-outline-primary">查看详情</a>
                             <a href="<?php echo url('edit', ['id' => $value['id']]) ?>"
                                class="btn btn-sm btn-outline-success">编辑</a>
                             <a href="<?php echo url('del', ['id' => $value['id']]) ?>"

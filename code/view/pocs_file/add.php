@@ -3,25 +3,26 @@
 <div class="row">
             <div class="col-md-3"></div>
             <div class="col-md-6 tuchu">
-                <h3>添加</h3>
+                <h3>添加POC验证脚本</h3>
                 <form method="post" action="">
                     <div class="mb-3">
+                        <label class="form-label">脚本名称</label>
+                        <input type="text" name="name" class="form-control"  placeholder="">
+                    </div>
+                    <div class="mb-3">
                         <label class="form-label">cve_num</label>
-                        <input type="text" name="cve_num" class="form-control" required placeholder="">
+                        <input type="text" name="cve_num" class="form-control"  placeholder="可选填">
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">文件名</label>
-                        <input type="text" name="filename" class="form-control" required placeholder="">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">内容</label>
+                        <label class="form-label">POC代码</label>
                         <textarea class="form-control" rows="8" name="content" required></textarea>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">是否为yaml格式</label>
-                        <select name="is_yaml" class="form-select" required>
-                            <option value="1">是</option>
-                            <option value="0" selected>否</option>
+                        <label class="form-label">工具类型</label>
+                        <select name="tool" class="form-select" required>
+                            <option value="0" selected>pocsuite3</option>
+                            <option value="1">xray</option>
+                            <option value="2">其他</option>
                         </select>
                     </div>
                     <div class="mb-3">

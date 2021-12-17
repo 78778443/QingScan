@@ -17,8 +17,6 @@ use think\facade\Db;
 
 class AppModel extends BaseModel
 {
-
-
     public static $tableName = "app";
 
 

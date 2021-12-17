@@ -39,10 +39,20 @@ class CveModel extends BaseModel
     {
 
         $pocInfo = Db::table('pocs_file')->where(['cve_num' => $cveInfo['cve_num']])->find();
-        $pocPath = "/mnt/c/mycode/work/qing-scan/";
         $user = ConfigModel::value('fofa_user');
         $token = ConfigModel::value('fofa_token');
-        $cmd = "pocsuite -r {$pocPath}{$pocInfo['poc_file']} --dork-fofa  '{$cveInfo['fofa_con']}'   --fofa-user {$user}  --fofa-token  {$token}";
+
+        //将POC写入临时文件
+        $tempPoc = "/tmp/{$cveInfo['cve_num']}";
+        file_get_contents($tempPoc, $pocInfo['content']);
+
+        //判断POC对应的工具类型
+        if ($pocInfo['tool'] == 'pocsuite3') {
+            $cmd = "pocsuite -r {$tempPoc} --dork-fofa  '{$cveInfo['fofa_con']}'   --fofa-user {$user}  --fofa-token  {$token}";
+        } elseif ($pocInfo['tool'] == 'xray') {
+            $cmd = "./xray_linux_amd64";
+        }
+
         systemLog($cmd);
     }
 
@@ -58,12 +68,17 @@ class CveModel extends BaseModel
             $endTime = date('Y-m-d', time() - 86400 * 15);
             $where = ['is_poc' => 1];
             $cveList = Db::table('vulnerable')->where($where)->whereNotNull('fofa_con')->whereTime('scan_time', '<=', $endTime)->orderRand()->limit(5)->select()->toArray();
+
             foreach ($cveList as $val) {
+
                 $keywords = $val['fofa_con'];
                 $str = urlencode(base64_encode($keywords));
                 $list = Requests::get("https://fofa.so/api/v1/search/all?email={$user}&key={$token}&qbase64=" . $str);
-                $list = json_decode($list->body, true)['results'];
+                if (isset(json_decode($list->body, true)['results'])) {
+                    $list = json_decode($list->body, true)['results'];
+                }
                 Db::table('host')->where(['id' => $val['id']])->save(['scan_time' => date('Y-m-d H:i:s')]);
+
             }
             print_r("本轮CVE扫描完成，休息10秒...");
             sleep(10);

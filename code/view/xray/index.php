@@ -15,7 +15,7 @@ $searchArr = [
     ],
     'btnArr' => [
         ['text' => '添加URL', 'ext' => [
-            "href" => '/index.php?s=urls/add',
+            "href" => url('urls/add'),
             "class" => "btn btn-outline-success"
         ]]
     ]

@@ -8,12 +8,47 @@ use think\facade\Db;
 
 class GoogleModel extends BaseModel
 {
+
     // 谷歌截图
-    public static function screenshot()
+    public static function jietu()
     {
         while (true) {
-            $list = Db::name('app')->whereTime('screenshot_time', '<=', date('Y-m-d H:i:s', time() - (86400 * 15)))->where('is_delete', 0)->orderRand()->limit(5)->field('id,url')->select();
+//            $list = Db::name('app')->whereTime('screenshot_time', '<=', date('Y-m-d H:i:s', time() - (86400 * 15)))->where('is_delete', 0)->orderRand()->limit(5)->field('id,url')->select();
+            $list = Db::name('app')->where('is_delete', 0)->orderRand()->limit(5)->field('id,url')->select();
             $file_path = App::getRootPath() . 'public/screenshot/';
+            foreach ($list as $v) {
+                $host = parse_url($v['url'])['host'];
+                $filename = "{$file_path}{$host}.png";
+                $cmd = "/usr/bin/google-chrome --headless --screenshot='{$filename}' '{$v['url']}'";
+                echo $cmd . PHP_EOL;
+                exec($cmd);
+                $data['jietu_path'] = $filename;
+
+
+                if (Db::name('app_info')->where(['app_id' => $v['id']])->find()) {
+                    Db::name('app_info')->where(['app_id' => $v['id']])->update($data);
+                } else {
+                    $data['app_id'] = $v['id'];
+                    Db::name('app_info')->insert($data);
+                }
+
+                //更新扫描时间
+                self::updateScanTime($v['id']);
+
+            }
+            echo "Google浏览器获取基础信息完成，休息5秒" . PHP_EOL;
+            sleep(5);
+        }
+
+    }
+
+    // 谷歌截图
+    public static function getBaseInfo()
+    {
+        while (true) {
+            $api = Db::name('app')->whereTime('screenshot_time', '<=', date('Y-m-d H:i:s', time() - (86400 * 15)));
+            $list = $api->where('is_delete', 0)->orderRand()->limit(5)->field('id,url')->select()->toArray();
+
             foreach ($list as $v) {
                 if (empty($v['url'])) {
                     addlog(["获取APP基础信息失败，没有找到URL", $v]);
@@ -31,28 +66,24 @@ class GoogleModel extends BaseModel
                 }
                 $data['statuscode'] = $result['code'];
                 $data['header'] = json_encode($result['header']);
-                preg_match("/<head.*>(.*)<\/head>/smUi", $result['content'], $htmlHeaders);
-                if (count($htmlHeaders)) {
-                    // 取得 <head> 中 meta 设置的编码格式
-                    if (preg_match("/<meta[^>]*http-equiv[^>]*charset=(.*)(\"|')/Ui", $htmlHeaders[1], $results)) {
-                        $charset = $results[1];
-                    } else {
-                        $charset = "GBK";
-//                    $charset = "None";
-                    }
-                    // 取得 <title> 中的文字
-                    if (preg_match("/<title>(.*)<\/title>/Ui", $htmlHeaders[1], $htmlTitles)) {
-                        if (count($htmlTitles)) {
-                            // 将  <title> 的文字编码格式转成 UTF-8
-                            if ($charset == "None") {
-                                $title = $htmlTitles[1];
-                            } else {
-                                $title = iconv($charset, "UTF-8", $htmlTitles[1]);
-                            }
-                            $data['page_title'] = $title;
-                        }
-                    }
+                $content = file_get_contents($v['url']);
+                preg_match("/<head.*>(.*)<\/head>/smUi", $content, $htmlHeaders);
+
+                if (empty($htmlHeaders)) {
+                    addlog(["未匹配到head信息", $v['url'], $content]);
+                    self::updateScanTime($v['id']);
+                    continue;
                 }
+                // 取得 <title> 中的文字
+                preg_match("/<title>(.*)<\/title>/Us", $htmlHeaders[1], $htmlTitles);
+                if (empty($htmlTitles)) {
+                    addlog(["未匹配到title信息", $v['url'], $htmlTitles]);
+                    self::updateScanTime($v['id']);
+                    continue;
+                }
+                $title = $htmlTitles[1];
+                $data['page_title'] = trim($title);
+
                 $icon = curl_get($v['url'] . '/favicon.ico');
                 $host = parse_url($v['url'])['host'];
                 $filename = "icon/{$host}.ico";
@@ -60,19 +91,12 @@ class GoogleModel extends BaseModel
                 file_put_contents($filename, $icon);
                 $data['icon'] = $filename;
 
-//                $host = parse_url($v['url'])['host'];
-//                $filename = "{$file_path}{$host}.png";
-//                $cmd = "/usr/bin/google-chrome --headless --screenshot='{$filename}' '{$v['url']}'";
-//                echo $cmd.PHP_EOL;
-//                execLog($cmd);
-//                $data['url_screenshot'] = $filename;
-
-
-                if (Db::name('app_info')->where(['app_id' => $v['id']])->find()){
+                addlog(["获取一个站点的基础信息完成", $data]);
+                if (Db::name('app_info')->where(['app_id' => $v['id']])->find()) {
                     Db::name('app_info')->where(['app_id' => $v['id']])->update($data);
-                }else{
+                } else {
                     $data['app_id'] = $v['id'];
-                    Db::name('app_info')->insert($data);
+                    Db::name('app_info')->extra("IGNORE")->insert($data);
                 }
 
                 //更新扫描时间

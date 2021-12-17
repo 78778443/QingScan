@@ -11,7 +11,6 @@ $searchArr = [
         ['type' => 'text', 'name' => 'search', 'placeholder' => "搜索"],
     ]]; ?>
 {include file='public/search' /}
-
 <div class="col-md-12 ">
     <div class="row tuchu">
         <!--            <div class="col-md-1"></div>-->

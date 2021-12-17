@@ -66,6 +66,13 @@
                             <option value="0">否</option>
                         </select>
                     </div>
+                    <div class="mb-3">
+                        <label class="form-label">是否为内网</label>
+                        <select name="is_intranet" class="form-select" aria-label="Default select">
+                            <option value="1">是</option>
+                            <option value="0">否</option>
+                        </select>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-outline-info">提交</button>

@@ -34,16 +34,18 @@ $btnArr = $searchArr['btnArr'] ?? [];
                     <?php } ?>
                 </div>
             <?php } ?>
+            <?php if (!empty($inputs)) { ?>
             <div class="col-auto">
                 <input type="submit" class="btn btn-outline-primary" value="搜索">
             </div>
+            <?php }?>
         </form>
     </div>
     <div class="col-md-2">
         <!-- Button trigger modal -->
 
         <?php foreach ($btnArr as $value) { ?>
-            <a  <?php foreach ($value['ext'] ?? [] as $key => $val) {
+            <a <?php foreach ($value['ext'] ?? [] as $key => $val) {
                 echo "$key='$val'";
             } ?> >
                 {$value['text']}

@@ -202,9 +202,6 @@ class UrlsModel extends BaseModel
 
     private static function add($data)
     {
-
-        addlog(["保存URL地址", $data]);
-
         Db::table(self::$tableName)->extra('IGNORE')->insert($data, 'IGNORE');
     }
 
@@ -212,7 +209,8 @@ class UrlsModel extends BaseModel
     {
         ini_set('max_execution_time', 0);
         while (true) {
-            $list = Db::name('urls')->whereTime('sqlmap_scan_time', '<=', date('Y-m-d H:i:s', time() - (86400 * 15)))->where('is_delete', 0)->field('id,url,app_id')->limit(1)->orderRand()->select()->toArray();
+            $api = Db::name('urls')->whereTime('sqlmap_scan_time', '<=', date('Y-m-d H:i:s', time() - (86400 * 15)));
+            $list = $api->where('is_delete', 0)->field('id,url,app_id')->limit(5)->orderRand()->select()->toArray();
             $file_path = '/data/tools/sqlmap/';
             foreach ($list as $k => $v) {
 //            $v['url'] = "http://172.22.43.246:8888/home/index.php?m=tiezi&a=index&bk=5";
@@ -254,6 +252,7 @@ class UrlsModel extends BaseModel
                     'application' => $data['web application technology'][0],
                     'dbms' => $data['back-end DBMS'][0],
                     'urls_id' => $v['id'],
+                    'app_id' => $v['app_id'],
                 ];
                 foreach ($data['Payload'] as $key => $value) {
                     $bbb['payload'] = $value;
@@ -265,7 +264,7 @@ class UrlsModel extends BaseModel
                 Db::name('urls')->where('id', $v['id'])->update(['sqlmap_scan_time' => date('Y-m-d H:i:s', time())]);
                 systemLog("rm -rf $outdir");
             }
-            sleep(10);
+            sleep(5);
         }
     }
 

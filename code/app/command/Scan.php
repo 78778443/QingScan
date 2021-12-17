@@ -21,6 +21,7 @@ use app\model\HostPortModel;
 use app\model\HydraModel;
 use app\model\KafkaModel;
 use app\model\OneForAllModel;
+use app\model\PluginModel;
 use app\model\ProcessSafeModel;
 use app\model\ProxyModel;
 use app\model\PythonLibraryModel;
@@ -40,6 +41,7 @@ class Scan extends Command
         // 指令配置
         $this->setName('scan')
             ->addArgument("func", Argument::OPTIONAL, "扫描的内容")
+            ->addArgument("custom", Argument::OPTIONAL, "自定义工具名")
             ->setDescription('the scan command');
     }
 
@@ -74,7 +76,9 @@ class Scan extends Command
         } elseif ($func == "cve") {
             CveModel::scan();
         } elseif ($func == 'google') {
-            GoogleModel::screenshot();
+            GoogleModel::getBaseInfo();
+        } elseif ($func == 'jietu') {
+            GoogleModel::jietu();
         } elseif ($func == 'upadteRegion') {
             HostPortModel::upadteRegion();
         } elseif ($func == 'whatweb') {
@@ -89,36 +93,47 @@ class Scan extends Command
             CveModel::fofaSearch();
         } elseif ($func == 'dirmapScan') {
             AppDirmapModel::dirmapScan();
-        } elseif($func == 'getNotice'){
+        } elseif ($func == 'getNotice') {
             GithubNoticeModel::getNotice();
-        } elseif($func == 'reptile'){
+        } elseif ($func == 'reptile') {
             UrlsModel::reptile();
-        } elseif($func == 'getProjectComposer'){
+        } elseif ($func == 'getProjectComposer') {
             CodeModel::getProjectComposer();
-        } elseif($func == 'code_python'){
+        } elseif ($func == 'code_python') {
             PythonLibraryModel::code_python();
-        } elseif($func == 'code_java'){
+        } elseif ($func == 'code_java') {
             CodeJavaModel::code_java();
-        } elseif($func == 'backup'){
+        } elseif ($func == 'backup') {
             ConfigModel::backup();
-        } elseif($func == 'giteeProject'){
+        } elseif ($func == 'giteeProject') {
             CodeModel::giteeProject();
-        } elseif($func == 'freeAgent'){
+        } elseif ($func == 'freeAgent') {
             ProxyModel::freeAgent();
-        } elseif($func == 'github_keyword_monitor'){
+        } elseif ($func == 'github_keyword_monitor') {
             GithubKeywordMonitorModel::keywordMonitor();
-        } elseif($func == 'whatwebPocTest'){
+        } elseif ($func == 'whatwebPocTest') {
             AppModel::whatwebPocTest();
-        } elseif ($func == 'xrayAgentResult'){
+        } elseif ($func == 'xrayAgentResult') {
             WebScanModel::xrayAgentResult();
         } elseif ($func == 'startXrayAgent') {
             WebScanModel::startXrayAgent();
-        } elseif($func == 'code_webshell_scan'){
+        } elseif ($func == 'code_webshell_scan') {
             CodeWebshellModel::code_webshell_scan();
-        } elseif($func == 'wafw00fScan'){
+        } elseif ($func == 'wafw00fScan') {
             AppWafw00fModel::wafw00fScan();
-        } elseif($func == 'vulmapPocTest'){
+        } elseif ($func == 'nucleiScan') {
+            WebScanModel::nucleiScan();
+        } elseif ($func == 'vulmapPocTest') {
             WebScanModel::vulmapPocTest();
+        } elseif ($func == 'crawlergoScan') {
+            WebScanModel::crawlergoScan();
+        } elseif ($func == 'dismapScan') {
+            WebScanModel::dismapScan();
+        } elseif ($func == 'plugin_safe') {
+            PluginModel::safe();
+        } elseif ($func == 'custom') {
+            $custom = trim($input->getArgument('custom'));
+            PluginModel::custom_event($custom);
         }
 
         // 指令输出

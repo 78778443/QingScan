@@ -10,19 +10,24 @@ class PythonLibraryModel extends BaseModel
 {
     public static function code_python()
     {
+        $codePath = "/data/codeCheck";
         while (true) {
             ini_set('max_execution_time', 0);
             $list = Db::name('code')->whereTime('python_scan_time', '<=', date('Y-m-d H:i:s', time() - (86400 * 15)))
-                ->where('is_delete', 0)->limit(1)->orderRand()->field('id,name,user_id')->select()->toArray();
+                ->where('is_delete', 0)->limit(1)->orderRand()->select()->toArray();
             //$list = Db::name('code')->where('id',20)->where('is_delete', 0)->field('id,name,user_id')->select()->toArray();
             foreach ($list as $k => $v) {
-                self::scanTime('code',$v['id'],'python_scan_time');
+
+                $value = $v;
+                $prName = cleanString($value['name']);
+                $codeUrl = $value['ssh_url'];
+                downCode($codePath, $prName, $codeUrl, $value['is_private'], $value['username'], $value['password'], $value['private_key']);
+                $filepath = "/data/codeCheck/{$prName}";
 
                 $data = [];
-                $filepath = "/data/codeCheck/{$v['name']}";
-                $fileArr = getFilePath($filepath,'requirements.txt');
+                $fileArr = getFilePath($filepath, 'requirements.txt');
                 if (!$fileArr) {
-                    addlog("项目目录不存在:{$filepath}");
+                    addlog("Python依赖扫描失败,未找到依赖文件:{$filepath}");
                     continue;
                 }
                 foreach ($fileArr as $val) {
@@ -46,13 +51,15 @@ class PythonLibraryModel extends BaseModel
                 if ($data) {
                     Db::name('code_python')->insertAll($data);
                 }
+                self::scanTime('code', $v['id'], 'python_scan_time');
             }
             sleep(10);
         }
 
     }
 
-    public function a(){
+    public function a()
+    {
         /*$filename = "/data/codeCheck/{$v['name']}/requirements.txt";
         if (!is_dir("/data/codeCheck/{$v['name']}")) {
             addlog("项目目录不存在:{$filename}");

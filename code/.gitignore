@@ -3,4 +3,3 @@
 /vendor
 *.log
 .env
-/public/install/install.lock

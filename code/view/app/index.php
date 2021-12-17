@@ -44,6 +44,7 @@
                     <th>截图</th>
                     <th>xray</th>
                     <th>dirmap</th>
+                    <th>是否内网</th>
                     <th style="width: 200px">操作</th>
                 </tr>
                 </thead>
@@ -77,16 +78,17 @@
                         </td>
                         <td><?php echo date('m-d H:i', strtotime($value['xray_scan_time'])) ?></td>
                         <td><?php echo date('m-d H:i', strtotime($value['dirmap_scan_time'])) ?></td>
+                        <td><?php echo $value['is_intranet'] ?></td>
                         <td>
-                            <!--                                <a href="#" class="btn btn-sm btn-outline-primary" dataid="-->
-                            <? //= $value['id'] ?><!--"-->
-                            <!--                                   data-toggle="modal" data-target=".setModal">设置</a>-->
-
                             <a href="javascript:;" onclick="start_agent(<?php echo $value['id']?>)"
                                class="btn btn-sm btn-outline-success">启动代理</a>
                             <a href="<?php echo url('details', ['id' => $value['id']]) ?>"
                                class="btn btn-sm btn-outline-primary">查看详情</a>
+                                <a href="<?php echo url('app/qingkong', ['id' => $value['id']]) ?>"
+                                   onClick="return confirm('确定要清空数据重新扫描吗?')"
+                                   class="btn btn-sm btn-outline-warning">重新扫描</a>
                             <a href="<?php echo url('app/del', ['id' => $value['id']]) ?>"
+                                   onClick="return confirm('确定要删除吗?')"
                                class="btn btn-sm btn-outline-danger">删除</a>
                         </td>
                     </tr>
