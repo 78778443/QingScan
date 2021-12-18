@@ -3,7 +3,11 @@ services:
   qingscan:
     image: daxia/qingscan:20211216_02
     container_name: qingscan
-#    network_mode: "host"
+    #    network_mode: "host"
+      #    volumes:
+      #      - type: bind
+      #        source: "../../"
+    #        target: "/root/qingscan"
     ports:
       - "8000:8000"
     stdin_open: true

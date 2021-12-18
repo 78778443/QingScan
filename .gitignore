@@ -16,3 +16,5 @@ lock.txt
 !/tools/pocs/
 code/runtime/
 code/public/install/install.lock
+/tools/
+/code/icon/

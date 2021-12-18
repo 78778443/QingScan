@@ -29,14 +29,14 @@ class WebScanModel extends BaseModel
                 //初始化清理目录
                 if (file_exists($pathArr['tool_result'])) {
                     addlog(["清理老文件", $pathArr['tool_result']]);
-                    unlink($pathArr['tool_result']);
+                    @unlink($pathArr['tool_result']);
                 }
                 if (file_exists($pathArr['cmd_result'])) {
                     addlog(["清理老文件", $pathArr['tool_result']]);
-                    unlink($pathArr['cmd_result']);
+                    @unlink($pathArr['cmd_result']);
                 }
 
-                $filename = '/data/tools/rad/rad_config.yaml';
+                $filename = '/data/tools/rad/rad_config.yml';
                 if (!$value['is_intranet']) {   // 不是内网
                     // 设置代理
                     $arr = @yaml_parse_file($filename);
