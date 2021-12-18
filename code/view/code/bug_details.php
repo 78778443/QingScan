@@ -8,11 +8,7 @@
                           <?php echo $info['Category']; ?>
                        </span>
             </h2>
-
         </div>
-
-
-
         <div class="row tuchu">
             <div class="a-st">
                 <!--漏洞基本信息 begin-->
@@ -27,7 +23,7 @@
                             <div class="col-md-4">
                                 <dl>
                                     <dt>漏洞类型：</dt>
-                                    <dd class="text-gray"><?php echo $info['Category']; ?></dd>
+                                    <dd class="text-gray"><?php echo htmlentities($info['Category']); ?></dd>
                                 </dl>
                                 <dl>
                                     <dt>发现时间：</dt>
@@ -38,7 +34,7 @@
                             <div class="col-md-4">
                                 <dl>
                                     <dt>所属项目：</dt>
-                                    <dd><?php echo $projectArr[$info['project_id']]['name'] ?></dd>
+                                    <dd><?php echo htmlentities($projectArr[$info['project_id']]['name']); ?></dd>
                                 </dl>
                                 <dl>
                                     <dt>审核状态：</dt>
@@ -75,6 +71,7 @@
 
             <?php
             $Source = $info['Source'];
+
             if (!empty($Source)) { ?>
                 <div class="bug-msg">
                     <section class="vul-basic-info">
@@ -109,7 +106,7 @@
                         </div>
                         <div class="row">
                             <textarea class="form-control" rows="10" disabled>
-                                <?php echo syntax_highlight($Source['Snippet']) ?>
+                                <?php echo htmlspecialchars(syntax_highlight($Source['Snippet'])) ?>
                             </textarea>
                         </div>
 
@@ -151,7 +148,7 @@
                     </div>
                     <div class="row">
                             <textarea class="form-control" rows="10" disabled>
-                                <?php echo $Primary['Snippet'] ?>
+                                <?php echo $Primary['Snippet']; ?>
                             </textarea>
                     </div>
 

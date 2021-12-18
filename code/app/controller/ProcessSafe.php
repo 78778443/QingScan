@@ -52,7 +52,7 @@ class ProcessSafe extends Common
             $data['status'] = getParam('status');
             $data['note'] = getParam('note');
             if (Db::name('process_safe')->where('id', $id)->update($data)) {
-                $this->success('信息修改成功', 'index');
+                return redirect(url('index'));
             } else {
                 $this->error('信息修改失败');
             }

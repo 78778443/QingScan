@@ -22,6 +22,8 @@ class WebScanModel extends BaseModel
         while (true) {
             $list = Db::table('app')->whereTime('crawler_time', '<=', date('Y-m-d H:i:s', time() - (86400 * 15)))->limit(1)->orderRand()->select()->toArray();
             foreach ($list as $value) {
+                self::scanTime('app',$value['id'],'crawler_time');
+
                 $url = $value['url'];
                 $id = $value['id'];
                 $user_id = $value['user_id'];
@@ -59,17 +61,25 @@ class WebScanModel extends BaseModel
                     unlink($filename);
                 }
 
-
                 $cmd = "{$path} ./rad_linux_amd64 -t  \"{$url}\"  -json  {$pathArr['tool_result']}";
                 addlog(["开始执行抓取URL地址命令", $cmd]);
 
                 $result = [];
                 execLog($cmd, $result);
 
-                $result = implode("\n", $result);
+                //$result = implode("\n", $result);
+                if (!file_exists($pathArr['cmd_result'])) {
+                    addlog(["文件不存在", $pathArr['tool_result']]);
+                    continue;
+                }
                 $urlList = json_decode(file_get_contents($pathArr['tool_result']), true);
 
                 foreach ($urlList as $value) {
+                    $arr = parse_url($value['url']);
+                    $blackExt = ['.js', '.css', '.json', '.png', '.jpg', '.jpeg', '.gif', '.mp3', '.mp4'];
+                    if (!isset($arr['query']) or in_array_strpos($arr['path'], $blackExt) or (strpos($arr['query'], '=') === false)) {
+                        continue;
+                    }
                     $newData = [
                         'app_id' => $id,
                         'method' => $value['Method'],
@@ -84,8 +94,6 @@ class WebScanModel extends BaseModel
                     ];
                     UrlsModel::addData($newData);
                 }
-
-                Db::table('app')->where(['id' => $id])->save(['crawler_time' => date('Y-m-d H:i:s')]);
             }
             sleep(10);
         }
@@ -120,7 +128,8 @@ class WebScanModel extends BaseModel
                         $arr = @yaml_parse_file($filename);
                         if ($arr) {
                             $arr['http']['proxy_rule'][0]['match'] = '*';
-                            $proxyArr = Db::name('proxy')->where('status', 1)->limit(10)->orderRand()->select();
+                            $proxyArr = Db::name('proxy')->where('status', 1)->limit(3)->orderRand()->select()->toArray();
+                            $proxy = [];
                             foreach ($proxyArr as $v) {
                                 $result = testAgent($v['host'], $v['port']);
                                 if ($result == 200) {
@@ -128,26 +137,26 @@ class WebScanModel extends BaseModel
                                 }
                             }
                             $arr['http']['proxy_rule'][0]['servers'] = [];
-                            $weight = random_split(10,count($proxy));
-                            foreach ($proxy as $k=>$v) {
-                                $arr['http']['proxy_rule'][0]['servers'][] = [
-                                    'addr' => $v,
-                                    'weight' => $weight[$k],
-                                ];
+                            if ($proxy) {
+                                $weight = random_split(10,count($proxy));
+                                foreach ($proxy as $k=>$v) {
+                                    $arr['http']['proxy_rule'][0]['servers'][] = [
+                                        'addr' => $v,
+                                        'weight' => $weight[$k],
+                                    ];
+                                }
                             }
                             yaml_emit_file($filename, $arr);
                         }
                     } else {
                         unlink($filename);
                     }
-
                     $cmd = "{$path} ./xray_linux_amd64 webscan --url \"{$url}\"  --json-output  {$pathArr['tool_result']}";
 
                     $result = [];
                     execLog($cmd, $result);
                     $result = implode("\n", $result);
                     addlog(["漏洞扫描结束", $id, $url, $cmd, base64_encode($result)]);
-
                     $result = file_put_contents($pathArr['cmd_result'], $result);
                     if ($result == false) {
                         addlog(["写入执行结果失败", base64_encode($pathArr['cmd_result'])]);
@@ -155,8 +164,6 @@ class WebScanModel extends BaseModel
                 } else {
                     addlog("xray文件已存在:{$pathArr['tool_result']}");
                 }
-
-
                 if (file_exists($pathArr['tool_result']) == true) {
                     $data = json_decode(file_get_contents($pathArr['tool_result']), true);
                     foreach ($data as $value) {
@@ -175,7 +182,7 @@ class WebScanModel extends BaseModel
                         XrayModel::addXray($newData);
                     }
 
-                    Db::table('app')->where(['id' => $id])->save(['xray_scan_time' => date('Y-m-d H:i:s')]);
+                    Db::table('app')->where(['id' => $id])->save(['xray_scan_time' => date('Y-m-d H:i:s',time())]);
                 } else {
                     addlog("文件不存在:{$pathArr['tool_result']}  ,扫描URL失败: {$url}");
                     Db::table('app')->where(['id' => $id])->save(['xray_scan_time' => date('2048-m-d H:i:s')]);

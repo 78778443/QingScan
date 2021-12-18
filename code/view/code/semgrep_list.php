@@ -53,13 +53,16 @@ $searchArr = [
                     <td>{$value['end_line']}</td>
                     <td><?php echo isset($projectArr[$value['code_id']]) ? $projectArr[$value['code_id']]['name'] : '' ?></td>
                     <td><?php echo $value['create_time'] ?></td>
-                    <td><select class="changCheckStatus form-select" data-id="<?php echo $value['id'] ?>">
-                            <option value="0" <?php echo $value['check_status'] == 0 ? 'selected' : ''; ?> >未审核</option>
+                    <td>
+                        <select class="changCheckStatus form-select" data-id="<?php echo $value['id'] ?>">
+                            <option value="0" <?php echo $value['check_status'] == 0 ? 'selected' : ''; ?> >未审核
+                            </option>
                             <option value="1" <?php echo $value['check_status'] == 1 ? 'selected' : ''; ?> >有效漏洞
                             </option>
                             <option value="2" <?php echo $value['check_status'] == 2 ? 'selected' : ''; ?> >无效漏洞
                             </option>
-                        </select></td>
+                        </select>
+                    </td>
                     <td>
                         <a href="<?php echo url('code/semgrep_details', ['id' => $value['id']]) ?>"
                            class="btn btn-sm btn-outline-primary">查看漏洞</a>
@@ -72,6 +75,7 @@ $searchArr = [
         </table>
     </div>
 </div>
+
 <input type="hidden" id="to_examine_url" value="<?php echo url('to_examine/semgrep') ?>">
 
 {include file='public/to_examine' /}

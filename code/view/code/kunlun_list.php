@@ -14,7 +14,7 @@ $searchArr = [
         ['type' => 'select', 'name' => 'Category', 'options' => $CategoryList, 'frist_option' => '漏洞类别'],
         ['type' => 'select', 'name' => 'project_id', 'options' => $projectList, 'frist_option' => '项目列表'],
         ['type' => 'select', 'name' => 'filename', 'options' => $fileList, 'frist_option' => '文件筛选'],
-        ['type' => 'select', 'name' => 'check_status', 'options' => $check_status_list, 'frist_option' => '审计状态','frist_option_value'=>-1],
+        ['type' => 'select', 'name' => 'check_status', 'options' => $check_status_list, 'frist_option' => '审计状态', 'frist_option_value' => -1],
     ]];
 ?>
 {include file='public/search' /}
@@ -26,10 +26,10 @@ $searchArr = [
             <tr>
                 <th>ID</th>
                 <th> CVI ID</th>
-                <th>Language</th>
+                <th>编程语言</th>
                 <th>VulFile Path/Title</th>
-                <th>Source</th>
-                <th>Level</th>
+                <th>来源</th>
+                <th>level</th>
                 <th>Type</th>
                 <th>所属项目</th>
                 <th>状态</th>

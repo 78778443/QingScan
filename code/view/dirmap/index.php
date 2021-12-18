@@ -35,8 +35,6 @@ $searchArr = [
                     <td><?php echo $value['url'] ?></td>
                     <td><?php echo $value['create_time'] ?></td>
                     <td>
-                        <a href="<?php echo url('xray/details',['id'=>$value['id']])?>"
-                           class="btn btn-sm btn-outline-primary">查看漏洞</a>
                         <a href="<?php echo url('xray/del',['id'=>$value['id']])?>" class="btn btn-sm btn-outline-danger">删除</a>
                     </td>
                 </tr>

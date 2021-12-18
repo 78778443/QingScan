@@ -10,7 +10,6 @@ class Config extends Common
 {
     public function index()
     {
-        //echo rangeCrearePort();exit;
         $where[] = ['is_delete','=',0];
         $search = getParam('search');
         if (!empty($search)) {
@@ -31,7 +30,7 @@ class Config extends Common
                 $this->error('参数不能为空');
             }
             if (Db::name('system_config')->insert($data)) {
-                $this->success('添加成功','config/index');
+                return redirect(url('config/index'));
             } else {
                 $this->error('添加失败');
             }
@@ -53,7 +52,7 @@ class Config extends Common
                 $this->error('参数不能为空');
             }
             if (Db::name('system_config')->where('id',$id)->update($data)) {
-                $this->success('修改成功','config/index');
+                return redirect(url('config/index'));
             } else {
                 $this->error('修改失败');
             }

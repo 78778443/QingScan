@@ -26,7 +26,7 @@ class Auth extends Common
         $list = UserModel::getListPage($map);
         $data['list'] = $list['data'];
         $data['page'] = $list['current_page'];
-        return View::fetch('auth/user_list',$data);
+        return View::fetch('auth/user_list', $data);
     }
 
     // 添加管理员
@@ -37,12 +37,12 @@ class Auth extends Common
             $data['nickname'] = getParam('nickname');
             $data['auth_group_id'] = getParam('auth_group_id');
             $data['status'] = getParam('status');
-            $data['sex'] = getParam('sex',0);
+            $data['sex'] = getParam('sex', 0);
             $data['phone'] = getParam('phone');
             $data['dd_token'] = getParam('dd_token');
             $data['email'] = getParam('email');
             $password = getParam('password');
-            $check_user = Db::name('user')->where('username',$data['username'])->find();
+            $check_user = Db::name('user')->where('username', $data['username'])->find();
             if (!$password || !$data['username'] || !$data['nickname'] || !$data['auth_group_id']) {
                 $this->error('参数不能为空');
             }
@@ -56,7 +56,7 @@ class Auth extends Common
             $data['password'] = ucenter_md5($password . $data['username'], config('app.UC_AUTH_KEY'));
             //添加
             if (Db::name('user')->insert($data)) {
-                $this->success('用户添加成功','auth/user_list');
+                $this->success('用户添加成功', 'auth/user_list');
             } else {
                 $this->error('用户添加失败');
             }
@@ -67,7 +67,7 @@ class Auth extends Common
             ];
             $auth_group = Db::name('auth_group')->where($map)->select();
             $data['authGroup'] = $auth_group;
-            return View::fetch('auth/user_add',$data);
+            return View::fetch('auth/user_add', $data);
         }
     }
 
@@ -79,7 +79,7 @@ class Auth extends Common
             $data['nickname'] = getParam('nickname');
             $data['auth_group_id'] = getParam('auth_group_id');
             $data['status'] = getParam('status');
-            $data['sex'] = getParam('sex',0);
+            $data['sex'] = getParam('sex', 0);
             $data['phone'] = getParam('phone');
             $data['dd_token'] = getParam('dd_token');
             $data['email'] = getParam('email');
@@ -102,8 +102,8 @@ class Auth extends Common
                 unset($data['password']);
             }
             $data['update_time'] = time();
-            if (Db::name('user')->where('id',$id)->update($data)) {
-                $this->success('用户信息修改成功','auth/user_list');
+            if (Db::name('user')->where('id', $id)->update($data)) {
+                return redirect(url('auth/user_list'));
             } else {
                 $this->error('用户信息修改失败');
             }
@@ -112,11 +112,11 @@ class Auth extends Common
                 ['is_delete', '=', 0],
                 //['status', '=', 1,],
             ];
-            $auth_group = Db::name('auth_group')->where('status',1)->where($map)->select()->toArray();
-            $map[] = ['id','=',$id];
+            $auth_group = Db::name('auth_group')->where('status', 1)->where($map)->select()->toArray();
+            $map[] = ['id', '=', $id];
             $data['info'] = Db::name('user')->where($map)->find();
             $data['authGroup'] = $auth_group;
-            return View::fetch('auth/user_edit',$data);
+            return View::fetch('auth/user_edit', $data);
         }
     }
 
@@ -129,8 +129,8 @@ class Auth extends Common
             $data['phone'] = getParam('phone');
             $data['dd_token'] = getParam('dd_token');
             $data['email'] = getParam('email');
-            $data['token'] = getParam('token','');
-            $data['url'] = getParam('url','');
+            $data['token'] = getParam('token', '');
+            $data['url'] = getParam('url', '');
             $password = getParam('password');
 
             /*if ($password) {
@@ -139,15 +139,15 @@ class Auth extends Common
                 unset($data['password']);
             }*/
             $data['update_time'] = time();
-            if (Db::name('user')->where('id',$id)->update($data)) {
-                $this->success('个人资料修改成功');
+            if (Db::name('user')->where('id', $id)->update($data)) {
+                $this->success('个人资料修改成功', url('index/index'));
             } else {
                 $this->error('个人资料修改失败');
             }
         } else {
-            $map[] = ['id','=',$id];
+            $map[] = ['id', '=', $id];
             $data['info'] = Db::name('user')->where($map)->find();
-            return View::fetch('auth/user_info',$data);
+            return View::fetch('auth/user_info', $data);
         }
     }
 
@@ -161,16 +161,16 @@ class Auth extends Common
             if ($news_password != $news_password1) {
                 $this->error('新密码和确认密码不一致');
             }
-            $user = Db::name('user')->where('id',$id)->find();
+            $user = Db::name('user')->where('id', $id)->find();
             $password = ucenter_md5($password . $user['username'], config('app.UC_AUTH_KEY'));
             if ($password != $user['password']) {
                 $this->error('原密码错误');
             }
             $data['password'] = ucenter_md5($news_password . $user['username'], config('app.UC_AUTH_KEY'));
             $data['update_time'] = time();
-            if (Db::name('user')->where('id',$id)->update($data)) {
+            if (Db::name('user')->where('id', $id)->update($data)) {
                 UserModel::logout();
-                $this->success('密码修改成功,请重新登录',url('login/index'));
+                $this->success('密码修改成功,请重新登录', url('login/index'));
             } else {
                 $this->error('密码修改失败');
             }
@@ -185,15 +185,16 @@ class Auth extends Common
         $id = getParam('id');
         if (in_array($id, config('ADMINISTRATOR')))
             $this->error('该用户不允许删除');
-        if (Db::name('user')->where('id',$id)->update(['is_delete'=>-1,'update_time'=>time()])) {
+        if (Db::name('user')->where('id', $id)->update(['is_delete' => -1, 'update_time' => time()])) {
             return redirect($_SERVER['HTTP_REFERER']);
         } else {
             $this->error('删除失败');
         }
     }
 
-    public function getToken(){
-        return $this->apiReturn(1, ['token'=>getToken($this->userId)], 'ok');
+    public function getToken()
+    {
+        return $this->apiReturn(1, ['token' => getToken($this->userId)], 'ok');
     }
 
     /********************************用户组*******************************/
@@ -203,7 +204,7 @@ class Auth extends Common
      */
     public function auth_group_list()
     {
-        $list = Db::name('auth_group')->where('is_delete', '=', 0)->order('auth_group_id','desc')->paginate(25)->toArray();
+        $list = Db::name('auth_group')->where('is_delete', '=', 0)->order('auth_group_id', 'desc')->paginate(25)->toArray();
         $data['list'] = $list['data'];
         foreach ($data['list'] as &$val) {
             if ($val['status'] == 1) {
@@ -213,7 +214,7 @@ class Auth extends Common
             }
         }
         $data['page'] = $list['current_page'];
-        return View::fetch('auth/auth_group_list',$data);
+        return View::fetch('auth/auth_group_list', $data);
     }
 
     //添加用户分组
@@ -225,7 +226,7 @@ class Auth extends Common
             $data['created_at'] = time();
             $data['update_time'] = time();
             if (Db::name('auth_group')->insert($data)) {
-                $this->success('用户组添加成功','auth/auth_group_list');
+                $this->success('用户组添加成功', 'auth/auth_group_list');
             } else {
                 $this->error('用户组添加失败');
             }
@@ -243,14 +244,14 @@ class Auth extends Common
             $data['status'] = getParam('status');
             $data['update_time'] = time();
             if (Db::name('auth_group')->where('auth_group_id', $auth_group_id)->update($data)) {
-                $this->success('用户组修改成功','auth/auth_group_list');
+                return redirect(url('auth/auth_group_list'));
             } else {
-                $this->error('用户组修改失败',url('auth/authGroupEdit',['auth_group_id'=>$auth_group_id]));
+                $this->error('用户组修改失败', url('auth/authGroupEdit', ['auth_group_id' => $auth_group_id]));
             }
         } else {
             $auth_group_id = getParam('auth_group_id');
-            $data['info'] = Db::name('auth_group')->where('auth_group_id',$auth_group_id)->find();
-            return View::fetch('auth_group_edit',$data);
+            $data['info'] = Db::name('auth_group')->where('auth_group_id', $auth_group_id)->find();
+            return View::fetch('auth_group_edit', $data);
         }
     }
 
@@ -259,12 +260,12 @@ class Auth extends Common
     {
         $auth_group_id = getParam('auth_group_id');
         if ($auth_group_id == 1) {
-            $this->error('该分组不能删除','auth/auth_group_list');
+            $this->error('该分组不能删除', 'auth/auth_group_list');
         }
-        if (Db::name('auth_group')->where('auth_group_id',$auth_group_id)->update(['is_delete' => 1, 'update_time' => time()])) {
-            $this->success('删除成功','auth/auth_group_list');
+        if (Db::name('auth_group')->where('auth_group_id', $auth_group_id)->update(['is_delete' => 1, 'update_time' => time()])) {
+            $this->success('删除成功', 'auth/auth_group_list');
         } else {
-            $this->error('删除失败','auth/auth_group_list');
+            $this->error('删除失败', 'auth/auth_group_list');
         }
     }
 
@@ -291,7 +292,7 @@ class Auth extends Common
         );
         $data['auth_group_id'] = $auth_group_id;
         $data['data'] = $arr;
-        return View::fetch('auth_group_access',$data);
+        return View::fetch('auth_group_access', $data);
     }
 
     // 用户组状态操作
@@ -299,13 +300,13 @@ class Auth extends Common
     {
         $data['rules'] = getParam('rules');
         if (empty($data['rules'])) {
-            return $this->apiReturn(0,[],'请选择权限');
+            return $this->apiReturn(0, [], '请选择权限');
         }
         $auth_group_id = getParam('auth_group_id');
         if (Db::name('auth_group')->where('auth_group_id', $auth_group_id)->update($data)) {
-            return $this->apiReturn(1,[],'保存成功');
+            return $this->apiReturn(1, [], '保存成功');
         } else {
-            return $this->apiReturn(0,[],'保存错误');
+            return $this->apiReturn(0, [], '保存错误');
         }
     }
 
@@ -317,9 +318,9 @@ class Auth extends Common
         $nav = new \Leftnav();
         $map['is_delete'] = 0;
         $authRule = Db::name('auth_rule')->where($map)->field('auth_rule_id,href,title,is_open_auth,pid,sort,menu_status,level,icon_url')->order
-        ('sort','asc')->select()->toArray();
+        ('sort', 'asc')->select()->toArray();
         $data['list'] = $nav->menu($authRule);
-        return View::fetch('auth/auth_rule_list',$data);
+        return View::fetch('auth/auth_rule_list', $data);
     }
 
     public function ruleAdd()
@@ -344,12 +345,12 @@ class Auth extends Common
                     $this->error('控制器/方法已存在');
             }
             if ($data['pid']) {
-                $parent = Db::name('auth_rule')->where('auth_rule_id',$data['pid'])->find();
+                $parent = Db::name('auth_rule')->where('auth_rule_id', $data['pid'])->find();
                 $data['level'] = $parent['level'] + 1;
             }
             if (Db::name('auth_rule')->insert($data)) {
-                $this->success('菜单添加成功','auth/auth_rule');
-            }   else{
+                $this->success('菜单添加成功', 'auth/auth_rule');
+            } else {
                 $this->error('菜单添加失败');
             }
         } else {
@@ -361,7 +362,7 @@ class Auth extends Common
             if ($auth_rule_id) {
                 $where['auth_rule_id'] = $auth_rule_id;
                 $where['is_delete'] = 0;
-                $res = Db::name('auth_rule')->where('auth_rule_id',$auth_rule_id)->find();
+                $res = Db::name('auth_rule')->where('auth_rule_id', $auth_rule_id)->find();
                 if (!$res)
                     $this->error('数据不存在');
                 $data['strAuthRule'] = $res;
@@ -372,7 +373,7 @@ class Auth extends Common
                 }
             }
             $data['auth_rule'] = $arr;
-            return View::fetch('auth/auth_rule_add',$data);
+            return View::fetch('auth/auth_rule_add', $data);
         }
     }
 
@@ -406,15 +407,15 @@ class Auth extends Common
                 $parent = Db::name('auth_rule')->where('auth_rule_id', $data['pid'])->find();
                 $data['level'] = $parent['level'] + 1;
             }
-            if (Db::name('auth_rule')->where('auth_rule_id',$auth_rule_id)->update($data)) {
-                $this->success('修改成功','auth/auth_rule');
+            if (Db::name('auth_rule')->where('auth_rule_id', $auth_rule_id)->update($data)) {
+                return redirect(url('auth/auth_rule'));
             } else {
                 $this->error('修改失败');
             }
         } else {
             $nav = new \Leftnav();
             $map['is_delete'] = 0;
-            $authRule = Db::name('authRule')->where($map)->field('auth_rule_id,title,pid,href')->order('sort','asc')->select();
+            $authRule = Db::name('authRule')->where($map)->field('auth_rule_id,title,pid,href')->order('sort', 'asc')->select();
             $where['auth_rule_id'] = input('auth_rule_id');
             $where['is_delete'] = 0;
             $info = Db::name('auth_rule')->where($where)->find();
@@ -428,7 +429,7 @@ class Auth extends Common
             }
             $data['list'] = $list;
             $data['info'] = $info;
-            return View::fetch('auth_rule_edit',$data);
+            return View::fetch('auth_rule_edit', $data);
         }
     }
 
@@ -438,7 +439,7 @@ class Auth extends Common
         if (in_array(getParam('auth_rule_id'), config('app.not_del'))) {
             $this->error('该菜单权限不能删除');
         }
-        if (Db::name('auth_rule')->where('auth_rule_id',getParam('auth_rule_id'))->update(['is_delete' => 1, 'delete_time' => time()])) {
+        if (Db::name('auth_rule')->where('auth_rule_id', getParam('auth_rule_id'))->update(['is_delete' => 1, 'delete_time' => time()])) {
             return redirect($_SERVER['HTTP_REFERER']);
         } else {
             $this->error('删除失败');

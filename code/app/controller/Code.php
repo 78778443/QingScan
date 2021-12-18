@@ -422,7 +422,7 @@ class Code extends Common
                 $map[] = ['user_id','=',$this->userId];
             }*/
             if (Db::name('code')->update($data)) {
-                $this->success('修改成功', 'code/index');
+                return redirect(url('code/index'));
             } else {
                 $this->error('修改失败');
             }

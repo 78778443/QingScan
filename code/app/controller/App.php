@@ -57,7 +57,7 @@ class App extends Common
         $data['serverArr'] = array_column($data['serverArr'], 'server');
         foreach ($data['list'] as &$v) {
             $v['is_waf'] = '否';
-            $wafw00f = Db::name('app_wafw00f')->where('app_id', $v['id'])->find();
+            $wafw00f = Db::name('app_wafw00f')->where('app_id',$v['id'])->find();
             if ($wafw00f && $wafw00f['detected']) {
                 $v['is_waf'] = '是';
             }
@@ -455,7 +455,6 @@ class App extends Common
         $ip = gethostbyname($urlInfo['host']);
         $data['host_port'] = Db::table('host_port')->where(['host' => $ip])->limit(0, 15)->select()->toArray();
 
-
         return View::fetch('details', $data);
     }
 
@@ -501,13 +500,13 @@ class App extends Common
             return $this->apiReturn(0, [], '数据不存在');
         }
         $port = rangeCrearePort();
-        $map[] = ['app_id', '=', $id];
-        $map[] = ['xray_agent_prot', '=', $port];
+        $map[] = ['app_id','=',$id];
+        $map[] = ['xray_agent_prot','=',$port];
         if (!Db::name('app_xray_agent_port')->where($map)->count('id')) {
             $data = [
-                'app_id' => $id,
-                'xray_agent_prot' => $port,
-                'create_time' => date('Y-m-d H:i:s', time()),
+                'app_id'=>$id,
+                'xray_agent_prot'=>$port,
+                'create_time'=>date('Y-m-d H:i:s',time()),
             ];
             Db::name('app_xray_agent_port')->insert($data);
         }

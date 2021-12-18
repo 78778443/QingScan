@@ -1,13 +1,6 @@
 <?php
 // 应用公共文件
-
-
 $branch = empty(getenv("branch")) ? 'master' : getenv("branch");
-
-
-$_SERVER['recordDing'] = "https://oapi.dingtalk.com/robot/send?access_token=f58297b330bc0bd63f3a9101be8ab8d04246d40b34bb2abdefc421b092496ff5";
-$_SERVER['environment'] = 'aliyun';
-$_SERVER['branch'] = $branch;
 
 
 function getRabbitMq()
@@ -163,12 +156,12 @@ function addlog($content, $out = false)
         'content' => is_array($content1) ? var_export($content1, true) : $content1,
     ];
 
-    $dataArr['content'] = substr($dataArr['content'], 0, 1024);
+    $dataArr['content'] = substr($dataArr['content'], 0, 512);
+    //echo '---'.strlen($dataArr['content']).'---';
     \think\facade\Db::name('log')->insert($dataArr);
-
     //删除5天前的日志
     $endTime = date('Y-m-d', time() - 86400 * 5);
-    $list = Db::table('log')->whereTime('create_time', '<=', $endTime)->delete();
+    Db::table('log')->whereTime('create_time', '<=', $endTime)->delete();
 
     if ($out or is_cli()) {
         echo var_export($content, true) . PHP_EOL;
@@ -275,6 +268,7 @@ function execLog($shell, &$output)
     $remark = "即将执行命令:{$shell}" . PHP_EOL;
     addlog($remark);
     //记录日志
+    //shell_exec($shell);
     exec($shell, $output);
     addlog(["命令执行结果", $shell, $output]);
 }
@@ -362,34 +356,6 @@ function is_not_json($str)
     return is_null(json_decode($str));
 }
 
-
-/**
- * 钉钉通知
- *
- * @param  $message
- * @param string $remote_server
- * @return array|mixed
- */
-function dingdingNotice($message, $remote_server = '')
-{
-
-    $remote_server = !empty($remote_server) ? $remote_server : "https://oapi.dingtalk.com/robot/send?access_token=464cb2dd1f2d7e2b6520776837e81e421029a6b501a319568846751c5a745fd9";
-
-    $data = array('msgtype' => 'text', 'text' => array('content' => $message));
-    $post_string = json_encode($data);
-
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $remote_server);
-    curl_setopt($ch, CURLOPT_POST, 1);
-    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json;charset=utf-8'));
-    curl_setopt($ch, CURLOPT_POSTFIELDS, $post_string);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    $data = curl_exec($ch);
-    curl_close($ch);
-
-    return $data;
-}
 
 /**
  * 通过curl获取数据

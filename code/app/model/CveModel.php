@@ -64,23 +64,29 @@ class CveModel extends BaseModel
     {
         $user = ConfigModel::value('fofa_user');
         $token = ConfigModel::value('fofa_token');
+        if (empty($user) || empty($token)) {
+            addlog(["fofa收集缺陷目标失败,没有获取到user或token", $user, $token]);
+            return false;
+        }
+
         while (true) {
             $endTime = date('Y-m-d', time() - 86400 * 15);
-            $where = ['is_poc' => 1];
-            $cveList = Db::table('vulnerable')->where($where)->whereNotNull('fofa_con')->whereTime('scan_time', '<=', $endTime)->orderRand()->limit(5)->select()->toArray();
+            $cveList = Db::table('vulnerable')->whereNotNull('fofa_con')->whereTime('scan_time', '<=', $endTime)->orderRand()->limit(2)->select()->toArray();
 
             foreach ($cveList as $val) {
-
                 $keywords = $val['fofa_con'];
                 $str = urlencode(base64_encode($keywords));
                 $list = Requests::get("https://fofa.so/api/v1/search/all?email={$user}&key={$token}&qbase64=" . $str);
-                if (isset(json_decode($list->body, true)['results'])) {
-                    $list = json_decode($list->body, true)['results'];
+                $list = json_decode($list->body, true)['results'] ?? [];
+
+                foreach ($list as $temp) {
+                    $info = ['addr' => $temp[0], 'ip' => $temp[1], 'port' => $temp[2], 'query' => $keywords, 'vul_id' => $val['id']];
+                    Db::table('vul_target')->extra("IGNORE")->insert($info);
                 }
-                Db::table('host')->where(['id' => $val['id']])->save(['scan_time' => date('Y-m-d H:i:s')]);
+                Db::table('vulnerable')->where(['id' => $val['id']])->save(['target_scan_time' => date('Y-m-d H:i:s')]);
 
             }
-            print_r("本轮CVE扫描完成，休息10秒...");
+            addlog("收集缺陷目标一轮，休息15秒...");
             sleep(10);
         }
 

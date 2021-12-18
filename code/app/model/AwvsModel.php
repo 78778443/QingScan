@@ -8,12 +8,12 @@ use think\facade\Db;
 class AwvsModel extends BaseModel
 {
 
-    public static $url = "https://127.0.0.1:3443";
-    public static $token = "1986ad8c0a5b3df4d7028d5f3c06e936cd604b488341e4df8b75e8313839affc2";
+    public $url,$token;
 
-    public static function getToken()
+    public function __construct()
     {
-
+        $this->url = ConfigModel::value('awvs_url');
+        $this->token = ConfigModel::value('awvs_token');
     }
 
     public static function scan()
