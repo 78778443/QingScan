@@ -3,7 +3,6 @@ import requests
 import pymysql
 import time
 import datetime
-import yaml
 import urllib3
 from fun import dingding
 from fun import db
@@ -13,16 +12,17 @@ ssl._create_default_https_context = ssl._create_unverified_context
 
 db = db()
 cur = db.cursor(cursor=pymysql.cursors.DictCursor)
-
-with open("config.yaml", encoding="utf-8") as f:
-    config = yaml.load(f, Loader=yaml.SafeLoader)
-
+sql = "select value from system_config where `key` = 'github_token'"
+cur.execute(sql)
+# 使用 fetchall() 获取所有查询结果
+github_token = cur.fetchall()
 url = "https://api.github.com/search/code"
 header = {
     "Accept": "application/vnd.github.v3+json",
-    "Authorization": "token "+config['github']['token'],
+    "Authorization": "token "+github_token[0]['value'],
     "User-Agent": "https://api.github.com/meta"
 }
+print(header)
 threeDayAgo = (datetime.datetime.now() - datetime.timedelta(days=15))
 # 转换为时间戳
 timeStamp = int(time.mktime(threeDayAgo.timetuple()))

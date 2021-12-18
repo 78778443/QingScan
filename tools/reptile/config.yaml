@@ -4,5 +4,3 @@ mysql:
   username: "qingscan"
   password: "123"
   database: "QingScan"
-github:
-  token: "ghp_ROJvYR97rXXXXXXXXXXX"
