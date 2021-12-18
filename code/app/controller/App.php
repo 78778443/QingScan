@@ -30,8 +30,24 @@ class App extends Common
 
     }
 
-    public function index()
-    {
+    public function index(){
+        /*echo '<pre>';
+        $filename = '/data/tools/wafw00f/wafw00f/result.json';
+        $content = file_get_contents($filename);
+        var_dump(json_decode($content,true));*/
+        /*//打开一个文件
+        $file = fopen($filename, "r");
+        //检测指正是否到达文件的未端
+        $data = [];
+        while (!feof($file)) {
+            $result = fgets($file);
+            if (empty($result)) {
+                continue;
+            }
+            $arr = json_decode($result, true);
+            var_dump($arr);
+            exit;
+        }*/
         $pageSize = 15;
         $page = getParam('page', 1);
         $statusCode = getParam('statuscode');
@@ -143,6 +159,9 @@ class App extends Common
         if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
             $map[] = ['user_id', '=', $this->userId];
         }
+        $data['info'] = Db::name('app')->where(['id'=>$id])->find();
+        $urlInfo = parse_url($data['info']['url']);
+        $ip = gethostbyname($urlInfo['host']);
 
         Db::table('app_whatweb')->where(['app_id' => $id])->delete();
         Db::table('one_for_all')->where(['app_id' => $id])->delete();
@@ -150,8 +169,8 @@ class App extends Common
         Db::table('app_dirmap')->where(['app_id' => $id])->delete();
         Db::table('urls_sqlmap')->where(['app_id' => $id])->delete();
         Db::table('app_vulmap')->where(['app_id' => $id])->delete();
-        Db::table('host')->where(['app_id' => $id])->delete();
-        Db::table('host_port')->where(['app_id' => $id])->delete();
+        Db::table('host')->where(['host' => $ip])->delete();
+        Db::table('host_port')->where(['host' => $ip])->delete();
 
 
         if (Db::name('app')->where($map)->delete()) {
@@ -454,6 +473,7 @@ class App extends Common
         $urlInfo = parse_url($data['info']['url']);
         $ip = gethostbyname($urlInfo['host']);
         $data['host_port'] = Db::table('host_port')->where(['host' => $ip])->limit(0, 15)->select()->toArray();
+        $data['host'] = Db::table('host')->where(['host' => $ip])->limit(0, 15)->select()->toArray();
 
         return View::fetch('details', $data);
     }
@@ -472,6 +492,9 @@ class App extends Common
             'dirmap_scan_time' => '2000-01-01 00:00:00',
             'wafw00f_scan_time' => '2000-01-01 00:00:00',
         );
+        $data['info'] = Db::name('app')->where(['id'=>$id])->find();
+        $urlInfo = parse_url($data['info']['url']);
+        $ip = gethostbyname($urlInfo['host']);
 
         Db::table('app')->where(['id' => $id])->save($array);
         Db::table('app_whatweb')->where(['app_id' => $id])->delete();
@@ -480,8 +503,8 @@ class App extends Common
         Db::table('app_dirmap')->where(['app_id' => $id])->delete();
         Db::table('urls_sqlmap')->where(['app_id' => $id])->delete();
         Db::table('app_vulmap')->where(['app_id' => $id])->delete();
-        Db::table('host')->where(['app_id' => $id])->delete();
-        Db::table('host_port')->where(['app_id' => $id])->delete();
+        Db::table('host')->where(['host' => $ip])->delete();
+        Db::table('host_port')->where(['host' => $ip])->delete();
 
         return redirect($_SERVER['HTTP_REFERER'] ?? '/');
     }
