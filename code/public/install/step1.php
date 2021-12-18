@@ -93,6 +93,13 @@ require_once "common.php";
     } else {
         echo "<font color='red'>code/config/database.php文件不可写</font>";
     }
+    echo '<br>';
+    if (is_writable('/data/tools/reptile/config.yaml')) {
+        echo "<font color='green'>/data/tools/reptile/config.yaml文件可写</font>";
+        $bo = true;
+    } else {
+        echo "<font color='red'>/data/tools/reptile/config.yaml文件不可写</font>";
+    }
 
     echo "<hr />";
 

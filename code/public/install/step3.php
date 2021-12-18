@@ -29,6 +29,9 @@ use think\facade\Db;
                     //检查数据库参数是否正确，修改系统配置文件
                     writingConf();
 
+                    //更新python配置
+                    setPythonConfig();
+
                     //从SQL文件中提取SQL语句
                     $sqlArr = getSQLArr();
 
@@ -46,6 +49,19 @@ use think\facade\Db;
     </html>
 
 <?php
+function setPythonConfig(){
+    $filename = '/data/tools/reptile/config.yaml';
+    $arr = @yaml_parse_file($filename);
+    if ($arr) {
+        $arr['mysql']['host'] = $_POST['DB_HOST'];
+        $arr['mysql']['port'] = $_POST['DB_PORT'];
+        $arr['mysql']['username'] = $_POST['DB_USER'];
+        $arr['mysql']['password'] = $_POST['DB_PASS'];
+        $arr['mysql']['database'] = $_POST['DB_NAME'];
+        yaml_emit_file($filename, $arr);
+    }
+}
+
 
 function batchExecuteSql($sqlArr)
 {
@@ -97,7 +113,7 @@ function getSqlArr()
 
 function writingConf()
 {
-    $link = mysqli_connect($_POST['DB_HOST'], $_POST['DB_USER'], $_POST['DB_PASS']);
+    $link = mysqli_connect($_POST['DB_HOST'], $_POST['DB_USER'], $_POST['DB_PASS'],$_POST['DB_NAME'],$_POST['DB_PORT']);
     if (!$link) {
         echo "<script>";
         echo "alert('数据库信息有误');";

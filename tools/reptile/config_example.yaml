@@ -1,8 +1,0 @@
-mysql:
-  host:
-  port:
-  username: ""
-  password: ""
-  database: ""
-github:
-  token: ""
