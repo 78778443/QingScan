@@ -10,6 +10,7 @@ services:
     #        target: "/root/qingscan"
     ports:
       - "8000:8000"
+      - "13306:3306"
     stdin_open: true
     tty: true
     command: /bin/bash -c "php /root/qingscan/safe.php"
