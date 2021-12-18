@@ -67,15 +67,20 @@ class WebScanModel extends BaseModel
                 $result = [];
                 execLog($cmd, $result);
 
+
                 //$result = implode("\n", $result);
-                if (!file_exists($pathArr['cmd_result'])) {
+                if (!file_exists($pathArr['tool_result'])) {
                     addlog(["文件不存在", $pathArr['tool_result']]);
                     continue;
                 }
+
+
+
                 $urlList = json_decode(file_get_contents($pathArr['tool_result']), true);
 
                 foreach ($urlList as $value) {
-                    $arr = parse_url($value['url']);
+//                    var_dump($value);exit;
+                    $arr = parse_url($value['URL']);
                     $blackExt = ['.js', '.css', '.json', '.png', '.jpg', '.jpeg', '.gif', '.mp3', '.mp4'];
                     if (!isset($arr['query']) or in_array_strpos($arr['path'], $blackExt) or (strpos($arr['query'], '=') === false)) {
                         continue;
