@@ -260,40 +260,40 @@ $typeArr = [
                         <tr>
                             <th>ID</th>
                             <th>app_id</th>
-                            <th>urls_id</th>
-                            <th>author</th>
-                            <th>description</th>
+                            <th>domain</th>
                             <th>host</th>
-                            <th>port</th>
-                            <th>param</th>
-                            <th>request</th>
-                            <th>payload</th>
-                            <th>response</th>
-                            <th>url</th>
-                            <th>plugin</th>
-                            <th>target</th>
-                            <th>vuln_class</th>
+                            <th>status</th>
                             <th>create_time</th>
+                            <th>isp</th>
+                            <th>country</th>
+                            <th>region</th>
+                            <th>city</th>
+                            <th>area</th>
+                            <th>hydra_scan_time</th>
+                            <th>port_scan_time</th>
+                            <th>target</th>
+                            <th>ip_scan_time</th>
+                            <th>is_delete</th>
                         </tr>
                         </thead>
                         <?php foreach ($host as $value) { ?>
                             <tr>
                                 <td><?php echo $value['id'] ?></td>
                                 <td><?php echo $value['app_id'] ?></td>
-                                <td><?php echo $value['user_id'] ?></td>
-                                <td><?php echo $value['author'] ?></td>
-                                <td><?php echo $value['description'] ?></td>
+                                <td><?php echo $value['domain'] ?></td>
                                 <td><?php echo $value['host'] ?></td>
-                                <td><?php echo $value['port'] ?></td>
-                                <td  class="AutoNewline"><?php echo $value['param'] ?></td>
-                                <td><?php echo $value['request'] ?></td>
-                                <td><?php echo $value['payload'] ?></td>
-                                <td><?php echo $value['response'] ?></td>
-                                <td><?php echo $value['url'] ?></td>
-                                <td><?php echo $value['plugin'] ?></td>
-                                <td><?php echo $value['target'] ?></td>
-                                <td><?php echo $value['vuln_class'] ?></td>
+                                <td><?php echo $value['status'] ?></td>
                                 <td><?php echo $value['create_time'] ?></td>
+                                <td><?php echo $value['isp'] ?></td>
+                                <td  class="AutoNewline"><?php echo $value['country'] ?></td>
+                                <td><?php echo $value['region'] ?></td>
+                                <td><?php echo $value['city'] ?></td>
+                                <td><?php echo $value['area'] ?></td>
+                                <td><?php echo $value['hydra_scan_time'] ?></td>
+                                <td><?php echo $value['port_scan_time'] ?></td>
+                                <td><?php echo $value['target'] ?></td>
+                                <td><?php echo $value['ip_scan_time'] ?></td>
+                                <td><?php echo $value['is_delete'] ?></td>
                             </tr>
                         <?php } ?>
                     </table>
