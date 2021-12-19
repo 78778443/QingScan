@@ -54,10 +54,10 @@ function setPythonConfig(){
     $arr = @yaml_parse_file($filename);
     if ($arr) {
         $arr['mysql']['host'] = $_POST['DB_HOST'];
-        $arr['mysql']['port'] = $_POST['DB_PORT'];
-        $arr['mysql']['username'] = $_POST['DB_USER'];
-        $arr['mysql']['password'] = $_POST['DB_PASS'];
-        $arr['mysql']['database'] = $_POST['DB_NAME'];
+        $arr['mysql']['port'] = (int)($_POST['DB_PORT']);
+        $arr['mysql']['username'] = (string)$_POST['DB_USER'];
+        $arr['mysql']['password'] = (string)$_POST['DB_PASS'];
+        $arr['mysql']['database'] = (string)$_POST['DB_NAME'];
         yaml_emit_file($filename, $arr);
     }
 }
