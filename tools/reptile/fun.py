@@ -3,7 +3,7 @@ import json
 import yaml
 import pymysql
 
-with open("config.yaml", encoding="utf-8") as f:
+with open("config.yaml", "r", encoding="utf8") as f:
     config = yaml.load(f, Loader=yaml.SafeLoader)
 
 def dingding(message, token, keyword):
