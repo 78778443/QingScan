@@ -291,7 +291,7 @@ $typeArr = [
                                 <td><?php echo $value['area'] ?></td>
                                 <td><?php echo $value['hydra_scan_time'] ?></td>
                                 <td><?php echo $value['port_scan_time'] ?></td>
-                                <td><?php echo $value['target'] ?></td>
+                                <td><?php echo $value['ip_scan_time'] ?></td>
                                 <td><?php echo $value['is_delete'] ?></td>
                                 <td><?php echo $value['user_id'] ?></td>
                             </tr>
