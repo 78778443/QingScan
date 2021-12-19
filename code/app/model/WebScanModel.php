@@ -82,7 +82,9 @@ class WebScanModel extends BaseModel
 //                    var_dump($value);exit;
                     $arr = parse_url($value['URL']);
                     $blackExt = ['.js', '.css', '.json', '.png', '.jpg', '.jpeg', '.gif', '.mp3', '.mp4'];
-                    if (!isset($arr['query']) or in_array_strpos($arr['path'], $blackExt) or (strpos($arr['query'], '=') === false)) {
+//                    if (!isset($arr['query']) or in_array_strpos($arr['path'], $blackExt) or (strpos($arr['query'], '=') === false)) {
+                    if (in_array_strpos($arr['path'], $blackExt)) {
+                        addlog(["rad跳过资源类型url", $value['URL']]);
                         continue;
                     }
                     $newData = [
