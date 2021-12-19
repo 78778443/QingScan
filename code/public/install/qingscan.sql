@@ -39,6 +39,7 @@ CREATE TABLE `app`  (
                         `nuclei_scan_time` datetime(0) NULL DEFAULT '2000-01-01 00:00:00',
                         `dismap_scan_time` datetime(0) NULL DEFAULT '2000-01-01 00:00:00',
                         `crawlergo_scan_time` datetime(0) NULL DEFAULT '2000-01-01 00:00:00',
+                        `vulmap_scan_time` datetime(0) NULL DEFAULT '2000-01-01 00:00:00',
                         PRIMARY KEY (`id`) USING BTREE,
                         UNIQUE INDEX `un_url`(`url`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 2084 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = Compact;
@@ -403,6 +404,7 @@ INSERT INTO `auth_rule` VALUES (84, 'pocs_file/add', '未知', 0, 1, 43, 0, 1639
 INSERT INTO `auth_rule` VALUES (85, 'app/start_agent', '未知', 0, 1, 43, 0, 1639649367, 1, 0, 3, 0, '');
 INSERT INTO `auth_rule` VALUES (86, 'pocs_file/details', '未知', 0, 1, 43, 0, 1639649632, 1, 0, 3, 0, '');
 INSERT INTO `auth_rule` VALUES (87, 'vulnerable/edit', '未知', 0, 1, 43, 0, 1639652554, 1, 0, 3, 0, '');
+INSERT INTO `auth_rule` VALUES (88, 'vulmap/index', 'vulmap扫描', 0, 1, 8, 0, 1639913634, 1, 1639913692, 2, 0, '');
 
 -- ----------------------------
 -- Table structure for awvs_app
