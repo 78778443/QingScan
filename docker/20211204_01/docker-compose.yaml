@@ -1,13 +1,13 @@
 version: "3.2"
 services:
   qingscan:
-    image: daxia/qingscan:20211219_06
-    container_name: qingscan
+    image: daxia/qingscan:20211219_10
+    container_name: qingscan1
     #    network_mode: "host"
-      #    volumes:
-      #      - type: bind
-      #        source: "../../"
-    #        target: "/root/qingscan"
+    volumes:
+      - type: bind
+        source: "../../"
+        target: "/root/qingscan"
     ports:
       - "8000:8000"
       - "13306:3306"
