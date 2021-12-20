@@ -361,7 +361,7 @@ class WebScanModel extends BaseModel
                         'create_time' => substr($val['create_time'], 0, 10),
                     ];
                     if (!Db::name('app_vulmap')->insert($data)) {
-                        addlog(["app_vulmap数据写入失败:{$data}"]);
+                        addlog(["app_vulmap数据写入失败:".json_encode($data)]);
                     };
                 }
             }
