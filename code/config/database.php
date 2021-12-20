@@ -27,7 +27,7 @@ return [
             'hostname' => '127.0.0.1',
             // 用户名
             'username' => 'qingscan',
-            'password' => '123456',
+            'password' => '123',
             // 数据库名
             'database' => 'QingScan',
             // 数据库编码默认采用utf8
