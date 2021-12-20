@@ -19,8 +19,10 @@ class CodeJavaModel extends BaseModel
                 $value = $v;
                 $prName = cleanString($value['name']);
                 $codeUrl = $value['ssh_url'];
-                downCode($codePath, $prName, $codeUrl, $value['is_private'], $value['username'], $value['password'], $value['private_key']);
                 $filepath = "/data/codeCheck/{$prName}";
+                if (!file_exists($filepath)) {
+                    downCode($codePath, $prName, $codeUrl, $value['is_private'], $value['username'], $value['password'], $value['private_key']);
+                }
                 $fileArr = getFilePath($filepath,'pom.xml');
                 if (!$fileArr) {
                     addlog("JAVA依赖扫描失败,未找到依赖文件:{$filepath}");
@@ -36,12 +38,12 @@ class CodeJavaModel extends BaseModel
                             'groupId' => $result['groupId'],
                             'artifactId' => $result['artifactId'],
                             'version' => $result['version'],
-                            'modules' => json_encode($result['modules']),
+                            'modules' => isset($result['modules'])?json_encode($result['modules']):'',
                             'packaging' => $result['packaging'],
-                            'name' => $result['name'],
-                            'comment' => $result['comment'] ? json_encode($result['comment']) : '',
-                            'url' => $result['url'],
-                            'properties' => json_encode($result['properties']),
+                            'name' => isset($result['name'])?$result['name']:'',
+                            'comment' => isset($result['comment']) ? json_encode($result['comment']) : '',
+                            'url' => isset($result['url'])?$result['url']:'',
+                            'properties' => isset($result['properties'])?json_encode($result['properties']):'',
                             'dependencies' => json_encode($result['dependencies']),
                             'build' => json_encode($result['build']),
                             'create_time' => date('Y-m-d H:i:s', time()),
