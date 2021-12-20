@@ -38,23 +38,25 @@ class WebScanModel extends BaseModel
                     @unlink($pathArr['cmd_result']);
                 }
 
-                $filename = '/data/tools/rad/rad_config.yml';
+                $filename = '/data/tools/rad/rad_config.yaml';
                 if (!$value['is_intranet']) {   // 不是内网
-                    // 设置代理
-                    $arr = @yaml_parse_file($filename);
-                    if ($arr) {
-                        $proxyArr = Db::name('proxy')->where('status', 1)->limit(3)->orderRand()->select();
-                        $proxy = '';
-                        foreach ($proxyArr as $v) {
-                            $result = testAgent($v['host'], $v['port']);
-                            if ($result == 200) {
-                                $proxy = 'http://' . $v['host'] . ":{$v['port']}";
-                                break;
+                    if (file_exists($filename)) {
+                        // 设置代理
+                        $arr = @yaml_parse_file($filename);
+                        if ($arr) {
+                            $proxyArr = Db::name('proxy')->where('status', 1)->limit(3)->orderRand()->select();
+                            $proxy = '';
+                            foreach ($proxyArr as $v) {
+                                $result = testAgent($v['host'], $v['port']);
+                                if ($result == 200) {
+                                    $proxy = 'http://' . $v['host'] . ":{$v['port']}";
+                                    break;
+                                }
                             }
-                        }
-                        if (!empty($proxy)) {
-                            $arr['proxy'] = $proxy;
-                            yaml_emit_file($filename, $arr);
+                            if (!empty($proxy)) {
+                                $arr['proxy'] = $proxy;
+                                yaml_emit_file($filename, $arr);
+                            }
                         }
                     }
                 } else {
@@ -74,29 +76,27 @@ class WebScanModel extends BaseModel
                     continue;
                 }
 
-
-
+                //$result = implode("\n", $result);
+                if (!file_exists($pathArr['cmd_result'])) {
+                    addlog(["文件不存在", $pathArr['tool_result']]);
+                    continue;
+                }
                 $urlList = json_decode(file_get_contents($pathArr['tool_result']), true);
-
-                foreach ($urlList as $value) {
-//                    var_dump($value);exit;
+                foreach ($urlList as $val) {
                     $arr = parse_url($value['URL']);
                     $blackExt = ['.js', '.css', '.json', '.png', '.jpg', '.jpeg', '.gif', '.mp3', '.mp4'];
-//                    if (!isset($arr['query']) or in_array_strpos($arr['path'], $blackExt) or (strpos($arr['query'], '=') === false)) {
-                    if (in_array_strpos($arr['path'], $blackExt)) {
-                        addlog(["rad跳过资源类型url", $value['URL']]);
+                    if (!isset($arr['query']) or in_array_strpos($arr['path'], $blackExt) or (strpos($arr['query'], '=') === false)) {
                         continue;
                     }
                     $newData = [
                         'app_id' => $id,
-                        'method' => $value['Method'],
+                        'method' => $val['Method'],
                         'url' => $value['URL'],
                         'status' => 1,
                         'hash' => md5($value['URL']),
                         'crawl_status' => 1,
                         'scan_status' => 0,
-//                        'header' => json_encode($value['Header']),
-                        'header' => "{}",
+                        'header' => isset($val['Header'])?json_encode($val['Header']):"",
                         'user_id' => $user_id
                     ];
                     UrlsModel::addData($newData);
@@ -132,28 +132,30 @@ class WebScanModel extends BaseModel
                     // 设置代理
                     $filename = '/data/tools/xray/config.yaml';
                     if (!$val['is_intranet']) {  // 不是内网
-                        $arr = @yaml_parse_file($filename);
-                        if ($arr) {
-                            $arr['http']['proxy_rule'][0]['match'] = '*';
-                            $proxyArr = Db::name('proxy')->where('status', 1)->limit(3)->orderRand()->select()->toArray();
-                            $proxy = [];
-                            foreach ($proxyArr as $v) {
-                                $result = testAgent($v['host'], $v['port']);
-                                if ($result == 200) {
-                                    $proxy[] = 'http://' . $v['host'] . ":{$v['port']}";
+                        if (file_exists($filename)) {
+                            $arr = @yaml_parse_file($filename);
+                            if ($arr) {
+                                $arr['http']['proxy_rule'][0]['match'] = '*';
+                                $proxyArr = Db::name('proxy')->where('status', 1)->limit(3)->orderRand()->select()->toArray();
+                                $proxy = [];
+                                foreach ($proxyArr as $v) {
+                                    $result = testAgent($v['host'], $v['port']);
+                                    if ($result == 200) {
+                                        $proxy[] = 'http://' . $v['host'] . ":{$v['port']}";
+                                    }
                                 }
-                            }
-                            $arr['http']['proxy_rule'][0]['servers'] = [];
-                            if ($proxy) {
-                                $weight = random_split(10,count($proxy));
-                                foreach ($proxy as $k=>$v) {
-                                    $arr['http']['proxy_rule'][0]['servers'][] = [
-                                        'addr' => $v,
-                                        'weight' => $weight[$k],
-                                    ];
+                                $arr['http']['proxy_rule'][0]['servers'] = [];
+                                if ($proxy) {
+                                    $weight = random_split(10,count($proxy));
+                                    foreach ($proxy as $k=>$v) {
+                                        $arr['http']['proxy_rule'][0]['servers'][] = [
+                                            'addr' => $v,
+                                            'weight' => $weight[$k],
+                                        ];
+                                    }
                                 }
+                                yaml_emit_file($filename, $arr);
                             }
-                            yaml_emit_file($filename, $arr);
                         }
                     } else {
                         @unlink($filename);
