@@ -31,23 +31,6 @@ class App extends Common
     }
 
     public function index(){
-        /*echo '<pre>';
-        $filename = '/data/tools/wafw00f/wafw00f/result.json';
-        $content = file_get_contents($filename);
-        var_dump(json_decode($content,true));*/
-        /*//打开一个文件
-        $file = fopen($filename, "r");
-        //检测指正是否到达文件的未端
-        $data = [];
-        while (!feof($file)) {
-            $result = fgets($file);
-            if (empty($result)) {
-                continue;
-            }
-            $arr = json_decode($result, true);
-            var_dump($arr);
-            exit;
-        }*/
         $pageSize = 15;
         $page = getParam('page', 1);
         $statusCode = getParam('statuscode');
@@ -505,6 +488,7 @@ class App extends Common
         Db::table('app_vulmap')->where(['app_id' => $id])->delete();
         Db::table('host')->where(['host' => $ip])->delete();
         Db::table('host_port')->where(['host' => $ip])->delete();
+        Db::table('urls')->where(['app_id' => $id])->delete();
 
         return redirect($_SERVER['HTTP_REFERER'] ?? '/');
     }
