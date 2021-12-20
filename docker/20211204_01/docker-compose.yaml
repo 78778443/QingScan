@@ -1,7 +1,7 @@
 version: "3.2"
 services:
   qingscan:
-    image: daxia/qingscan:20211219_10
+    image: daxia/qingscan:20211220_01
     container_name: qingscan
     #    network_mode: "host"
 #    volumes:
