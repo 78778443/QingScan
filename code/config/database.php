@@ -24,12 +24,12 @@ return [
             // 数据库类型
             'type' => 'mysql',
             // 主机地址
-            'hostname' => '',
+            'hostname' => '127.0.0.1',
             // 用户名
-            'username' => '',
-            'password' => '',
+            'username' => 'qingscan',
+            'password' => '123456',
             // 数据库名
-            'database' => '',
+            'database' => 'QingScan',
             // 数据库编码默认采用utf8
             'charset' => 'utf8',
             // 数据库表前缀
