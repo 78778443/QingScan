@@ -58,7 +58,7 @@ class WebScanModel extends BaseModel
                         }
                     }
                 } else {
-                    unlink($filename);
+                    @unlink($filename);
                 }
 
                 $cmd = "{$path} ./rad_linux_amd64 -t  \"{$url}\"  -json  {$pathArr['tool_result']}";
@@ -156,7 +156,7 @@ class WebScanModel extends BaseModel
                             yaml_emit_file($filename, $arr);
                         }
                     } else {
-                        unlink($filename);
+                        @unlink($filename);
                     }
                     $cmd = "{$path} ./xray_linux_amd64 webscan --url \"{$url}\"  --json-output  {$pathArr['tool_result']}";
 
