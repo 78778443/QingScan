@@ -182,6 +182,7 @@ class AwvsModel extends BaseModel
             $result = curl_exec($ch);
             if (curl_errno($ch)) {
                 echo 'Error:' . curl_error($ch);
+                return  false;
             }
             curl_close($ch);
             $appInfo = json_decode($result, true);
