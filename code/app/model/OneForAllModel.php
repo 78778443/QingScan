@@ -29,6 +29,7 @@ class OneForAllModel extends BaseModel
                 $filename = $file_path.$domain.'.csv';
                 if (!file_exists($filename)) {
                     addlog(["文件不存在:{$filename}"]);
+                    AppModel::updateScanTime($v['id'],'subdomain_scan_time');
                     continue;
                 }
                 $list = assoc_getcsv($filename);
