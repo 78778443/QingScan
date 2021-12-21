@@ -26,7 +26,7 @@ class OneForAllModel extends BaseModel
                 $file_path = $tools.'/results/';
                 $cmd = "cd {$tools}  && python3 ./oneforall.py --target {$host} --path {$file_path} run";
                 systemLog($cmd);
-                $filename = $file_path.$domain.'csv';
+                $filename = $file_path.$domain.'.csv';
                 if (!file_exists($filename)) {
                     addlog(["文件不存在:{$filename}"]);
                     continue;
