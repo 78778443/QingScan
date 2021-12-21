@@ -25,8 +25,12 @@ class AwvsModel extends BaseModel
                 addlog(["AWVS开始执行扫描任务", $id, $url]);
                 //添加目标
                 $targetId = self::getTargetId($id, $url,$awvs_url,$awvs_token);
+                if (!$targetId) {
+                    addlog(["AWVS扫描失败", $id, $url]);
+                    self::scanTime('app',$id,'awvs_scan_time');
+                    continue;
+                }
                 $retArr = self::getScanStatus($targetId,$awvs_url,$awvs_token);
-
                 if (isset($retArr['code']) && $retArr['code'] == 404) {
                     addlog(["未在AWVS中找到此目标ID", $targetId]);
                     Db::table('awvs_app')->where(['target_id' => $targetId])->delete();
