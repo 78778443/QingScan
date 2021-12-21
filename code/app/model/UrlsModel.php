@@ -213,7 +213,6 @@ class UrlsModel extends BaseModel
             $list = $api->where('is_delete', 0)->field('id,url,app_id')->limit(5)->orderRand()->select()->toArray();
             $file_path = '/data/tools/sqlmap/';
             foreach ($list as $k => $v) {
-//            $v['url'] = "http://172.22.43.246:8888/home/index.php?m=tiezi&a=index&bk=5";
                 $arr = parse_url($v['url']);
 
                 $blackExt = ['.js', '.css', '.json', '.png', '.jpg', '.jpeg', '.gif', '.mp3', '.mp4'];
