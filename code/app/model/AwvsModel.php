@@ -11,7 +11,7 @@ class AwvsModel extends BaseModel
     {
         $awvs_url = ConfigModel::value('awvs_url');
         $awvs_token = ConfigModel::value('awvs_token');
-
+        var_dump($awvs_url);exit;
         while (true) {
             $list = Db::table('app')->whereTime('awvs_scan_time', '<=', date('Y-m-d H:i:s', time() - (86400 * 15)))->where('is_delete',0)->limit(1)->orderRand()->select()->toArray();
             foreach ($list as $val) {
