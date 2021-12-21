@@ -33,7 +33,6 @@ class OneForAllModel extends BaseModel
                     continue;
                 }
                 $list = assoc_getcsv($filename);
-                @unlink($filename);
                 if (!empty($list)) {
                     $data = [];
                     Db::name('app')->where('id',$v['id'])->update(['subdomain_scan_time'=>date('Y-m-d H:i:s',time())]);
@@ -45,6 +44,7 @@ class OneForAllModel extends BaseModel
                     if ($data) {
                         Db::name('one_for_all')->insertAll($data);
                     }
+                    @unlink($filename);
                 } else {
                     addlog(["内容获取失败:{$filename}"]);
                 }
