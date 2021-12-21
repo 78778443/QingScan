@@ -14,6 +14,7 @@ class AwvsModel extends BaseModel
     public function __construct()
     {
         self::$url = ConfigModel::value('awvs_url');
+        var_dump(self::$url);
         self::$token = ConfigModel::value('awvs_token');
     }
 
@@ -171,7 +172,6 @@ class AwvsModel extends BaseModel
     {
         $appInfo = Db::table('awvs_app')->where(['app_id' => $id])->find();
         if (empty($appInfo)) {
-            var_dump(AwvsModel::$url);exit;
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, AwvsModel::$url . "/api/v1/targets");
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
