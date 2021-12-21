@@ -44,8 +44,8 @@ class CodeJavaModel extends BaseModel
                             'comment' => isset($result['comment']) ? json_encode($result['comment']) : '',
                             'url' => isset($result['url'])?$result['url']:'',
                             'properties' => isset($result['properties'])?json_encode($result['properties']):'',
-                            'dependencies' => json_encode($result['dependencies']),
-                            'build' => json_encode($result['build']),
+                            'dependencies' => isset($result['dependencies'])?json_encode($result['dependencies']):'',
+                            'build' => isset($result['build'])?json_encode($result['build']):'',
                             'create_time' => date('Y-m-d H:i:s', time()),
                         ];
                         Db::name('code_java')->insert($data);
