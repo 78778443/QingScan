@@ -68,8 +68,6 @@ class WebScanModel extends BaseModel
 
                 $result = [];
                 execLog($cmd, $result);
-                echo '<pre>';
-                var_dump($result);exit;
 
                 //$result = implode("\n", $result);
                 if (!file_exists($pathArr['tool_result'])) {
