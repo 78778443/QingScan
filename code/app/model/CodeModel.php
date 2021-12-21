@@ -341,7 +341,7 @@ class CodeModel extends BaseModel
                     foreach ($packages as $val) {
                         $data['user_id'] = $v['user_id'];
                         $data['code_id'] = $v['id'];
-                        $data['name'] = $val['name'];
+                        $data['name'] = isset($val['name'])?$val['name']:'';
                         $data['version'] = isset($val['version'])?$val['version']:'';
                         $data['source'] = isset($val['source'])?json_encode($val['source']):'';
                         $data['dist'] = isset($val['dist'])?json_encode($val['dist']):'';
