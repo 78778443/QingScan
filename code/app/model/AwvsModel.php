@@ -32,8 +32,6 @@ class AwvsModel extends BaseModel
                 addlog(["AWVS开始执行扫描任务", $id, $url]);
                 //添加目标
                 $targetId = self::getTargetId($id, $url);
-                var_dump($targetId);
-                exit;
                 $retArr = self::getScanStatus($targetId);
 
                 if (isset($retArr['code']) && $retArr['code'] == 404) {
@@ -173,6 +171,7 @@ class AwvsModel extends BaseModel
     {
         $appInfo = Db::table('awvs_app')->where(['app_id' => $id])->find();
         if (empty($appInfo)) {
+            var_dump(AwvsModel::$url);exit;
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, AwvsModel::$url . "/api/v1/targets");
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
