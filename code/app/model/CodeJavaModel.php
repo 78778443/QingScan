@@ -49,6 +49,7 @@ class CodeJavaModel extends BaseModel
                             'create_time' => date('Y-m-d H:i:s', time()),
                         ];
                         Db::name('code_java')->insert($data);
+                        addlog("JAVA依赖扫描数据写入成功,内容为:".json_encode($val['file']));
                     } else {
                         addlog("JAVA依赖扫描失败,项目文件内容为空:{$val['file']}");
                     }
