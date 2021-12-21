@@ -34,7 +34,7 @@ class WebScanModel extends BaseModel
                     @unlink($pathArr['tool_result']);
                 }
                 if (file_exists($pathArr['cmd_result'])) {
-                    addlog(["清理老文件", $pathArr['tool_result']]);
+                    addlog(["清理老文件", $pathArr['cmd_result']]);
                     @unlink($pathArr['cmd_result']);
                 }
 
@@ -77,7 +77,7 @@ class WebScanModel extends BaseModel
 
                 //$result = implode("\n", $result);
                 if (!file_exists($pathArr['cmd_result'])) {
-                    addlog(["文件不存在", $pathArr['tool_result']]);
+                    addlog(["文件不存在", $pathArr['cmd_result']]);
                     continue;
                 }
                 $urlList = json_decode(file_get_contents($pathArr['tool_result']), true);
