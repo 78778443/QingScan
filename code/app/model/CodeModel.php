@@ -358,6 +358,7 @@ class CodeModel extends BaseModel
                         $data['time'] = isset($val['time'])?$val['time']:'';
                         $data['create_time'] = date('Y-m-d H:i:s', time());
                         Db::name('code_composer')->insert($data);
+                        addlog("composer依赖扫描数据写入成功,内容为:".json_encode($data));
                     }
                 }
             }
