@@ -8,25 +8,25 @@ use think\facade\Db;
 class AwvsModel extends BaseModel
 {
 
-    public $url,$token;
+    public static $url;
+    public static $token;
 
     public function __construct()
     {
-        $this->url = ConfigModel::value('awvs_url');
-        $this->token = ConfigModel::value('awvs_token');
+        self::$url = ConfigModel::value('awvs_url');
+        self::$token = ConfigModel::value('awvs_token');
     }
 
     public static function scan()
     {
         while (true) {
-            $list = Db::table('app')->whereTime('awvs_scan_time', '<=', date('Y-m-d H:i:s', time() - (86400 * 15)))->limit(1)->orderRand()->select()->toArray();
+            $list = Db::table('app')->whereTime('awvs_scan_time', '<=', date('Y-m-d H:i:s', time() - (86400 * 15)))->where('is_delete',0)->limit(1)->orderRand()->select()->toArray();
             foreach ($list as $val) {
-
                 $url = $val['url'];
                 $id = $val['id'];
                 if (filter_var($url, FILTER_VALIDATE_URL) === false) {
                     addlog(["URL地址不正确", $id, $url]);
-                    Db::table('app')->where(['id' => $id])->save(['awvs_scan_time' => date('Y-m-d H:i:s')]);
+                    self::scanTime('app',$id,'awvs_scan_time');
                     continue;
                 }
                 addlog(["AWVS开始执行扫描任务", $id, $url]);
@@ -45,8 +45,8 @@ class AwvsModel extends BaseModel
                 }
                 //判断目标扫描状态
                 if (isset($retArr['last_scan_session_status']) && $retArr['last_scan_session_status'] == 'completed') {
-                    Db::table('app')->where(['id' => $id])->save(['awvs_scan_time' => date('Y-m-d H:i:s')]);
                     self::addVulnList($retArr['last_scan_id'], $retArr['last_scan_session_id']);
+                    self::scanTime('app',$id,'awvs_scan_time');
                 }
             }
 
