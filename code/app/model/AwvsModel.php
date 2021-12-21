@@ -32,6 +32,8 @@ class AwvsModel extends BaseModel
                 addlog(["AWVS开始执行扫描任务", $id, $url]);
                 //添加目标
                 $targetId = self::getTargetId($id, $url);
+                var_dump($targetId);
+                exit;
                 $retArr = self::getScanStatus($targetId);
 
                 if (isset($retArr['code']) && $retArr['code'] == 404) {
@@ -49,7 +51,6 @@ class AwvsModel extends BaseModel
                     self::scanTime('app',$id,'awvs_scan_time');
                 }
             }
-
             addlog("AWS累了，休息10秒钟...");
             sleep(10);
         }
@@ -170,9 +171,7 @@ class AwvsModel extends BaseModel
 
     public static function getTargetId($id, $url)
     {
-
         $appInfo = Db::table('awvs_app')->where(['app_id' => $id])->find();
-
         if (empty($appInfo)) {
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, AwvsModel::$url . "/api/v1/targets");
@@ -181,29 +180,23 @@ class AwvsModel extends BaseModel
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
             curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
             curl_setopt($ch, CURLOPT_POSTFIELDS, "{\"address\": \"{$url}\",\"description\": \"xxxx\",\"criticality\": \"10\"}");
-
             $headers = array();
             $headers[] = 'Content-Type: application/json';
             $headers[] = 'X-Auth: ' . AwvsModel::$token;
             curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-
             $result = curl_exec($ch);
             if (curl_errno($ch)) {
                 echo 'Error:' . curl_error($ch);
             }
             curl_close($ch);
-
             $appInfo = json_decode($result, true);
-
             if ($appInfo) {
                 $appInfo['app_id'] = $id;
                 Db::table('awvs_app')->insert($appInfo);
             }
-
             //添加扫描任务
             self::startScan($appInfo['target_id']);
         }
-
         return $appInfo['target_id'];
     }
 
@@ -227,6 +220,4 @@ class AwvsModel extends BaseModel
 
         }
     }
-
-
 }
