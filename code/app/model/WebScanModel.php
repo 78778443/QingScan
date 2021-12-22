@@ -310,8 +310,6 @@ class WebScanModel extends BaseModel
                     addlog(["nucel扫描数据不存在，url:{$v['url']}"]);
                     continue;
                 }
-                echo '<pre>';
-                var_dump($data);exit;
                 if (!Db::name('app_nuclei')->insertAll($data)) {
                     addlog(["app_nuclei数据写入失败:".json_encode($data)]);
                 }
