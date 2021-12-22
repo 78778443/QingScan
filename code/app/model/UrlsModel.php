@@ -258,6 +258,7 @@ class UrlsModel extends BaseModel
                     $bbb['type'] = $data['Type'][$key];
                     Db::name('urls_sqlmap')->insert($bbb);
                 }
+                addlog(["sqlmap扫描成功数据已写入：", $v['url']]);
                 systemLog("rm -rf $outdir");
             }
             //exit;
