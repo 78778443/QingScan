@@ -128,7 +128,6 @@ class PluginModel extends BaseModel
                 Db::table("plugin_result")->extra('IGNORE')->insert($data);
             }
 
-            addlog("自定义工具{$info['name']},跑完一轮，即将休息 10 秒");
             sleep(10);
         }
     }
