@@ -313,6 +313,7 @@ class WebScanModel extends BaseModel
                 if (!Db::name('app_nuclei')->insertAll($data)) {
                     addlog(["app_nuclei数据写入失败:".json_encode($data)]);
                 }
+                addlog(["nuclei扫描数据写入成功:".json_encode($data)]);
             }
             sleep(120);
         }
