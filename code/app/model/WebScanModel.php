@@ -190,7 +190,8 @@ class WebScanModel extends BaseModel
                         'header' => isset($val['Header'])?json_encode($val['Header']):"",
                         'user_id' => $user_id
                     ];
-                    UrlsModel::addData($newData);
+                    Db::name('urls')->insert($newData);
+                    //UrlsModel::addData($newData);
                     addlog(["rad扫描数据写入成功", json_encode($newData)]);
                 }
             }
