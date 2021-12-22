@@ -127,10 +127,10 @@ class WebScanModel extends BaseModel
                     addlog(["清理老文件", $pathArr['tool_result']]);
                     @unlink($pathArr['tool_result']);
                 }
-                if (file_exists($pathArr['cmd_result'])) {
+                /*if (file_exists($pathArr['cmd_result'])) {
                     addlog(["清理老文件", $pathArr['cmd_result']]);
                     @unlink($pathArr['cmd_result']);
-                }
+                }*/
 
                 $filename = '/data/tools/rad/rad_config.yaml';
                 if (!$value['is_intranet']) {   // 不是内网
@@ -168,10 +168,10 @@ class WebScanModel extends BaseModel
                     continue;
                 }
 
-                if (!file_exists($pathArr['cmd_result'])) {
+                /*if (!file_exists($pathArr['cmd_result'])) {
                     addlog(["文件不存在", $pathArr['cmd_result']]);
                     continue;
-                }
+                }*/
                 $urlList = json_decode(file_get_contents($pathArr['tool_result']), true);
                 foreach ($urlList as $val) {
                     $arr = parse_url($value['URL']);
