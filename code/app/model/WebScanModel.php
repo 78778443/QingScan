@@ -61,7 +61,7 @@ class WebScanModel extends BaseModel
                     @unlink($filename);
                 }
 
-                $cmd = "{$path} ./rad_linux_amd64 -t  \"{$url}\"  -json  {$pathArr['tool_result']}";
+                $cmd = "{$path} ./rad_linux_amd64 -t  \"{$url}\"  -json {$pathArr['cmd_result']} --json-output {$pathArr['tool_result']}";
                 addlog(["开始执行抓取URL地址命令", $cmd]);
 
                 $result = [];
