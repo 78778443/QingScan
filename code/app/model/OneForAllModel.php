@@ -18,6 +18,7 @@ class OneForAllModel extends BaseModel
             $tools = '/data/tools/OneForAll';
             foreach ($app_list as $k => $v) {
                 $host = parse_url($v['url'])['host'];
+                var_dump(filter_var($host, FILTER_VALIDATE_IP));exit;
                 if (filter_var($host, FILTER_VALIDATE_IP) == false) {
                     addlog(["此地址不是域名:{$v['url']}"]);
                     AppModel::updateScanTime($v['id'],'subdomain_scan_time');
