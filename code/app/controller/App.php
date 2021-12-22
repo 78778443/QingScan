@@ -146,15 +146,23 @@ class App extends Common
         $urlInfo = parse_url($data['info']['url']);
         $ip = gethostbyname($urlInfo['host']);
 
-        Db::table('app_whatweb')->where(['app_id' => $id])->delete();
-        Db::table('one_for_all')->where(['app_id' => $id])->delete();
-        Db::table('host_hydra_scan_details')->where(['app_id' => $id])->delete();
+        Db::table('app_crawlergo')->where(['app_id' => $id])->delete();
         Db::table('app_dirmap')->where(['app_id' => $id])->delete();
-        Db::table('urls_sqlmap')->where(['app_id' => $id])->delete();
+        Db::table('app_nuclei')->where(['app_id' => $id])->delete();
         Db::table('app_vulmap')->where(['app_id' => $id])->delete();
+        Db::table('app_wafw00f')->where(['app_id' => $id])->delete();
+        Db::table('app_whatweb')->where(['app_id' => $id])->delete();
+        Db::table('app_whatweb_poc')->where(['app_id' => $id])->delete();
+        Db::table('app_xray_agent_port')->where(['app_id' => $id])->delete();
+        Db::table('awvs_app')->where(['app_id' => $id])->delete();
         Db::table('host')->where(['host' => $ip])->delete();
+        Db::table('host_hydra_scan_details')->where(['app_id' => $id])->delete();
         Db::table('host_port')->where(['host' => $ip])->delete();
+        Db::table('one_for_all')->where(['app_id' => $id])->delete();
+        Db::table('plugin_result')->where(['app_id' => $id])->delete();
         Db::table('urls')->where(['app_id' => $id])->delete();
+        Db::table('urls_sqlmap')->where(['app_id' => $id])->delete();
+        Db::table('xray')->where(['app_id' => $id])->delete();
 
         if (Db::name('app')->where($map)->delete()) {
             return redirect($_SERVER['HTTP_REFERER']);
@@ -474,21 +482,33 @@ class App extends Common
             'xray_scan_time' => '2000-01-01 00:00:00',
             'dirmap_scan_time' => '2000-01-01 00:00:00',
             'wafw00f_scan_time' => '2000-01-01 00:00:00',
+            'nuclei_scan_time' => '2000-01-01 00:00:00',
+            'dismap_scan_time' => '2000-01-01 00:00:00',
+            'crawlergo_scan_time' => '2000-01-01 00:00:00',
+            'vulmap_scan_time' => '2000-01-01 00:00:00',
         );
         $data['info'] = Db::name('app')->where(['id'=>$id])->find();
         $urlInfo = parse_url($data['info']['url']);
         $ip = gethostbyname($urlInfo['host']);
 
         Db::table('app')->where(['id' => $id])->save($array);
-        Db::table('app_whatweb')->where(['app_id' => $id])->delete();
-        Db::table('one_for_all')->where(['app_id' => $id])->delete();
-        Db::table('host_hydra_scan_details')->where(['app_id' => $id])->delete();
+        Db::table('app_crawlergo')->where(['app_id' => $id])->delete();
         Db::table('app_dirmap')->where(['app_id' => $id])->delete();
-        Db::table('urls_sqlmap')->where(['app_id' => $id])->delete();
+        Db::table('app_nuclei')->where(['app_id' => $id])->delete();
         Db::table('app_vulmap')->where(['app_id' => $id])->delete();
+        Db::table('app_wafw00f')->where(['app_id' => $id])->delete();
+        Db::table('app_whatweb')->where(['app_id' => $id])->delete();
+        Db::table('app_whatweb_poc')->where(['app_id' => $id])->delete();
+        Db::table('app_xray_agent_port')->where(['app_id' => $id])->delete();
+        Db::table('awvs_app')->where(['app_id' => $id])->delete();
         Db::table('host')->where(['host' => $ip])->delete();
+        Db::table('host_hydra_scan_details')->where(['app_id' => $id])->delete();
         Db::table('host_port')->where(['host' => $ip])->delete();
+        Db::table('one_for_all')->where(['app_id' => $id])->delete();
+        Db::table('plugin_result')->where(['app_id' => $id])->delete();
         Db::table('urls')->where(['app_id' => $id])->delete();
+        Db::table('urls_sqlmap')->where(['app_id' => $id])->delete();
+        Db::table('xray')->where(['app_id' => $id])->delete();
 
         return redirect($_SERVER['HTTP_REFERER'] ?? '/');
     }
