@@ -231,7 +231,7 @@ class UrlsModel extends BaseModel
 
                 //sqlmap输出异常
                 if (!is_dir($outdir) or !file_exists($outfilename) or !filesize($outfilename)) {
-                    addlog(["sqlmap输出异常", $v['url']]);
+                    addlog(["sqlmap没有找到注入点", $v['url']]);
                     continue;
                 }
                 $ddd = file_get_contents($outfilename);
