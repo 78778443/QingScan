@@ -214,7 +214,7 @@ class UrlsModel extends BaseModel
             $tools = '/data/tools/sqlmap/';
             foreach ($list as $k => $v) {
                 $arr = parse_url($v['url']);
-
+                var_dump($arr);exit;
                 $blackExt = ['.js', '.css', '.json', '.png', '.jpg', '.jpeg', '.gif', '.mp3', '.mp4'];
                 //没有可以注入的参数
                 if (!isset($arr['query']) or in_array_strpos($arr['path'], $blackExt) or (strpos($arr['query'], '=') === false)) {
