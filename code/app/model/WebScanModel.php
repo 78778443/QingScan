@@ -78,7 +78,7 @@ class WebScanModel extends BaseModel
                 }*/
                 $urlList = json_decode(file_get_contents($pathArr['tool_result']), true);
                 foreach ($urlList as $val) {
-                    $arr = parse_url($value['url']);
+                    $arr = parse_url($val['URL']);
                     $blackExt = ['.js', '.css', '.json', '.png', '.jpg', '.jpeg', '.gif', '.mp3', '.mp4'];
                     if (!isset($arr['query']) or (isset($arr['path']) && in_array_strpos($arr['path'], $blackExt)) or (strpos($arr['query'], '=') === false)) {
                         continue;
