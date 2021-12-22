@@ -61,7 +61,7 @@ class WebScanModel extends BaseModel
                     @unlink($filename);
                 }
 
-                $cmd = "{$path} ./rad_linux_amd64 -t  \"{$url}\" -json-output {$pathArr['tool_result']}";
+                $cmd = "{$path} ./rad_linux_amd64 -t  \"{$url}\" -json {$pathArr['tool_result']}";
                 addlog(["开始执行抓取URL地址命令", $cmd]);
 
                 $result = [];
@@ -78,11 +78,11 @@ class WebScanModel extends BaseModel
                 }*/
                 $urlList = json_decode(file_get_contents($pathArr['tool_result']), true);
                 foreach ($urlList as $val) {
-                    $arr = parse_url($value['url']);
+                    /*$arr = parse_url($value['url']);
                     $blackExt = ['.js', '.css', '.json', '.png', '.jpg', '.jpeg', '.gif', '.mp3', '.mp4'];
                     if (!isset($arr['query']) or in_array_strpos($arr['path'], $blackExt) or (strpos($arr['query'], '=') === false)) {
                         continue;
-                    }
+                    }*/
                     $newData = [
                         'app_id' => $id,
                         'method' => $val['Method'],
