@@ -191,6 +191,7 @@ class WebScanModel extends BaseModel
                         'user_id' => $user_id
                     ];
                     UrlsModel::addData($newData);
+                    addlog(["rad扫描数据写入成功", json_encode($newData)]);
                 }
             }
             sleep(10);
