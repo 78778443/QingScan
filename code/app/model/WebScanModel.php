@@ -174,7 +174,7 @@ class WebScanModel extends BaseModel
                 }*/
                 $urlList = json_decode(file_get_contents($pathArr['tool_result']), true);
                 foreach ($urlList as $val) {
-                    $arr = parse_url($value['URL']);
+                    $arr = parse_url($value['url']);
                     $blackExt = ['.js', '.css', '.json', '.png', '.jpg', '.jpeg', '.gif', '.mp3', '.mp4'];
                     if (!isset($arr['query']) or in_array_strpos($arr['path'], $blackExt) or (strpos($arr['query'], '=') === false)) {
                         continue;
@@ -182,9 +182,9 @@ class WebScanModel extends BaseModel
                     $newData = [
                         'app_id' => $id,
                         'method' => $val['Method'],
-                        'url' => $value['URL'],
+                        'url' => $val['URL'],
                         'status' => 1,
-                        'hash' => md5($value['URL']),
+                        'hash' => md5($val['URL']),
                         'crawl_status' => 1,
                         'scan_status' => 0,
                         'header' => isset($val['Header'])?json_encode($val['Header']):"",
