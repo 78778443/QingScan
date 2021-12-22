@@ -17,9 +17,12 @@ class OneForAllModel extends BaseModel
             $app_list = Db::name('app')->whereTime('subdomain_scan_time', '<=', date('Y-m-d H:i:s', time() - (86400 * 15)))->where('is_delete',0)->field('id,url')->orderRand()->limit(1)->select()->toArray();
             $tools = '/data/tools/OneForAll';
             foreach ($app_list as $k => $v) {
-                //AppModel::updateScanTime($v['id'],'subdomain_scan_time');
-
                 $host = parse_url($v['url'])['host'];
+                if (!filter_var($host, FILTER_VALIDATE_IP)) {
+                    addlog(["此地址不是域名:{$v['url']}"]);
+                    AppModel::updateScanTime($v['id'],'subdomain_scan_time');
+                    continue;
+                }
                 $host_arr = explode('.',$host);
                 unset($host_arr[0]);
                 $domain = implode('.',$host_arr);
@@ -44,6 +47,7 @@ class OneForAllModel extends BaseModel
                     if ($data) {
                         Db::name('one_for_all')->insertAll($data);
                     }
+                    AppModel::updateScanTime($v['id'],'subdomain_scan_time');
                     @unlink($filename);
                 } else {
                     addlog(["内容获取失败:{$filename}"]);
