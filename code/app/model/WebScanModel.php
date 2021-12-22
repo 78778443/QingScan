@@ -267,7 +267,7 @@ class WebScanModel extends BaseModel
 
                 $filename = '/tmp/nuclei.json';
                 @unlink($filename);
-                $cmd = "cd $agent && ./nuclei -u {$v['url']} -json -o nuclei.json";
+                $cmd = "cd $agent && ./nuclei -u {$v['url']} -json -o {$filename}";
                 systemLog($cmd);
                 if (!file_exists($filename)) {
                     addlog(["nucel扫描失败，url:{$v['url']}"]);
