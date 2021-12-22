@@ -303,7 +303,7 @@ class WebScanModel extends BaseModel
                         'ip'=>$arr['ip'],
                         'curl_command'=>isset($arr['curl-command'])?json_encode($arr['curl-command']):'',
                         'status'=>isset($arr['matcher-status'])?$arr['matcher-status']?1:0:0,
-                        'create_time'=>date('Y-m-d H:i:s',strtotime($arr['timestamp']))
+                        'create_time'=>strtotime($arr['timestamp'])?date('Y-m-d H:i:s',strtotime($arr['timestamp'])):date('Y-m-d H:i:s',time())
                     ];
                     Db::name('app_nuclei')->insert($data);
                     $temp[] = $data;
