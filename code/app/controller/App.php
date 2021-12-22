@@ -154,7 +154,7 @@ class App extends Common
         Db::table('app_vulmap')->where(['app_id' => $id])->delete();
         Db::table('host')->where(['host' => $ip])->delete();
         Db::table('host_port')->where(['host' => $ip])->delete();
-
+        Db::table('urls')->where(['app_id' => $id])->delete();
 
         if (Db::name('app')->where($map)->delete()) {
             return redirect($_SERVER['HTTP_REFERER']);
