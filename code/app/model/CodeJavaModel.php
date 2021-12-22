@@ -19,7 +19,7 @@ class CodeJavaModel extends BaseModel
                 $value = $v;
                 $prName = cleanString($value['name']);
                 $codeUrl = $value['ssh_url'];
-                $filepath = "/data/codeCheck/{$prName}";
+                $filepath = "{$codePath}/{$prName}";
                 if (!file_exists($filepath)) {
                     downCode($codePath, $prName, $codeUrl, $value['is_private'], $value['username'], $value['password'], $value['private_key']);
                 }

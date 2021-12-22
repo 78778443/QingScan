@@ -232,11 +232,14 @@ class CodeCheckModel extends BaseModel
                 $prName = cleanString($value['name']);
                 $codeUrl = $value['ssh_url'];
                 addlog("开始执行扫描代码任务:{$prName}..." . PHP_EOL);
-                //1. 拉取代码
-                downCode($codePath, $prName, $codeUrl,$value['is_private'],$value['username'],$value['password'],$value['private_key']);
+                $filepath = "{$codePath}/{$prName}";
+                if (!file_exists($filepath)) {
+                    //1. 拉取代码
+                    downCode($codePath, $prName, $codeUrl,$value['is_private'],$value['username'],$value['password'],$value['private_key']);
+                }
 
                 //2. 扫描代码
-                FortifyModel::startScan("{$codePath}/{$prName}", "{$fortifyRetDir}/{$prName}");
+                FortifyModel::startScan($filepath, "{$fortifyRetDir}/{$prName}");
 
                 $xmlFile = "{$fortifyRetDir}/{$prName}.xml";
                 if (file_exists($xmlFile) === false) {
@@ -250,8 +253,7 @@ class CodeCheckModel extends BaseModel
 
                 //5. 更新
                 if (file_exists("{$fortifyRetDir}/{$prName}.xml")) {
-                    $value['scan_time'] = date('Y-m-d H:i:s');
-                    Db::table('code')->update($value);
+                    self::scanTime('code',$value['id'],'scan_time');
                 }
             }
 
@@ -267,26 +269,23 @@ class CodeCheckModel extends BaseModel
         if (!file_exists($codePath)) {
             mkdir($codePath, 0777, true);
         }
-
         while (true) {
             $endTime = date('Y-m-d', time() - 86400 * 15);
             $list = Db::table('code')->whereTime('kunlun_scan_time', '<=', $endTime)->orderRand()->limit(1)->select()->toArray();
-
             foreach ($list as $value) {
                 $prName = cleanString($value['name']);
-
                 $codeUrl = $value['ssh_url'];
-                //1. 拉取代码
-                downCode($codePath, $prName, $codeUrl,$value['is_private'],$value['username'],$value['password'],$value['private_key']);
-
+                $filepath = "{$codePath}/{$prName}";
+                if (!file_exists($filepath)) {
+                    //1. 拉取代码
+                    downCode($codePath, $prName, $codeUrl,$value['is_private'],$value['username'],$value['password'],$value['private_key']);
+                }
                 //扫描代码
-                $result = KunlunModel::startScan("{$codePath}/{$prName}");
+                $result = KunlunModel::startScan($filepath);
                 if ($result) {
-                    $value['kunlun_scan_time'] = date('Y-m-d H:i:s');
-                    Db::table('code')->update($value);
+                    self::scanTime('code',$value['id'],'kunlun_scan_time');
                 }
             }
-
             print_r("跑完一圈,休息10秒..." . PHP_EOL);
             sleep(10);
         }
@@ -305,20 +304,22 @@ class CodeCheckModel extends BaseModel
             foreach ($list as $value) {
                 $prName = cleanString($value['name']);
                 $codeUrl = $value['ssh_url'];
-                //1. 拉取代码
-                downCode($codePath, $prName, $codeUrl,$value['is_private'],$value['username'],$value['password'],$value['private_key']);
+                $filepath = "{$codePath}/{$prName}";
+                if (!file_exists($filepath)) {
+                    //1. 拉取代码
+                    downCode($codePath, $prName, $codeUrl,$value['is_private'],$value['username'],$value['password'],$value['private_key']);
+                }
 
                 //2. 扫描代码
                 $outJson = "{$fortifyRetDir}/{$prName}.json";
-                SemgrepModel::startScan("{$codePath}/{$prName}", $outJson);
+                SemgrepModel::startScan($filepath, $outJson);
 
                 //4. 存储结果
                 SemgrepModel::addDataAll($value['id'], $outJson, $value['user_id']);
 
                 //5. 更新
                 if (file_exists($outJson)) {
-                    $value['semgrep_scan_time'] = date('Y-m-d H:i:s');
-                    Db::table('code')->update($value);
+                    self::scanTime('code',$value['id'],'semgrep_scan_time');
                 }
             }
 

@@ -10,6 +10,100 @@ class WebScanModel extends BaseModel
 {
 
 
+    public static function rad1()
+    {
+        $path = "cd /data/tools/rad/ && ";
+
+        //判断rad运行环境是否安装
+        if (file_exists("/usr/bin/google-chrome") == false) {
+            addlog("RAD 运行依赖环境不存在，请安装chrome环境~");
+            return false;
+        }
+        while (true) {
+            $list = Db::table('app')->whereTime('crawler_time', '<=', date('Y-m-d H:i:s', time() - (86400 * 15)))->limit(1)->orderRand()->select()->toArray();
+            foreach ($list as $value) {
+                //self::scanTime('app',$value['id'],'crawler_time');
+
+                $url = $value['url'];
+                $id = $value['id'];
+                $user_id = $value['user_id'];
+                $pathArr = getSavePath($url, "rad", $id);
+                //初始化清理目录
+                if (file_exists($pathArr['tool_result'])) {
+                    addlog(["清理老文件", $pathArr['tool_result']]);
+                    @unlink($pathArr['tool_result']);
+                }
+                if (file_exists($pathArr['cmd_result'])) {
+                    addlog(["清理老文件", $pathArr['cmd_result']]);
+                    @unlink($pathArr['cmd_result']);
+                }
+
+                $filename = '/data/tools/rad/rad_config.yaml';
+                /*if (!$value['is_intranet']) {   // 不是内网
+                    if (file_exists($filename)) {
+                        // 设置代理
+                        $arr = @yaml_parse_file($filename);
+                        if ($arr) {
+                            $proxyArr = Db::name('proxy')->where('status', 1)->limit(3)->orderRand()->select();
+                            $proxy = '';
+                            foreach ($proxyArr as $v) {
+                                $result = testAgent($v['host'], $v['port']);
+                                if ($result == 200) {
+                                    $proxy = 'http://' . $v['host'] . ":{$v['port']}";
+                                    break;
+                                }
+                            }
+                            if (!empty($proxy)) {
+                                $arr['proxy'] = $proxy;
+                                yaml_emit_file($filename, $arr);
+                            }
+                        }
+                    }
+                } else {
+                    @unlink($filename);
+                }*/
+
+                $cmd = "{$path} ./rad_linux_amd64 -t  \"{$url}\"  -json  {$pathArr['tool_result']}";
+                addlog(["开始执行抓取URL地址命令", $cmd]);
+
+                $result = [];
+                execLog($cmd, $result);
+                if (!file_exists($pathArr['tool_result'])) {
+                    addlog(["文件不存在", $pathArr['tool_result']]);
+                    continue;
+                }
+
+                if (!file_exists($pathArr['cmd_result'])) {
+                    addlog(["文件不存在", $pathArr['cmd_result']]);
+                    continue;
+                }
+                $urlList = json_decode(file_get_contents($pathArr['tool_result']), true);
+                foreach ($urlList as $val) {
+                    $arr = parse_url($value['URL']);
+                    $blackExt = ['.js', '.css', '.json', '.png', '.jpg', '.jpeg', '.gif', '.mp3', '.mp4'];
+                    if (!isset($arr['query']) or in_array_strpos($arr['path'], $blackExt) or (strpos($arr['query'], '=') === false)) {
+                        continue;
+                    }
+                    $newData = [
+                        'app_id' => $id,
+                        'method' => $val['Method'],
+                        'url' => $value['URL'],
+                        'status' => 1,
+                        'hash' => md5($value['URL']),
+                        'crawl_status' => 1,
+                        'scan_status' => 0,
+                        'header' => isset($val['Header'])?json_encode($val['Header']):"",
+                        'user_id' => $user_id
+                    ];
+                    UrlsModel::addData($newData);
+                }
+            }
+            sleep(10);
+        }
+
+    }
+
+
     public static function rad()
     {
         $path = "cd /data/tools/rad/ && ";
@@ -69,13 +163,11 @@ class WebScanModel extends BaseModel
                 $result = [];
                 execLog($cmd, $result);
 
-                //$result = implode("\n", $result);
                 if (!file_exists($pathArr['tool_result'])) {
                     addlog(["文件不存在", $pathArr['tool_result']]);
                     continue;
                 }
 
-                //$result = implode("\n", $result);
                 if (!file_exists($pathArr['cmd_result'])) {
                     addlog(["文件不存在", $pathArr['cmd_result']]);
                     continue;

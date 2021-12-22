@@ -211,7 +211,7 @@ class UrlsModel extends BaseModel
         while (true) {
             $api = Db::name('urls')->whereTime('sqlmap_scan_time', '<=', date('Y-m-d H:i:s', time() - (86400 * 15)));
             $list = $api->where('is_delete', 0)->field('id,url,app_id')->limit(5)->orderRand()->select()->toArray();
-            $file_path = '/data/tools/sqlmap/';
+            $tools = '/data/tools/sqlmap/';
             foreach ($list as $k => $v) {
                 $arr = parse_url($v['url']);
 
@@ -222,8 +222,8 @@ class UrlsModel extends BaseModel
                     self::scanTime('urls',$v['id'],'sqlmap_scan_time');
                     continue;
                 }
-
-                $cmd = "cd {$file_path}  && python3 ./sqlmap.py -u '{$v['url']}' --batch  --random-agent --output-dir={$file_path}";
+                $file_path = $tools.'result/';
+                $cmd = "cd {$tools}  && python3 ./sqlmap.py -u '{$v['url']}' --batch  --random-agent --output-dir={$file_path}";
                 systemLog($cmd);
                 $host = $arr['host'];
                 $outdir = $file_path . "{$host}/";
@@ -259,10 +259,10 @@ class UrlsModel extends BaseModel
                     $bbb['type'] = $data['Type'][$key];
                     Db::name('urls_sqlmap')->insert($bbb);
                 }
-
-                Db::name('urls')->where('id', $v['id'])->update(['sqlmap_scan_time' => date('Y-m-d H:i:s', time())]);
+                self::scanTime('urls',$v['id'],'sqlmap_scan_time');
                 systemLog("rm -rf $outdir");
             }
+            //exit;
             sleep(5);
         }
     }
