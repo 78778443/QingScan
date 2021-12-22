@@ -46,6 +46,11 @@ class PluginResult extends Common
     }
 
     public function details(){
+        $id = getParam('id');
 
+        $info = Db::table('plugin_result')->where(['id'=>$id])->find();
+
+        $data['info'] = $info;
+        return View::fetch('detail', $data);
     }
 }
