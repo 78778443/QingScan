@@ -17,4 +17,8 @@ class Log extends Common
         return View::fetch('index', $data);
     }
 
+    public function clear_all(){
+        Db::execute('truncate table `log`');
+        $this->success('日志表清空成功');
+    }
 }

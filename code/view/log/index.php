@@ -9,6 +9,14 @@ $searchArr = [
     'method' => 'get',
     'inputs' => [
         ['type' => 'text', 'name' => 'search', 'placeholder' => "搜索"],
+    ],
+    'btnArr' => [
+        ['text' => '清空日志',
+            'ext' => [
+                "href" => url('log/userAdd'),
+                "class" => "btn btn-outline-success"
+            ]
+        ]
     ]]; ?>
 {include file='public/search' /}
 <div class="col-md-12 ">
