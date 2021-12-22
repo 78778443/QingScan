@@ -277,13 +277,14 @@ class WebScanModel extends BaseModel
                 $file = fopen($filename, "r");
                 //检测指正是否到达文件的未端
                 $data = [];
+                $temp = [];
                 while (!feof($file)) {
                     $result = fgets($file);
                     if (empty($result)) {
                         continue;
                     }
                     $arr = json_decode($result, true);
-                    $data[] = [
+                    $data = [
                         'app_id'=>$v['id'],
                         'user_id'=>$v['user_id'],
                         'template'=>$arr['template'],
@@ -304,16 +305,14 @@ class WebScanModel extends BaseModel
                         'status'=>isset($arr['matcher-status'])?$arr['matcher-status']?1:0:0,
                         'create_time'=>date('Y-m-d H:i:s',strtotime($arr['timestamp']))
                     ];
+                    Db::name('app_nuclei')->insert($data);
+                    $temp[] = $data;
                 }
                 fclose($file);
-                if (!$data) {
-                    addlog(["nucel扫描数据不存在，url:{$v['url']}"]);
-                    continue;
+                if (!$temp) {
+                    addlog(["nuclei扫描数据写入失败:{$v['url']}"]);
                 }
-                if (!Db::name('app_nuclei')->insertAll($data)) {
-                    addlog(["app_nuclei数据写入失败:".json_encode($data)]);
-                }
-                addlog(["nuclei扫描数据写入成功:".json_encode($data)]);
+                addlog(["nuclei扫描数据写入成功:".json_encode($temp)]);
             }
             sleep(120);
         }
