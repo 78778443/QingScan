@@ -332,7 +332,7 @@ class WebScanModel extends BaseModel
                 $cmd = "cd $agent && python3 vulmap.py -u {$v['url']} --output-json {$filename}";
                 systemLog($cmd);
                 if (!file_exists($filename)) {
-                    addlog(["vulmap扫描失败，url:{$v['url']}"]);
+                    addlog(["vulmap扫描完成,没有发现漏洞，url:{$v['url']}"]);
                     continue;
                 }
                 $arr = json_decode(file_get_contents($filename), true);
