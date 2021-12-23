@@ -122,15 +122,22 @@ function writingConf()
     }
     $config = require('../../config/database.php');
     $config['connections']['mysql']['hostname'] = $_POST['DB_HOST'];
+    $config['connections']['mysql']['hostport'] = $_POST['DB_PORT'];
     $config['connections']['mysql']['username'] = $_POST['DB_USER'];
     $config['connections']['mysql']['password'] = $_POST['DB_PASS'];
     $config['connections']['mysql']['database'] = $_POST['DB_NAME'];
     $config['connections']['mysql']['charset'] = $_POST['DB_CHARSET'];
 
+    $config['connections']['kunlun']['hostname'] = $_POST['DB_HOST'];
+    $config['connections']['kunlun']['hostport'] = $_POST['DB_PORT'];
+    $config['connections']['kunlun']['username'] = $_POST['DB_USER'];
+    $config['connections']['kunlun']['password'] = $_POST['DB_PASS'];
+    $config['connections']['kunlun']['database'] = 'kunlun';
+    $config['connections']['kunlun']['charset'] = $_POST['DB_CHARSET'];
+
     $database = "<?php \n";
     $database .= 'return ' . var_export($config, true) . ';';
     $database .= "\n?>";
-
 
     if (!file_put_contents('../../config/database.php', $database)) {
         die("写入配置文件失败!");

@@ -25,6 +25,7 @@ return [
             'type' => 'mysql',
             // 主机地址
             'hostname' => '127.0.0.1',
+            'hostport'=>3306,
             // 用户名
             'username' => 'qingscan',
             'password' => '123',
@@ -57,14 +58,14 @@ return [
         ],
         'kunlun' => [
             // 数据库类型
-            'type' => 'mysql',
             // 主机地址
-            'hostname' => '',
+            'hostname' => '127.0.0.1',
+            'hostport'=>3306,
             // 用户名
-            'username' => '',
-            'password' => '',
+            'username' => 'qingscan',
+            'password' => '123',
             // 数据库名
-            'database' => '',
+            'database' => 'kunlun',
             // 数据库编码默认采用utf8
             'charset' => 'utf8',
             // 数据库表前缀
