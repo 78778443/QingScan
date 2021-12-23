@@ -58,6 +58,7 @@ return [
         ],
         'kunlun' => [
             // 数据库类型
+            'type' => 'mysql',
             // 主机地址
             'hostname' => '127.0.0.1',
             'hostport'=>3306,
