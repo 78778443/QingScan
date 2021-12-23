@@ -16,7 +16,7 @@ class CodeJavaModel extends BaseModel
             $list = Db::name('code')->whereTime('java_scan_time', '<=', date('Y-m-d H:i:s', time() - (86400 * 15)))
                 ->where('is_delete', 0)->limit(1)->orderRand()->select()->toArray();
             foreach ($list as $k => $v) {
-                self::scanTime('code',$v['id'],'java_scan_time');
+                self::scanTime('code', $v['id'], 'java_scan_time');
 
                 $value = $v;
                 $prName = cleanString($value['name']);

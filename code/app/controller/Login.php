@@ -13,7 +13,7 @@ class Login extends BaseController
 {
     public function index()
     {
-        //echo ucenter_md5('' . 'ceshi_scan', config('app.UC_AUTH_KEY'));
+            //echo ucenter_md5('' . 'test_scan', config('app.UC_AUTH_KEY'));
         return View::fetch('user/login');
     }
 

@@ -36,6 +36,7 @@ class Plugin extends Common
             $data['result_file'] = getParam('result_file');
             $data['status'] = getParam('status');
             $data['result_type'] = getParam('result_type');
+            $data['scan_type'] = getParam('scan_type');
             $data['create_time'] = date('Y-m-d h:i:s', time());
             if (Db::name('plugin')->insert($data)) {
                 $this->success('数据添加成功','index');
@@ -64,6 +65,8 @@ class Plugin extends Common
             $data['name'] = getParam('name');
             $data['cmd'] = getParam('cmd');
             $data['result_type'] = getParam('result_type');
+            $data['scan_type'] = getParam('scan_type');
+            $data['tool_path'] = getParam('tool_path');
             $data['result_file'] = getParam('result_file');
             $data['status'] = getParam('status');
             if (Db::name('plugin')->where('id', $id)->update($data)) {
@@ -85,8 +88,8 @@ class Plugin extends Common
         if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
             $map[] = ['user_id', '=', $this->userId];
         }
-        if (Db::name('plugin')->where($map)->update(['is_delete'=>1])) {
-            $this->success('数据删除成功');
+        if (Db::name('plugin')->where($map)->delete()) {
+            return redirect($_SERVER['HTTP_REFERER']);
         } else {
             $this->error('数据删除失败');
         }

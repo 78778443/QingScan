@@ -47,6 +47,7 @@ class OneForAllModel extends BaseModel
                     if ($data) {
                         Db::name('one_for_all')->insertAll($data);
                     }
+                    addlog(["OneForAll子域名扫描数据写入成功:".json_encode($data)]);
                     AppModel::updateScanTime($v['id'],'subdomain_scan_time');
                     @unlink($filename);
                 } else {

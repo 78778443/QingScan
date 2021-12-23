@@ -63,7 +63,7 @@ class Bug extends Common
     public function awvs_del()
     {
         $id = getParam('id');
-        if (Db::name('awvs_vuln')->where('id',$id)->update(['is_delete'=>1])) {
+        if (Db::name('awvs_vuln')->where('id',$id)->delete()) {
             return redirect($_SERVER['HTTP_REFERER']);
         } else {
             $this->error('删除失败');

@@ -132,7 +132,7 @@ class Vulnerable extends Common
     public function vulnerable_del()
     {
         $id = getParam('id');
-        if (Db::name('vulnerable')->where('id',$id)->update(['is_delete'=>1])) {
+        if (Db::name('vulnerable')->where('id',$id)->delete()) {
             return redirect($_SERVER['HTTP_REFERER']);
         } else {
             $this->error('删除失败');
@@ -142,7 +142,7 @@ class Vulnerable extends Common
     public function pocsuite_del()
     {
         $id = getParam('id');
-        if (Db::name('pocsuite3')->where('id',$id)->update(['is_delete'=>1])) {
+        if (Db::name('pocsuite3')->where('id',$id)->delete()) {
             return redirect($_SERVER['HTTP_REFERER']);
         } else {
             $this->error('删除失败');

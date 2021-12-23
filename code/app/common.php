@@ -247,7 +247,7 @@ function addlogRaw($content)
 }
 
 //执行系统命令,并记录日志
-function systemLog($shell)
+function systemLog($shell,$showRet = true)
 {
     //转换成字符串
     $remark = "即将执行命令:{$shell}";
@@ -255,7 +255,7 @@ function systemLog($shell)
     //记录日志
     exec($shell, $output);
     addlog(["命令执行结果", $shell, $output]);
-    if ($output) {
+    if ($output && $showRet) {
         echo implode("\n", $output) . PHP_EOL;
     }
 

@@ -146,7 +146,7 @@ class HostPort extends Common
 
 
         $id = getParam('id');
-        if (Db::name('host_port')->where('id',$id)->update(['is_delete'=>1])) {
+        if (Db::name('host_port')->where('id',$id)->delete()) {
             return redirect($_SERVER['HTTP_REFERER']);
         } else {
             $this->error('删除失败');

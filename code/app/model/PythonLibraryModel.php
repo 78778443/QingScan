@@ -17,7 +17,6 @@ class PythonLibraryModel extends BaseModel
                 ->where('is_delete', 0)->limit(1)->orderRand()->select()->toArray();
             //$list = Db::name('code')->where('id',20)->where('is_delete', 0)->field('id,name,user_id')->select()->toArray();
             foreach ($list as $k => $v) {
-                self::scanTime('code', $v['id'], 'python_scan_time');
 
                 $value = $v;
                 $prName = cleanString($value['name']);
@@ -52,6 +51,7 @@ class PythonLibraryModel extends BaseModel
                 if ($data) {
                     Db::name('code_python')->insertAll($data);
                 }
+                self::scanTime('code', $v['id'], 'python_scan_time');
             }
             sleep(10);
         }
