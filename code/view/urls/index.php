@@ -30,9 +30,9 @@
                     <th>邮箱</th>
                     <th>身份证号码</th>
                     <th>手机号码</th>
-                    <th>扫描时间</th>
+                    <th>sqlmap扫描时间</th>
                     <th>创建时间</th>
-                    <th>sqlmap</th>
+                    <!--<th>sqlmap</th>-->
                     <!--                    <td style="width: 70px">状态</td>-->
                     <th style="width: 200px">操作</th>
                 </tr>
@@ -50,11 +50,10 @@
                         <td><?php echo $value['id_card'] ?></td>
                         <td><?php echo $value['phone'] ?></td>
                         <td><?php
-                            echo ($value['scan_time'] == "2000-01-01 00:00:00") ? "未扫描" : ((strtotime($value['scan_time']) > time()) ? '扫描失败' : $value['scan_time'])
+                            echo ($value['sqlmap_scan_time'] == "2000-01-01 00:00:00") ? "未扫描" : ((strtotime($value['sqlmap_scan_time']) > time()) ? '扫描失败' : $value['sqlmap_scan_time'])
                             ?></td>
                         <td><?php echo $value['create_time'] ?></td>
-                        <td><?php echo date('m-d H:i', strtotime($value['sqlmap_scan_time'])) ?></td>
-                        <!--                        <td>--><? //= $statusArr[$value['scan_status']] ?><!--</td>-->
+                        <!--<td><?php /*echo date('m-d H:i', strtotime($value['sqlmap_scan_time'])) */?></td>-->
                         <td>
                             <a href="<?php echo url('xray/details', ['id' => $value['id']]) ?>"
                                class="btn btn-sm btn-outline-primary">查看漏洞</a>
