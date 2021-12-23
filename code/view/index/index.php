@@ -1,5 +1,5 @@
 {include file='public/head' /}
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+<script type="text/javascript" src="/static/js/echarts.min.js"></script>
 <div class="row">
     <?php foreach ($list as $key => $value) { ?>
         <div class="col-4">
