@@ -124,7 +124,6 @@ function writingConf()
     $config['connections']['mysql']['hostname'] = $_POST['DB_HOST'];
     $config['connections']['mysql']['hostport'] = $_POST['DB_PORT'];
     $config['connections']['mysql']['username'] = $_POST['DB_USER'];
-    $config['connections']['mysql']['hostport'] = $_POST['DB_PORT'];
     $config['connections']['mysql']['password'] = $_POST['DB_PASS'];
     $config['connections']['mysql']['database'] = $_POST['DB_NAME'];
     $config['connections']['mysql']['charset'] = $_POST['DB_CHARSET'];
