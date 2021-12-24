@@ -16,7 +16,10 @@ class CodeCheck extends Common
         if (!$id) {
             return redirect('index','参数错误');
         }
-        $where['id'] = $id;
+        $where[] = ['id','=',$id];
+        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
+            $where[] = ['user_id', '=', $this->userId];
+        }
         $info = Db::table('awvs_vuln')->where($where)->find();
         if (!$info) {
             return redirect('index','0');

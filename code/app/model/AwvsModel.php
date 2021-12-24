@@ -24,7 +24,7 @@ class AwvsModel extends BaseModel
                 }
                 addlog(["AWVS开始执行扫描任务", $id, $url]);
                 //添加目标
-                $targetId = self::getTargetId($id, $url,$awvs_url,$awvs_token);
+                $targetId = self::getTargetId($id, $url,$awvs_url,$awvs_token,$val['user_id']);
                 if (!$targetId) {
                     addlog(["AWVS扫描失败", $id, $url]);
                     self::scanTime('app',$id,'awvs_scan_time');
@@ -42,7 +42,7 @@ class AwvsModel extends BaseModel
                 }
                 //判断目标扫描状态
                 if (isset($retArr['last_scan_session_status']) && $retArr['last_scan_session_status'] == 'completed') {
-                    self::addVulnList($retArr['last_scan_id'], $retArr['last_scan_session_id'],$awvs_url,$awvs_token);
+                    self::addVulnList($retArr['last_scan_id'], $retArr['last_scan_session_id'],$awvs_url,$awvs_token,$val['user_id']);
                     self::scanTime('app',$id,'awvs_scan_time');
                 }
             }
@@ -51,7 +51,7 @@ class AwvsModel extends BaseModel
         }
     }
 
-    public static function addVulnList($scanId, $scanSessionId,$awvs_url,$awvs_token)
+    public static function addVulnList($scanId, $scanSessionId,$awvs_url,$awvs_token,$user_id)
     {
         $vulnList = self::getVulnList($scanId, $scanSessionId,$awvs_url,$awvs_token);
         foreach ($vulnList['vulnerabilities'] as $value) {
@@ -60,6 +60,7 @@ class AwvsModel extends BaseModel
             foreach ($value as $k => $v) {
                 $value[$k] = is_string($v) ? $v : json_encode($v, JSON_UNESCAPED_UNICODE);
             }
+            $value['user_id'] = $user_id;
             Db::table('awvs_vuln')->extra('IGNORE')->insert($value);
         }
     }
@@ -164,7 +165,7 @@ class AwvsModel extends BaseModel
         return $retArr;
     }
 
-    public static function getTargetId($id, $url,$awvs_url,$awvs_token)
+    public static function getTargetId($id, $url,$awvs_url,$awvs_token,$user_id)
     {
         $appInfo = Db::table('awvs_app')->where(['app_id' => $id])->find();
         if (empty($appInfo)) {
@@ -188,6 +189,7 @@ class AwvsModel extends BaseModel
             $appInfo = json_decode($result, true);
             if ($appInfo) {
                 $appInfo['app_id'] = $id;
+                $appInfo['user_id'] = $user_id;
                 Db::table('awvs_app')->insert($appInfo);
             }
             //添加扫描任务

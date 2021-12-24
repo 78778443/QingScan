@@ -37,17 +37,16 @@ class HostPort extends Common
         if ($check_status !== null && in_array($check_status,[0,1,2])) {
             $where[] = ['check_status','=',$check_status];
         }
-
+        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
+            $where[] = ['user_id', '=', $this->userId];
+        }
         $list = Db::table(HostPortModel::$tableName)->where($where)->paginate(10);
-
         $data = [];
         $data['list'] = $list->toArray()['data'];
         $data['classify'] = HostPortModel::getClassify($where);
         $data['appArr'] = AppModel::getAppName();
         // 获取分页显示
         $data['page'] = $list->render();
-
-
         $projectArr = Db::table('code')->select()->toArray();
         $projectArr = array_column($projectArr, null, 'id');
         $data['projectArr'] = $projectArr;

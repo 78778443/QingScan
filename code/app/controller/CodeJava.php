@@ -12,6 +12,9 @@ class CodeJava extends Common
     public function index(){
         $pageSize = 20;
         $where = [];
+        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
+            $where[] = ['user_id', '=', $this->userId];
+        }
         $list = Db::table('code_java')->where($where)->order("id", 'desc')->paginate($pageSize);
         $data['list'] = $list->items();
         foreach ($data['list'] as &$v) {

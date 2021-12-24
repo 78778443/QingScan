@@ -173,21 +173,20 @@ class WebScanModel extends BaseModel
                     $data = json_decode(file_get_contents($pathArr['tool_result']), true);
                     foreach ($data as $value) {
                         $newData = [
+                            'app_id' => $val['id'],
                             'create_time' => substr($value['create_time'], 0, 10),
                             'detail' => json_encode($value['detail']),
                             'plugin' => json_encode($value['plugin']),
                             'target' => json_encode($value['target']),
                             'url' => $value['detail']['addr'],
                             'url_id' => $val['id'],
-                            'app_id' => $val['id'],
                             'user_id' => $user_id,
                             'poc' => $value['detail']['payload']
                         ];
                         echo "添加漏洞结果:" . json_encode($newData) . PHP_EOL;
                         XrayModel::addXray($newData);
                     }
-
-                    Db::table('app')->where(['id' => $id])->save(['xray_scan_time' => date('Y-m-d H:i:s',time())]);
+                    self::scanTime('app',$id,'xray_scan_time');
                 } else {
                     addlog("文件不存在:{$pathArr['tool_result']}  ,扫描URL失败: {$url}");
                     Db::table('app')->where(['id' => $id])->save(['xray_scan_time' => date('2048-m-d H:i:s')]);

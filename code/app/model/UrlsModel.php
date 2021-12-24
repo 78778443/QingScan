@@ -210,7 +210,7 @@ class UrlsModel extends BaseModel
         ini_set('max_execution_time', 0);
         while (true) {
             $api = Db::name('urls')->whereTime('sqlmap_scan_time', '<=', date('Y-m-d H:i:s', time() - (86400 * 15)));
-            $list = $api->where('is_delete', 0)->field('id,url,app_id')->limit(5)->orderRand()->select()->toArray();
+            $list = $api->where('is_delete', 0)->field('id,url,app_id,user_id')->limit(5)->orderRand()->select()->toArray();
             $tools = '/data/tools/sqlmap/';
             foreach ($list as $k => $v) {
                 self::scanTime('urls',$v['id'],'sqlmap_scan_time');
@@ -251,6 +251,7 @@ class UrlsModel extends BaseModel
                     'dbms' => $data['back-end DBMS'][0],
                     'urls_id' => $v['id'],
                     'app_id' => $v['app_id'],
+                    'user_id' => $v['user_id'],
                 ];
                 foreach ($data['Payload'] as $key => $value) {
                     $bbb['payload'] = $value;

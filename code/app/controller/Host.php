@@ -21,13 +21,14 @@ class Host extends Common
         if ($domain) {
             $where[] = ['domain','=',$domain];
         }
+        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
+            $where[] = ['user_id', '=', $this->userId];
+        }
         $list = Db::table('host')->where($where)->order("id", 'desc')->paginate([
             'list_rows'=> $pageSize,//每页数量
             'query' => request()->param(),
         ]);
         $data['list'] = $list->toArray()['data'];
-        foreach ($data['list'] as &$v) {
-        }
         $data['page'] = $list->render();
 
         $data['appArr'] = AppModel::getAppName();

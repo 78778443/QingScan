@@ -39,7 +39,9 @@ class Vulnerable extends Common
         if ($check_status !== null && in_array($check_status,[0,1,2])) {
             $where[] = ['check_status','=',$check_status];
         }
-
+        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
+            $where[] = ['user_id', '=', $this->userId];
+        }
         $pageSize = 25;
         $list = Db::table('vulnerable')->where($where)->order('id','desc')->paginate($pageSize);
         $data = [];
@@ -72,7 +74,10 @@ class Vulnerable extends Common
         if (!$id) {
             $this->error('参数不能为空');
         }
-        $where['id'] = $id;
+        $where[] = ['id','=',$id];
+        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
+            $where[] = ['user_id', '=', $this->userId];
+        }
         $info = Db::table('vulnerable')->where($where)->find();
         if (!$info) {
             $this->error('数据不存在');

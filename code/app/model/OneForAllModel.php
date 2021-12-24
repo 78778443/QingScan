@@ -14,7 +14,7 @@ class OneForAllModel extends BaseModel
     {
         ini_set('max_execution_time', 0);
         while (true) {
-            $app_list = Db::name('app')->whereTime('subdomain_scan_time', '<=', date('Y-m-d H:i:s', time() - (86400 * 15)))->where('is_delete',0)->field('id,url')->orderRand()->limit(1)->select()->toArray();
+            $app_list = Db::name('app')->whereTime('subdomain_scan_time', '<=', date('Y-m-d H:i:s', time() - (86400 * 15)))->where('is_delete',0)->field('id,url,user_id')->orderRand()->limit(1)->select()->toArray();
             $tools = '/data/tools/OneForAll';
             foreach ($app_list as $k => $v) {
                 $host = parse_url($v['url'])['host'];
@@ -42,6 +42,7 @@ class OneForAllModel extends BaseModel
                     foreach ($list as $key=>$val) {
                         unset($val['id']);
                         $val['app_id'] = $v['id'];
+                        $val['user_id'] = $v['user_id'];
                         $data[] = $val;
                     }
                     if ($data) {
