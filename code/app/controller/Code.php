@@ -387,6 +387,10 @@ class Code extends Common
 
     public function edit_modal(Request $request)
     {
+        $id = $request->param('id');
+        if (!$id) {
+            $this->error('参数错误');
+        }
         if ($request->isPost()) {
             $data['name'] = $request->param('name');
             $data['is_private'] = $request->param('is_private');
@@ -409,16 +413,12 @@ class Code extends Common
                     }
                 }
             }
-            if (Db::name('code')->update($data)) {
+            if (Db::name('code')->where('id',$id)->update($data)) {
                 return redirect(url('code/index'));
             } else {
                 $this->error('修改失败');
             }
         } else {
-            $id = $request->param('id');
-            if (!$id) {
-                $this->error('参数错误');
-            }
             $data['info'] = Db::name('code')->where('id', $id)->find();
             return view('code/edit_modal', $data);
         }
