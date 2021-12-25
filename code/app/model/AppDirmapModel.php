@@ -18,7 +18,6 @@ class AppDirmapModel extends BaseModel
             foreach ($list as $k => $v) {
                 self::scanTime('app', $v['id'], 'dirmap_scan_time');
 
-                //$v['url'] = $url;
                 $cmd = "cd {$file_path}  && python3 ./dirmap.py -i {$v['url']} -lcf";
                 systemLog($cmd);
                 $host = parse_url($v['url'])['host'];

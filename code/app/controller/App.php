@@ -17,6 +17,7 @@ use Pdp\TopLevelDomains;
 use phpseclib3\Math\BigInteger\Engines\PHP;
 use think\facade\Db;
 use think\facade\View;
+use think\Request;
 
 class App extends Common
 {
@@ -30,9 +31,9 @@ class App extends Common
 
     }
 
-    public function index(){
+    public function index(Request $request){
         $pageSize = 15;
-        $page = getParam('page', 1);
+        $page = $request->input('page', 1);
         $statusCode = getParam('statuscode');
         $cms = base64_decode($_GET['cms'] ?? '');
         $server = base64_decode($_GET['server'] ?? '');
@@ -82,12 +83,23 @@ class App extends Common
         $this->show('app/add');
     }
 
-    public function _add()
+    public function _add(Request $request)
     {
         if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
-            $_POST['user_id'] = $this->userId;
+            $data['user_id'] = $this->userId;
         }
-        AppModel::addData($_POST);
+        $data['name'] = $request->input('name');
+        $data['url'] = $request->input('url');
+        $data['username'] = $request->input('username');
+        $data['password'] = $request->input('password');
+        $data['is_xray'] = $request->input('is_xray');
+        $data['is_awvs'] = $request->input('is_awvs');
+        $data['is_whatweb'] = $request->input('is_whatweb');
+        $data['is_one_for_all'] = $request->input('is_one_for_all');
+        $data['is_hydra'] = $request->input('is_hydra');
+        $data['is_dirmap'] = $request->input('is_dirmap');
+        $data['is_intranet'] = $request->input('is_intranet');
+        AppModel::addData($data);
 
         return redirect(url('app/index'));
     }
