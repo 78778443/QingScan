@@ -26,7 +26,7 @@ class App extends Common
     public function index(Request $request){
         $pageSize = 15;
         $page = $request->param('page', 1);
-        $statusCode = getParam('statuscode');
+        $statusCode = $request->param('statuscode');
         $cms = base64_decode($_GET['cms'] ?? '');
         $server = base64_decode($_GET['server'] ?? '');
 
@@ -80,26 +80,26 @@ class App extends Common
         if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
             $data['user_id'] = $this->userId;
         }
-        $data['name'] = $request->input('name');
-        $data['url'] = $request->input('url');
-        $data['username'] = $request->input('username');
-        $data['password'] = $request->input('password');
-        $data['is_xray'] = $request->input('is_xray');
-        $data['is_awvs'] = $request->input('is_awvs');
-        $data['is_whatweb'] = $request->input('is_whatweb');
-        $data['is_one_for_all'] = $request->input('is_one_for_all');
-        $data['is_hydra'] = $request->input('is_hydra');
-        $data['is_dirmap'] = $request->input('is_dirmap');
-        $data['is_intranet'] = $request->input('is_intranet');
+        $data['name'] = $request->param('name');
+        $data['url'] = $request->param('url');
+        $data['username'] = $request->param('username');
+        $data['password'] = $request->param('password');
+        $data['is_xray'] = $request->param('is_xray');
+        $data['is_awvs'] = $request->param('is_awvs');
+        $data['is_whatweb'] = $request->param('is_whatweb');
+        $data['is_one_for_all'] = $request->param('is_one_for_all');
+        $data['is_hydra'] = $request->param('is_hydra');
+        $data['is_dirmap'] = $request->param('is_dirmap');
+        $data['is_intranet'] = $request->param('is_intranet');
         AppModel::addData($data);
 
         return redirect(url('app/index'));
     }
 
     //开始抓取
-    public function _start_crawler()
+    public function _start_crawler(Request $request)
     {
-        $id = getParam('id');
+        $id = $request->param('id');
         $appInfo = AppModel::getInfo($id);
         $user_id = $appInfo['user_id'];
         $url = $appInfo['url'];
@@ -108,9 +108,9 @@ class App extends Common
     }
 
     //开始扫描
-    public function _start_scan()
+    public function _start_scan(Request $request)
     {
-        $id = getParam('id');
+        $id = $request->param('id');
         $appInfo = AppModel::getInfo($id);
         $user_id = $appInfo['user_id'];
         $url = $appInfo['url'];
@@ -138,9 +138,9 @@ class App extends Common
         $this->Location("/index.php?s=app/index");
     }
 
-    public function del()
+    public function del(Request $request)
     {
-        $id = getParam('id');
+        $id = $request->param('id');
         $map[] = ['id', '=', $id];
 
         if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
@@ -211,243 +211,12 @@ class App extends Common
             ];
             Db::table("app")->insert($data);
         }
-
-
-    }
-
-    public function pachong()
-    {
-        $radPath = __BASEPATH__ . "/tools/rad";
-        while (true) {
-            $scanTime = date('Y-m-d', time() - 7 * 86400);
-            $appList = Db::table('app')->whereTime('crawler_time', '<', $scanTime)->limit(20)->select()->toArray();
-            $retPath = "/tmp/result.json";
-
-            foreach ($appList as $value) {
-                $cmd = "cd {$radPath} && ./rad -t {$value['url']}  -json {$retPath}";
-                systemLog($cmd);
-                $urlList = json_decode(file_get_contents($retPath), true);
-                var_dump($cmd, array_column($urlList, 'URL'));
-                unlink($retPath);
-                //            var_dump($cmd,array_column($urlList,'URL'));
-
-                foreach ($urlList as $item) {
-                    if (strlen($item['URL']) >= 1024) {
-                        continue;
-                    }
-                    $data = [
-                        'method' => $item['Method'],
-                        'app_id' => $value['id'],
-                        'url' => $item['URL'],
-                        'hash' => md5($item['URL']),
-                    ];
-
-
-                    if (Db::table('urls')->where(['hash' => md5($data['url'])])->find() == null) {
-                        DB::table('urls')->insert($data);
-                    }
-                }
-
-
-                DB::table('app')->where(['id' => $value['id']])->update(['crawler_time' => date('Y-m-d H:i:s')]);
-            }
-
-            sleep(30);
-        }
-    }
-
-    public function xray()
-    {
-        $radPath = __BASEPATH__ . "/tools/xray";
-        while (true) {
-            $scanTime = date('Y-m-d', time() - 7 * 86400);
-            $appList = Db::table('urls')->whereTime('scan_time', '<', $scanTime)->limit(20)->select()->toArray();
-            $retPath = "/tmp/xray_result.json";
-
-            foreach ($appList as $urlInfo) {
-                file_exists($retPath) && unlink($retPath);
-                $cmd = "cd {$radPath} && ./xray webscan --url  '{$urlInfo['url']}'   --json-output {$retPath}";
-                echo $cmd . PHP_EOL;
-                systemLog($cmd);
-
-                if (file_exists($retPath) == false) {
-                    echo "没有输出, {$urlInfo['url']} " . PHP_EOL;
-                    continue;
-                }
-
-                $bugList = json_decode(file_get_contents($retPath), true);
-
-                foreach ($bugList as &$item) {
-                    foreach ($item as &$val) {
-                        $val = is_string($val) ? $val : json_encode($val, JSON_UNESCAPED_UNICODE);
-                    }
-                }
-                var_dump($cmd, $bugList);
-                die;
-
-
-                //                foreach ($appList as $item) {
-                //                    if (strlen($item['URL']) >= 1024) {
-                //                        continue;
-                //                    }
-                //                    $data = [
-                //                        'method' => $item['Method'],
-                //                        'app_id' => $value['id'],
-                //                        'url' => $item['URL'],
-                //                        'hash' => md5($item['URL']),
-                //                    ];
-                //
-                //
-                //                    if (Db::table('urls')->where(['hash' => md5($data['url'])])->find() == null) {
-                //                        DB::table('urls')->insert($data);
-                //                    }
-                //                }
-                //
-                //
-                //                DB::table('app')->where(['id' => $value['id']])->update(['crawler_time' => date('Y-m-d H:i:s')]);
-            }
-
-            sleep(30);
-        }
-    }
-
-    public function autoDeleteApp()
-    {
-        $lastId = intval(file_get_contents('./tmp/appLastId.txt'));
-        $httpList = true;
-        while ($httpList) {
-
-
-            //获取网站服务
-            $field = 'id,url';
-            $httpList = Db::table('app')->where('id', '>', $lastId)->order('id', 'asc')->limit(10)->field($field)->select()->toArray();
-
-            $urlCheck = __BASEPATH__ . "/tools/url-survival-check";
-            $urlStr = '';
-            foreach ($httpList as $value) {
-                $lastId = $value['id'];
-                file_put_contents('./tmp/appLastId.txt', $lastId);
-                $url = $value['url'];
-                $urlStr .= $url . PHP_EOL;
-            }
-            $tempUrlFile = dirname(dirname(__DIR__)) . "/tmp/app_delete_urls.txt";
-            file_put_contents($tempUrlFile, $urlStr);
-
-            $survivalUrl = [];
-            $cmd = "cd {$urlCheck} && python3 url_survival_check_min.py {$tempUrlFile}";
-            execLog($cmd, $survivalUrl);
-
-            foreach ($survivalUrl as $url) {
-                if (strstr($url, 'Not')) {
-                    echo "URL 已不可访问:{$url}" . PHP_EOL;
-                    $urlArr = explode(" ", $url);
-
-                    Db::table('app')->where(['url' => $urlArr[0]])->delete();
-                }
-            }
-        }
-    }
-
-    public function autoAddApp()
-    {
-        $lastId = intval(file_get_contents('./tmp/lastId.txt'));
-        $httpList = true;
-        while ($httpList) {
-            //获取网站服务
-            $field = 'id,host,port,service';
-            $httpList = Db::table('host_port')->where('id', '>', $lastId)->whereIn('service', ['http', 'https'])->order('id', 'asc')->limit(50)->field($field)->select()->toArray();
-            $tempUrlFile = dirname(dirname(__DIR__)) . "/tmp/app_urls.txt";
-
-            $urlCheck = __BASEPATH__ . "/tools/url-survival-check";
-            $urlStr = '';
-            foreach ($httpList as $value) {
-                $portStr = ":{$value['port']}";
-                $lastId = $value['id'];
-                file_put_contents('./tmp/lastId.txt', $lastId);
-
-                $url = "{$value['service']}://{$value['host']}{$portStr}";
-                $url .= "/";
-                $urlStr .= $url . PHP_EOL;
-            }
-
-            file_put_contents($tempUrlFile, $urlStr);
-            $cmd = "cd {$urlCheck} && python3 url_survival_check_min.py {$tempUrlFile}";
-            execLog($cmd, $survivalUrl);
-
-            foreach ($survivalUrl as $url) {
-                if (strstr($url, 'Not') == false) {
-                    $urlInfo = parse_url($url);
-                    $data = ['url' => $url, 'name' => "{$urlInfo['host']}-{$urlInfo['port']}"];
-                    $appInfo = Db::table('app')->where(['url' => $url])->find();
-                    if (empty($appInfo)) {
-                        Db::table('app')->insert($data);
-                    } else {
-                        echo "URL已存在:{$url}" . PHP_EOL;
-                    }
-                }
-            }
-        }
-
     }
 
 
-    public function getInfo()
+    public function details(Request $request)
     {
-        $lastIdFile = __BASEPATH__ . '/tmp/appInfoLastId.txt';
-        $lastId = intval(file_get_contents($lastIdFile));
-        $httpList = true;
-        //定义path
-        $urlCheck = __BASEPATH__ . "/tools/Ehole3";
-        $tempUrlFile = __BASEPATH__ . "/tmp/app_info_urls.txt";
-        $jsonInfoFile = __BASEPATH__ . "/tmp/app_info_urls.json";
-        while ($httpList) {
-            //获取网站服务
-            $field = 'id,url';
-            $httpList = Db::table('app')->where('id', '>', $lastId)->order('id', 'asc')->limit(5)->field($field)->select()->toArray();
-
-            //拼接URL地址
-            $urlStr = implode("\r\n", array_column($httpList, 'url'));
-            file_put_contents($tempUrlFile, $urlStr);
-            //记录当前最后的URL地址
-            $lastId = $httpList[count($httpList) - 1]['id'];
-            file_put_contents($lastIdFile, $lastId);
-
-
-            $cmd = "cd {$urlCheck} && ./Ehole3.0-linux -l {$tempUrlFile} -json {$jsonInfoFile}";
-            systemLog($cmd);
-            $jsonStr = trim(file_get_contents($jsonInfoFile));
-            $jsonArr = array_filter(explode("\n", $jsonStr));
-
-
-            $urlToIdArr = array_column($httpList, 'id', 'url');
-
-            foreach ($jsonArr as $value) {
-                $appInfo = json_decode($value, true);
-                if (empty($appInfo)) {
-                    continue;
-                }
-
-                if (!isset($urlToIdArr[$appInfo['url']])) {
-                    echo "没有匹配到URL地址:{$appInfo['url']}";
-                    continue;
-                }
-
-                $appInfo['app_id'] = $urlToIdArr[$appInfo['url']];
-                $appInfo['cms'] = json_encode($appInfo['cms'], JSON_UNESCAPED_UNICODE);
-
-
-                if (Db::table('app_info')->where(['url' => $appInfo['url']])->find()) {
-                    echo "URL:{$appInfo['url']}已经存在" . PHP_EOL;
-                    continue;
-                }
-                Db::table('app_info')->insert($appInfo);
-            }
-        }
-    }
-
-    public function details()
-    {
-        $app_id = getParam('id');
+        $app_id = $request->param('id');
         $where[] = ['app_id', '=', $app_id];
         $map[] = ['id', '=', $app_id];
         $where1 = [];
@@ -473,9 +242,9 @@ class App extends Common
         return View::fetch('details', $data);
     }
 
-    public function qingkong()
+    public function qingkong(Request $request)
     {
-        $id = getParam('id');
+        $id = $request->param('id');
         $array = array(
             'crawler_time' => '2000-01-01 00:00:00',
             'awvs_scan_time' => '2000-01-01 00:00:00',
@@ -518,9 +287,9 @@ class App extends Common
     }
 
 
-    public function start_agent()
+    public function start_agent(Request $request)
     {
-        $id = getParam('id');
+        $id = $request->param('id');
         $where[] = ['id', '=', $id];
         $where[] = ['is_delete', '=', 0];
         if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
