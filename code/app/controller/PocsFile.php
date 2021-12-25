@@ -6,6 +6,7 @@ namespace app\controller;
 
 use think\facade\Db;
 use think\facade\View;
+use think\Request;
 
 class PocsFile extends Common
 {
@@ -19,13 +20,13 @@ class PocsFile extends Common
     }
 
 
-    public function add()
+    public function add(Request $request)
     {
         if (request()->isPost()) {
-            $data['cve_num'] = getParam('cve_num');
-            $data['status'] = getParam('status');
-            $data['tools'] = getParam('tools');
-            $data['name'] = getParam('name');
+            $data['cve_num'] = $request->param('cve_num');
+            $data['status'] = $request->param('status');
+            $data['tools'] = $request->param('tools');
+            $data['name'] = $request->param('name');
             $data['content'] = input('content');
             if (empty($data['content'])   || !$data['name']) {
                 $this->error('数据不能为空');
@@ -45,17 +46,17 @@ class PocsFile extends Common
         }
     }
 
-    public function edit()
+    public function edit(Request $request)
     {
-        $id = getParam('id');
+        $id = $request->param('id');
         $map[] = ['id','=',$id];
         $info = Db::name('pocs_file')->where($map)->find();
         if (!$info) {
             $this->error('数据不存在');
         }
         if (request()->isPost()) {
-            $data['status'] = getParam('status');
-            $data['content'] = getParam('content');
+            $data['status'] = $request->param('status');
+            $data['content'] = $request->param('content');
             if (Db::name('pocs_file')->where($map)->update($data)) {
                 $this->success('编辑成功','index');
             } else {
@@ -67,8 +68,8 @@ class PocsFile extends Common
         }
     }
 
-    public function details(){
-        $id = getParam('id');
+    public function details(Request $request){
+        $id = $request->param('id');
         $info = Db::name('pocs_file')->where('id',$id)->find();
         if (!$info) {
             $this->error('数据不存在');
@@ -82,9 +83,9 @@ class PocsFile extends Common
         return View::fetch('details',$data);
     }
 
-    public function del()
+    public function del(Request $request)
     {
-        $id = getParam('id');
+        $id = $request->param('id');
         if (Db::name('pocs_file')->where('id',$id)->delete()) {
             return redirect($_SERVER['HTTP_REFERER']);
         } else {
