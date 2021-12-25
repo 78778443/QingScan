@@ -16,8 +16,8 @@ use Pdp\Rules;
 use Pdp\TopLevelDomains;
 use phpseclib3\Math\BigInteger\Engines\PHP;
 use think\facade\Db;
+use think\facade\Request;
 use think\facade\View;
-use think\Request;
 
 class App extends Common
 {
@@ -33,7 +33,7 @@ class App extends Common
 
     public function index(Request $request){
         $pageSize = 15;
-        $page = $request->input('page', 1);
+        $page = $request->param('page', 1);
         $statusCode = getParam('statuscode');
         $cms = base64_decode($_GET['cms'] ?? '');
         $server = base64_decode($_GET['server'] ?? '');
