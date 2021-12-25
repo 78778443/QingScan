@@ -117,19 +117,26 @@ class Vulnerable extends Common
         if (!$id) {
             $this->error('参数错误');
         }
+        $where[] = ['id','=',$id];
+        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
+            $where[] = ['user_id', '=', $this->userId];
+        }
         if (request()->isPost()) {
             $data = $_POST;
             $data['updated_at'] = date('Y-m-d H:i:s',time());
             if(!$data['scan_time']) {
                 $data['scan_time'] = date('Y-m-d H:i:s',time());
             }
-            if (Db::name('vulnerable')->where('id',$id)->update($data)) {
+            if (Db::name('vulnerable')->where($where)->update($data)) {
                 $this->success('编辑成功','index');
             } else {
                 $this->error('编辑失败');
             }
         } else {
-            $data['info'] = Db::name('vulnerable')->where('id',$id)->find();
+            $data['info'] = Db::name('vulnerable')->where($where)->find();
+            if (!$data['info']) {
+                $this->error('数据不存在');
+            }
             return View::fetch('edit', $data);
         }
     }
@@ -137,7 +144,11 @@ class Vulnerable extends Common
     public function vulnerable_del()
     {
         $id = getParam('id');
-        if (Db::name('vulnerable')->where('id',$id)->delete()) {
+        $where[] = ['id','=',$id];
+        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
+            $where[] = ['user_id', '=', $this->userId];
+        }
+        if (Db::name('vulnerable')->where($where)->delete()) {
             return redirect($_SERVER['HTTP_REFERER']);
         } else {
             $this->error('删除失败');
@@ -147,6 +158,10 @@ class Vulnerable extends Common
     public function pocsuite_del()
     {
         $id = getParam('id');
+        $where[] = ['id','=',$id];
+        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
+            $where[] = ['user_id', '=', $this->userId];
+        }
         if (Db::name('pocsuite3')->where('id',$id)->delete()) {
             return redirect($_SERVER['HTTP_REFERER']);
         } else {

@@ -16,15 +16,15 @@
             </div>
             <div class="mb-3">
                 <label class="form-label">用户名</label>
-                <input type="text" name="username" class="form-control" placeholder="请输入用户名" value="">
+                <input type="text" name="username" class="form-control" required placeholder="请输入用户名" value="">
             </div>
             <div class="mb-3">
                 <label class="form-label">密码</label>
-                <input type="password" name="password" class="form-control" placeholder="请输入密码">
+                <input type="password" name="password" class="form-control" required placeholder="请输入密码">
             </div>
             <div class="mb-3">
                 <label class="form-label">昵称</label>
-                <input type="text" name="nickname" class="form-control" placeholder="请输入昵称" value="">
+                <input type="text" name="nickname" class="form-control" required placeholder="请输入昵称" value="">
             </div>
             <div class="mb-3">
                 <label class="form-label">性别</label>
