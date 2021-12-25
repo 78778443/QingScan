@@ -4,20 +4,13 @@ namespace app\controller;
 
 use app\model\AppModel;
 use app\model\ConfigModel;
-use app\model\HostModel;
-use app\model\HostPortModel;
 use app\model\HydraModel;
-use app\model\OneForAllModel;
 use app\model\UrlsModel;
 use app\model\TaskModel;
 use app\model\XrayModel;
-use Pdp\Domain;
-use Pdp\Rules;
-use Pdp\TopLevelDomains;
-use phpseclib3\Math\BigInteger\Engines\PHP;
 use think\facade\Db;
-use think\facade\Request;
 use think\facade\View;
+use think\Request;
 
 class App extends Common
 {
@@ -28,7 +21,6 @@ class App extends Common
         echo '<pre>';
         //AppModel::whatweb();
         HydraModel::sshScan();
-
     }
 
     public function index(Request $request){
