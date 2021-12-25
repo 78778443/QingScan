@@ -63,7 +63,7 @@
                                value="<?php echo $info['scan_time'] ?>"/>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">下次fortify扫描时间</label>
+                        <label class="form-label">下次semgrep扫描时间</label>
                         <input type="text" class="form-control" name="semgrep_scan_time"
                                value="<?php echo $info['semgrep_scan_time'] ?>"/>
                     </div>
