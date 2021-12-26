@@ -49,7 +49,7 @@
                         <tr>
                             <td><?php echo $value['id'] ?></td>
                             <td class="ellipsis-type">
-                                <a href="<?php echo $value['url'] ?>" target="_blank">
+                                <a href="<?php echo $value['url'] ?>" title="<?php echo $value['url'] ?>" target="_blank">
                                     <?php echo $value['name'] ?>
                                 </a>
                             </td>
