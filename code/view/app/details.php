@@ -455,7 +455,7 @@ $typeArr = [
                             <th>时间</th>
                         </tr>
                         </thead>
-                        <?php foreach ($dirmap as $value) { ?>
+                        <?php foreach ($app_dismap as $value) { ?>
                             <tr>
                                 <td><?php echo $value['id'] ?></td>
                                 <td>{$value['result']}</td>
