@@ -299,7 +299,7 @@ class WebScanModel extends BaseModel
                         'host'=>$arr['host'],
                         'matched_at'=>$arr['matched-at'],
                         'extracted_results'=>isset($arr['extracted-results'])?json_encode($arr['extracted-results']):'',
-                        'ip'=>$arr['ip'],
+                        'ip'=>isset($arr['ip'])?$arr['ip']:'',
                         'curl_command'=>isset($arr['curl-command'])?json_encode($arr['curl-command']):'',
                         'status'=>isset($arr['matcher-status'])?$arr['matcher-status']?1:0:0,
                         'create_time'=>strtotime($arr['timestamp'])?date('Y-m-d H:i:s',strtotime($arr['timestamp'])):date('Y-m-d H:i:s',time())
