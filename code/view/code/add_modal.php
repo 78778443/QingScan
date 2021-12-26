@@ -16,8 +16,8 @@
                     <div class="mb-3">
                         <label class="form-label">是否私有仓库</label>
                         <select name="is_private" class="form-select" aria-label="Default select example">
-                            <option value="1">私有仓库</option>
                             <option value="0">公共仓库</option>
+                            <option value="1">私有仓库</option>
                         </select>
                     </div>
                     <div class="mb-3">
@@ -42,27 +42,6 @@
                     <div class="mb-3">
                         <label class="form-label">私钥</label>
                         <input type="text" name="private_key" class="form-control" placeholder="私钥">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">是否fortify扫描</label>
-                        <select name="is_fortify_scan" class="form-select" aria-label="Default select example">
-                            <option value="1">是</option>
-                            <option value="0">否</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">是否semgrep扫描</label>
-                        <select name="is_semgrep_scan" class="form-select" aria-label="Default select example">
-                            <option value="1">是</option>
-                            <option value="0">否</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">是否kunlun扫描</label>
-                        <select name="is_kunlun_scan" class="form-select" aria-label="Default select example">
-                            <option value="1">是</option>
-                            <option value="0">否</option>
-                        </select>
                     </div>
                 </div>
                 <div class="modal-footer">

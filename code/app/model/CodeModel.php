@@ -279,16 +279,6 @@ class CodeModel extends BaseModel
 
     public static function addData(array $data)
     {
-        $datetime = date('Y-m-d H:i:s', time() + 86400 * 365);
-        if ($data['is_fortify_scan'] == false) {
-            $data['fortify_scan_time'] = $datetime;
-        }
-        if ($data['is_kunlun_scan'] == false) {
-            $data['kunlun_scan_time'] = $datetime;
-        }
-        if ($data['is_semgrep_scan'] == false) {
-            $data['semgrep_scan_time'] = $datetime;
-        }
         return self::add($data);
     }
 

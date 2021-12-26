@@ -516,9 +516,6 @@ class Code extends Common
         $data['username'] = $request->param('username');
         $data['password'] = $request->param('password');
         $data['private_key'] = $request->param('private_key');
-        $data['fortify_scan_time'] = $request->param('fortify_scan_time');
-        $data['semgrep_scan_time'] = $request->param('semgrep_scan_time');
-        $data['kunlun_scan_time'] = $request->param('kunlun_scan_time');
         if ($data['is_private']) {
             if (strtolower($data['pulling_mode']) == 'ssh') {
                 if (!$data['private_key']) {
@@ -532,7 +529,7 @@ class Code extends Common
         }
         CodeModel::addData($data);
 
-        $this->success('添加成功', 'code/index');
+        return redirect(url('code/index'));
     }
 
     public function _add(Request $request)
