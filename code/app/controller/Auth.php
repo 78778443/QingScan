@@ -18,9 +18,6 @@ class Auth extends Common
     public function user_list()
     {
         $list = Db::name('auth_rule')->field('auth_rule_id,href')->select();
-        foreach ($list as $k => $v) {
-
-        }
         $ids = implode(',', config('app.ADMINISTRATOR'));
         $map = "a.id not in($ids) and is_delete = 0";
         $list = UserModel::getListPage($map);
@@ -42,7 +39,7 @@ class Auth extends Common
             $data['dd_token'] = getParam('dd_token');
             $data['email'] = getParam('email');
             $password = getParam('password');
-            $check_user = Db::name('user')->where('username', $data['username'])->find();
+            $check_user = Db::name('user')->where('username', $data['username'])->where('is_delete',0)->find();
             if (!$password || !$data['username'] || !$data['nickname'] || !$data['auth_group_id']) {
                 $this->error('参数不能为空');
             }
@@ -91,6 +88,7 @@ class Auth extends Common
                 $this->error('该用户不允许操作');
             $map[] = ['id', '<>', $id];
             $map[] = ['username', '=', $data['username']];
+            $map[] = ['is_delete', '=', 0];
             $check_user = Db::name('user')->where($map)->find();
             if ($check_user) {
                 $this->error('用户已存在，请重新输入用户名!');

@@ -397,7 +397,7 @@ class Code extends Common
             $data['pulling_mode'] = $request->param('pulling_mode');
             $data['ssh_url'] = $request->param('ssh_url');
             $data['username'] = $request->param('username');
-            $data['password'] = $request->param('password');
+            $data['password'] = $request->param('password','','htmlspecialchars');
             $data['private_key'] = $request->param('private_key');
             $data['fortify_scan_time'] = $request->param('fortify_scan_time');
             $data['semgrep_scan_time'] = $request->param('semgrep_scan_time');
