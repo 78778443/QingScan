@@ -5,6 +5,7 @@ namespace app\controller;
 use app\BaseController;
 use think\facade\Db;
 use think\facade\View;
+use think\Request;
 
 class Vulnerable extends Common
 {
@@ -91,11 +92,57 @@ class Vulnerable extends Common
         return View::fetch('details', $data);
     }
 
-    public function add(){
-        if (request()->isPost()) {
-            $data = $_POST;
+    public function add(Request $request){
+        if ($request->isPost()) {
+            $data['nature'] = $request->param('nature');
+            $data['name'] = $request->param('name');
+            $data['vul_num'] = $request->param('vul_num');
+            $data['cve_num'] = $request->param('cve_num');
+            $data['cnvd_num'] = $request->param('cnvd_num');
+            $data['cnnvd_num'] = $request->param('cnnvd_num');
+            $data['src_num'] = $request->param('src_num');
+            $data['vul_level'] = $request->param('vul_level');
+            $data['vul_type'] = $request->param('vul_type');
+            $data['cwe'] = $request->param('cwe');
+            $data['vul_cvss'] = $request->param('vul_cvss');
+            $data['cvss_vector'] = $request->param('cvss_vector');
+            $data['open_time'] = $request->param('open_time');
+            $data['vul_repair_time'] = $request->param('vul_repair_time');
+            $data['vul_source'] = $request->param('vul_source');
+            $data['temp_plan'] = $request->param('temp_plan');
+            $data['temp_plan_s3'] = $request->param('temp_plan_s3');
+            $data['formal_plan'] = $request->param('formal_plan');
+            $data['patch_s3'] = $request->param('patch_s3');
+            $data['patch_url'] = $request->param('patch_url');
+            $data['patch_use_func'] = $request->param('patch_use_func');
+            $data['cpe'] = $request->param('cpe');
+            $data['product_name'] = $request->param('product_name');
+            $data['product_open'] = $request->param('product_open');
+            $data['product_store'] = $request->param('product_store');
+            $data['store_website'] = $request->param('store_website');
+            $data['assem_name'] = $request->param('assem_name');
+            $data['affect_ver'] = $request->param('affect_ver');
+            $data['ver_open_date'] = $request->param('ver_open_date');
+            $data['sub_update_url'] = $request->param('sub_update_url');
+            $data['git_url'] = $request->param('git_url');
+            $data['git_commit_id'] = $request->param('git_commit_id');
+            $data['git_fixed_commit_id'] = $request->param('git_fixed_commit_id');
+            $data['product_cate'] = $request->param('product_cate');
+            $data['product_field'] = $request->param('product_field');
+            $data['product_type'] = $request->param('product_type');
+            $data['fofa_max'] = $request->param('fofa_max');
+            $data['fofa_con'] = $request->param('fofa_con');
+            $data['is_pass'] = $request->param('is_pass');
+            $data['user_name'] = $request->param('user_name');
+            $data['is_sub_attack'] = $request->param('is_sub_attack');
+            $data['temp_plan_s3_hash'] = $request->param('temp_plan_s3_hash');
+            $data['patch_s3_hash'] = $request->param('patch_s3_hash');
+            $data['is_pass_attack'] = $request->param('is_pass_attack');
+            $data['auditor'] = $request->param('auditor');
+            $data['cause'] = $request->param('cause');
+            $data['is_poc'] = $request->param('is_poc');
+            $data['scan_time'] = $request->param('scan_time');
             $data['created_at'] = date('Y-m-d H:i:s',time());
-            $data['updated_at'] = date('Y-m-d H:i:s',time());
             $data['user_id'] = $this->userId;
             $data['user_name'] = $this->userInfo['nickname'];
             if(!$data['scan_time']) {
@@ -112,8 +159,8 @@ class Vulnerable extends Common
         }
     }
 
-    public function edit(){
-        $id = getParam('id');
+    public function edit(Request $request){
+        $id = $request->param('id');
         if (!$id) {
             $this->error('参数错误');
         }
@@ -121,8 +168,54 @@ class Vulnerable extends Common
         if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
             $where[] = ['user_id', '=', $this->userId];
         }
-        if (request()->isPost()) {
-            $data = $_POST;
+        if ($request->isPost()) {
+            $data['nature'] = $request->param('nature');
+            $data['name'] = $request->param('name');
+            $data['vul_num'] = $request->param('vul_num');
+            $data['cve_num'] = $request->param('cve_num');
+            $data['cnvd_num'] = $request->param('cnvd_num');
+            $data['cnnvd_num'] = $request->param('cnnvd_num');
+            $data['src_num'] = $request->param('src_num');
+            $data['vul_level'] = $request->param('vul_level');
+            $data['vul_type'] = $request->param('vul_type');
+            $data['cwe'] = $request->param('cwe');
+            $data['vul_cvss'] = $request->param('vul_cvss');
+            $data['cvss_vector'] = $request->param('cvss_vector');
+            $data['open_time'] = $request->param('open_time');
+            $data['vul_repair_time'] = $request->param('vul_repair_time');
+            $data['vul_source'] = $request->param('vul_source');
+            $data['temp_plan'] = $request->param('temp_plan');
+            $data['temp_plan_s3'] = $request->param('temp_plan_s3');
+            $data['formal_plan'] = $request->param('formal_plan');
+            $data['patch_s3'] = $request->param('patch_s3');
+            $data['patch_url'] = $request->param('patch_url');
+            $data['patch_use_func'] = $request->param('patch_use_func');
+            $data['cpe'] = $request->param('cpe');
+            $data['product_name'] = $request->param('product_name');
+            $data['product_open'] = $request->param('product_open');
+            $data['product_store'] = $request->param('product_store');
+            $data['store_website'] = $request->param('store_website');
+            $data['assem_name'] = $request->param('assem_name');
+            $data['affect_ver'] = $request->param('affect_ver');
+            $data['ver_open_date'] = $request->param('ver_open_date');
+            $data['sub_update_url'] = $request->param('sub_update_url');
+            $data['git_url'] = $request->param('git_url');
+            $data['git_commit_id'] = $request->param('git_commit_id');
+            $data['git_fixed_commit_id'] = $request->param('git_fixed_commit_id');
+            $data['product_cate'] = $request->param('product_cate');
+            $data['product_field'] = $request->param('product_field');
+            $data['product_type'] = $request->param('product_type');
+            $data['fofa_max'] = $request->param('fofa_max');
+            $data['fofa_con'] = $request->param('fofa_con');
+            $data['is_pass'] = $request->param('is_pass');
+            $data['is_sub_attack'] = $request->param('is_sub_attack');
+            $data['temp_plan_s3_hash'] = $request->param('temp_plan_s3_hash');
+            $data['patch_s3_hash'] = $request->param('patch_s3_hash');
+            $data['is_pass_attack'] = $request->param('is_pass_attack');
+            $data['auditor'] = $request->param('auditor');
+            $data['cause'] = $request->param('cause');
+            $data['is_poc'] = $request->param('is_poc');
+            $data['scan_time'] = $request->param('scan_time');
             $data['updated_at'] = date('Y-m-d H:i:s',time());
             if(!$data['scan_time']) {
                 $data['scan_time'] = date('Y-m-d H:i:s',time());
