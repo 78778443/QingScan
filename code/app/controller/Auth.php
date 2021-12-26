@@ -17,7 +17,7 @@ class Auth extends Common
      */
     public function user_list()
     {
-        $list = Db::name('auth_rule')->field('auth_rule_id,href')->select();
+        //$list = Db::name('auth_rule')->field('auth_rule_id,href')->select();
         $ids = implode(',', config('app.ADMINISTRATOR'));
         $map = "a.id not in($ids) and is_delete = 0";
         $list = UserModel::getListPage($map);
