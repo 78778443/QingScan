@@ -988,10 +988,6 @@ CREATE TABLE `plugin`  (
                            UNIQUE INDEX `un_name`(`name`, `scan_type`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin COMMENT = '自定义插件' ROW_FORMAT = Compact;
 
--- ----------------------------
--- Records of plugin
--- ----------------------------
-INSERT INTO `plugin` VALUES (2, 0, 'curl', 'curl  ##URL##', '/tmp', '2021-12-14 08:54:53', 1, 0, 'csv', '2021-12-15 18:58:54');
 
 -- ----------------------------
 -- Table structure for plugin_result
