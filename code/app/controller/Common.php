@@ -155,7 +155,7 @@ class Common extends BaseController
         return $arr;
     }
 
-    public function getMyAppList(){
+    public function getMyAppList($where = []){
         $where[] = ['is_delete','=',0];
         if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
             $where[] = ['user_id', '=', $this->userId];
