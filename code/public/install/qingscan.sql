@@ -330,7 +330,6 @@ INSERT INTO `auth_rule` VALUES (13, 'hostPort/index', 'Nmap列表', 0, 1, 35, 5,
 INSERT INTO `auth_rule` VALUES (14, '', '白盒审计', 0, 1, 0, 4, 1635847305, 1, 1635847336, 1, 0, '');
 INSERT INTO `auth_rule` VALUES (15, 'code/index', '项目列表', 0, 1, 14, 1, 1635847323, 1, 0, 2, 0, '');
 INSERT INTO `auth_rule` VALUES (16, 'code/bug_list', 'Fortify', 0, 1, 14, 2, 1635847369, 1, 0, 2, 0, '');
-INSERT INTO `auth_rule` VALUES (17, 'code/kunlun_list', 'KunLun-M', 0, 1, 14, 3, 1635847384, 1, 0, 2, 0, '');
 INSERT INTO `auth_rule` VALUES (18, 'code/semgrep_list', 'SemGrep', 0, 1, 14, 4, 1635847399, 1, 0, 2, 0, '');
 INSERT INTO `auth_rule` VALUES (19, 'code/hooks', '安全钩子', 0, 1, 14, 5, 1635847415, 0, 1636038515, 2, 0, '');
 INSERT INTO `auth_rule` VALUES (20, 'vulnerable/pocsuite', 'POC列表', 1, 1, 5, 2, 1635847469, 1, 0, 2, 1639645594, '');
@@ -408,6 +407,8 @@ INSERT INTO `auth_rule` VALUES (92, 'app/del', '未知', 0, 1, 43, 0, 1640526227
 INSERT INTO `auth_rule` VALUES (93, 'dirmap/details', '未知', 0, 1, 43, 0, 1640532135, 1, 0, 3, 0, '');
 INSERT INTO `auth_rule` VALUES (94, 'to_examine/kunlun', '未知', 0, 1, 43, 0, 1640572467, 1, 0, 3, 0, '');
 INSERT INTO `auth_rule` VALUES (95, 'vul_target/index', '缺陷目标收集', 0, 1, 5, 2, 1640594192, 1, 1640594387, 2, 0, '');
+INSERT INTO `auth_rule` VALUES (96, 'code_webshell/index', '河马webshell检测', 0, 1, 14, 8, 1640619291, 1, 1640621379, 2, 0, '');
+
 
 -- ----------------------------
 -- Table structure for awvs_app
