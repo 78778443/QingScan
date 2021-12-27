@@ -246,9 +246,9 @@ class UrlsModel extends BaseModel
                 }
 
                 $bbb = [
-                    'system' => $data['web server operating system'][0],
-                    'application' => $data['web application technology'][0],
-                    'dbms' => $data['back-end DBMS'][0],
+                    'system' => isset($data['web server operating system'])?$data['web server operating system'][0]:'',
+                    'application' => isset($data['web application technology'])?$data['web application technology'][0]:'',
+                    'dbms' => isset($data['back-end DBMS'])?$data['back-end DBMS'][0]:'',
                     'urls_id' => $v['id'],
                     'app_id' => $v['app_id'],
                     'user_id' => $v['user_id'],
