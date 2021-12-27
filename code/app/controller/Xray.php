@@ -60,9 +60,7 @@ class Xray extends Common
 
         $data['appArr'] = AppModel::getAppName();
 
-        $projectArr = Db::table('app')->where($map)->select()->toArray();
-        $projectArr = array_column($projectArr, null, 'id');
-        $data['projectArr'] = $projectArr;
+        $data['projectArr'] = self::getMyAppList();
         $data['CategoryList'] = Db::table('xray')->where($where)->group('plugin')->column('plugin');
         foreach ($data['CategoryList'] as &$v) {
             $v = json_decode($v,true);
