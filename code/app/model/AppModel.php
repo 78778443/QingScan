@@ -363,6 +363,7 @@ class AppModel extends BaseModel
                             'whatweb_id'=>$val['id'],
                             'url'=>$val['url'],
                             'app_id'=>$val['app_id'],
+                            'user_id'=>$val['user_id'],
                             'key'=>$k,
                             'value'=>$v,
                             'result'=>json_encode($output),

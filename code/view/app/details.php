@@ -42,21 +42,17 @@ $typeArr = [
             <h5><span style="color:#888">xray扫描时间：</span><?php echo $info['xray_scan_time'] ?></h5></div>
         <div class="col-md-4">
             <h5><span style="color:#888">dirmap扫描时间:</span> <?php echo $info['dirmap_scan_time'] ?></h5></div>
-        <!--<form class="form-inline" method="get" action="">
-                <div class="mb-3">
-                    <label class="sr-only">类型</label>
-                    <select class="form-control" name="type">
-                        <option value="">请选择类型</option>
-                        <?php /*foreach ($typeArr as $value) { */ ?>
-                            <option value="<?php /*echo $value */ ?>" <?php /*echo ($GET['type'] ?? '' == $value) ? 'selected' : '' */ ?>><?php /*echo $value */ ?></option>
-                        <?php /*} */ ?>
-                    </select>
-                </div>
-                <input type="submit" class="btn btn-default">
-            </form>-->
+        <div class="col-md-4">
+            <h5><span style="color:#888">DisMap扫描时间:</span> <?php echo $info['dismap_scan_time'] ?></h5>
+        </div>
+        <div class="col-md-4">
+            <h5><span style="color:#888">Crawlergo扫描时间:</span> <?php echo $info['crawlergo_scan_time'] ?></h5>
+        </div>
+        <div class="col-md-4">
+            <h5><span style="color:#888">Vulmap扫描时间:</span> <?php echo $info['vulmap_scan_time'] ?></h5>
+        </div>
     </div>
 </div>
-
 
 
 <div class="row tuchu">
@@ -94,7 +90,7 @@ $typeArr = [
                                 <td><?php echo $value['cms'] ?></td>
                                 <td><?php echo $value['server'] ?></td>
                                 <td><?php echo $value['statuscode'] ?></td>
-                                <td  class="AutoNewline"><?php echo $value['title'] ?></td>
+                                <td class="AutoNewline"><?php echo $value['title'] ?></td>
                                 <td><?php echo $value['length'] ?></td>
                                 <td><?php echo $value['page_title'] ?></td>
                                 <td><?php echo $value['header'] ?></td>
@@ -177,7 +173,7 @@ $typeArr = [
                                 <td><?php echo $value['type'] ?></td>
                                 <td><?php echo $value['service'] ?></td>
                                 <td><?php echo $value['is_close'] ?></td>
-                                <td  class="AutoNewline"><?php echo $value['create_time'] ?></td>
+                                <td class="AutoNewline"><?php echo $value['create_time'] ?></td>
                                 <td><?php echo $value['update_time'] ?></td>
                                 <td><?php echo $value['os'] ?></td>
                                 <td><?php echo $value['html'] ?></td>
@@ -230,7 +226,7 @@ $typeArr = [
                                 <td><?php echo $value['description'] ?></td>
                                 <td><?php echo $value['host'] ?></td>
                                 <td><?php echo $value['port'] ?></td>
-                                <td  class="AutoNewline"><?php echo $value['param'] ?></td>
+                                <td class="AutoNewline"><?php echo $value['param'] ?></td>
                                 <td><?php echo $value['request'] ?></td>
                                 <td><?php echo $value['payload'] ?></td>
                                 <td><?php echo $value['response'] ?></td>
@@ -285,7 +281,7 @@ $typeArr = [
                                 <td><?php echo $value['status'] ?></td>
                                 <td><?php echo $value['create_time'] ?></td>
                                 <td><?php echo $value['isp'] ?></td>
-                                <td  class="AutoNewline"><?php echo $value['country'] ?></td>
+                                <td class="AutoNewline"><?php echo $value['country'] ?></td>
                                 <td><?php echo $value['region'] ?></td>
                                 <td><?php echo $value['city'] ?></td>
                                 <td><?php echo $value['area'] ?></td>
@@ -329,7 +325,7 @@ $typeArr = [
                                 <td><?php echo $value['urls_id'] ?></td>
                                 <td><?php echo $value['type'] ?></td>
                                 <td><?php echo $value['title'] ?></td>
-                                <td  class="AutoNewline"><?php echo $value['payload'] ?></td>
+                                <td class="AutoNewline"><?php echo $value['payload'] ?></td>
                                 <td><?php echo $value['dbms'] ?></td>
                                 <td><?php echo $value['application'] ?></td>
                                 <td><?php echo $value['create_time'] ?></td>
@@ -339,14 +335,6 @@ $typeArr = [
                 </div>
             </div>
         </div>
-
-
-
-
-
-
-
-
         <div class="accordion-item">
             <h2 class="accordion-header" id="heading7">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
@@ -432,7 +420,6 @@ $typeArr = [
                             <th>type</th>
                             <th>url</th>
                             <th>时间</th>
-                            <th style="width: 200px">操作</th>
                         </tr>
                         </thead>
                         <?php foreach ($dirmap as $value) { ?>
@@ -443,7 +430,6 @@ $typeArr = [
                                 <td><?php echo $value['type'] ?></td>
                                 <td><?php echo $value['url'] ?></td>
                                 <td><?php echo $value['create_time'] ?></td>
-                                <!--                                <td>--><?php //echo date('Y-m-d H:i:s', substr($value['create_time'], 0, 10)) ?><!--</td>-->
                             </tr>
                         <?php } ?>
                     </table>
@@ -451,7 +437,35 @@ $typeArr = [
             </div>
         </div>
 
-
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="heading8">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#collapse9" aria-expanded="false" aria-controls="collapse9">
+                    DisMap（CMS指纹识别）
+                </button>
+            </h2>
+            <div id="collapse9" class="accordion-collapse collapse" aria-labelledby="heading8"
+                 data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                    <table class="table table-bordered table-hover table-striped">
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>result</th>
+                            <th>时间</th>
+                        </tr>
+                        </thead>
+                        <?php foreach ($app_dismap as $value) { ?>
+                            <tr>
+                                <td><?php echo $value['id'] ?></td>
+                                <td>{$value['result']}</td>
+                                <td><?php echo $value['create_time'] ?></td>
+                            </tr>
+                        <?php } ?>
+                    </table>
+                </div>
+            </div>
+        </div>
 
 
     </div>

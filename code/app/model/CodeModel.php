@@ -279,16 +279,6 @@ class CodeModel extends BaseModel
 
     public static function addData(array $data)
     {
-        $datetime = date('Y-m-d H:i:s', time() + 86400 * 365);
-        if ($data['is_fortify_scan'] == false) {
-            $data['fortify_scan_time'] = $datetime;
-        }
-        if ($data['is_kunlun_scan'] == false) {
-            $data['kunlun_scan_time'] = $datetime;
-        }
-        if ($data['is_semgrep_scan'] == false) {
-            $data['semgrep_scan_time'] = $datetime;
-        }
         return self::add($data);
     }
 
@@ -299,17 +289,21 @@ class CodeModel extends BaseModel
 
     public static function getProjectComposer()
     {
+        ini_set('max_execution_time', 0);
         $codePath = "/data/codeCheck";
         while (true) {
-            ini_set('max_execution_time', 0);
             $list = Db::name('code')->whereTime('composer_scan_time', '<=', date('Y-m-d H:i:s', time() - (86400 * 15)))
                 ->where('is_delete', 0)->limit(1)->orderRand()->select()->toArray();
             foreach ($list as $k => $v) {
+                self::scanTime('code', $v['id'], 'composer_scan_time');
+
                 $value = $v;
                 $prName = cleanString($value['name']);
                 $codeUrl = $value['ssh_url'];
-                downCode($codePath, $prName, $codeUrl, $value['is_private'], $value['username'], $value['password'], $value['private_key']);
                 $filepath = "/data/codeCheck/{$prName}";
+                if (!file_exists($filepath)) {
+                    downCode($codePath, $prName, $codeUrl, $value['is_private'], $value['username'], $value['password'], $value['private_key']);
+                }
                 $fileArr = getFilePath($filepath, 'composer.json');
                 if (!$fileArr) {
                     addlog("扫描composer依赖失败,composer.json依赖文件不存在:{$filepath}");
@@ -322,30 +316,41 @@ class CodeModel extends BaseModel
                         continue;
                     }
                     $arr = json_decode($json, true);
-                    $packages = array_merge($arr['packages'], $arr['packages-dev']);
+                    $packages = [];
+                    if (isset($arr['packages']) && isset($arr['packages-dev'])) {
+                        $packages = array_merge($arr['packages'], $arr['packages-dev']);
+                    } else {
+                        if (isset($arr['packages'])) {
+                            $packages[] = $arr['packages'];
+                        } elseif(isset($arr['packages-dev'])){
+                            $packages[] = $arr['packages-dev'];
+                        } else{
+                            $packages[] = $arr;
+                        }
+                    }
                     foreach ($packages as $val) {
                         $data['user_id'] = $v['user_id'];
                         $data['code_id'] = $v['id'];
-                        $data['name'] = $val['name'];
-                        $data['version'] = $val['version'];
-                        $data['source'] = json_encode($val['source']);
-                        $data['dist'] = json_encode($val['dist']);
-                        $data['require'] = json_encode($val['require']);
-                        $data['require_dev'] = json_encode($val['require_dev']);
-                        $data['type'] = $val['type'];
-                        $data['autoload'] = json_encode($val['autoload']);
-                        $data['notification_url'] = $val['notification_url'];
-                        $data['license'] = json_encode($val['license']);
-                        $data['authors'] = json_encode($val['authors']);
-                        $data['description'] = $val['description'];
-                        $data['homepage'] = $val['homepage'];
-                        $data['keywords'] = json_encode($val['keywords']);
-                        $data['time'] = $val['time'];
+                        $data['name'] = isset($val['name'])?$val['name']:'';
+                        $data['version'] = isset($val['version'])?$val['version']:'';
+                        $data['source'] = isset($val['source'])?json_encode($val['source']):'';
+                        $data['dist'] = isset($val['dist'])?json_encode($val['dist']):'';
+                        $data['require'] = isset($val['require'])?json_encode($val['require']):'';
+                        $data['require_dev'] = isset($val['require_dev'])?json_encode($val['require_dev']):'';
+                        $data['type'] = isset($val['type'])?$val['type']:'';
+                        $data['autoload'] = isset($val['autoload'])?json_encode($val['autoload']):'';
+                        $data['notification_url'] = isset($val['notification_url'])?$val['notification_url']:'';
+                        $data['license'] = isset($val['license'])?json_encode($val['license']):'';
+                        $data['authors'] = isset($val['authors'])?json_encode($val['authors']):'';
+                        $data['description'] = isset($val['description'])?$val['description']:'';
+                        $data['homepage'] = isset($val['homepage'])?$val['homepage']:'';
+                        $data['keywords'] = isset($val['keywords'])?json_encode($val['keywords']):'';
+                        $data['time'] = isset($val['time'])?$val['time']:'';
                         $data['create_time'] = date('Y-m-d H:i:s', time());
                         Db::name('code_composer')->insert($data);
+                        addlog("composer依赖扫描数据写入成功,内容为:".json_encode($data));
                     }
                 }
-                self::scanTime('code', $v['id'], 'composer_scan_time');
             }
             sleep(10);
         }

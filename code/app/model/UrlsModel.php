@@ -210,21 +210,20 @@ class UrlsModel extends BaseModel
         ini_set('max_execution_time', 0);
         while (true) {
             $api = Db::name('urls')->whereTime('sqlmap_scan_time', '<=', date('Y-m-d H:i:s', time() - (86400 * 15)));
-            $list = $api->where('is_delete', 0)->field('id,url,app_id')->limit(5)->orderRand()->select()->toArray();
-            $file_path = '/data/tools/sqlmap/';
+            $list = $api->where('is_delete', 0)->field('id,url,app_id,user_id')->limit(5)->orderRand()->select()->toArray();
+            $tools = '/data/tools/sqlmap/';
             foreach ($list as $k => $v) {
-//            $v['url'] = "http://172.22.43.246:8888/home/index.php?m=tiezi&a=index&bk=5";
-                $arr = parse_url($v['url']);
+                self::scanTime('urls',$v['id'],'sqlmap_scan_time');
 
+                $arr = parse_url($v['url']);
                 $blackExt = ['.js', '.css', '.json', '.png', '.jpg', '.jpeg', '.gif', '.mp3', '.mp4'];
                 //没有可以注入的参数
                 if (!isset($arr['query']) or in_array_strpos($arr['path'], $blackExt) or (strpos($arr['query'], '=') === false)) {
                     addlog(["URL地址不存在可以注入的参数", $v['url']]);
-                    self::scanTime('urls',$v['id'],'sqlmap_scan_time');
                     continue;
                 }
-
-                $cmd = "cd {$file_path}  && python3 ./sqlmap.py -u '{$v['url']}' --batch  --random-agent --output-dir={$file_path}";
+                $file_path = $tools.'result/';
+                $cmd = "cd {$tools}  && python3 ./sqlmap.py -u '{$v['url']}' --batch  --random-agent --output-dir={$file_path}";
                 systemLog($cmd);
                 $host = $arr['host'];
                 $outdir = $file_path . "{$host}/";
@@ -232,8 +231,7 @@ class UrlsModel extends BaseModel
 
                 //sqlmap输出异常
                 if (!is_dir($outdir) or !file_exists($outfilename) or !filesize($outfilename)) {
-                    addlog(["sqlmap输出异常", $v['url']]);
-                    self::scanTime('urls',$v['id'],'sqlmap_scan_time');
+                    addlog(["sqlmap没有找到注入点", $v['url']]);
                     continue;
                 }
                 $ddd = file_get_contents($outfilename);
@@ -253,6 +251,7 @@ class UrlsModel extends BaseModel
                     'dbms' => $data['back-end DBMS'][0],
                     'urls_id' => $v['id'],
                     'app_id' => $v['app_id'],
+                    'user_id' => $v['user_id'],
                 ];
                 foreach ($data['Payload'] as $key => $value) {
                     $bbb['payload'] = $value;
@@ -260,10 +259,10 @@ class UrlsModel extends BaseModel
                     $bbb['type'] = $data['Type'][$key];
                     Db::name('urls_sqlmap')->insert($bbb);
                 }
-
-                Db::name('urls')->where('id', $v['id'])->update(['sqlmap_scan_time' => date('Y-m-d H:i:s', time())]);
+                addlog(["sqlmap扫描成功数据已写入：", $v['url']]);
                 systemLog("rm -rf $outdir");
             }
+            //exit;
             sleep(5);
         }
     }

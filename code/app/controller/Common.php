@@ -62,6 +62,9 @@ class Common extends BaseController
                 $where = "auth_group_id = $this->auth_group_id and status = 1";
                 $auth_group = Db::name('auth_group')->where($where)->field('rules')->find();
                 $this->userRules = rtrim($auth_group['rules'], ',');
+                if (!$this->userRules) {
+                    $this->userRules = 0;
+                }
                 $map = "is_delete = 0 and menu_status = 1 and auth_rule_id in ($this->userRules) and level <= 2";
                 $this->menudata = Db::name('auth_rule')->where($map)->field('auth_rule_id,href,title,icon_url,pid,level')->order('sort asc')->select();
             }
@@ -150,5 +153,16 @@ class Common extends BaseController
         if (!$arr)
             return 0;
         return $arr;
+    }
+
+    public function getMyAppList(){
+        $where[] = ['is_delete','=',0];
+        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
+            $where[] = ['user_id', '=', $this->userId];
+        }
+        //查询项目数据
+        $projectArr = Db::table('app')->where($where)->field('id,name')->select()->toArray();
+        $projectList = array_column($projectArr, 'name', 'id');
+        return $projectList;
     }
 }

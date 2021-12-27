@@ -49,9 +49,7 @@
                         <tr>
                             <td><?php echo $value['id'] ?></td>
                             <td class="ellipsis-type">
-                                <a href="<?php echo $value['url'] ?>" target="_blank">
-                                    <?php echo $value['name'] ?>
-                                </a>
+                                <a href="{$value['url']}" title="{$value['url']}" target="_blank">{$value['name']} </a>
                             </td>
                             <td><?php
                                 if (isset($value['cms']) && is_array(json_decode($value['cms'], true))) {
@@ -74,7 +72,7 @@
                             </td>
                             <td><?php echo date('m-d H:i', strtotime($value['xray_scan_time'])) ?></td>
                             <td><?php echo date('m-d H:i', strtotime($value['dirmap_scan_time'])) ?></td>
-                            <td><?php echo $value['is_intranet'] ?></td>
+                            <td>{$value['is_intranet']}</td>
                             <td>
                                 <a href="javascript:;" onclick="start_agent(<?php echo $value['id'] ?>)"
                                    class="btn btn-sm btn-outline-success">启动代理</a>

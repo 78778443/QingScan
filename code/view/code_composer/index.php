@@ -37,7 +37,7 @@ $searchArr = [
                         <td><?php echo $value['source'] ?></td>
                         <td><?php echo $value['authors'] ?></td>
                         <td><?php echo $value['keywords'] ?></td>
-                        <td><?php echo $value['time'] ?></td>
+                        <td><?php echo $value['create_time'] ?></td>
                         <!--<td>
                             <a href="<?php /*echo url('xray/del',['id'=>$value['id']])*/ ?>" class="btn btn-sm btn-outline-danger">删除</a>
                         </td>-->

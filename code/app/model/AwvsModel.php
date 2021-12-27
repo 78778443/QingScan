@@ -7,33 +7,33 @@ use think\facade\Db;
 
 class AwvsModel extends BaseModel
 {
-
-    public $url,$token;
-
-    public function __construct()
-    {
-        $this->url = ConfigModel::value('awvs_url');
-        $this->token = ConfigModel::value('awvs_token');
-    }
-
     public static function scan()
     {
-        while (true) {
-            $list = Db::table('app')->whereTime('awvs_scan_time', '<=', date('Y-m-d H:i:s', time() - (86400 * 15)))->limit(1)->orderRand()->select()->toArray();
-            foreach ($list as $val) {
+        $awvs_url = ConfigModel::value('awvs_url');
+        $awvs_token = ConfigModel::value('awvs_token');
 
+        if (empty($awvs_url) || empty($awvs_token)) {
+            addlog(["执行AWVS扫描任务失败,未找到有效得配置信息", $awvs_url, $awvs_token]);
+            return false;
+        }
+        while (true) {
+            $list = Db::table('app')->whereTime('awvs_scan_time', '<=', date('Y-m-d H:i:s', time() - (86400 * 15)))->where('is_delete', 0)->limit(1)->orderRand()->select()->toArray();
+            foreach ($list as $val) {
                 $url = $val['url'];
                 $id = $val['id'];
                 if (filter_var($url, FILTER_VALIDATE_URL) === false) {
                     addlog(["URL地址不正确", $id, $url]);
-                    Db::table('app')->where(['id' => $id])->save(['awvs_scan_time' => date('Y-m-d H:i:s')]);
+                    self::scanTime('app', $id, 'awvs_scan_time');
                     continue;
                 }
-                addlog(["AWVS开始执行扫描任务", $id, $url]);
                 //添加目标
-                $targetId = self::getTargetId($id, $url);
-                $retArr = self::getScanStatus($targetId);
-
+                $targetId = self::getTargetId($id, $url, $awvs_url, $awvs_token, $val['user_id']);
+                if (!$targetId) {
+                    addlog(["AWVS扫描失败", $id, $url]);
+                    self::scanTime('app', $id, 'awvs_scan_time');
+                    continue;
+                }
+                $retArr = self::getScanStatus($targetId, $awvs_url, $awvs_token);
                 if (isset($retArr['code']) && $retArr['code'] == 404) {
                     addlog(["未在AWVS中找到此目标ID", $targetId]);
                     Db::table('awvs_app')->where(['target_id' => $targetId])->delete();
@@ -45,41 +45,41 @@ class AwvsModel extends BaseModel
                 }
                 //判断目标扫描状态
                 if (isset($retArr['last_scan_session_status']) && $retArr['last_scan_session_status'] == 'completed') {
-                    Db::table('app')->where(['id' => $id])->save(['awvs_scan_time' => date('Y-m-d H:i:s')]);
-                    self::addVulnList($retArr['last_scan_id'], $retArr['last_scan_session_id']);
+                    self::addVulnList($retArr['last_scan_id'], $retArr['last_scan_session_id'], $awvs_url, $awvs_token, $val['user_id']);
+                    self::scanTime('app', $id, 'awvs_scan_time');
                 }
             }
-
-            addlog("AWS累了，休息10秒钟...");
-            sleep(10);
+            addlog("AWVS累了，休息30秒钟...");
+            sleep(30);
         }
     }
 
-    public static function addVulnList($scanId, $scanSessionId)
+    public static function addVulnList($scanId, $scanSessionId, $awvs_url, $awvs_token, $user_id)
     {
-        $vulnList = self::getVulnList($scanId, $scanSessionId);
+        $vulnList = self::getVulnList($scanId, $scanSessionId, $awvs_url, $awvs_token);
         foreach ($vulnList['vulnerabilities'] as $value) {
-            $detail = self::getDetail($scanId, $scanSessionId, $value['vuln_id']);
+            $detail = self::getDetail($scanId, $scanSessionId, $value['vuln_id'], $awvs_url, $awvs_token);
             $value = array_merge($value, $detail);
             foreach ($value as $k => $v) {
                 $value[$k] = is_string($v) ? $v : json_encode($v, JSON_UNESCAPED_UNICODE);
             }
+            $value['user_id'] = $user_id;
             Db::table('awvs_vuln')->extra('IGNORE')->insert($value);
         }
     }
 
-    public static function getDetail($scanId, $scanSessionId, $vulnId)
+    public static function getDetail($scanId, $scanSessionId, $vulnId, $awvs_url, $awvs_token)
     {
         $ch = curl_init();
 
-        curl_setopt($ch, CURLOPT_URL, AwvsModel::$url . "/api/v1/scans/{$scanId}/results/{$scanSessionId}/vulnerabilities/{$vulnId}");
+        curl_setopt($ch, CURLOPT_URL, $awvs_url . "/api/v1/scans/{$scanId}/results/{$scanSessionId}/vulnerabilities/{$vulnId}");
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
 
         $headers = array();
-        $headers[] = 'X-Auth: ' . AwvsModel::$token;
+        $headers[] = 'X-Auth: ' . $awvs_token;
         $headers[] = 'Content-Type: application/json';
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 
@@ -92,18 +92,18 @@ class AwvsModel extends BaseModel
         return json_decode($result, true);
     }
 
-    public static function getVulnList($scanId, $scanSessionId)
+    public static function getVulnList($scanId, $scanSessionId, $awvs_url, $awvs_token)
     {
         $ch = curl_init();
 
-        curl_setopt($ch, CURLOPT_URL, AwvsModel::$url . "/api/v1/scans/{$scanId}/results/{$scanSessionId}/vulnerabilities?l=1000&s=severity:desc");
+        curl_setopt($ch, CURLOPT_URL, $awvs_url . "/api/v1/scans/{$scanId}/results/{$scanSessionId}/vulnerabilities?l=1000&s=severity:desc");
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
 
         $headers = array();
-        $headers[] = 'X-Auth: ' . AwvsModel::$token;
+        $headers[] = 'X-Auth: ' . $awvs_token;
         $headers[] = 'Content-Type: application/json';
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 
@@ -117,12 +117,12 @@ class AwvsModel extends BaseModel
 
     }
 
-    public static function startScan($targetId)
+    public static function startScan($targetId, $awvs_url, $awvs_token)
     {
         $postData = "{\"profile_id\":\"11111111-1111-1111-1111-111111111119\",\"schedule\":{\"disable\":false,\"start_date\":null,\"time_sensitive\":false},\"target_id\":\"{$targetId}\"}";
         $ch = curl_init();
 
-        curl_setopt($ch, CURLOPT_URL, AwvsModel::$url . '/api/v1/scans');
+        curl_setopt($ch, CURLOPT_URL, $awvs_url . '/api/v1/scans');
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
@@ -131,7 +131,7 @@ class AwvsModel extends BaseModel
 
         $headers = array();
         $headers[] = 'Content-Type: application/json';
-        $headers[] = 'X-Auth: ' . AwvsModel::$token;
+        $headers[] = 'X-Auth: ' . $awvs_token;
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 
         $result = curl_exec($ch);
@@ -143,18 +143,18 @@ class AwvsModel extends BaseModel
 
     }
 
-    public static function getScanStatus($targetId)
+    public static function getScanStatus($targetId, $awvs_url, $awvs_token)
     {
         $ch = curl_init();
 
-        curl_setopt($ch, CURLOPT_URL, self::$url . '/api/v1/targets/' . $targetId);
+        curl_setopt($ch, CURLOPT_URL, $awvs_url . '/api/v1/targets/' . $targetId);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
 
         $headers = array();
-        $headers[] = 'X-Auth: ' . self::$token;
+        $headers[] = 'X-Auth: ' . $awvs_token;
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 
         $result = curl_exec($ch);
@@ -168,42 +168,36 @@ class AwvsModel extends BaseModel
         return $retArr;
     }
 
-    public static function getTargetId($id, $url)
+    public static function getTargetId($id, $url, $awvs_url, $awvs_token, $user_id)
     {
-
         $appInfo = Db::table('awvs_app')->where(['app_id' => $id])->find();
-
         if (empty($appInfo)) {
             $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, AwvsModel::$url . "/api/v1/targets");
+            curl_setopt($ch, CURLOPT_URL, $awvs_url . "/api/v1/targets");
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
             curl_setopt($ch, CURLOPT_POST, 1);
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
             curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
             curl_setopt($ch, CURLOPT_POSTFIELDS, "{\"address\": \"{$url}\",\"description\": \"xxxx\",\"criticality\": \"10\"}");
-
             $headers = array();
             $headers[] = 'Content-Type: application/json';
-            $headers[] = 'X-Auth: ' . AwvsModel::$token;
+            $headers[] = 'X-Auth: ' . $awvs_token;
             curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-
             $result = curl_exec($ch);
             if (curl_errno($ch)) {
                 echo 'Error:' . curl_error($ch);
+                return false;
             }
             curl_close($ch);
-
             $appInfo = json_decode($result, true);
-
             if ($appInfo) {
                 $appInfo['app_id'] = $id;
+                $appInfo['user_id'] = $user_id;
                 Db::table('awvs_app')->insert($appInfo);
             }
-
             //添加扫描任务
-            self::startScan($appInfo['target_id']);
+            self::startScan($appInfo['target_id'], $awvs_url, $awvs_token);
         }
-
         return $appInfo['target_id'];
     }
 
@@ -227,6 +221,4 @@ class AwvsModel extends BaseModel
 
         }
     }
-
-
 }

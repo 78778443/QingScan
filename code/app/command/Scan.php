@@ -42,12 +42,12 @@ class Scan extends Command
         $this->setName('scan')
             ->addArgument("func", Argument::OPTIONAL, "扫描的内容")
             ->addArgument("custom", Argument::OPTIONAL, "自定义工具名")
+            ->addArgument("scan_type", Argument::OPTIONAL, "自定义工具扫描类型")
             ->setDescription('the scan command');
     }
 
     protected function execute(Input $input, Output $output)
     {
-
         $func = trim($input->getArgument('func'));
         if ($func == "safe") {
             ProcessSafeModel::safe();
@@ -133,7 +133,9 @@ class Scan extends Command
             PluginModel::safe();
         } elseif ($func == 'custom') {
             $custom = trim($input->getArgument('custom'));
-            PluginModel::custom_event($custom);
+            $scanType = $input->getArgument('scan_type');
+            $scanType = array_search($scanType, ['app','host','code','url']);
+            PluginModel::custom_event($custom,$scanType);
         }
 
         // 指令输出

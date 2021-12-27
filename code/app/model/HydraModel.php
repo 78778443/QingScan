@@ -28,6 +28,7 @@ class HydraModel extends BaseModel
                             $data['password'] = $vv['password'];
                             $data['host_id'] = $v['id'];
                             $data['app_id'] = $v['app_id'];
+                            $data['user_id'] = $v['user_id'];
                             $data['create_time'] = date('Y-m-d H:i:s',time());
                             $dataAll[] = $data;
                         }

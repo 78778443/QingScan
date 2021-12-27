@@ -2,19 +2,19 @@
 
 namespace app\controller;
 
-use app\BaseController;
 use app\model\AppModel;
 use app\model\CodeCheckModel;
 use app\model\FortifyModel;
 use app\model\CodeModel;
 use think\facade\Db;
 use think\facade\View;
+use think\Request;
 
 
 class Code extends Common
 {
 
-    public function index()
+    public function index(Request $request)
     {
         $pageSize = 25;
 
@@ -24,7 +24,7 @@ class Code extends Common
             $where[] = ['user_id', '=', $this->userId];
             $map[] = ['user_id', '=', $this->userId];
         }
-        $search = getParam('search');
+        $search = $request->param('search');
         if (!empty($search)) {
             $where[] = ['name', 'like', "%{$search}%"];
         }
@@ -44,9 +44,9 @@ class Code extends Common
         return View::fetch('list', $data);
     }
 
-    public function code_del()
+    public function code_del(Request $request)
     {
-        $id = getParam('id');
+        $id = $request->param('id');
         $map[] = ['id', '=', $id];
         if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
             $map[] = ['user_id', '=', $this->userId];
@@ -58,17 +58,17 @@ class Code extends Common
         }
     }
 
-    public function bug_list()
+    public function bug_list(Request $request)
     {
         //接收参数
-        $page = getParam('page', 1);
-        $search = getParam('search', '');
+        $page = $request->param('page', 1);
+        $search = $request->param('search', '');
         $pageSize = 25;
-        $pid = getParam('project_id');
-        $Folder = getParam('Folder');
-        $Category = getParam('Category');
-        $Primary_filename = getParam('Primary_filename');
-        $check_status = getParam('check_status', '-2');
+        $pid = $request->param('project_id');
+        $Folder = $request->param('Folder');
+        $Category = $request->param('Category');
+        $Primary_filename = $request->param('Primary_filename');
+        $check_status = $request->param('check_status', '-2');
 
         //准备查询条件
         //$where = ['check_status' => 0];
@@ -135,9 +135,9 @@ class Code extends Common
         return View::fetch('bug_list', $data);
     }
 
-    public function bug_details()
+    public function bug_details(Request $request)
     {
-        $id = getParam('id');
+        $id = $request->param('id');
         if (!$id) {
             $this->error('参数不能为空');
         }
@@ -169,9 +169,9 @@ class Code extends Common
         return View::fetch('bug_details', $data);
     }
 
-    public function bug_del()
+    public function bug_del(Request $request)
     {
-        $id = getParam('id');
+        $id = $request->param('id');
         $map[] = ['id', '=', $id];
         if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
             $map[] = ['user_id', '=', $this->userId];
@@ -183,9 +183,9 @@ class Code extends Common
         }
     }
 
-    public function semgrep_details()
+    public function semgrep_details(Request $request)
     {
-        $id = getParam('id');
+        $id = $request->param('id');
         if (!$id) {
             $this->error('参数不能为空');
         }
@@ -211,18 +211,18 @@ class Code extends Common
         return View::fetch('semgrep_details', $data);
     }
 
-    public function kunlun_list()
+    public function kunlun_list(Request $request)
     {
         $data = [];
 
         $where[] = ['is_delete', '=', 0];
         $pageSize = 25;
-        $search = getParam('search', '');
-        $pid = getParam('project_id');
-        $level = getParam('level'); // 等级
-        $Category = getParam('Category');   // 分类
-        $filename = getParam('filename');   // 文件名
-        $check_status = getParam('check_status');   // 审核状态
+        $search = $request->param('search', '');
+        $pid = $request->param('project_id');
+        $level = $request->param('level'); // 等级
+        $Category = $request->param('Category');   // 分类
+        $filename = $request->param('filename');   // 文件名
+        $check_status = $request->param('check_status');   // 审核状态
         if (!empty($pid)) {
             $where[] = ['scan_project_id', '=', $pid];
         }
@@ -261,9 +261,9 @@ class Code extends Common
         return View::fetch('kunlun_list', $data);
     }
 
-    public function kunlun_details()
+    public function kunlun_details(Request $request)
     {
-        $id = getParam('id');
+        $id = $request->param('id');
         if (!$id) {
             $this->error('参数不能为空');
         }
@@ -288,9 +288,9 @@ class Code extends Common
         return View::fetch('kunlun_details', $data);
     }
 
-    public function kunlun_del()
+    public function kunlun_del(Request $request)
     {
-        $id = getParam('id');
+        $id = $request->param('id');
         $map[] = ['id', '=', $id];
         if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
             $map[] = ['user_id', '=', $this->userId];
@@ -302,18 +302,17 @@ class Code extends Common
         }
     }
 
-    public function semgrep_list()
+    public function semgrep_list(Request $request)
     {
-
         $data = [];
-        $search = getParam('search', '');
+        $search = $request->param('search', '');
         $pageSize = 25;
         $where[] = ['is_delete', '=', 0];
-        $pid = getParam('project_id');
-        $level = getParam('level'); // 等级
-        $Category = getParam('Category');   // 分类
-        $filename = getParam('filename');   // 文件名
-        $check_status = getParam('check_status');   // 审核状态
+        $pid = $request->param('project_id');
+        $level = $request->param('level'); // 等级
+        $Category = $request->param('Category');   // 分类
+        $filename = $request->param('filename');   // 文件名
+        $check_status = $request->param('check_status');   // 审核状态
         if (!empty($pid)) {
             $where[] = ['code_id', '=', $pid];
         }
@@ -356,9 +355,9 @@ class Code extends Common
         return View::fetch('semgrep_list', $data);
     }
 
-    public function semgrep_del()
+    public function semgrep_del(Request $request)
     {
-        $id = getParam('id');
+        $id = $request->param('id');
         $map[] = ['id', '=', $id];
         if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
             $map[] = ['user_id', '=', $this->userId];
@@ -370,9 +369,9 @@ class Code extends Common
         }
     }
 
-    public function bug_detail()
+    public function bug_detail(Request $request)
     {
-        $id = getParam('id');
+        $id = $request->param('id');
         $data['base'] = FortifyModel::getInfo($id);
         $data['project'] = Db::table('code')->where('id', $data['base']['project_id'])->find();
 
@@ -386,62 +385,51 @@ class Code extends Common
         $this->show('code/bug_detail', $data);
     }
 
-    public function edit_modal()
+    public function edit_modal(Request $request)
     {
-        if (request()->isPost()) {
-            $data = $_POST;
-            //$date = date('Y-m-d H:i:s', time() + 86400 * 365);
-
-            $is_private = getParam('is_private');
-            if ($is_private) {
-                $username = getParam('username');
-                $password = getParam('password');
-                $private_key = getParam('private_key');
-                $pulling_mode = getParam('pulling_mode');
-                if (strtolower($pulling_mode) == 'ssh') {
-                    if (!$private_key) {
+        $id = $request->param('id');
+        if (!$id) {
+            $this->error('参数错误');
+        }
+        if ($request->isPost()) {
+            $data['name'] = $request->param('name');
+            $data['is_private'] = $request->param('is_private');
+            $data['pulling_mode'] = $request->param('pulling_mode');
+            $data['ssh_url'] = $request->param('ssh_url');
+            $data['username'] = $request->param('username');
+            $data['password'] = $request->param('password','','htmlspecialchars');
+            $data['private_key'] = $request->param('private_key');
+            $data['fortify_scan_time'] = $request->param('fortify_scan_time');
+            $data['semgrep_scan_time'] = $request->param('semgrep_scan_time');
+            $data['kunlun_scan_time'] = $request->param('kunlun_scan_time');
+            if ($data['is_private']) {
+                if (strtolower($data['pulling_mode']) == 'ssh') {
+                    if (!$data['private_key']) {
                         $this->error('私钥不能为空');
                     }
                 } else {
-                    if (!$username || !$password) {
+                    if (!$data['username'] || !$data['password']) {
                         $this->error('用户名密码不能为空');
                     }
                 }
             }
-            /*if ($data['is_fortify_scan']) {
-                $data['sonar_scan_time'] = $date;
-            }
-            if ($data['is_kunlun_scan']) {
-                $data['kunlun_scan_time'] = $date;
-            }
-            if ($data['is_semgrep_scan']) {
-                $data['semgrep_scan_time'] = $date;
-            }*/
-            /*$map = [];
-            if ($this->auth_group_id != 5 && !in_array($this->userId,config('app.ADMINISTRATOR'))) {
-                $map[] = ['user_id','=',$this->userId];
-            }*/
-            if (Db::name('code')->update($data)) {
+            if (Db::name('code')->where('id',$id)->update($data)) {
                 return redirect(url('code/index'));
             } else {
                 $this->error('修改失败');
             }
         } else {
-            $id = getParam('id');
-            if (!$id) {
-                $this->error('参数错误');
-            }
             $data['info'] = Db::name('code')->where('id', $id)->find();
             return view('code/edit_modal', $data);
         }
     }
 
 
-    public function hooks()
+    public function hooks(Request $request)
     {
-        $page = getParam('page', 1);
-        $author = getParam('author', '');
-        $project_id = getParam('project_id', '');
+        $page = $request->param('page', 1);
+        $author = $request->param('author', '');
+        $project_id = $request->param('project_id', '');
         $pageSize = 25;
 
         $where = ['author' => ['>', 1]];
@@ -494,9 +482,9 @@ class Code extends Common
         return View::fetch('hooks', $data);
     }
 
-    public function hook_detail()
+    public function hook_detail(Request $request)
     {
-        $id = intval(getParam('id'));
+        $id = intval($request->param('id'));
 
         $detail = Db::table('code_check')
                 ->LeftJoin('gitlab_project p', 'p.id = code_check.project_id')
@@ -519,30 +507,32 @@ class Code extends Common
         $this->show('code_check/add', $data);
     }
 
-    public function _add_code()
+    public function _add_code(Request $request)
     {
-        $is_private = getParam('is_private');
-        if ($is_private) {
-            $username = getParam('username');
-            $password = getParam('password');
-            $private_key = getParam('private_key');
-            $pulling_mode = getParam('pulling_mode');
-            if (strtolower($pulling_mode) == 'ssh') {
-                if (!$private_key) {
+        $data['name'] = $request->param('name');
+        $data['is_private'] = $request->param('is_private');
+        $data['pulling_mode'] = $request->param('pulling_mode');
+        $data['ssh_url'] = $request->param('ssh_url');
+        $data['username'] = $request->param('username');
+        $data['password'] = $request->param('password');
+        $data['private_key'] = $request->param('private_key');
+        if ($data['is_private']) {
+            if (strtolower($data['pulling_mode']) == 'ssh') {
+                if (!$data['private_key']) {
                     $this->error('私钥不能为空');
                 }
             } else {
-                if (!$username || !$password) {
+                if (!$data['username'] || !$data['password']) {
                     $this->error('用户名密码不能为空');
                 }
             }
         }
-        CodeModel::addData($_POST);
+        CodeModel::addData($data);
 
-        $this->success('添加成功', 'code/index');
+        return redirect(url('code/index'));
     }
 
-    public function _add()
+    public function _add(Request $request)
     {
         $content = base64_decode(urldecode($_REQUEST['content']));
         $author = $_REQUEST['author'];

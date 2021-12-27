@@ -342,7 +342,7 @@ class HostPortModel extends BaseModel
                     $aaa = explode(" ", $value);
 
                     $typeArr = explode("/", $aaa[3]);
-                    $data = ['host' => $aaa[5], 'type' => $typeArr[1], 'port' => $typeArr[0]];
+                    $data = ['host' => $aaa[5], 'type' => $typeArr[1], 'port' => $typeArr[0],'user_id'=>$val['user_id']];
                     addlog(["发现主机开放端口", $data]);
                     Db::table('host_port')->extra("IGNORE")->insert($data);
 

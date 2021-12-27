@@ -8,8 +8,6 @@ use think\facade\Log;
 
 class WebScanModel extends BaseModel
 {
-
-
     public static function rad()
     {
         $path = "cd /data/tools/rad/ && ";
@@ -33,73 +31,71 @@ class WebScanModel extends BaseModel
                     addlog(["清理老文件", $pathArr['tool_result']]);
                     @unlink($pathArr['tool_result']);
                 }
-                if (file_exists($pathArr['cmd_result'])) {
-                    addlog(["清理老文件", $pathArr['tool_result']]);
+                /*if (file_exists($pathArr['cmd_result'])) {
+                    addlog(["清理老文件", $pathArr['cmd_result']]);
                     @unlink($pathArr['cmd_result']);
-                }
+                }*/
 
-                $filename = '/data/tools/rad/rad_config.yml';
+                $filename = '/data/tools/rad/rad_config.yaml';
                 if (!$value['is_intranet']) {   // 不是内网
-                    // 设置代理
-                    $arr = @yaml_parse_file($filename);
-                    if ($arr) {
-                        $proxyArr = Db::name('proxy')->where('status', 1)->limit(3)->orderRand()->select();
-                        $proxy = '';
-                        foreach ($proxyArr as $v) {
-                            $result = testAgent($v['host'], $v['port']);
-                            if ($result == 200) {
-                                $proxy = 'http://' . $v['host'] . ":{$v['port']}";
-                                break;
+                    if (file_exists($filename)) {
+                        // 设置代理
+                        $arr = @yaml_parse_file($filename);
+                        if ($arr) {
+                            $proxyArr = Db::name('proxy')->where('status', 1)->limit(3)->orderRand()->select();
+                            $proxy = '';
+                            foreach ($proxyArr as $v) {
+                                $result = testAgent($v['host'], $v['port']);
+                                if ($result == 200) {
+                                    $proxy = 'http://' . $v['host'] . ":{$v['port']}";
+                                    break;
+                                }
                             }
-                        }
-                        if (!empty($proxy)) {
-                            $arr['proxy'] = $proxy;
-                            yaml_emit_file($filename, $arr);
+                            if (!empty($proxy)) {
+                                $arr['proxy'] = $proxy;
+                                yaml_emit_file($filename, $arr);
+                            }
                         }
                     }
                 } else {
-                    unlink($filename);
+                    @unlink($filename);
                 }
 
-                $cmd = "{$path} ./rad_linux_amd64 -t  \"{$url}\"  -json  {$pathArr['tool_result']}";
+                $cmd = "{$path} ./rad_linux_amd64 -t  \"{$url}\" -json {$pathArr['tool_result']}";
                 addlog(["开始执行抓取URL地址命令", $cmd]);
 
                 $result = [];
                 execLog($cmd, $result);
 
-
-                //$result = implode("\n", $result);
                 if (!file_exists($pathArr['tool_result'])) {
                     addlog(["文件不存在", $pathArr['tool_result']]);
                     continue;
                 }
 
-
-
+                /*if (!file_exists($pathArr['cmd_result'])) {
+                    addlog(["文件不存在", $pathArr['cmd_result']]);
+                    continue;
+                }*/
                 $urlList = json_decode(file_get_contents($pathArr['tool_result']), true);
-
-                foreach ($urlList as $value) {
-//                    var_dump($value);exit;
-                    $arr = parse_url($value['URL']);
+                foreach ($urlList as $val) {
+                    $arr = parse_url($val['URL']);
                     $blackExt = ['.js', '.css', '.json', '.png', '.jpg', '.jpeg', '.gif', '.mp3', '.mp4'];
-//                    if (!isset($arr['query']) or in_array_strpos($arr['path'], $blackExt) or (strpos($arr['query'], '=') === false)) {
-                    if (in_array_strpos($arr['path'], $blackExt)) {
-                        addlog(["rad跳过资源类型url", $value['URL']]);
+                    if (!isset($arr['query']) or (isset($arr['path']) && in_array_strpos($arr['path'], $blackExt)) or (strpos($arr['query'], '=') === false)) {
                         continue;
                     }
                     $newData = [
                         'app_id' => $id,
-                        'method' => $value['Method'],
-                        'url' => $value['URL'],
+                        'method' => $val['Method'],
+                        'url' => $val['URL'],
                         'status' => 1,
-                        'hash' => md5($value['URL']),
+                        'hash' => md5($val['URL']),
                         'crawl_status' => 1,
                         'scan_status' => 0,
-//                        'header' => json_encode($value['Header']),
-                        'header' => "{}",
+                        'header' => isset($val['Header'])?json_encode($val['Header']):"",
                         'user_id' => $user_id
                     ];
-                    UrlsModel::addData($newData);
+                    Db::name('urls')->insert($newData);
+                    addlog(["rad扫描数据写入成功", json_encode($newData)]);
                 }
             }
             sleep(10);
@@ -132,31 +128,33 @@ class WebScanModel extends BaseModel
                     // 设置代理
                     $filename = '/data/tools/xray/config.yaml';
                     if (!$val['is_intranet']) {  // 不是内网
-                        $arr = @yaml_parse_file($filename);
-                        if ($arr) {
-                            $arr['http']['proxy_rule'][0]['match'] = '*';
-                            $proxyArr = Db::name('proxy')->where('status', 1)->limit(3)->orderRand()->select()->toArray();
-                            $proxy = [];
-                            foreach ($proxyArr as $v) {
-                                $result = testAgent($v['host'], $v['port']);
-                                if ($result == 200) {
-                                    $proxy[] = 'http://' . $v['host'] . ":{$v['port']}";
+                        if (file_exists($filename)) {
+                            $arr = @yaml_parse_file($filename);
+                            if ($arr) {
+                                $arr['http']['proxy_rule'][0]['match'] = '*';
+                                $proxyArr = Db::name('proxy')->where('status', 1)->limit(3)->orderRand()->select()->toArray();
+                                $proxy = [];
+                                foreach ($proxyArr as $v) {
+                                    $result = testAgent($v['host'], $v['port']);
+                                    if ($result == 200) {
+                                        $proxy[] = 'http://' . $v['host'] . ":{$v['port']}";
+                                    }
                                 }
-                            }
-                            $arr['http']['proxy_rule'][0]['servers'] = [];
-                            if ($proxy) {
-                                $weight = random_split(10,count($proxy));
-                                foreach ($proxy as $k=>$v) {
-                                    $arr['http']['proxy_rule'][0]['servers'][] = [
-                                        'addr' => $v,
-                                        'weight' => $weight[$k],
-                                    ];
+                                $arr['http']['proxy_rule'][0]['servers'] = [];
+                                if ($proxy) {
+                                    $weight = random_split(10,count($proxy));
+                                    foreach ($proxy as $k=>$v) {
+                                        $arr['http']['proxy_rule'][0]['servers'][] = [
+                                            'addr' => $v,
+                                            'weight' => $weight[$k],
+                                        ];
+                                    }
                                 }
+                                yaml_emit_file($filename, $arr);
                             }
-                            yaml_emit_file($filename, $arr);
                         }
                     } else {
-                        unlink($filename);
+                        @unlink($filename);
                     }
                     $cmd = "{$path} ./xray_linux_amd64 webscan --url \"{$url}\"  --json-output  {$pathArr['tool_result']}";
 
@@ -175,21 +173,20 @@ class WebScanModel extends BaseModel
                     $data = json_decode(file_get_contents($pathArr['tool_result']), true);
                     foreach ($data as $value) {
                         $newData = [
+                            'app_id' => $val['id'],
                             'create_time' => substr($value['create_time'], 0, 10),
                             'detail' => json_encode($value['detail']),
                             'plugin' => json_encode($value['plugin']),
                             'target' => json_encode($value['target']),
                             'url' => $value['detail']['addr'],
                             'url_id' => $val['id'],
-                            'app_id' => $val['id'],
                             'user_id' => $user_id,
                             'poc' => $value['detail']['payload']
                         ];
                         echo "添加漏洞结果:" . json_encode($newData) . PHP_EOL;
                         XrayModel::addXray($newData);
                     }
-
-                    Db::table('app')->where(['id' => $id])->save(['xray_scan_time' => date('Y-m-d H:i:s',time())]);
+                    self::scanTime('app',$id,'xray_scan_time');
                 } else {
                     addlog("文件不存在:{$pathArr['tool_result']}  ,扫描URL失败: {$url}");
                     Db::table('app')->where(['id' => $id])->save(['xray_scan_time' => date('2048-m-d H:i:s')]);
@@ -269,7 +266,7 @@ class WebScanModel extends BaseModel
 
                 $filename = '/tmp/nuclei.json';
                 @unlink($filename);
-                $cmd = "cd $agent && ./nuclei -u {$v['url']} -json -o nuclei.json";
+                $cmd = "cd $agent && ./nuclei -u {$v['url']} -json -o {$filename}";
                 systemLog($cmd);
                 if (!file_exists($filename)) {
                     addlog(["nucel扫描失败，url:{$v['url']}"]);
@@ -279,13 +276,14 @@ class WebScanModel extends BaseModel
                 $file = fopen($filename, "r");
                 //检测指正是否到达文件的未端
                 $data = [];
+                $temp = [];
                 while (!feof($file)) {
                     $result = fgets($file);
                     if (empty($result)) {
                         continue;
                     }
                     $arr = json_decode($result, true);
-                    $data[] = [
+                    $data = [
                         'app_id'=>$v['id'],
                         'user_id'=>$v['user_id'],
                         'template'=>$arr['template'],
@@ -301,20 +299,19 @@ class WebScanModel extends BaseModel
                         'host'=>$arr['host'],
                         'matched_at'=>$arr['matched-at'],
                         'extracted_results'=>isset($arr['extracted-results'])?json_encode($arr['extracted-results']):'',
-                        'ip'=>$arr['ip'],
+                        'ip'=>isset($arr['ip'])?$arr['ip']:'',
                         'curl_command'=>isset($arr['curl-command'])?json_encode($arr['curl-command']):'',
                         'status'=>isset($arr['matcher-status'])?$arr['matcher-status']?1:0:0,
-                        'create_time'=>date('Y-m-d H:i:s',strtotime($arr['timestamp']))
+                        'create_time'=>strtotime($arr['timestamp'])?date('Y-m-d H:i:s',strtotime($arr['timestamp'])):date('Y-m-d H:i:s',time())
                     ];
+                    Db::name('app_nuclei')->insert($data);
+                    $temp[] = $data;
                 }
                 fclose($file);
-                if (!$data) {
-                    addlog(["nucel扫描数据不存在，url:{$v['url']}"]);
-                    continue;
+                if (!$temp) {
+                    addlog(["nuclei扫描数据写入失败:{$v['url']}"]);
                 }
-                if (!Db::name('app_nuclei')->insertAll($data)) {
-                    addlog(["app_nuclei数据写入失败:".json_encode($data)]);
-                }
+                addlog(["nuclei扫描数据写入成功:".json_encode($temp)]);
             }
             sleep(120);
         }
@@ -334,7 +331,7 @@ class WebScanModel extends BaseModel
                 $cmd = "cd $agent && python3 vulmap.py -u {$v['url']} --output-json {$filename}";
                 systemLog($cmd);
                 if (!file_exists($filename)) {
-                    addlog(["vulmap扫描失败，url:{$v['url']}"]);
+                    addlog(["vulmap扫描完成,没有发现漏洞，url:{$v['url']}"]);
                     continue;
                 }
                 $arr = json_decode(file_get_contents($filename), true);
@@ -361,7 +358,7 @@ class WebScanModel extends BaseModel
                         'create_time' => substr($val['create_time'], 0, 10),
                     ];
                     if (!Db::name('app_vulmap')->insert($data)) {
-                        addlog(["app_vulmap数据写入失败:{$data}"]);
+                        addlog(["app_vulmap数据写入失败:".json_encode($data)]);
                     };
                 }
             }

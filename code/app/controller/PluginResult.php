@@ -23,7 +23,7 @@ class PluginResult extends Common
         $map[] = ['is_delete','=',0];
         if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
             $where[] = ['a.user_id', '=', $this->userId];
-            $map[] = ['a.user_id', '=', $this->userId];
+            $map[] = ['user_id', '=', $this->userId];
         }
         $list = Db::table('plugin_result')->alias('a')
             ->leftJoin('plugin b','b.id=a.plugin_id')
@@ -46,6 +46,11 @@ class PluginResult extends Common
     }
 
     public function details(){
+        $id = getParam('id');
 
+        $info = Db::table('plugin_result')->where(['id'=>$id])->find();
+
+        $data['info'] = $info;
+        return View::fetch('detail', $data);
     }
 }

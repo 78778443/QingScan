@@ -234,7 +234,8 @@ class HostModel extends BaseModel
                         $data = [
                             'app_id' => $app['id'],
                             'domain' => $domain,
-                            'host' => $v['ip']
+                            'host' => $v['ip'],
+                            'user_id'=>$app['user_id']
                         ];
                         Db::table(self::$tableName)->extra("IGNORE")->insert($data);
                     }
@@ -242,7 +243,8 @@ class HostModel extends BaseModel
                     $data = [
                         'app_id' => $app['id'],
                         'domain' => $domain,
-                        'host' => $host
+                        'host' => $host,
+                        'user_id'=>$app['user_id']
                     ];
                     Db::table(self::$tableName)->extra("IGNORE")->insert($data);
                 }

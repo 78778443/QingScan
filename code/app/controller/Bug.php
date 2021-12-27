@@ -44,11 +44,12 @@ class Bug extends Common
         if (!empty($search)) {
             $where[] = ['app_id','like',"%{$search}%"];
         }
+        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
+            $where[] = ['user_id', '=', $this->userId];
+        }
         $list = Db::table('awvs_vuln')->where($where)->paginate($pageSize);
         $data['list'] = $list->toArray()['data'];
         $data['page'] = $list->render();
-
-
         $projectArr = Db::table('app')->select()->toArray();
         $projectArr = array_column($projectArr, null, 'id');
         $data['projectArr'] = $projectArr;
@@ -63,7 +64,7 @@ class Bug extends Common
     public function awvs_del()
     {
         $id = getParam('id');
-        if (Db::name('awvs_vuln')->where('id',$id)->update(['is_delete'=>1])) {
+        if (Db::name('awvs_vuln')->where('id',$id)->delete()) {
             return redirect($_SERVER['HTTP_REFERER']);
         } else {
             $this->error('删除失败');

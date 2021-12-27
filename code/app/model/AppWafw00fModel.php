@@ -11,10 +11,9 @@ class AppWafw00fModel extends BaseModel
         ini_set('max_execution_time', 0);
         $tools = '/data/tools/wafw00f/wafw00f';
         while (true) {
-            $list = Db::name('app')->where('id',2090)->whereTime('wafw00f_scan_time', '<=', date('Y-m-d H:i:s', time() - (86400 * 15)))->where('is_delete', 0)->orderRand()->limit(1)->field('id,url,user_id')->select();
+            $list = Db::name('app')->whereTime('wafw00f_scan_time', '<=', date('Y-m-d H:i:s', time() - (86400 * 15)))->where('is_delete', 0)->orderRand()->limit(1)->field('id,url,user_id')->select();
             foreach ($list as $v) {
                 self::scanTime('app',$v['id'],'wafw00f_scan_time');
-
                 $cmd = "cd {$tools} && python3 main.py {$v['url']} -o result.json";
                 systemLog($cmd);
                 $result = json_decode(file_get_contents($tools.'/result.json'),true);

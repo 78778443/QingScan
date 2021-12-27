@@ -17,7 +17,7 @@ $searchArr = [
     ],
     'btnArr' => [
         ['text' => '添加', 'ext' => [
-            "href" => url('add'),
+            "href" => url('vulnerable/add'),
             "class" => "btn btn-outline-success"
         ]]
     ]]; ?>

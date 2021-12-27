@@ -13,7 +13,7 @@ class Login extends BaseController
 {
     public function index()
     {
-        //echo ucenter_md5('' . 'ceshi_scan', config('app.UC_AUTH_KEY'));
+            //echo ucenter_md5('' . 'test_scan', config('app.UC_AUTH_KEY'));
         return View::fetch('user/login');
     }
 
@@ -32,9 +32,9 @@ class Login extends BaseController
         $result = UserModel::login($username, $password,$remember_password);
         if ($result['code'] === 0) {
             if ($result['url']) {
-                $this->success('登录成功',$result['url']);
+                return redirect($result['url']);
             } else {
-                $this->success('登录成功','index/index');
+                return redirect(url('index/index'));
             }
         } else {
             $this->error( $result['msg']);

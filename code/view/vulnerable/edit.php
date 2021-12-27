@@ -2,7 +2,7 @@
 <div class="row">
 <div class="col-md-3"></div>
 <div class="col-md-6 tuchu">
-    <h1>添加</h1>
+    <h1>编辑</h1>
     <form method="post" action="<?= url("edit") ?>">
         <input type="hidden" name="id" value="<?php echo $info['id']?>">
         <div class="modal-content">

@@ -191,7 +191,7 @@ class Xray extends Common
         if ($this->auth_group_id != 5 && !in_array($this->userId,config('app.ADMINISTRATOR'))) {
             $map[] = ['user_id','=',$this->userId];
         }
-        if (Db::name('xray')->where('id',$id)->update(['is_delete'=>1])) {
+        if (Db::name('xray')->where('id',$id)->delete()) {
             return redirect($_SERVER['HTTP_REFERER']);
         } else {
             $this->error('删除失败');

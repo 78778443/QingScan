@@ -41,7 +41,7 @@ class TaskModel extends BaseModel
             'crawl_status' => 0,
             'scan_status' => 0,
             'header' => json_encode([]),
-        ]
+        ];
         //记录到数据库
         UrlsModel::addData($newData);
         //爬虫任务
