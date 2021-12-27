@@ -17,9 +17,9 @@ $btnArr = $searchArr['btnArr'] ?? [];
                             </option>
                             <?php foreach (array_filter($inputInfo['options']) as $key => $value) {
                                 if (array_is_map($inputInfo['options'])) { ?>
-                                    <option value="<?php echo $key ?>" <?php echo (($_GET[$inputInfo['name']] ?? '') == $key) ? 'selected' : '' ?>><?php echo $value ?></option>
+                                    <option value="<?php echo $key ?>" <?php echo (($_GET[$inputInfo['name']] ?? '') == $key) ? 'selected' : '' ?>><?php echo htmlspecialchars($value) ?></option>
                                 <?php } else { ?>
-                                    <option value="<?php echo $value ?>" <?php echo (($_GET[$inputInfo['name']] ?? '') == $value) ? 'selected' : '' ?>><?php echo $value ?></option>
+                                    <option value="<?php echo $value ?>" <?php echo (($_GET[$inputInfo['name']] ?? '') == $value) ? 'selected' : '' ?>><?php echo htmlspecialchars($value) ?></option>
                                 <?php }
                             } ?>
                         </select>
@@ -35,9 +35,9 @@ $btnArr = $searchArr['btnArr'] ?? [];
                 </div>
             <?php } ?>
             <?php if (!empty($inputs)) { ?>
-            <div class="col-auto">
-                <input type="submit" class="btn btn-outline-primary" value="搜索">
-            </div>
+                <div class="col-auto">
+                    <input type="submit" class="btn btn-outline-primary" value="搜索">
+                </div>
             <?php }?>
         </form>
     </div>

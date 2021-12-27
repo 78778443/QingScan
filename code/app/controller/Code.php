@@ -254,10 +254,16 @@ class Code extends Common
         $projectArr = array_column($projectArr, null, 'id');
         $data['projectArr'] = $projectArr;
         $data['CategoryList'] = $semgrepApi->where($where)->group('result_type')->column('result_type');
-        $data['projectList'] = $semgrepApi->where($where)->group('scan_project_id')->column('scan_project_id');
+        $projectList = Db::connect('kunlun')->table("index_scanresulttask")->alias('a')
+            ->leftJoin('index_project b','b.id=a.scan_project_id')
+            ->where($where)
+            ->group('scan_project_id')
+            ->field('b.id,b.project_name as name')
+            ->select()
+            ->toArray();
+        $data['projectList'] = array_column($projectList, 'name', 'id');
         $data['fileList'] = $semgrepApi->where($where)->group('vulfile_path')->column('vulfile_path');
         $data['check_status_list'] = ['未审计', '有效漏洞', '无效漏洞'];
-
         return View::fetch('kunlun_list', $data);
     }
 
