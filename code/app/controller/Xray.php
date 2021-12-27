@@ -54,14 +54,13 @@ class Xray extends Common
         $data['list'] = $list->toArray()['data'];
         foreach ($data['list'] as &$v) {
             $v['plugin'] = json_decode($v['plugin'],true);
+            $v['app_name'] = Db::name('app')->where('id',$v['app_id'])->value('name');
         }
         $data['page'] = $list->render();
 
         $data['appArr'] = AppModel::getAppName();
 
-        $projectArr = Db::table('app')->where($map)->select()->toArray();
-        $projectArr = array_column($projectArr, null, 'id');
-        $data['projectArr'] = $projectArr;
+        $data['projectArr'] = self::getMyAppList($where);
         $data['CategoryList'] = Db::table('xray')->where($where)->group('plugin')->column('plugin');
         foreach ($data['CategoryList'] as &$v) {
             $v = json_decode($v,true);

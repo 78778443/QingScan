@@ -20,15 +20,15 @@ if (!basename($path) == 'step1.php') {
             <h2>填写配置信息</h2>
             <form class="form-horizontal" action='step3.php' method='post'>
                 数据库地址：<input class="form-control" type='text' name='DB_HOST' value='127.0.0.1'/><br/>
-                数据库端口号：<input class="form-control" type='text' name='DB_PORT' value='3306'/><br/>
-                数据库用户名：<input class="form-control" type='text' name='DB_USER' value='qingscan'/><br/>
+                数据库端口号：<input class="form-control" type='text' name='DB_PORT' value='33306'/><br/>
+                数据库用户名：<input class="form-control" type='text' name='DB_USER' value='root'/><br/>
                 数据库密码：<input class="form-control" type='password' name='DB_PASS' value="123" /><br/>
                 数据库名称：<input class="form-control" type='text' name='DB_NAME' value='QingScan'/><br/>
                 数据库字符集：<input class="form-control" type='text' name='DB_CHARSET' value='utf8'/><br/>
 
                 <hr/>
-                管理员：<input class="form-control" type='text' name='username'/><br/>
-                管理员密码:<input class="form-control" type='password' name='password'/><br/>
+                管理员：<input class="form-control" type='text' name='username' placeholder="admin"/><br/>
+                管理员密码:<input class="form-control" type='password' name='password' placeholder="admin"/><br/>
                 <input type='submit' class="btn btn-outline-success" value='下一步'/>
 
             </form>
