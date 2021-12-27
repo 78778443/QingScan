@@ -54,6 +54,7 @@ class Xray extends Common
         $data['list'] = $list->toArray()['data'];
         foreach ($data['list'] as &$v) {
             $v['plugin'] = json_decode($v['plugin'],true);
+            $v['app_name'] = Db::name('app')->where('id',$v['app_id'])->value('name');
         }
         $data['page'] = $list->render();
 

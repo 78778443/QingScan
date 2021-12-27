@@ -43,7 +43,7 @@ $searchArr = [
                 <?php foreach ($list as $value) { ?>
                     <tr>
                         <td><?php echo $value['id'] ?></td>
-                        <td><?php echo $value['app_id'] ?></td>
+                        <td><?php echo $value['app_name'] ?></td>
                         <td><?php echo $value['plugin'] ?></td>
                         <td><?php echo json_decode($value['target'], true)['url'] ?></td>
                         <td><?php echo date('Y-m-d H:i:s', substr($value['create_time'], 0, 10)) ?></td>
