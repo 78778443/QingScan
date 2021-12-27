@@ -146,7 +146,7 @@ CREATE TABLE `app_nuclei`  (
                                `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT '',
                                `author` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT '' COMMENT '作者',
                                `tags` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT '' COMMENT '标签',
-                               `description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT '' COMMENT '描述',
+                               `description` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT '' COMMENT '描述',
                                `reference` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT '',
                                `severity` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT '',
                                `type` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT '' COMMENT '协议类型',
@@ -155,7 +155,7 @@ CREATE TABLE `app_nuclei`  (
                                `extracted_results` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT '',
                                `ip` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT '',
                                `create_time` datetime(0) NULL DEFAULT NULL,
-                               `curl_command` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
+                               `curl_command` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
                                `status` tinyint(1) NOT NULL DEFAULT 0,
                                PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 106 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = Compact;
@@ -243,6 +243,7 @@ CREATE TABLE `app_whatweb_poc`  (
                                     `value` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '',
                                     `result` text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL,
                                     `create_time` datetime(0) NOT NULL DEFAULT '2000-01-01 00:00:00',
+                                    `user_id` int(10) NOT NULL,
                                     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = Compact;
 
@@ -264,10 +265,6 @@ CREATE TABLE `app_xray_agent_port`  (
                                         PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin COMMENT = '本地代理' ROW_FORMAT = Compact;
 
--- ----------------------------
--- Records of app_xray_agent_port
--- ----------------------------
-INSERT INTO `app_xray_agent_port` VALUES (1, 2083, 40417, '2021-12-16 18:09:28', 0, 0);
 
 -- ----------------------------
 -- Table structure for auth_group
@@ -405,6 +402,12 @@ INSERT INTO `auth_rule` VALUES (85, 'app/start_agent', '未知', 0, 1, 43, 0, 16
 INSERT INTO `auth_rule` VALUES (86, 'pocs_file/details', '未知', 0, 1, 43, 0, 1639649632, 1, 0, 3, 0, '');
 INSERT INTO `auth_rule` VALUES (87, 'vulnerable/edit', '未知', 0, 1, 43, 0, 1639652554, 1, 0, 3, 0, '');
 INSERT INTO `auth_rule` VALUES (88, 'vulmap/index', 'vulmap扫描', 0, 1, 8, 0, 1639913634, 1, 1639913692, 2, 0, '');
+INSERT INTO `auth_rule` VALUES (90, 'auth/user_del', '未知', 0, 1, 43, 0, 1640525743, 1, 0, 3, 0, '');
+INSERT INTO `auth_rule` VALUES (91, 'auth/auth_group_edit', '未知', 0, 1, 43, 0, 1640526087, 1, 0, 3, 0, '');
+INSERT INTO `auth_rule` VALUES (92, 'app/del', '未知', 0, 1, 43, 0, 1640526227, 1, 0, 3, 0, '');
+INSERT INTO `auth_rule` VALUES (93, 'dirmap/details', '未知', 0, 1, 43, 0, 1640532135, 1, 0, 3, 0, '');
+INSERT INTO `auth_rule` VALUES (94, 'to_examine/kunlun', '未知', 0, 1, 43, 0, 1640572467, 1, 0, 3, 0, '');
+INSERT INTO `auth_rule` VALUES (95, 'vul_target/index', '缺陷目标收集', 0, 1, 5, 2, 1640594192, 1, 1640594387, 2, 0, '');
 
 -- ----------------------------
 -- Table structure for awvs_app
@@ -421,6 +424,7 @@ CREATE TABLE `awvs_app`  (
                              `domain` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
                              `target_id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
                              `target_type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
+                             `user_id` int(10) NOT NULL,
                              PRIMARY KEY (`id`) USING BTREE,
                              UNIQUE INDEX `un_target`(`target_id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = Compact;
@@ -466,6 +470,7 @@ CREATE TABLE `awvs_vuln`  (
                               `create_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
                               `check_status` tinyint(1) NOT NULL DEFAULT 0 COMMENT '审核状态',
                               `is_delete` tinyint(1) NOT NULL DEFAULT 0,
+                              `user_id` int(10) NOT NULL DEFAULT 0,
                               PRIMARY KEY (`id`) USING BTREE,
                               UNIQUE INDEX `un_vuln_id`(`vuln_id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = Compact;
@@ -846,6 +851,7 @@ CREATE TABLE `host_hydra_scan_details`  (
                                             `password` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '',
                                             `create_time` datetime(0) NULL DEFAULT NULL,
                                             `app_id` int(10) NOT NULL DEFAULT 0,
+                                            `user_id` int(10) NOT NULL,
                                             PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = Compact;
 
@@ -871,6 +877,7 @@ CREATE TABLE `host_port`  (
                               `headers` text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL,
                               `is_delete` tinyint(1) NOT NULL DEFAULT 0,
                               `scan_time` datetime(0) NOT NULL DEFAULT '2000-01-01 00:00:00',
+                              `user_id` int(10) NOT NULL DEFAULT 0,
                               PRIMARY KEY (`id`) USING BTREE,
                               UNIQUE INDEX `un_port`(`host`, `port`, `type`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = Compact;
@@ -885,7 +892,7 @@ CREATE TABLE `host_port`  (
 DROP TABLE IF EXISTS `log`;
 CREATE TABLE `log`  (
                         `id` int(10) NOT NULL AUTO_INCREMENT,
-                        `content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL,
+                        `content` mediumtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL,
                         `app` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
                         `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
                         PRIMARY KEY (`id`) USING BTREE,
@@ -952,6 +959,7 @@ CREATE TABLE `one_for_all`  (
                                 `elapse` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
                                 `find` char(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT '',
                                 `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
+                                `user_id` int(10) NOT NULL DEFAULT 0,
                                 PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = Compact;
 
@@ -972,11 +980,13 @@ CREATE TABLE `plugin`  (
                            `create_time` datetime(0) NULL DEFAULT '2000-01-01 00:00:00' COMMENT '添加时间',
                            `status` tinyint(1) NOT NULL DEFAULT 0 COMMENT '0禁用  1启用',
                            `is_delete` tinyint(1) NOT NULL DEFAULT 0,
-                           `result_type` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '' COMMENT 'json、csv、txt',
+                           `result_type` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT '' COMMENT 'json、csv、txt',
                            `update_time` datetime(0) NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP(0),
+                           `tool_path` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '工具存放位置',
+                           `scan_type` int(4) NULL DEFAULT 0 COMMENT '0 app 1 host 2 code  3 url',
                            PRIMARY KEY (`id`) USING BTREE,
-                           UNIQUE INDEX `un_name`(`name`, `user_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin COMMENT = '自定义插件' ROW_FORMAT = Compact;
+                           UNIQUE INDEX `un_name`(`name`, `scan_type`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin COMMENT = '自定义插件' ROW_FORMAT = Compact;
 
 -- ----------------------------
 -- Records of plugin
@@ -993,9 +1003,10 @@ CREATE TABLE `plugin_result`  (
                                   `plugin_id` int(10) NOT NULL,
                                   `user_id` int(10) NOT NULL DEFAULT 0,
                                   `content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL COMMENT '扫描结果内容',
-                                  `create_time` datetime(0) NULL DEFAULT '2000-01-01 00:00:00',
+                                  `create_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
                                   `check_status` tinyint(1) NOT NULL COMMENT '审核状态',
                                   `plugin_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '插件名称',
+                                  `scan_type` int(255) NULL DEFAULT NULL COMMENT '0 app 1 host 2 code  3 url',
                                   PRIMARY KEY (`id`) USING BTREE,
                                   UNIQUE INDEX `un_id`(`app_id`, `user_id`, `plugin_id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 8 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin COMMENT = '自定义插件扫描结果' ROW_FORMAT = Compact;
@@ -1016,6 +1027,7 @@ CREATE TABLE `pocs_file`  (
                               `status` tinyint(1) NOT NULL DEFAULT 1,
                               `tool` tinyint(1) NOT NULL DEFAULT 0 COMMENT '0 pocsuite3 1 xray 2 其他',
                               `content` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT 'POC内容',
+                              `vul_id` int(11) NULL DEFAULT NULL,
                               PRIMARY KEY (`id`) USING BTREE,
                               UNIQUE INDEX `cve_poc`(`cve_num`, `name`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Compact;
@@ -1044,6 +1056,7 @@ CREATE TABLE `pocsuite3`  (
                               `CompanyType` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
                               `regcapital` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '注册资金',
                               `is_delete` tinyint(1) NOT NULL DEFAULT 0,
+                              `user_id` int(10) NOT NULL DEFAULT 0,
                               PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = Compact;
 
@@ -1068,41 +1081,42 @@ CREATE TABLE `process_safe`  (
 -- ----------------------------
 -- Records of process_safe
 -- ----------------------------
-INSERT INTO `process_safe`(`id`, `key`, `value`, `status`, `note`, `update_time`) VALUES (2, 'scan xray', 'cd /root/qingscan/code  &&  php think scan xray  >> /tmp/xray.txt & ', 0, 'xray扫描', '2021-12-17 13:25:16');
-INSERT INTO `process_safe`(`id`, `key`, `value`, `status`, `note`, `update_time`) VALUES (3, 'scan awvs', 'cd /root/qingscan/code  &&  php think scan awvs  >> /tmp/awvs.txt & ', 0, 'awvs扫描', '2021-12-17 13:25:20');
-INSERT INTO `process_safe`(`id`, `key`, `value`, `status`, `note`, `update_time`) VALUES (4, 'scan rad', 'cd /root/qingscan/code  &&  php think scan rad  >> /tmp/rad.txt & ', 0, 'rad爬虫', '2021-12-17 13:25:29');
-INSERT INTO `process_safe`(`id`, `key`, `value`, `status`, `note`, `update_time`) VALUES (5, 'scan host', 'cd /root/qingscan/code  &&  php think scan host  >> /tmp/host.txt & ', 0, '将黑盒目标添加到主机扫描', '2021-12-17 13:25:40');
-INSERT INTO `process_safe`(`id`, `key`, `value`, `status`, `note`, `update_time`) VALUES (6, 'scan port', 'cd /root/qingscan/code  &&  php think scan port  >> /tmp/port.txt & ', 0, '端口发现', '2021-12-17 13:25:45');
-INSERT INTO `process_safe`(`id`, `key`, `value`, `status`, `note`, `update_time`) VALUES (7, 'scan nmap', 'cd /root/qingscan/code  &&  php think scan nmap  >> /tmp/nmap.txt & ', 0, '端口服务识别', '2021-12-17 13:25:48');
-INSERT INTO `process_safe`(`id`, `key`, `value`, `status`, `note`, `update_time`) VALUES (8, 'scan fortify', 'cd /root/qingscan/code  &&  php think scan fortify  >> /tmp/fortify.txt & ', 0, 'fortify代码审计', '2021-12-17 13:25:58');
-INSERT INTO `process_safe`(`id`, `key`, `value`, `status`, `note`, `update_time`) VALUES (9, 'scan kunlun', 'cd /root/qingscan/code  &&  php think scan kunlun  >> /tmp/kunlun.txt & ', 0, 'kunlun代码审计', '2021-12-17 13:26:05');
-INSERT INTO `process_safe`(`id`, `key`, `value`, `status`, `note`, `update_time`) VALUES (10, 'scan semgrep', 'cd /root/qingscan/code  &&  php think scan semgrep  >> /tmp/semgrep.txt & ', 0, 'semgrep代码审计', '2021-12-17 13:26:09');
-INSERT INTO `process_safe`(`id`, `key`, `value`, `status`, `note`, `update_time`) VALUES (13, 'scan google', 'cd /root/qingscan/code  &&  php think scan google >> /tmp/google.txt & ', 0, '获取黑盒目标页面基本信息', '2021-12-17 13:26:39');
-INSERT INTO `process_safe`(`id`, `key`, `value`, `status`, `note`, `update_time`) VALUES (14, 'scan upadteRegion', 'cd /root/qingscan/code  &&  php think scan upadteRegion >> /tmp/upadteRegion.txt & ', 0, '更新IP的基本信息', '2021-12-17 13:27:04');
-INSERT INTO `process_safe`(`id`, `key`, `value`, `status`, `note`, `update_time`) VALUES (15, 'scan whatweb', 'cd /root/qingscan/code  &&  php think scan whatweb >> /tmp/whatweb.txt & ', 0, 'what指纹识别', '2021-12-17 13:27:17');
-INSERT INTO `process_safe`(`id`, `key`, `value`, `status`, `note`, `update_time`) VALUES (16, 'scan subdomainScan', 'cd /root/qingscan/code  &&  php think scan subdomainScan >> /tmp/subdomainScan.txt & ', 0, '使用fofa发现子域名', '2021-12-17 13:27:28');
-INSERT INTO `process_safe`(`id`, `key`, `value`, `status`, `note`, `update_time`) VALUES (17, 'scan hydra', 'cd /root/qingscan/code  &&  php think scan hydra >> /tmp/hydra.txt & ', 0, 'hydra主机爆破', '2021-12-17 13:27:40');
-INSERT INTO `process_safe`(`id`, `key`, `value`, `status`, `note`, `update_time`) VALUES (18, 'scan sqlmapScan', 'cd /root/qingscan/code  &&  php think scan sqlmapScan >> /tmp/sqlmapScan.txt & ', 0, 'sqlmap扫描URL', '2021-12-17 13:27:47');
-INSERT INTO `process_safe`(`id`, `key`, `value`, `status`, `note`, `update_time`) VALUES (20, 'scan fofa', 'cd /root/qingscan/code  &&  php think scan fofa >> /tmp/fofa.txt & ', 0, 'fofa收集缺陷站点', '2021-12-17 13:28:05');
-INSERT INTO `process_safe`(`id`, `key`, `value`, `status`, `note`, `update_time`) VALUES (21, 'scan dirmapScan', 'cd /root/qingscan/code  &&  php think scan dirmapScan >> /tmp/dirmapScan.txt & ', 0, '扫描黑盒目标后台', '2021-12-17 13:28:14');
-INSERT INTO `process_safe`(`id`, `key`, `value`, `status`, `note`, `update_time`) VALUES (22, 'scan getNotice', 'cd /root/qingscan/code  &&  php think scan getNotice >> /tmp/getNotice.txt & ', 0, '获取GitHub漏洞公告', '2021-12-17 13:28:21');
-INSERT INTO `process_safe`(`id`, `key`, `value`, `status`, `note`, `update_time`) VALUES (23, 'scan backup', 'cd /root/qingscan/code  &&  php think scan backup>> /tmp/backup.txt & ', 0, '数据库备份', NULL);
-INSERT INTO `process_safe`(`id`, `key`, `value`, `status`, `note`, `update_time`) VALUES (24, 'scan getProjectComposer', 'cd /root/qingscan/code  &&  php think scan getProjectComposer>> /tmp/composer.txt & ', 0, '获取composer组件', '2021-12-14 11:52:02');
-INSERT INTO `process_safe`(`id`, `key`, `value`, `status`, `note`, `update_time`) VALUES (25, 'scan code_python', 'cd /root/qingscan/code  &&  php think scan code_python>> /tmp/code_python.txt & ', 0, '获取python组件', '2021-12-14 11:52:04');
-INSERT INTO `process_safe`(`id`, `key`, `value`, `status`, `note`, `update_time`) VALUES (26, 'scan code_java', 'cd /root/qingscan/code  &&  php think scan code_java>> /tmp/code_java.txt & ', 0, '获取java组件', '2021-12-14 11:52:04');
-INSERT INTO `process_safe`(`id`, `key`, `value`, `status`, `note`, `update_time`) VALUES (27, 'scan giteeProject', 'cd /root/qingscan/code  &&  php think scan giteeProject>> /tmp/giteeProject.txt & ', 0, '获取码云项目', '2021-12-14 11:52:16');
-INSERT INTO `process_safe`(`id`, `key`, `value`, `status`, `note`, `update_time`) VALUES (28, 'scan freeAgent', 'cd /root/qingscan/code  &&  php think scan freeAgent>> /tmp/freeAgent.txt & ', 0, '获取免费代理', NULL);
-INSERT INTO `process_safe`(`id`, `key`, `value`, `status`, `note`, `update_time`) VALUES (29, 'scan github_keyword_monitor', 'cd /root/qingscan/think  &&  php think scan github_keyword_monitor>> /tmp/github_keyword_monitor.txt & ', 0, 'github关键字监控', NULL);
-INSERT INTO `process_safe`(`id`, `key`, `value`, `status`, `note`, `update_time`) VALUES (30, 'scan whatwebPocTest', 'cd /root/qingscan/think  &&  php think scan whatwebPocTest>> /tmp/whatwebPocTest.txt & ', 0, 'whatweb组件识别poc验证', NULL);
-INSERT INTO `process_safe`(`id`, `key`, `value`, `status`, `note`, `update_time`) VALUES (31, 'scan xrayAgentResult', 'cd /root/qingscan/think  &&  php think scan xrayAgentResult>> /tmp/xrayAgentResult.txt & ', 0, '获取xray代理模式结果数据', NULL);
-INSERT INTO `process_safe`(`id`, `key`, `value`, `status`, `note`, `update_time`) VALUES (32, 'scan startXrayAgent', 'cd /root/qingscan/think  &&  php think scan startXrayAgent>> /tmp/startXrayAgent.txt & ', 0, '启动xray代理模式', NULL);
-INSERT INTO `process_safe`(`id`, `key`, `value`, `status`, `note`, `update_time`) VALUES (33, 'scan code_webshell_scan', 'cd /root/qingscan/think  &&  php think scan code_webshell_scan>> /tmp/code_webshell_scan.txt & ', 0, '河马webshell检测', NULL);
-INSERT INTO `process_safe`(`id`, `key`, `value`, `status`, `note`, `update_time`) VALUES (35, 'scan wafw00fScan', 'cd /root/qingscan/think  &&  php think scan wafw00fScan>> /tmp/wafw00fScan.txt & ', 0, 'waf指纹识别', NULL);
-INSERT INTO `process_safe`(`id`, `key`, `value`, `status`, `note`, `update_time`) VALUES (37, 'scan nucleiScan', 'cd /root/qingscan/think  &&  php think scan nucleiScan>> /tmp/nucleiScan.txt & ', 0, 'nuclei扫描', NULL);
-INSERT INTO `process_safe`(`id`, `key`, `value`, `status`, `note`, `update_time`) VALUES (38, 'scan vulmapPocTest', 'cd /root/qingscan/think  &&  php think scan vulmapPocTest>> /tmp/vulmapPocTest.txt & ', 0, 'vulmap漏洞扫描POC测试', NULL);
-INSERT INTO `process_safe`(`id`, `key`, `value`, `status`, `note`, `update_time`) VALUES (39, 'scan dismapScan', 'cd /root/qingscan/think  &&  php think scan dismapScan>> /tmp/dismapScan.txt & ', 0, 'dismap指纹识别', NULL);
-INSERT INTO `process_safe`(`id`, `key`, `value`, `status`, `note`, `update_time`) VALUES (40, 'scan plugin_safe', 'cd /root/qingscan/think  &&  php think scan plugin_safe>> /tmp/plugin_safe.txt & ', 0, '自定义工具守护', '2021-12-16 14:51:52');
-INSERT INTO `process_safe`(`id`, `key`, `value`, `status`, `note`, `update_time`) VALUES (41, 'scan crawlergoScan', 'cd /root/qingscan/think  &&  php think scan crawlergoScan>> /tmp/crawlergoScan.txt & ', 0, 'crawlergo爬虫URL收集', NULL);
+INSERT INTO `process_safe` VALUES (2, 'scan xray', 'cd /root/qingscan/code  &&  php think scan xray  >> /tmp/xray.txt & ', 0, 'xray扫描', '2021-12-24 17:09:07');
+INSERT INTO `process_safe` VALUES (3, 'scan awvs', 'cd /root/qingscan/code  &&  php think scan awvs  >> /tmp/awvs.txt & ', 0, 'awvs扫描', '2021-12-17 13:25:20');
+INSERT INTO `process_safe` VALUES (4, 'scan rad', 'cd /root/qingscan/code  &&  php think scan rad  >> /tmp/rad.txt & ', 0, 'rad爬虫', '2021-12-24 18:00:42');
+INSERT INTO `process_safe` VALUES (5, 'scan host', 'cd /root/qingscan/code  &&  php think scan host  >> /tmp/host.txt & ', 0, '将黑盒目标添加到主机扫描', '2021-12-24 17:31:02');
+INSERT INTO `process_safe` VALUES (6, 'scan port', 'cd /root/qingscan/code  &&  php think scan port  >> /tmp/port.txt & ', 0, '端口发现', '2021-12-24 17:31:45');
+INSERT INTO `process_safe` VALUES (7, 'scan nmap', 'cd /root/qingscan/code  &&  php think scan nmap  >> /tmp/nmap.txt & ', 0, '端口服务识别', '2021-12-24 17:32:07');
+INSERT INTO `process_safe` VALUES (8, 'scan fortify', 'cd /root/qingscan/code  &&  php think scan fortify  >> /tmp/fortify.txt & ', 0, 'fortify代码审计', '2021-12-17 13:25:58');
+INSERT INTO `process_safe` VALUES (9, 'scan kunlun', 'cd /root/qingscan/code  &&  php think scan kunlun  >> /tmp/kunlun.txt & ', 0, 'kunlun代码审计', '2021-12-27 00:00:06');
+INSERT INTO `process_safe` VALUES (10, 'scan semgrep', 'cd /root/qingscan/code  &&  php think scan semgrep  >> /tmp/semgrep.txt & ', 0, 'semgrep代码审计', '2021-12-26 22:11:10');
+INSERT INTO `process_safe` VALUES (13, 'scan google', 'cd /root/qingscan/code  &&  php think scan google >> /tmp/google.txt & ', 0, '获取黑盒目标页面基本信息', '2021-12-24 17:42:16');
+INSERT INTO `process_safe` VALUES (14, 'scan upadteRegion', 'cd /root/qingscan/code  &&  php think scan upadteRegion >> /tmp/upadteRegion.txt & ', 0, '更新IP的基本信息', '2021-12-24 17:43:05');
+INSERT INTO `process_safe` VALUES (15, 'scan whatweb', 'cd /root/qingscan/code  &&  php think scan whatweb >> /tmp/whatweb.txt & ', 1, 'what指纹识别', '2021-12-27 21:49:06');
+INSERT INTO `process_safe` VALUES (16, 'scan subdomainScan', 'cd /root/qingscan/code  &&  php think scan subdomainScan >> /tmp/subdomainScan.txt & ', 0, '使用fofa发现子域名', '2021-12-26 22:13:59');
+INSERT INTO `process_safe` VALUES (17, 'scan hydra', 'cd /root/qingscan/code  &&  php think scan hydra >> /tmp/hydra.txt & ', 0, 'hydra主机爆破', '2021-12-17 13:27:40');
+INSERT INTO `process_safe` VALUES (18, 'scan sqlmapScan', 'cd /root/qingscan/code  &&  php think scan sqlmapScan >> /tmp/sqlmapScan.txt & ', 0, 'sqlmap扫描URL', '2021-12-24 18:00:46');
+INSERT INTO `process_safe` VALUES (20, 'scan fofa', 'cd /root/qingscan/code  &&  php think scan fofa >> /tmp/fofa.txt & ', 0, 'fofa收集缺陷站点', '2021-12-17 13:28:05');
+INSERT INTO `process_safe` VALUES (21, 'scan dirmapScan', 'cd /root/qingscan/code  &&  php think scan dirmapScan >> /tmp/dirmapScan.txt & ', 0, '扫描黑盒目标后台', '2021-12-26 20:53:54');
+INSERT INTO `process_safe` VALUES (22, 'scan getNotice', 'cd /root/qingscan/code  &&  php think scan getNotice >> /tmp/getNotice.txt & ', 0, '获取GitHub漏洞公告', '2021-12-17 13:28:21');
+INSERT INTO `process_safe` VALUES (23, 'scan backup', 'cd /root/qingscan/code  &&  php think scan backup>> /tmp/backup.txt & ', 0, '数据库备份', '2021-12-26 20:45:07');
+INSERT INTO `process_safe` VALUES (24, 'scan getProjectComposer', 'cd /root/qingscan/code  &&  php think scan getProjectComposer>> /tmp/composer.txt & ', 0, '获取composer组件', '2021-12-26 18:24:50');
+INSERT INTO `process_safe` VALUES (25, 'scan code_python', 'cd /root/qingscan/code  &&  php think scan code_python>> /tmp/code_python.txt & ', 0, '获取python组件', '2021-12-26 18:24:49');
+INSERT INTO `process_safe` VALUES (26, 'scan code_java', 'cd /root/qingscan/code  &&  php think scan code_java>> /tmp/code_java.txt & ', 0, '获取java组件', '2021-12-26 18:24:50');
+INSERT INTO `process_safe` VALUES (27, 'scan giteeProject', 'cd /root/qingscan/code  &&  php think scan giteeProject>> /tmp/giteeProject.txt & ', 0, '获取码云项目', '2021-12-26 20:43:08');
+INSERT INTO `process_safe` VALUES (28, 'scan freeAgent', 'cd /root/qingscan/code  &&  php think scan freeAgent>> /tmp/freeAgent.txt & ', 0, '获取免费代理', '2021-12-26 20:42:32');
+INSERT INTO `process_safe` VALUES (29, 'scan github_keyword_monitor', 'cd /root/qingscan/think  &&  php think scan github_keyword_monitor>> /tmp/github_keyword_monitor.txt & ', 0, 'github关键字监控', NULL);
+INSERT INTO `process_safe` VALUES (30, 'scan whatwebPocTest', 'cd /root/qingscan/think  &&  php think scan whatwebPocTest>> /tmp/whatwebPocTest.txt & ', 0, 'whatweb组件识别poc验证', NULL);
+INSERT INTO `process_safe` VALUES (31, 'scan xrayAgentResult', 'cd /root/qingscan/think  &&  php think scan xrayAgentResult>> /tmp/xrayAgentResult.txt & ', 0, '获取xray代理模式结果数据', '2021-12-26 22:03:22');
+INSERT INTO `process_safe` VALUES (32, 'scan startXrayAgent', 'cd /root/qingscan/think  &&  php think scan startXrayAgent>> /tmp/startXrayAgent.txt & ', 0, '启动xray代理模式', '2021-12-26 21:26:17');
+INSERT INTO `process_safe` VALUES (33, 'scan code_webshell_scan', 'cd /root/qingscan/think  &&  php think scan code_webshell_scan>> /tmp/code_webshell_scan.txt & ', 0, '河马webshell检测', '2021-12-26 18:35:55');
+INSERT INTO `process_safe` VALUES (35, 'scan wafw00fScan', 'cd /root/qingscan/think  &&  php think scan wafw00fScan>> /tmp/wafw00fScan.txt & ', 0, 'waf指纹识别', '2021-12-26 23:36:15');
+INSERT INTO `process_safe` VALUES (37, 'scan nucleiScan', 'cd /root/qingscan/think  &&  php think scan nucleiScan>> /tmp/nucleiScan.txt & ', 0, 'nuclei扫描', '2021-12-27 21:50:54');
+INSERT INTO `process_safe` VALUES (38, 'scan vulmapPocTest', 'cd /root/qingscan/think  &&  php think scan vulmapPocTest>> /tmp/vulmapPocTest.txt & ', 0, 'vulmap漏洞扫描POC测试', '2021-12-26 21:14:43');
+INSERT INTO `process_safe` VALUES (39, 'scan dismapScan', 'cd /root/qingscan/think  &&  php think scan dismapScan>> /tmp/dismapScan.txt & ', 0, 'dismap指纹识别', '2021-12-26 23:44:40');
+INSERT INTO `process_safe` VALUES (40, 'scan plugin_safe', 'cd /root/qingscan/think  &&  php think scan plugin_safe>> /tmp/plugin_safe.txt & ', 0, '自定义工具守护', '2021-12-27 21:48:54');
+INSERT INTO `process_safe` VALUES (41, 'scan crawlergoScan', 'cd /root/qingscan/think  &&  php think scan crawlergoScan>> /tmp/crawlergoScan.txt & ', 0, 'crawlergo爬虫URL收集', '2021-12-26 20:25:04');
+
 -- ----------------------------
 -- Table structure for proxy
 -- ----------------------------
@@ -1272,7 +1286,6 @@ CREATE TABLE `urls`  (
                          `phone` text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL,
                          `icp` text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL,
                          `user_id` int(10) NOT NULL DEFAULT 0,
-                         `vulmap_scan_time` datetime(0) NULL DEFAULT '2000-01-01 00:00:00',
                          PRIMARY KEY (`id`) USING BTREE,
                          UNIQUE INDEX `un_url`(`hash`) USING BTREE,
                          INDEX `appid`(`app_id`) USING BTREE,
@@ -1298,6 +1311,7 @@ CREATE TABLE `urls_sqlmap`  (
                                 `system` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
                                 `application` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
                                 `dbms` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
+                                `user_id` int(10) NOT NULL DEFAULT 0,
                                 PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = Compact;
 
@@ -1396,9 +1410,13 @@ CREATE TABLE `vulnerable`  (
                                `scan_time` datetime(0) NULL DEFAULT '2000-01-01 00:00:00',
                                `is_poc` int(10) NULL DEFAULT 0 COMMENT '是否有POC',
                                `is_delete` tinyint(1) NOT NULL DEFAULT 0,
+                               `target_scan_time` datetime(0) NULL DEFAULT NULL,
                                PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 2070 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Compact;
 
+-- ----------------------------
+-- Records of vulnerable
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for xray
