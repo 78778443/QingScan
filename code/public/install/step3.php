@@ -81,7 +81,6 @@ function addOldData()
 {
     $str = $_POST['password'] . $_POST['username'];
     $password = '' === $str ? '' : md5(md5(sha1($str) . 'xt1l3a21uo0tu2oxtds3wWte23dsxix2d3in7yuhui32yuapatmdsnnzdazh1612ongxxin2z') . '###xt');;
-    //$password = ucenter_md5($_POST['password'] . $_POST['username'], config('app.UC_AUTH_KEY'));
 
     //导入最新的数据格式
     $sql = "UPDATE  user SET username=?,password=? where id = 1";
