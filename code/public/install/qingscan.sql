@@ -401,7 +401,7 @@ INSERT INTO `auth_rule` VALUES (84, 'pocs_file/add', '未知', 0, 1, 43, 0, 1639
 INSERT INTO `auth_rule` VALUES (85, 'app/start_agent', '未知', 0, 1, 43, 0, 1639649367, 1, 0, 3, 0, '');
 INSERT INTO `auth_rule` VALUES (86, 'pocs_file/details', '未知', 0, 1, 43, 0, 1639649632, 1, 0, 3, 0, '');
 INSERT INTO `auth_rule` VALUES (87, 'vulnerable/edit', '未知', 0, 1, 43, 0, 1639652554, 1, 0, 3, 0, '');
-INSERT INTO `auth_rule` VALUES (88, 'vulmap/index', 'vulmap扫描', 0, 1, 8, 0, 1639913634, 1, 1639913692, 2, 0, '');
+INSERT INTO `auth_rule` VALUES (88, 'vulmap/index', 'vulmap扫描', 0, 1, 8, 8, 1639913634, 1, 1639913692, 2, 0, '');
 INSERT INTO `auth_rule` VALUES (90, 'auth/user_del', '未知', 0, 1, 43, 0, 1640525743, 1, 0, 3, 0, '');
 INSERT INTO `auth_rule` VALUES (91, 'auth/auth_group_edit', '未知', 0, 1, 43, 0, 1640526087, 1, 0, 3, 0, '');
 INSERT INTO `auth_rule` VALUES (92, 'app/del', '未知', 0, 1, 43, 0, 1640526227, 1, 0, 3, 0, '');
