@@ -27,8 +27,8 @@ if (!basename($path) == 'step1.php') {
                 数据库字符集：<input class="form-control" type='text' name='DB_CHARSET' value='utf8'/><br/>
 
                 <hr/>
-                管理员：<input class="form-control" type='text' name='username' placeholder="admin"/><br/>
-                管理员密码:<input class="form-control" type='password' name='password' placeholder="admin"/><br/>
+                管理员：<input class="form-control" type='text' name='username' placeholder="例如:admin" required/><br/>
+                管理员密码:<input class="form-control" type='password' name='password' placeholder="" required/><br/>
                 <input type='submit' class="btn btn-outline-success" value='下一步'/>
 
             </form>
