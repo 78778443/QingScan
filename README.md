@@ -53,6 +53,7 @@ QingScan尽最大能力保障各位安装的顺畅，但QingScan人力有限，�
 
 个人微信
 
+![image](https://user-images.githubusercontent.com/8509054/147581390-1948bc43-1de1-4404-ac9d-b0455d53c4d1.png)
 ![image](https://user-images.githubusercontent.com/8509054/146304488-6f48260f-af5a-4071-91be-6fc718fce551.png)
 
 
