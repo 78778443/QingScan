@@ -1345,8 +1345,6 @@ CREATE TABLE `user`  (
 -- Records of user
 -- ----------------------------
 INSERT INTO `user` VALUES (1, 'test', 'ed04f8ec326fa29e2ebb413729fc92d2', '', '测试', 8, 1635494087, '', 0, 1, 1638004150, 0, 0, '', '', '', '1ca4725c34758183af3fd1f723f07a31', '');
-INSERT INTO `user` VALUES (2, 'test1', 'fd5ff2881a30c41fe72a3c04d23db614', '', '测试1', 8, 1635494087, '', 0, 1, 1637157187, 0, 1, '15100000000', 'dfsdfsdfsd', 'admin@admin.com', '', '');
-INSERT INTO `user` VALUES (3, 'lj', 'fd5ff2881a30c41fe72a3c04d23db614', '', '辣鸡321', 5, 1635494087, '', 0, 0, 1636115005, 0, 1, '', '', '', '', '');
 
 -- ----------------------------
 -- Table structure for vulnerable
