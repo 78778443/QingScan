@@ -32,7 +32,8 @@ class ProcessSafeModel extends BaseModel
             $keyList = array_merge($keyList, $keyList2);
 
             $keyList = array_column($keyList, null, 'key');
-            $keyList = (Env::get('TASK_SCAN') == false) ? [] : $keyList;
+            $keyList = ($key == false) ? [] : $keyList;
+
             // 遍历需要监控的关键词和对应的脚本
             foreach ($keyList as $key => $info) {
                 $value = $info['value'];
