@@ -409,7 +409,6 @@ INSERT INTO `auth_rule` VALUES (94, 'to_examine/kunlun', '未知', 0, 1, 43, 0, 
 INSERT INTO `auth_rule` VALUES (95, 'vul_target/index', '缺陷目标收集', 0, 1, 5, 2, 1640594192, 1, 1640594387, 2, 0, '');
 INSERT INTO `auth_rule` VALUES (96, 'code_webshell/index', '河马webshell检测', 0, 1, 14, 8, 1640619291, 1, 1640621379, 2, 0, '');
 
-
 -- ----------------------------
 -- Table structure for awvs_app
 -- ----------------------------
@@ -1345,9 +1344,7 @@ CREATE TABLE `user`  (
 -- ----------------------------
 -- Records of user
 -- ----------------------------
-INSERT INTO `user` VALUES (1, 'test', 'ed04f8ec326fa29e2ebb413729fc92d2', '', '测试', 8, 1635494087, '', 0, 1, 1638004150, 0, 0, '', '', '', '1ca4725c34758183af3fd1f723f07a31', '');
-INSERT INTO `user` VALUES (2, 'test1', 'fd5ff2881a30c41fe72a3c04d23db614', '', '测试1', 8, 1635494087, '', 0, 1, 1637157187, 0, 1, '15100000000', 'dfsdfsdfsd', 'admin@admin.com', '', '');
-INSERT INTO `user` VALUES (3, 'lj', 'fd5ff2881a30c41fe72a3c04d23db614', '', '辣鸡321', 5, 1635494087, '', 0, 0, 1636115005, 0, 1, '', '', '', '', '');
+INSERT INTO `user` VALUES (1, 'test', 'ed04f8ec326fa29e2ebb413729fc92d2', '', '测试', 5, 1635494087, '', 0, 1, 1638004150, 0, 0, '', '', '', '1ca4725c34758183af3fd1f723f07a31', '');
 
 -- ----------------------------
 -- Table structure for vulnerable
