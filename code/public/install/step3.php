@@ -116,8 +116,9 @@ function writingConf()
 {
     $link = mysqli_connect($_POST['DB_HOST'], $_POST['DB_USER'], $_POST['DB_PASS'],$_POST['DB_NAME'],$_POST['DB_PORT']);
     if (!$link) {
+        $error = mysqli_connect_errno();
         echo "<script>";
-        echo "alert('数据库信息有误');";
+        echo "alert('数据库信息有误，错误信息：{$error}');";
         echo "window.history.back();";
         echo "</script>";
     }

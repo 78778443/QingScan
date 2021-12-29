@@ -67,7 +67,7 @@ class Login extends BaseController
                 'username'=>$username,
                 'password'=>ucenter_md5($password . $username, config('app.UC_AUTH_KEY')),
                 'nickname'=>$nickname,
-                'auth_group_id'=>7,
+                'auth_group_id'=>0,
                 'created_at'=>time(),
                 'status'=>1
             ];
