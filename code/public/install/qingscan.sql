@@ -1435,4 +1435,19 @@ CREATE TABLE `xray`  (
 -- Records of xray
 -- ----------------------------
 
+DROP TABLE IF EXISTS `vul_target`;
+CREATE TABLE `vul_target` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `addr` varchar(100) COLLATE utf8mb4_bin DEFAULT NULL,
+  `ip` varchar(32) COLLATE utf8mb4_bin DEFAULT NULL,
+  `port` int(10) DEFAULT NULL,
+  `query` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL,
+  `create_time` datetime DEFAULT CURRENT_TIMESTAMP,
+  `is_vul` int(11) NOT NULL DEFAULT '0' COMMENT '是否存在漏洞 0 位置 1 存在 2 不存在',
+  `vul_id` int(11) DEFAULT NULL COMMENT '缺陷ID',
+  `user_id` int(10) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `un_addr` (`ip`,`port`,`vul_id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=652 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+
 SET FOREIGN_KEY_CHECKS = 1;
