@@ -1198,6 +1198,8 @@ INSERT INTO `system_config` VALUES (1, 'fofa用户名', 'fofa_user', NULL, 0);
 INSERT INTO `system_config` VALUES (2, 'fofa密钥', 'fofa_token', NULL, 0);
 INSERT INTO `system_config` VALUES (3, '百度ak', 'baidu_ak', 'xxxxxxxx', 0);
 INSERT INTO `system_config` VALUES (4, 'github秘钥', 'github_token', 'xxxxxxxxx', 0);
+INSERT INTO `system_config` VALUES (5, 'awvs_url秘钥', 'awvs_url', 'xxxxxxxxx', 0);
+INSERT INTO `system_config` VALUES (6, 'awvs_token秘钥', 'awvs_token', 'xxxxxxxxx', 0);
 
 -- ----------------------------
 -- Table structure for task_host_scan
