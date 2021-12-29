@@ -24,6 +24,8 @@ class App extends Common
     }
 
     public function index(Request $request){
+        phpinfo();
+        exit;
         $pageSize = 15;
         $page = $request->param('page', 1);
         $statusCode = $request->param('statuscode');
