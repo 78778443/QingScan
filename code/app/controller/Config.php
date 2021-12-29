@@ -78,4 +78,13 @@ class Config extends Common
             $this->error('删除失败');
         }
     }
+
+    public function system_update(){
+        $cmd = "cd /root/qingscan && git pull";
+
+        $result = systemLog($cmd);
+        $result = implode("\n", $result);
+        $data['info'] = $result;
+        return view('config/update',$data);
+    }
 }

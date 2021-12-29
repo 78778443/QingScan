@@ -32,7 +32,7 @@ class ProcessSafeModel extends BaseModel
             $keyList = array_merge($keyList, $keyList2);
 
             $keyList = array_column($keyList, null, 'key');
-            $keyList = ($key == false) ? [] : $keyList;
+            $keyList = (file_exists('/root/qingscan/root/.env') && Env::get('TASK_SCAN') == false) ? [] : $keyList;
 
             // 遍历需要监控的关键词和对应的脚本
             foreach ($keyList as $key => $info) {
