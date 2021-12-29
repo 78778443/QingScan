@@ -3,11 +3,11 @@
 namespace app\controller;
 
 use app\BaseController;
+use app\model\UserLogModel;
 use app\model\UserModel;
-use think\facade\Cache;
 use think\facade\Db;
-use think\facade\Request;
 use think\facade\View;
+use think\Request;
 
 class Login extends BaseController
 {
@@ -19,9 +19,9 @@ class Login extends BaseController
 
     public function doLogin(Request $request)
     {
-        $username = input('username'); // 账号
-        $password =  input('password'); // 密码
-        $remember_password =  input('remember_password',0); // 记住密码
+        $username = $request->param('username'); // 账号
+        $password =  $request->param('password'); // 密码
+        $remember_password =  $request->param('remember_password',0); // 记住密码
 
         if (empty($username)){
             $this->error( '请输入用户名');
@@ -31,12 +31,16 @@ class Login extends BaseController
         }
         $result = UserModel::login($username, $password,$remember_password);
         if ($result['code'] === 0) {
+            UserLogModel::addLog($username,'用户登录',"登录成功，账号：{$username}");
+
             if ($result['url']) {
                 return redirect($result['url']);
             } else {
                 return redirect(url('index/index'));
             }
         } else {
+            UserLogModel::addLog($username,'用户登录',"登录失败，账号：{$username}");
+
             $this->error( $result['msg']);
         }
 

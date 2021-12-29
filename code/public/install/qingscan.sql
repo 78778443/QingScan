@@ -400,14 +400,13 @@ INSERT INTO `auth_rule` VALUES (84, 'pocs_file/add', '未知', 0, 1, 43, 0, 1639
 INSERT INTO `auth_rule` VALUES (85, 'app/start_agent', '未知', 0, 1, 43, 0, 1639649367, 1, 0, 3, 0, '');
 INSERT INTO `auth_rule` VALUES (86, 'pocs_file/details', '未知', 0, 1, 43, 0, 1639649632, 1, 0, 3, 0, '');
 INSERT INTO `auth_rule` VALUES (87, 'vulnerable/edit', '未知', 0, 1, 43, 0, 1639652554, 1, 0, 3, 0, '');
-INSERT INTO `auth_rule` VALUES (88, 'vulmap/index', 'vulmap扫描', 0, 1, 8, 0, 1639913634, 1, 1639913692, 2, 0, '');
+INSERT INTO `auth_rule` VALUES (88, 'vulmap/index', 'vulmap扫描', 0, 1, 8, 8, 1639913634, 1, 1639913692, 2, 0, '');
 INSERT INTO `auth_rule` VALUES (90, 'auth/user_del', '未知', 0, 1, 43, 0, 1640525743, 1, 0, 3, 0, '');
 INSERT INTO `auth_rule` VALUES (91, 'auth/auth_group_edit', '未知', 0, 1, 43, 0, 1640526087, 1, 0, 3, 0, '');
 INSERT INTO `auth_rule` VALUES (92, 'app/del', '未知', 0, 1, 43, 0, 1640526227, 1, 0, 3, 0, '');
 INSERT INTO `auth_rule` VALUES (93, 'dirmap/details', '未知', 0, 1, 43, 0, 1640532135, 1, 0, 3, 0, '');
 INSERT INTO `auth_rule` VALUES (94, 'to_examine/kunlun', '未知', 0, 1, 43, 0, 1640572467, 1, 0, 3, 0, '');
 INSERT INTO `auth_rule` VALUES (95, 'vul_target/index', '缺陷目标收集', 0, 1, 5, 2, 1640594192, 1, 1640594387, 2, 0, '');
-INSERT INTO `auth_rule` VALUES (96, 'code_webshell/index', '河马webshell检测', 0, 1, 14, 8, 1640619291, 1, 1640621379, 2, 0, '');
 
 -- ----------------------------
 -- Table structure for awvs_app
@@ -1088,7 +1087,7 @@ INSERT INTO `process_safe` VALUES (9, 'scan kunlun', 'cd /root/qingscan/code  &&
 INSERT INTO `process_safe` VALUES (10, 'scan semgrep', 'cd /root/qingscan/code  &&  php think scan semgrep  >> /tmp/semgrep.txt & ', 0, 'semgrep代码审计', '2021-12-26 22:11:10');
 INSERT INTO `process_safe` VALUES (13, 'scan google', 'cd /root/qingscan/code  &&  php think scan google >> /tmp/google.txt & ', 0, '获取黑盒目标页面基本信息', '2021-12-24 17:42:16');
 INSERT INTO `process_safe` VALUES (14, 'scan upadteRegion', 'cd /root/qingscan/code  &&  php think scan upadteRegion >> /tmp/upadteRegion.txt & ', 0, '更新IP的基本信息', '2021-12-24 17:43:05');
-INSERT INTO `process_safe` VALUES (15, 'scan whatweb', 'cd /root/qingscan/code  &&  php think scan whatweb >> /tmp/whatweb.txt & ', 1, 'what指纹识别', '2021-12-27 21:49:06');
+INSERT INTO `process_safe` VALUES (15, 'scan whatweb', 'cd /root/qingscan/code  &&  php think scan whatweb >> /tmp/whatweb.txt & ', 0, 'what指纹识别', '2021-12-27 21:49:06');
 INSERT INTO `process_safe` VALUES (16, 'scan subdomainScan', 'cd /root/qingscan/code  &&  php think scan subdomainScan >> /tmp/subdomainScan.txt & ', 0, '使用fofa发现子域名', '2021-12-26 22:13:59');
 INSERT INTO `process_safe` VALUES (17, 'scan hydra', 'cd /root/qingscan/code  &&  php think scan hydra >> /tmp/hydra.txt & ', 0, 'hydra主机爆破', '2021-12-17 13:27:40');
 INSERT INTO `process_safe` VALUES (18, 'scan sqlmapScan', 'cd /root/qingscan/code  &&  php think scan sqlmapScan >> /tmp/sqlmapScan.txt & ', 0, 'sqlmap扫描URL', '2021-12-24 18:00:46');
@@ -1198,6 +1197,8 @@ INSERT INTO `system_config` VALUES (1, 'fofa用户名', 'fofa_user', NULL, 0);
 INSERT INTO `system_config` VALUES (2, 'fofa密钥', 'fofa_token', NULL, 0);
 INSERT INTO `system_config` VALUES (3, '百度ak', 'baidu_ak', 'xxxxxxxx', 0);
 INSERT INTO `system_config` VALUES (4, 'github秘钥', 'github_token', 'xxxxxxxxx', 0);
+INSERT INTO `system_config` VALUES (5, 'awvs_url秘钥', 'awvs_url', 'xxxxxxxxx', 0);
+INSERT INTO `system_config` VALUES (6, 'awvs_token秘钥', 'awvs_token', 'xxxxxxxxx', 0);
 
 -- ----------------------------
 -- Table structure for task_host_scan
@@ -1411,7 +1412,16 @@ CREATE TABLE `vulnerable`  (
 -- ----------------------------
 -- Records of vulnerable
 -- ----------------------------
-
+DROP TABLE IF EXISTS `user_log`;
+CREATE TABLE `user_log` (
+                            `id` int(10) NOT NULL AUTO_INCREMENT,
+                            `username` char(30) NOT NULL DEFAULT '',
+                            `create_time` datetime NOT NULL,
+                            `content` varchar(255) NOT NULL DEFAULT '' COMMENT '详情',
+                            `type` varchar(50) NOT NULL DEFAULT '' COMMENT '操作类型',
+                            `ip` varchar(50) NOT NULL DEFAULT '',
+                            PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 -- ----------------------------
 -- Table structure for xray
 -- ----------------------------
@@ -1434,5 +1444,20 @@ CREATE TABLE `xray`  (
 -- ----------------------------
 -- Records of xray
 -- ----------------------------
+
+DROP TABLE IF EXISTS `vul_target`;
+CREATE TABLE `vul_target` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `addr` varchar(100) COLLATE utf8mb4_bin DEFAULT NULL,
+  `ip` varchar(32) COLLATE utf8mb4_bin DEFAULT NULL,
+  `port` int(10) DEFAULT NULL,
+  `query` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL,
+  `create_time` datetime DEFAULT CURRENT_TIMESTAMP,
+  `is_vul` int(11) NOT NULL DEFAULT '0' COMMENT '是否存在漏洞 0 位置 1 存在 2 不存在',
+  `vul_id` int(11) DEFAULT NULL COMMENT '缺陷ID',
+  `user_id` int(10) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `un_addr` (`ip`,`port`,`vul_id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=652 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 SET FOREIGN_KEY_CHECKS = 1;
