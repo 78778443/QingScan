@@ -257,7 +257,7 @@ class AppModel extends BaseModel
     {
         $datetime = date('Y-m-d H:i:s', time() + 86400 * 365);
         if ($data['is_xray'] == 0) {
-            $data['xary_scan_time'] = $datetime;
+            $data['xray_scan_time'] = $datetime;
         }
         if ($data['is_awvs'] == 0) {
             $data['awvs_scan_time'] = $datetime;

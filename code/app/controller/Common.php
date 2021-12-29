@@ -6,6 +6,9 @@ namespace app\controller;
 
 use app\BaseController;
 use app\model\AuthRuleModel;
+use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Reader\Csv;
 use think\exception\HttpResponseException;
 use think\facade\Cookie;
 use think\facade\Db;
@@ -155,7 +158,7 @@ class Common extends BaseController
         return $arr;
     }
 
-    public function getMyAppList($where = []){
+    public function getMyAppList(){
         $where[] = ['is_delete','=',0];
         if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
             $where[] = ['user_id', '=', $this->userId];
@@ -164,5 +167,119 @@ class Common extends BaseController
         $projectArr = Db::table('app')->where($where)->field('id,name')->select()->toArray();
         $projectList = array_column($projectArr, 'name', 'id');
         return $projectList;
+    }
+
+
+    /**
+     * 使用PHPEXECL导入
+     *
+     * @param string $file 文件地址
+     * @param int $sheet 工作表sheet(传0则获取第一个sheet)
+     * @param int $columnCnt 列数(传0则自动获取最大列)
+     * @param array $options 操作选项
+     *                          array mergeCells 合并单元格数组
+     *                          array formula    公式数组
+     *                          array format     单元格格式数组
+     * @return array
+     * @throws Exception
+     */
+    public function importExecl($file = '', $sheet = 0, $columnCnt = 0, &$options = [])
+    {
+        try {
+            /* 转码 */
+            //$file = iconv("gb2312", "utf-8", $file);
+
+            if (empty($file) OR !file_exists($file)) {
+                throw new \Exception('文件不存在!');
+            }
+            /** @var Xlsx $objRead */
+            $objRead = IOFactory::createReader('Xlsx');
+
+            if (!$objRead->canRead($file)) {
+                /** @var Xls $objRead */
+                $objRead = IOFactory::createReader('Xls');
+                if (!$objRead->canRead($file)) {
+                    $is_excel = false;
+                } else {
+                    $is_excel = true;
+                }
+            } else {
+                $is_excel = true;
+            }
+            if ($is_excel == false) {
+                $objRead = new Csv();
+                if (!$objRead->canRead($file)) {
+                    throw new \Exception('只支持导入Excel、Csv文件!');
+                }
+            }
+
+            /* 如果不需要获取特殊操作，则只读内容，可以大幅度提升读取Excel效率 */
+            empty($options) && $objRead->setReadDataOnly(true);
+            /* 建立excel对象 */
+            $obj = $objRead->load($file);
+            /* 获取指定的sheet表 */
+            $currSheet = $obj->getSheet($sheet);
+
+            if (isset($options['mergeCells'])) {
+                /* 读取合并行列 */
+                $options['mergeCells'] = $currSheet->getMergeCells();
+            }
+
+            if (0 == $columnCnt) {
+                /* 取得最大的列号 */
+                $columnH = $currSheet->getHighestColumn();
+                /* 兼容原逻辑，循环时使用的是小于等于 */
+                $columnCnt = Coordinate::columnIndexFromString($columnH);
+            }
+
+            /* 获取总行数 */
+            $rowCnt = $currSheet->getHighestRow();
+            $data = [];
+
+            /* 读取内容 */
+            for ($_row = 0; $_row <= $rowCnt; $_row++) {
+                $isNull = true;
+                for ($_column = 1; $_column <= $columnCnt; $_column++) {
+                    $cellName = Coordinate::stringFromColumnIndex($_column);
+                    $cellId = $cellName . $_row;
+                    $cell = $currSheet->getCell($cellId);
+
+                    if (isset($options['format'])) {
+                        /* 获取格式 */
+                        $format = $cell->getStyle()->getNumberFormat()->getFormatCode();
+                        /* 记录格式 */
+                        $options['format'][$_row][$cellName] = $format;
+                    }
+
+                    if (isset($options['formula'])) {
+                        /* 获取公式，公式均为=号开头数据 */
+                        $formula = $currSheet->getCell($cellId)->getValue();
+
+                        if (0 === strpos($formula, '=')) {
+                            $options['formula'][$cellName . $_row] = $formula;
+                        }
+                    }
+
+                    if (isset($format) && 'm/d/yyyy' == $format) {
+                        /* 日期格式翻转处理 */
+                        $cell->getStyle()->getNumberFormat()->setFormatCode('yyyy/mm/dd');
+                    }
+
+                    $data[$_row][$cellName] = trim($currSheet->getCell($cellId)->getFormattedValue());
+
+                    if (!empty($data[$_row][$cellName])) {
+                        $isNull = false;
+                    }
+                }
+
+                /* 判断是否整行数据为空，是的话删除该行数据 */
+                if ($isNull) {
+                    unset($data[$_row]);
+                }
+            }
+            return array_values($data);
+        } catch (\Exception $e) {
+            throw $e;
+        }
     }
 }

@@ -52,13 +52,13 @@
                             <option value="0">否</option>
                         </select>
                     </div>
-                    <div class="mb-3">
+                    <!--<div class="mb-3">
                         <label class="form-label">是否hydra扫描</label>
                         <select name="is_hydra" class="form-control">
                             <option value="1">是</option>
                             <option value="0">否</option>
                         </select>
-                    </div>
+                    </div>-->
                     <div class="mb-3">
                         <label class="form-label">是否dirmap扫描</label>
                         <select name="is_dirmap" class="form-select" aria-label="Default select">

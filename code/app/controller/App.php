@@ -313,4 +313,48 @@ class App extends Common
         }
         return $this->apiReturn(1, [], "xray代理模式端口号：{$port}");
     }
+
+
+    // 黑盒项目批量导入
+    public function batch_import(Request $request){
+        $file = $_FILES["file"]["tmp_name"];
+        $list = $this->importExecl($file);
+        unset($list[0]);
+        $temp_data = [];
+        foreach ($list as $k=>$v) {
+            $data['name'] = $v['A'];
+            $data['url'] = $v['B'];
+            $data['username'] = $v['C'];
+            $data['password'] = $v['D'];
+            $is_xray = intval($v['E']);
+            $is_awvs = intval($v['F']);
+            $is_whatweb = intval($v['G']);
+            $is_one_for_all = intval($v['H']);
+            $is_dirmap = intval($v['I']);
+            $data['is_intranet'] = intval($v['J']);
+
+            $datetime = date('Y-m-d H:i:s', time() + 86400 * 365);
+            if ($is_xray == 0) {
+                $data['xray_scan_time'] = $datetime;
+            }
+            if ($is_awvs == 0) {
+                $data['awvs_scan_time'] = $datetime;
+            }
+            if ($is_whatweb == 0) {
+                $data['whatweb_scan_time'] = $datetime;
+            }
+            if ($is_one_for_all == 0) {
+                $data['subdomain_scan_time'] = $datetime;
+            }
+            if ($is_dirmap == 0) {
+                $data['dirmap_scan_time'] = $datetime;
+            }
+            $temp_data[] = $data;
+        }
+        if (Db::name('app')->insertAll($temp_data)) {
+            $this->success('黑盒项目批量导入成功');
+        }else{
+            $this->error('黑盒项目批量导入失败');
+        }
+    }
 }

@@ -18,6 +18,10 @@
         ]]; ?>
     {include file='public/search' /}
 
+    <form id="frmUpload" action="<?php echo url('app/batch_import')?>" method="post" enctype="multipart/form-data">
+        <input type="file" name="file" accept=".xls,.xlsx,.csv" />
+        <input type="submit" value="提交">
+    </form>
 
     <div class="row tuchu">
         <div class="row tuchu">
