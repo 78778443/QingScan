@@ -50,6 +50,10 @@ QingScan尽最大能力保障各位安装的顺畅，但QingScan人力有限，�
 
 ![image](https://user-images.githubusercontent.com/8509054/147536459-5b255dcf-c13d-4260-baed-e1c58d43f228.png)
 
+微信公众号
+
+![qrcode_for_gh_c29b8eca5b6e_860](https://user-images.githubusercontent.com/8509054/147740265-a600a21d-9b6f-47b1-8d3f-bf5a7ea2768b.jpg)
+
 
 个人微信
 
