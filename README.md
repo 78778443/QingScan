@@ -89,4 +89,6 @@ QingScan的迭代开发离不开每一位用户的支持，如果你觉得QingSc
 
 ![image](https://user-images.githubusercontent.com/8509054/146758011-07c9fd4b-503f-4ad1-9a69-2393cbf7dcf9.png)
 
+## Stargazers
 
+[![Stargazers over time](https://github.com/78778443/QingScan.svg)](https://github.com/78778443/QingScan)
