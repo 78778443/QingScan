@@ -23,6 +23,9 @@
         <input type="submit" value="提交">
     </form>
 
+    <a href="<?php echo url('app/downloaAppTemplate')?>" class="btn btn-sm btn-outline-success">下载模板</a>
+
+
     <div class="row tuchu">
         <div class="row tuchu">
             <div class="col-md-12 ">
