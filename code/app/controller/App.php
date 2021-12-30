@@ -333,6 +333,11 @@ class App extends Common
             $is_dirmap = intval($v['I']);
             $data['is_intranet'] = intval($v['J']);
 
+            // 判断url是否已存在
+            if (Db::name('app')->where('url',$data['url'])->count('id')) {
+                $this->error("{$data['url']}地址已存在！");
+            }
+            
             $datetime = date('Y-m-d H:i:s', time() + 86400 * 365);
             if ($is_xray == 0) {
                 $data['xray_scan_time'] = $datetime;
