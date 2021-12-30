@@ -80,7 +80,7 @@
                             <td><?php echo date('m-d H:i', strtotime($value['dirmap_scan_time'])) ?></td>
                             <td>{$value['is_intranet']}</td>
                             <td>
-                                <?php if($value['xray_agent_port']){?>
+                                <?php if($value['xray_agent_port'] ?? ''){?>
                                     <a href="javascript:;" onclick="start_agent(<?php echo $value['id'] ?>)"
                                        class="btn btn-sm btn-outline-success">关闭代理</a>
                                 <?php }else{?>
