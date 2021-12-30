@@ -196,8 +196,38 @@ class WebScanModel extends BaseModel
         }
     }
 
+    // 开启xray被动模式代理 本地代理
     public static function startXrayAgent()
     {
+        ini_set('max_execution_time', 0);
+        $agent = "/data/tools/xray/";
+        while (true) {
+            $list = Db::name('app')->where('xray_agent_port','>',0)->where('agent_start_up', 0)->limit(10)->orderRand()->select()->toArray();
+            foreach ($list as $v) {
+                // 执行命令查看任务是否已经执行
+                $cmd = "ps -ef | grep 'xray_" . $v['id'] . "_" . $v['xray_agent_port'] . "' | grep -v ' grep'";
+                $result = [];
+                execLog($cmd, $result);
+                // 如果返回值长度是0说明任务没有执行
+                if (count($result) == 0) {
+                    Db::name('app')->where('id', $v['id'])->update(['agent_start_up' => 1,'agent_time'=>date('Y-m-d H:i:s',time())]);
+
+                    $cmd = "cd {$agent} && nohup ./xray_linux_amd64 webscan --listen 0.0.0.0:{$v['xray_agent_port']} --json-output {$v['id']}.json   xray_{$v['id']}_{$v['xray_agent_port']} >> /dev/null 2>&1";
+                    // 执行命令
+                    systemLog($cmd);
+                    addlog(["xray代理模式启动", json_encode($cmd)]);
+                }
+            }
+            sleep(10);
+        }
+    }
+
+    // 开启xray被动模式代理 本地代理
+    public static function startXrayAgent1()
+    {
+        exit;
+        ini_set('max_execution_time', 0);
+        $agent = "/data/tools/xray/";
         while (true) {
             $list = Db::name('app_xray_agent_port')->where('start_up', 0)->limit(10)->orderRand()->select()->toArray();
             foreach ($list as $v) {
@@ -209,7 +239,6 @@ class WebScanModel extends BaseModel
                 if (count($result) == 0) {
                     Db::name('app_xray_agent_port')->where('id', $v['id'])->update(['start_up' => 1]);
 
-                    $agent = "/data/tools/xray/";
                     $cmd = "cd {$agent} && nohup ./xray_linux_amd64 webscan --listen 0.0.0.0:{$v['xray_agent_prot']} --json-output {$v['app_id']}.json   xray_{$v['app_id']}_{$v['xray_agent_prot']} >> /dev/null 2>&1";
                     // 执行命令
                     systemLog($cmd);
@@ -220,8 +249,10 @@ class WebScanModel extends BaseModel
         }
     }
 
+    // 获取xray被动模式结果 本地代理
     public static function xrayAgentResult()
     {
+        exit;
         ini_set('max_execution_time', 0);
         $agent = "/data/tools/xray/";
         while (true) {

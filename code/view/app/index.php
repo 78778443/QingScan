@@ -25,7 +25,6 @@
 
     <a href="<?php echo url('app/downloaAppTemplate')?>" class="btn btn-sm btn-outline-success">下载模板</a>
 
-
     <div class="row tuchu">
         <div class="row tuchu">
             <div class="col-md-12 ">
@@ -81,8 +80,13 @@
                             <td><?php echo date('m-d H:i', strtotime($value['dirmap_scan_time'])) ?></td>
                             <td>{$value['is_intranet']}</td>
                             <td>
-                                <a href="javascript:;" onclick="start_agent(<?php echo $value['id'] ?>)"
-                                   class="btn btn-sm btn-outline-success">启动代理</a>
+                                <?php if($value['xray_agent_port']){?>
+                                    <a href="javascript:;" onclick="start_agent(<?php echo $value['id'] ?>)"
+                                       class="btn btn-sm btn-outline-success">关闭代理</a>
+                                <?php }else{?>
+                                    <a href="javascript:;" onclick="start_agent(<?php echo $value['id'] ?>)"
+                                       class="btn btn-sm btn-outline-success">启动代理</a>
+                                <?php }?>
                                 <a href="<?php echo url('details', ['id' => $value['id']]) ?>"
                                    class="btn btn-sm btn-outline-primary">查看详情</a>
                                 <a href="<?php echo url('app/qingkong', ['id' => $value['id']]) ?>"
@@ -120,6 +124,11 @@
                 dataType: "json",
                 success: function (data) {
                     alert(data.msg)
+                    if (data.code) {
+                        window.setTimeout(function(){
+                            location.reload();
+                        },2000);
+                    }
                 }
             });
         }
