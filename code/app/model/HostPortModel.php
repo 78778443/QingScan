@@ -279,10 +279,8 @@ class HostPortModel extends BaseModel
 
                 foreach ($result as $item) {
                     $item = str_replace("  ", " ", $item);
-                    echo $item . PHP_EOL;
                     $aaa = explode(" ", $item);
                     if (count($aaa) != 3) {
-                        var_dump($aaa);
                         continue;
                     }
 

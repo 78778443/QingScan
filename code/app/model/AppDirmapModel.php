@@ -35,6 +35,7 @@ class AppDirmapModel extends BaseModel
                 while (!feof($file)) {
                     $result = fgets($file);
                     if (empty($result)) {
+                        addlog(["dirmap 扫描目标结果为空", $v['url']]);
                         continue;
                     }
                     $arr = explode('http', $result);
