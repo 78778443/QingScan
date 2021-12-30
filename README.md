@@ -91,4 +91,4 @@ QingScan的迭代开发离不开每一位用户的支持，如果你觉得QingSc
 
 ## Stargazers
 
-[![Stargazers over time](https://github.com/78778443/QingScan.svg)](https://github.com/78778443/QingScan)
+[![Stargazers over time](https://starchart.cc/78778443/QingScan.svg)](https://github.com/78778443/QingScan)
