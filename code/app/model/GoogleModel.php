@@ -42,12 +42,12 @@ class GoogleModel extends BaseModel
 
     }
 
-    // 谷歌截图
+    // 获取网页基本信息
     public static function getBaseInfo()
     {
         while (true) {
             $api = Db::name('app')->whereTime('screenshot_time', '<=', date('Y-m-d H:i:s', time() - (86400 * 15)));
-            $list = $api->where('is_delete', 0)->orderRand()->limit(5)->field('id,url')->select()->toArray();
+            $list = $api->where('is_delete', 0)->orderRand()->limit(3)->field('id,url')->select()->toArray();
 
             foreach ($list as $v) {
                 if (empty($v['url'])) {
@@ -101,10 +101,9 @@ class GoogleModel extends BaseModel
 
                 //更新扫描时间
                 self::updateScanTime($v['id']);
-
             }
-            echo "Google浏览器获取基础信息完成，休息5秒" . PHP_EOL;
-            sleep(5);
+            echo "Google浏览器获取基础信息完成，休息30秒" . PHP_EOL;
+            sleep(30);
         }
 
     }

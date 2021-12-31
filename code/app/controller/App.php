@@ -290,27 +290,143 @@ class App extends Common
 
     public function start_agent(Request $request)
     {
-        $id = $request->param('id');
+        $id = $request->param('id','','intval');
         $where[] = ['id', '=', $id];
         $where[] = ['is_delete', '=', 0];
         if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
             $where[] = ['user_id', '=', $this->userId];
         }
-        $info = Db::name('app')->where($where)->field('id')->find();
+        $info = Db::name('app')->where($where)->field('id,user_id,xray_agent_port')->find();
         if (!$info) {
             return $this->apiReturn(0, [], '数据不存在');
         }
-        $port = rangeCrearePort();
-        $map[] = ['app_id','=',$id];
-        $map[] = ['xray_agent_prot','=',$port];
-        if (!Db::name('app_xray_agent_port')->where($map)->count('id')) {
+        $agent = "/data/tools/xray/";
+        // 判断是否已开启代理
+        if ($info['xray_agent_port']) { // 关闭代理 导入结果
+            $port = $info['xray_agent_port'];
+            // 执行命令查看任务是否已经执行
+            $cmd = "ps -ef | grep 'xray_" . $info['id'] . "_" . $port . "' | grep -v ' grep'";
+            $result = [];
+            execLog($cmd, $result);
+            if (count($result) > 0) {  // 已存在进程
+                $cmd = "kill -9 $(ps -ef |  grep 'xray_" . $info['id'] . "_" . $port . "'  | grep -v grep | awk '{print \$2}')";
+                systemLog($cmd);
+                addlog("已强制终止xray代理模式:app_id = {$info['id']}");
+            }
             $data = [
-                'app_id'=>$id,
-                'xray_agent_prot'=>$port,
-                'create_time'=>date('Y-m-d H:i:s',time()),
+                'xray_agent_port'=>0,
+                'agent_start_up'=>0,
+                'agent_time'=>date('Y-m-d H:i:s',time()),
             ];
-            Db::name('app_xray_agent_port')->insert($data);
+            Db::name('app')->where('id',$id)->update($data);
+
+            // 导入数据
+            $filename = $agent . $info['id'] . '.json';
+            if (!file_exists($filename)) {
+                return $this->apiReturn(1, [], "代理已关闭，数据导入失败");
+            }
+            $data = trim(file_get_contents($filename));
+            $data = ($data[strlen($data)-1] == ']') ? $data : "{$data}]";
+            $data = json_decode($data, true);
+            @unlink($filename);
+            if (!$data) {
+                return $this->apiReturn(1, [], "代理已关闭，数据导入失败");
+            }
+            foreach ($data as $value) {
+                $newData = [
+                    'create_time' => substr($value['create_time'], 0, 10),
+                    'detail' => json_encode($value['detail']),
+                    'plugin' => json_encode($value['plugin']),
+                    'target' => json_encode($value['target']),
+                    'url' => $value['detail']['addr'],
+                    'app_id' => $info['id'],
+                    'user_id' => $info['user_id'],
+                    'poc' => $value['detail']['payload']
+                ];
+                XrayModel::addXray($newData);
+            }
+            return $this->apiReturn(1, [], "代理已关闭，数据导入成功");
+        } else { // 开启代理
+            $port = rangeCrearePort();
+            if (!Db::name('app')->where('xray_agent_port',$port)->count('id')) {
+                $data = [
+                    'xray_agent_port'=>$port,
+                    'agent_time'=>date('Y-m-d H:i:s',time()),
+                ];
+                Db::name('app')->where('id',$id)->update($data);
+
+                return $this->apiReturn(1, [], "xray代理模式已开启，端口号：{$port}");
+            } else {
+                return $this->apiReturn(0, [], "xray代理模式开启失败，请重试");
+            }
         }
-        return $this->apiReturn(1, [], "xray代理模式端口号：{$port}");
+    }
+    // 黑盒项目批量导入
+    public function batch_import(Request $request){
+        $file = $_FILES["file"]["tmp_name"];
+        $list = $this->importExecl($file);
+        unset($list[0]);
+        $temp_data = [];
+        foreach ($list as $k=>$v) {
+            $data['name'] = $v['A'];
+            $data['url'] = $v['B'];
+            $data['username'] = $v['C'];
+            $data['password'] = $v['D'];
+            $is_xray = intval($v['E']);
+            $is_awvs = intval($v['F']);
+            $is_whatweb = intval($v['G']);
+            $is_one_for_all = intval($v['H']);
+            $is_dirmap = intval($v['I']);
+            $data['is_intranet'] = intval($v['J']);
+
+            // 判断url是否已存在
+            if (Db::name('app')->where('url',$data['url'])->count('id')) {
+                $this->error("{$data['url']}地址已存在！");
+            }
+
+            $datetime = date('Y-m-d H:i:s', time() + 86400 * 365);
+            if ($is_xray == 0) {
+                $data['xray_scan_time'] = $datetime;
+            }
+            if ($is_awvs == 0) {
+                $data['awvs_scan_time'] = $datetime;
+            }
+            if ($is_whatweb == 0) {
+                $data['whatweb_scan_time'] = $datetime;
+            }
+            if ($is_one_for_all == 0) {
+                $data['subdomain_scan_time'] = $datetime;
+            }
+            if ($is_dirmap == 0) {
+                $data['dirmap_scan_time'] = $datetime;
+            }
+            $temp_data[] = $data;
+        }
+        if (Db::name('app')->insertAll($temp_data)) {
+            $this->success('黑盒项目批量导入成功');
+        }else{
+            $this->error('黑盒项目批量导入失败');
+        }
+    }
+
+    public function downloaAppTemplate(){
+        $file_dir = \think\facade\App::getAppPath().'../public/static/';
+        $file_name = '白盒项目批量导入模版.xls';
+        //以只读和二进制模式打开文件
+        $file = fopen ( $file_dir . $file_name, "rb" );
+
+        //告诉浏览器这是一个文件流格式的文件
+        Header ( "Content-type: application/octet-stream" );
+        //请求范围的度量单位
+        Header ( "Accept-Ranges: bytes" );
+        //Content-Length是指定包含于请求或响应中数据的字节长度
+        Header ( "Accept-Length: " . filesize ( $file_dir . $file_name ) );
+        //用来告诉浏览器，文件是可以当做附件被下载，下载后的文件名称为$file_name该变量的值。
+        Header ( "Content-Disposition: attachment; filename=" . $file_name );
+        ob_end_clean();
+        //读取文件内容并直接输出到浏览器
+        echo fread ( $file, filesize ( $file_dir . $file_name ) );
+        fclose ( $file );
+        exit ();
     }
 }

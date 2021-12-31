@@ -20,7 +20,7 @@ class WebScanModel extends BaseModel
         while (true) {
             $list = Db::table('app')->whereTime('crawler_time', '<=', date('Y-m-d H:i:s', time() - (86400 * 15)))->limit(1)->orderRand()->select()->toArray();
             foreach ($list as $value) {
-                self::scanTime('app',$value['id'],'crawler_time');
+                self::scanTime('app', $value['id'], 'crawler_time');
 
                 $url = $value['url'];
                 $id = $value['id'];
@@ -81,6 +81,7 @@ class WebScanModel extends BaseModel
                     $arr = parse_url($val['URL']);
                     $blackExt = ['.js', '.css', '.json', '.png', '.jpg', '.jpeg', '.gif', '.mp3', '.mp4'];
                     if (!isset($arr['query']) or (isset($arr['path']) && in_array_strpos($arr['path'], $blackExt)) or (strpos($arr['query'], '=') === false)) {
+                        addlog(["rad扫描跳过无意义URL", $val['URL']]);
                         continue;
                     }
                     $newData = [
@@ -91,7 +92,7 @@ class WebScanModel extends BaseModel
                         'hash' => md5($val['URL']),
                         'crawl_status' => 1,
                         'scan_status' => 0,
-                        'header' => isset($val['Header'])?json_encode($val['Header']):"",
+                        'header' => isset($val['Header']) ? json_encode($val['Header']) : "",
                         'user_id' => $user_id
                     ];
                     Db::name('urls')->insert($newData);
@@ -142,8 +143,8 @@ class WebScanModel extends BaseModel
                                 }
                                 $arr['http']['proxy_rule'][0]['servers'] = [];
                                 if ($proxy) {
-                                    $weight = random_split(10,count($proxy));
-                                    foreach ($proxy as $k=>$v) {
+                                    $weight = random_split(10, count($proxy));
+                                    foreach ($proxy as $k => $v) {
                                         $arr['http']['proxy_rule'][0]['servers'][] = [
                                             'addr' => $v,
                                             'weight' => $weight[$k],
@@ -186,7 +187,7 @@ class WebScanModel extends BaseModel
                         echo "添加漏洞结果:" . json_encode($newData) . PHP_EOL;
                         XrayModel::addXray($newData);
                     }
-                    self::scanTime('app',$id,'xray_scan_time');
+                    self::scanTime('app', $id, 'xray_scan_time');
                 } else {
                     addlog("文件不存在:{$pathArr['tool_result']}  ,扫描URL失败: {$url}");
                     Db::table('app')->where(['id' => $id])->save(['xray_scan_time' => date('2048-m-d H:i:s')]);
@@ -196,8 +197,38 @@ class WebScanModel extends BaseModel
         }
     }
 
+    // 开启xray被动模式代理 本地代理
     public static function startXrayAgent()
     {
+        ini_set('max_execution_time', 0);
+        $agent = "/data/tools/xray/";
+        while (true) {
+            $list = Db::name('app')->where('xray_agent_port','>',0)->where('agent_start_up', 0)->limit(10)->orderRand()->select()->toArray();
+            foreach ($list as $v) {
+                // 执行命令查看任务是否已经执行
+                $cmd = "ps -ef | grep 'xray_" . $v['id'] . "_" . $v['xray_agent_port'] . "' | grep -v ' grep'";
+                $result = [];
+                execLog($cmd, $result);
+                // 如果返回值长度是0说明任务没有执行
+                if (count($result) == 0) {
+                    Db::name('app')->where('id', $v['id'])->update(['agent_start_up' => 1,'agent_time'=>date('Y-m-d H:i:s',time())]);
+
+                    $cmd = "cd {$agent} && nohup ./xray_linux_amd64 webscan --listen 0.0.0.0:{$v['xray_agent_port']} --json-output {$v['id']}.json   xray_{$v['id']}_{$v['xray_agent_port']} >> /dev/null 2>&1";
+                    // 执行命令
+                    systemLog($cmd);
+                    addlog(["xray代理模式启动", json_encode($cmd)]);
+                }
+            }
+            sleep(10);
+        }
+    }
+
+    // 开启xray被动模式代理 本地代理
+    public static function startXrayAgent1()
+    {
+        exit;
+        ini_set('max_execution_time', 0);
+        $agent = "/data/tools/xray/";
         while (true) {
             $list = Db::name('app_xray_agent_port')->where('start_up', 0)->limit(10)->orderRand()->select()->toArray();
             foreach ($list as $v) {
@@ -209,7 +240,6 @@ class WebScanModel extends BaseModel
                 if (count($result) == 0) {
                     Db::name('app_xray_agent_port')->where('id', $v['id'])->update(['start_up' => 1]);
 
-                    $agent = "/data/tools/xray/";
                     $cmd = "cd {$agent} && nohup ./xray_linux_amd64 webscan --listen 0.0.0.0:{$v['xray_agent_prot']} --json-output {$v['app_id']}.json   xray_{$v['app_id']}_{$v['xray_agent_prot']} >> /dev/null 2>&1";
                     // 执行命令
                     systemLog($cmd);
@@ -220,8 +250,10 @@ class WebScanModel extends BaseModel
         }
     }
 
+    // 获取xray被动模式结果 本地代理
     public static function xrayAgentResult()
     {
+        exit;
         ini_set('max_execution_time', 0);
         $agent = "/data/tools/xray/";
         while (true) {
@@ -234,7 +266,7 @@ class WebScanModel extends BaseModel
                 }
                 $user_id = Db::name('app')->where('id', $v['app_id'])->value('user_id');
                 $data = trim(file_get_contents($filename));
-                $data = ($data[strlen($data)-1] == ']') ? $data : "{$data}]";
+                $data = ($data[strlen($data) - 1] == ']') ? $data : "{$data}]";
                 $data = json_decode($data, true);
                 foreach ($data as $value) {
                     $newData = [
@@ -256,7 +288,8 @@ class WebScanModel extends BaseModel
         }
     }
 
-    public static function nucleiScan(){
+    public static function nucleiScan()
+    {
         ini_set('max_execution_time', 0);
         $agent = "/data/tools/nuclei/";
         while (true) {
@@ -280,29 +313,30 @@ class WebScanModel extends BaseModel
                 while (!feof($file)) {
                     $result = fgets($file);
                     if (empty($result)) {
+                        addlog(["nuclei 扫描目标结果为空", $v['url']]);
                         continue;
                     }
                     $arr = json_decode($result, true);
                     $data = [
-                        'app_id'=>$v['id'],
-                        'user_id'=>$v['user_id'],
-                        'template'=>$arr['template'],
-                        'template_url'=>$arr['template-url'],
-                        'template_id'=>$arr['template-id'],
-                        'name'=>$arr['info']['name'],
-                        'author'=>json_encode($arr['info']['author']),
-                        'tags'=>json_encode($arr['info']['tags']),
-                        'description'=>isset($arr['info']['description'])?$arr['info']['description']:'',
-                        'reference'=>$arr['info']['reference'],
-                        'severity'=>$arr['info']['severity'],
-                        'type'=>$arr['type'],
-                        'host'=>$arr['host'],
-                        'matched_at'=>$arr['matched-at'],
-                        'extracted_results'=>isset($arr['extracted-results'])?json_encode($arr['extracted-results']):'',
-                        'ip'=>isset($arr['ip'])?$arr['ip']:'',
-                        'curl_command'=>isset($arr['curl-command'])?json_encode($arr['curl-command']):'',
-                        'status'=>isset($arr['matcher-status'])?$arr['matcher-status']?1:0:0,
-                        'create_time'=>strtotime($arr['timestamp'])?date('Y-m-d H:i:s',strtotime($arr['timestamp'])):date('Y-m-d H:i:s',time())
+                        'app_id' => $v['id'],
+                        'user_id' => $v['user_id'],
+                        'template' => $arr['template'],
+                        'template_url' => $arr['template-url'],
+                        'template_id' => $arr['template-id'],
+                        'name' => $arr['info']['name'],
+                        'author' => json_encode($arr['info']['author']),
+                        'tags' => json_encode($arr['info']['tags']),
+                        'description' => isset($arr['info']['description']) ? $arr['info']['description'] : '',
+                        'reference' => $arr['info']['reference'],
+                        'severity' => $arr['info']['severity'],
+                        'type' => $arr['type'],
+                        'host' => $arr['host'],
+                        'matched_at' => $arr['matched-at'],
+                        'extracted_results' => isset($arr['extracted-results']) ? json_encode($arr['extracted-results']) : '',
+                        'ip' => isset($arr['ip']) ? $arr['ip'] : '',
+                        'curl_command' => isset($arr['curl-command']) ? json_encode($arr['curl-command']) : '',
+                        'status' => isset($arr['matcher-status']) ? $arr['matcher-status'] ? 1 : 0 : 0,
+                        'create_time' => strtotime($arr['timestamp']) ? date('Y-m-d H:i:s', strtotime($arr['timestamp'])) : date('Y-m-d H:i:s', time())
                     ];
                     Db::name('app_nuclei')->insert($data);
                     $temp[] = $data;
@@ -311,7 +345,7 @@ class WebScanModel extends BaseModel
                 if (!$temp) {
                     addlog(["nuclei扫描数据写入失败:{$v['url']}"]);
                 }
-                addlog(["nuclei扫描数据写入成功:".json_encode($temp)]);
+                addlog(["nuclei扫描数据写入成功:" . json_encode($temp)]);
             }
             sleep(120);
         }
@@ -358,7 +392,7 @@ class WebScanModel extends BaseModel
                         'create_time' => substr($val['create_time'], 0, 10),
                     ];
                     if (!Db::name('app_vulmap')->insert($data)) {
-                        addlog(["app_vulmap数据写入失败:".json_encode($data)]);
+                        addlog(["app_vulmap数据写入失败:" . json_encode($data)]);
                     };
                 }
             }
@@ -368,15 +402,16 @@ class WebScanModel extends BaseModel
     }
 
 
-    public static function crawlergoScan(){
+    public static function crawlergoScan()
+    {
         ini_set('max_execution_time', 0);
         $tools = "/data/tools/crawlergo/";
         while (true) {
-            $list = Db::name('app')->whereTime('crawlergo_scan_time', '<=', date('Y-m-d H:i:s', time() - (86400 * 15)))->where('is_delete',0)->limit(1)->orderRand()->select()->toArray();
+            $list = Db::name('app')->whereTime('crawlergo_scan_time', '<=', date('Y-m-d H:i:s', time() - (86400 * 15)))->where('is_delete', 0)->limit(1)->orderRand()->select()->toArray();
             foreach ($list as $val) {
-                self::scanTime('app',$val['id'],'crawlergo_scan_time');
+                self::scanTime('app', $val['id'], 'crawlergo_scan_time');
 
-                $filename = $tools.'crawlergo.json';
+                $filename = $tools . 'crawlergo.json';
                 @unlink($filename);
 
                 $cmd = "cd $tools && ./cmd/crawlergo/crawlergo_cmd -c /usr/bin/google-chrome -o none --output-json $filename -f 'strict' -t 10 {$val['url']}";
@@ -385,23 +420,23 @@ class WebScanModel extends BaseModel
                     addlog(["crawlergo扫描失败，url:{$val['url']}"]);
                     continue;
                 }
-                $result = json_decode(file_get_contents($filename),true);
+                $result = json_decode(file_get_contents($filename), true);
                 $data = [];
                 foreach ($result['all_req_list'] as $v) {
                     $data[] = [
-                        'app_id'=>$val['id'],
-                        'user_id'=>$val['user_id'],
-                        'url'=>$v['url'],
-                        'method'=>$v['method'],
-                        'accept'=>isset($v['headers']['Accept'])?$v['headers']['Accept']:'',
-                        'cache_control'=>isset($v['headers']['Cache-Control'])?$v['headers']['Cache-Control']:'',
-                        'cookie'=>isset($v['headers']['Cookie'])?$v['headers']['Cookie']:'',
-                        'referer'=>isset($v['headers']['Referer'])?$v['headers']['Referer']:'',
-                        'spider_name'=>isset($v['headers']['Spider-Name'])?$v['headers']['Spider-Name']:'',
-                        'user_agent'=>isset($v['headers']['User-Agent'])?$v['headers']['User-Agent']:'',
-                        'data'=>$v['data'],
-                        'source'=>$v['source'],
-                        'create_time'=>date('Y-n-d H:i:s',time())
+                        'app_id' => $val['id'],
+                        'user_id' => $val['user_id'],
+                        'url' => $v['url'],
+                        'method' => $v['method'],
+                        'accept' => isset($v['headers']['Accept']) ? $v['headers']['Accept'] : '',
+                        'cache_control' => isset($v['headers']['Cache-Control']) ? $v['headers']['Cache-Control'] : '',
+                        'cookie' => isset($v['headers']['Cookie']) ? $v['headers']['Cookie'] : '',
+                        'referer' => isset($v['headers']['Referer']) ? $v['headers']['Referer'] : '',
+                        'spider_name' => isset($v['headers']['Spider-Name']) ? $v['headers']['Spider-Name'] : '',
+                        'user_agent' => isset($v['headers']['User-Agent']) ? $v['headers']['User-Agent'] : '',
+                        'data' => $v['data'],
+                        'source' => $v['source'],
+                        'create_time' => date('Y-n-d H:i:s', time())
                     ];
                 }
                 if ($data) {
@@ -413,15 +448,16 @@ class WebScanModel extends BaseModel
         }
     }
 
-    public static function dismapScan(){
+    public static function dismapScan()
+    {
         ini_set('max_execution_time', 0);
         $tools = "/data/tools/dismap/";
         while (true) {
-            $list = Db::name('app')->whereTime('dismap_scan_time', '<=', date('Y-m-d H:i:s', time() - (86400 * 15)))->where('is_delete',0)->limit(10)->orderRand()->select()->toArray();
+            $list = Db::name('app')->whereTime('dismap_scan_time', '<=', date('Y-m-d H:i:s', time() - (86400 * 15)))->where('is_delete', 0)->limit(10)->orderRand()->select()->toArray();
             foreach ($list as $v) {
-                self::scanTime('app',$v['id'],'dismap_scan_time');
+                self::scanTime('app', $v['id'], 'dismap_scan_time');
 
-                $filename = $tools.'dismap.txt';
+                $filename = $tools . 'dismap.txt';
                 @unlink($filename);
                 $cmd = "cd $tools && ./dismap -url {$v['url']} -output dismap.txt";
                 systemLog($cmd);
@@ -436,6 +472,7 @@ class WebScanModel extends BaseModel
                 while (!feof($file)) {
                     $result = fgets($file);
                     if (empty($result)) {
+                        addlog(["dismap 扫描目标结果为空", $v['url']]);
                         continue;
                     }
                     if (preg_match('/^\[/', trim($result))) {
@@ -444,8 +481,8 @@ class WebScanModel extends BaseModel
                         $data[] = [
                             'app_id' => $v['id'],
                             'user_id' => $v['user_id'],
-                            'create_time' => date('Y-m-d H:i:s',time()),
-                            'result'=>json_encode($acontent[1])
+                            'create_time' => date('Y-m-d H:i:s', time()),
+                            'result' => json_encode($acontent[1])
                         ];
                     }
                 }
@@ -456,11 +493,11 @@ class WebScanModel extends BaseModel
                     continue;
                 }
                 if (!Db::name('app_dismap')->insertAll($data)) {
-                    addlog(["app_dismap数据写入失败:".json_encode($data)]);
+                    addlog(["app_dismap数据写入失败:" . json_encode($data)]);
                 };
             }
 
-            sleep(1200);
+            sleep(30);
         }
     }
 }

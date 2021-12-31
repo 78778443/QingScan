@@ -7,7 +7,7 @@
                 <form method="post" action="">
                     <div class="mb-3">
                         <label class="form-label">主页url</label>
-                        <input type="text" name="url" class="form-control" placeholder="请输入个人主页url" value="<?php echo $info['url']?>">
+                        <input type="text" name="url" class="form-control" placeholder="请输入个人主页url" value="<?php echo isset($info['url'])?$info['url']:''?>">
                     </div>
                     <div class="mb-3">
                         <label class="form-label">昵称</label>

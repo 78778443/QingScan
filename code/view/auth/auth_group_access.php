@@ -1,6 +1,7 @@
 {include file='public/head' /}
 
 <link rel="stylesheet" href="/static/plugins/zTree/css/zTreeStyle.css" type="text/css">
+<div class="row tuchu">
 <div class="col-md-12">
     <legend>配置权限</legend>
     <div class="col-md-9">
@@ -14,6 +15,7 @@
             </div>
         </form>
     </div>
+</div>
 </div>
 <script type="text/javascript" src="/static/plugins/zTree/js/jquery.ztree.core.min.js"></script>
 <script type="text/javascript" src="/static/plugins/zTree/js/jquery.ztree.excheck.min.js"></script>

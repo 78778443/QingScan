@@ -62,6 +62,8 @@ class Index extends Common
         array_multisort(array_column($serviceCount, 'value'), SORT_DESC, $serviceCount);
         $serviceCount = array_slice($serviceCount, 0, 10);
 
+        //赞助信息
+        $zanzhu = Db::table('system_zanzhu')->limit(15)->select()->toArray();
 
         $data = [
             ['key' => 'folderCount', 'data' => $folderCount, 'title' => "危害等级"],
@@ -73,7 +75,7 @@ class Index extends Common
         ];
 
         // 不带任何参数 自动定位当前操作的模板文件
-        return View::fetch('index', ['list' => $data]);
+        return View::fetch('index', ['list' => $data,'zanzhu'=>$zanzhu]);
 //        $this->show('index/index', ['list' => $data]);
     }
 

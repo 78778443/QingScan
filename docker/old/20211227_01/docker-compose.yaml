@@ -13,7 +13,7 @@ services:
     ports:
       - "33306:3306"
   qingscan:
-    image: registry.cn-beijing.aliyuncs.com/daxia/qingscan:20211231_01
+    image: registry.cn-beijing.aliyuncs.com/daxia/qingscan:20211227_01
     container_name: qingscan
     network_mode: "host"
     volumes:
