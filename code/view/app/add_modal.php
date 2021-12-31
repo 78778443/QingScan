@@ -6,6 +6,8 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <form method="post" action="<?php echo url('app/_add') ?>">
+                <input type="hidden" name="username" class="form-control" placeholder="账号">
+                <input type="hidden" name="password" class="form-control" placeholder="URL">
                 <div class="modal-body">
                     <h3>基本信息</h3>
                     <div class="mb-3">
@@ -16,14 +18,14 @@
                         <label class="form-label">URL地址</label>
                         <input type="url" name="url" class="form-control" placeholder="URL" required>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label">账号</label>
-                        <input type="text" name="username" class="form-control" placeholder="账号">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">密码</label>
-                        <input type="text" name="password" class="form-control" placeholder="URL">
-                    </div>
+<!--                    <div class="mb-3">-->
+<!--                        <label class="form-label">账号</label>-->
+<!--                        <input type="text" name="username" class="form-control" placeholder="账号">-->
+<!--                    </div>-->
+<!--                    <div class="mb-3">-->
+<!--                        <label class="form-label">密码</label>-->
+<!--                        <input type="text" name="password" class="form-control" placeholder="URL">-->
+<!--                    </div>-->
                     <div class="mb-3">
                         <label class="form-label">是否xary扫描</label>
                         <select name="is_xray" class="form-select" aria-label="Default select">
