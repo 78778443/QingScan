@@ -1105,17 +1105,17 @@ INSERT INTO `process_safe` VALUES (25, 'scan code_python', 'cd /root/qingscan/co
 INSERT INTO `process_safe` VALUES (26, 'scan code_java', 'cd /root/qingscan/code  &&  php think scan code_java>> /tmp/code_java.txt & ', 0, '获取java组件', '2021-12-26 18:24:50', 0);
 INSERT INTO `process_safe` VALUES (27, 'scan giteeProject', 'cd /root/qingscan/code  &&  php think scan giteeProject>> /tmp/giteeProject.txt & ', 0, '获取码云项目', '2021-12-26 20:43:08', 0);
 INSERT INTO `process_safe` VALUES (28, 'scan freeAgent', 'cd /root/qingscan/code  &&  php think scan freeAgent>> /tmp/freeAgent.txt & ', 0, '获取免费代理', '2021-12-26 20:42:32', 0);
-INSERT INTO `process_safe` VALUES (29, 'scan github_keyword_monitor', 'cd /root/qingscan/think  &&  php think scan github_keyword_monitor>> /tmp/github_keyword_monitor.txt & ', 0, 'github关键字监控', NULL, 0);
-INSERT INTO `process_safe` VALUES (30, 'scan whatwebPocTest', 'cd /root/qingscan/think  &&  php think scan whatwebPocTest>> /tmp/whatwebPocTest.txt & ', 0, 'whatweb组件识别poc验证', NULL, 0);
-INSERT INTO `process_safe` VALUES (31, 'scan xrayAgentResult', 'cd /root/qingscan/think  &&  php think scan xrayAgentResult>> /tmp/xrayAgentResult.txt & ', 0, '获取xray代理模式结果数据', '2021-12-26 22:03:22', 0);
-INSERT INTO `process_safe` VALUES (32, 'scan startXrayAgent', 'cd /root/qingscan/think  &&  php think scan startXrayAgent>> /tmp/startXrayAgent.txt & ', 1, '启动xray代理模式', '2021-12-30 22:53:23', 0);
-INSERT INTO `process_safe` VALUES (33, 'scan code_webshell_scan', 'cd /root/qingscan/think  &&  php think scan code_webshell_scan>> /tmp/code_webshell_scan.txt & ', 0, '河马webshell检测', '2021-12-26 18:35:55', 0);
-INSERT INTO `process_safe` VALUES (35, 'scan wafw00fScan', 'cd /root/qingscan/think  &&  php think scan wafw00fScan>> /tmp/wafw00fScan.txt & ', 0, 'waf指纹识别', '2021-12-26 23:36:15', 0);
-INSERT INTO `process_safe` VALUES (37, 'scan nucleiScan', 'cd /root/qingscan/think  &&  php think scan nucleiScan>> /tmp/nucleiScan.txt & ', 0, 'nuclei扫描', '2021-12-27 21:50:54', 0);
-INSERT INTO `process_safe` VALUES (38, 'scan vulmapPocTest', 'cd /root/qingscan/think  &&  php think scan vulmapPocTest>> /tmp/vulmapPocTest.txt & ', 0, 'vulmap漏洞扫描POC测试', '2021-12-30 15:23:04', 0);
-INSERT INTO `process_safe` VALUES (39, 'scan dismapScan', 'cd /root/qingscan/think  &&  php think scan dismapScan>> /tmp/dismapScan.txt & ', 0, 'dismap指纹识别', '2021-12-30 15:23:03', 0);
-INSERT INTO `process_safe` VALUES (40, 'scan plugin_safe', 'cd /root/qingscan/think  &&  php think scan plugin_safe>> /tmp/plugin_safe.txt & ', 0, '自定义工具守护', '2021-12-27 21:48:54', 0);
-INSERT INTO `process_safe` VALUES (41, 'scan crawlergoScan', 'cd /root/qingscan/think  &&  php think scan crawlergoScan>> /tmp/crawlergoScan.txt & ', 0, 'crawlergo爬虫URL收集', '2021-12-26 20:25:04', 0);
+INSERT INTO `process_safe` VALUES (29, 'scan github_keyword_monitor', 'cd /root/qingscan/code  &&  php think scan github_keyword_monitor>> /tmp/github_keyword_monitor.txt & ', 0, 'github关键字监控', NULL, 0);
+INSERT INTO `process_safe` VALUES (30, 'scan whatwebPocTest', 'cd /root/qingscan/code  &&  php think scan whatwebPocTest>> /tmp/whatwebPocTest.txt & ', 0, 'whatweb组件识别poc验证', NULL, 0);
+INSERT INTO `process_safe` VALUES (31, 'scan xrayAgentResult', 'cd /root/qingscan/code  &&  php think scan xrayAgentResult>> /tmp/xrayAgentResult.txt & ', 0, '获取xray代理模式结果数据', '2021-12-26 22:03:22', 0);
+INSERT INTO `process_safe` VALUES (32, 'scan startXrayAgent', 'cd /root/qingscan/code  &&  php think scan startXrayAgent>> /tmp/startXrayAgent.txt & ', 1, '启动xray代理模式', '2021-12-30 22:53:23', 0);
+INSERT INTO `process_safe` VALUES (33, 'scan code_webshell_scan', 'cd /root/qingscan/code  &&  php think scan code_webshell_scan>> /tmp/code_webshell_scan.txt & ', 0, '河马webshell检测', '2021-12-26 18:35:55', 0);
+INSERT INTO `process_safe` VALUES (35, 'scan wafw00fScan', 'cd /root/qingscan/code  &&  php think scan wafw00fScan>> /tmp/wafw00fScan.txt & ', 0, 'waf指纹识别', '2021-12-26 23:36:15', 0);
+INSERT INTO `process_safe` VALUES (37, 'scan nucleiScan', 'cd /root/qingscan/code  &&  php think scan nucleiScan>> /tmp/nucleiScan.txt & ', 0, 'nuclei扫描', '2021-12-27 21:50:54', 0);
+INSERT INTO `process_safe` VALUES (38, 'scan vulmapPocTest', 'cd /root/qingscan/code  &&  php think scan vulmapPocTest>> /tmp/vulmapPocTest.txt & ', 0, 'vulmap漏洞扫描POC测试', '2021-12-30 15:23:04', 0);
+INSERT INTO `process_safe` VALUES (39, 'scan dismapScan', 'cd /root/qingscan/code  &&  php think scan dismapScan>> /tmp/dismapScan.txt & ', 0, 'dismap指纹识别', '2021-12-30 15:23:03', 0);
+INSERT INTO `process_safe` VALUES (40, 'scan plugin_safe', 'cd /root/qingscan/code  &&  php think scan plugin_safe>> /tmp/plugin_safe.txt & ', 0, '自定义工具守护', '2021-12-27 21:48:54', 0);
+INSERT INTO `process_safe` VALUES (41, 'scan crawlergoScan', 'cd /root/qingscan/code  &&  php think scan crawlergoScan>> /tmp/crawlergoScan.txt & ', 0, 'crawlergo爬虫URL收集', '2021-12-26 20:25:04', 0);
 
 -- ----------------------------
 -- Table structure for proxy
