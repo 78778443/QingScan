@@ -54,6 +54,7 @@ class Login extends BaseController
 
     public function register(){
         if ($this->request->isPost()) {
+            $this->error('注册功能待完善,暂时关闭，如需添加用户请在管理后台添加~');
             $username = input('username'); // 账号
             $password =  input('password'); // 密码
             $nickname =  input('nickname'); // 昵称
@@ -67,15 +68,15 @@ class Login extends BaseController
                 'username'=>$username,
                 'password'=>ucenter_md5($password . $username, config('app.UC_AUTH_KEY')),
                 'nickname'=>$nickname,
-                'auth_group_id'=>0,
+                'auth_group_id'=>7,
                 'created_at'=>time(),
                 'status'=>1
             ];
-            if (Db::name('user')->insert($data)) {
-                $this->success('注册成功，请登录',url('login/index'));
-            } else {
-                $this->error('注册失败');
-            }
+//            if (Db::name('user')->insert($data)) {
+//                $this->success('注册成功，请登录',url('login/index'));
+//            } else {
+//                $this->error('注册失败');
+//            }
         } else {
             return View::fetch('user/register');
         }
