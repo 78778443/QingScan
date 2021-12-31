@@ -83,7 +83,7 @@ class ProcessSafe extends Common
 
     public function showProcess()
     {
-        $cmd = "ps -ef |grep php | grep -v def | grep -v grep";
+        $cmd = "ps -ef | grep -v def  | grep -v 'ps -ef' | grep -v 'UID'";
 
         exec($cmd,$info);
         $data['info'] = $info;

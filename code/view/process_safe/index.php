@@ -40,8 +40,7 @@ $searchArr = [
                     <th style="width: 200px">操作</th>
                 </tr>
                 </thead>
-                <?php
-                foreach ($list as $value) { ?>
+                <?php foreach ($list as $value) { ?>
                     <tr>
                         <td><?php echo $value['id'] ?></td>
                         <td><?php echo $value['key'] ?></td>

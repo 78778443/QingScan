@@ -18,14 +18,23 @@
         ]]; ?>
     {include file='public/search' /}
 
-    <form id="frmUpload" action="<?php echo url('app/batch_import')?>" method="post" enctype="multipart/form-data">
-        <input type="file" name="file" accept=".xls,.csv" />
-        <input type="submit" value="提交">
-    </form>
-
-    <a href="<?php echo url('app/downloaAppTemplate')?>" class="btn btn-sm btn-outline-success">下载模板</a>
-
     <div class="row tuchu">
+        <div class="col-md-12">
+            <form class="row g-3" id="frmUpload" action="<?php echo url('app/batch_import') ?>" method="post"
+                  enctype="multipart/form-data">
+                <div class="col-auto">
+                    <input type="file" class="form-control form-control" name="file" accept=".xls,.csv"/>
+                </div>
+                <div class="col-auto">
+                    <input type="submit" class="btn btn-outline-info" value="批量添加项目">
+                </div>
+                <div class="col-auto">
+                    <a href="<?php echo url('app/downloaAppTemplate') ?>"
+                       class="btn btn-outline-success">下载模板</a>
+                </div>
+            </form>
+        </div>
+    </div>
         <div class="row tuchu">
             <div class="col-md-12 ">
                 <table class="table table-bordered table-hover table-striped">
@@ -100,7 +109,6 @@
                     <?php } ?>
                     </tbody>
                 </table>
-            </div>
         </div>
         {include file='public/fenye' /}
     </div>
