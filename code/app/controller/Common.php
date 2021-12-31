@@ -64,7 +64,9 @@ class Common extends BaseController
             } else {    // 获取分组
                 $where = "auth_group_id = $this->auth_group_id and status = 1";
                 $auth_group = Db::name('auth_group')->where($where)->field('rules')->find();
-                $this->userRules = rtrim($auth_group['rules'], ',');
+                if (!empty($auth_group['rules'])) {
+                    $this->userRules = rtrim($auth_group['rules'], ',');
+                }
                 if (!$this->userRules) {
                     $this->userRules = 0;
                 }
