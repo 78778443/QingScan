@@ -1472,19 +1472,7 @@ CREATE TABLE `vulnerable`  (
                                PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 2070 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Compact;
 
--- ----------------------------
--- Records of vulnerable
--- ----------------------------
-DROP TABLE IF EXISTS `user_log`;
-CREATE TABLE `user_log` (
-                            `id` int(10) NOT NULL AUTO_INCREMENT,
-                            `username` char(30) NOT NULL DEFAULT '',
-                            `create_time` datetime NOT NULL,
-                            `content` varchar(255) NOT NULL DEFAULT '' COMMENT '详情',
-                            `type` varchar(50) NOT NULL DEFAULT '' COMMENT '操作类型',
-                            `ip` varchar(50) NOT NULL DEFAULT '',
-                            PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 -- ----------------------------
 -- Table structure for xray
 -- ----------------------------
