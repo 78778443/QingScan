@@ -1,6 +1,7 @@
 {include file='public/head' /}
 <?php
 $dengjiArr = ['Low', 'Medium', 'High', 'Critical'];
+$typeArr = ['黑盒扫描','白盒审计','专项利用','其他','信息收集'];
 ?>
 
 <?php
@@ -8,6 +9,7 @@ $searchArr = [
     'action' => $_SERVER['REQUEST_URI'],
     'method' => 'get',
     'inputs' => [
+        ['type' => 'select', 'name' => 'type', 'options' => $typeArr, 'frist_option' => '工具类型'],
     ],
     'btnArr' => [
         ['text' => '添加守护进程', 'ext' => [
@@ -32,16 +34,19 @@ $searchArr = [
                     <th>ID</th>
                     <th>key</th>
                     <th>value</th>
+                    <th>工具类型</th>
                     <th>备注</th>
                     <th>状态</th>
                     <th style="width: 200px">操作</th>
                 </tr>
                 </thead>
-                <?php foreach ($list as $value) { ?>
+                <?php
+                foreach ($list as $value) { ?>
                     <tr>
                         <td><?php echo $value['id'] ?></td>
                         <td><?php echo $value['key'] ?></td>
                         <td><?php echo $value['value'] ?></td>
+                        <td><?php echo $typeArr[$value['type']] ?></td>
                         <td><?php echo $value['note'] ?></td>
                         <td>
                             <div class="form-check form-switch">

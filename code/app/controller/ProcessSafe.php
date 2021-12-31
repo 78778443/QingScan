@@ -5,16 +5,24 @@ namespace app\controller;
 
 use think\facade\Db;
 use think\facade\View;
+use think\Request;
 
 class ProcessSafe extends Common
 {
-    public function index()
+    public $typeArr = ['黑盒扫描','白盒审计','专项利用','其他','信息收集'];
+
+    public function index(Request $request)
     {
         $pageSize = 20;
         $where = [];
-        $search = getParam('search');
+        $search = $request->param('search');
         if ($search) {
             $where[] = ['key|value|note', 'like', "%{$search}%"];
+        }
+        $type = $request->param('type','');
+        if ($type !== '') {
+            $type = array_search($type,$this->typeArr);
+            $where[] = ['type','=',$type];
         }
         $list = Db::table('process_safe')->where($where)->order("id", 'desc')->paginate($pageSize);
         $data['list'] = $list->items();
@@ -75,7 +83,7 @@ class ProcessSafe extends Common
 
     public function showProcess()
     {
-        $cmd = "ps -ef | grep -v def  | grep -v 'ps -ef' | grep -v 'UID'";
+        $cmd = "ps -ef |grep php | grep -v def | grep -v grep";
 
         exec($cmd,$info);
         $data['info'] = $info;
