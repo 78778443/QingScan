@@ -103,7 +103,7 @@ function addOldData()
             }
             $filename = explode('/',$filepath);
             $update_content = $filename[count($filename) - 1];
-            file_put_contents('update.lock',$update_content);
+            var_dump(file_put_contents('update.lock',$update_content));
         }
     }
 }
