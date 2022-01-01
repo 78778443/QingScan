@@ -415,8 +415,8 @@ class App extends Common
     }
 
     public function downloaAppTemplate(){
-        $file_dir = \think\facade\App::getAppPath().'../public/static/';
-        $file_name = '白盒项目批量导入模版.xls';
+        $file_dir = \think\facade\App::getRootPath().'public/static/';
+        $file_name = '黑盒项目批量导入模版.xls';
         //以只读和二进制模式打开文件
         $file = fopen ( $file_dir . $file_name, "rb" );
 
