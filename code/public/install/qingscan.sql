@@ -1372,7 +1372,7 @@ CREATE TABLE `user`  (
 -- ----------------------------
 -- Records of user
 -- ----------------------------
-INSERT INTO `user` VALUES (1, 'admin', 'ff2c0f1d2103cc0c861c29e49a3ec435', '', '测试', 8, 1635494087, '', 0, 1, 1640704760, 0, 0, '', '', '', '1ca4725c34758183af3fd1f723f07a31', '');
+INSERT INTO `user` VALUES (1, 'admin', 'ff2c0f1d2103cc0c861c29e49a3ec435', '', '测试', 8, 1635494087, '', 0, 1, 1640704760, 0, 0, '', '', '', '1ca4725c34758183af3fd1f723f07a31', '/');
 
 -- ----------------------------
 -- Table structure for user_log
