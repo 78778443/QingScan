@@ -83,7 +83,7 @@ class Config extends Common
     {
         $path = \think\facade\App::getRootPath() . '../';
         $cmd = "cd {$path} && git pull";
-        $result = systemLog($cmd);
+        $result = systemLog($cmd,false);
         $result = implode("\n", $result);
         $data['info'] = $result;
 
