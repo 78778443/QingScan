@@ -112,8 +112,7 @@ class Config extends Common
                 }
             }
             if ($is_update) {
-                echo $filename;exit;
-                $content = file_get_contents($filename);
+                $content = file_get_contents($sqlPath.'/'.$filename);
                 $sqlArr = explode(';',$content);
                 foreach ($sqlArr as $sql) {
                     @Db::execute($sql.';');
