@@ -29,6 +29,14 @@ use think\facade\Db;
                     //检查数据库参数是否正确，修改系统配置文件
                     writingConf();
 
+                    // 更新sql语句
+                    $sqlPath = '/root/qingscan/docker/data';
+                    $fileNameList = getDirFileName($sqlPath);
+                    unset($fileNameList[count($fileNameList) - 1]);
+                    if (!empty($fileNameList)) {
+                        echo 1;exit;
+                    }
+
                     //更新python配置
                     setPythonConfig();
 
