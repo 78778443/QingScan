@@ -63,7 +63,8 @@ class Index extends Common
         $serviceCount = array_slice($serviceCount, 0, 10);
 
         //赞助信息
-        $zanzhu = Db::table('system_zanzhu')->limit(15)->select()->toArray();
+        $zanzhu = Db::table('system_zanzhu')->order('time','desc')->limit(15)->select()->toArray();
+
 
         $data = [
             ['key' => 'folderCount', 'data' => $folderCount, 'title' => "危害等级"],
