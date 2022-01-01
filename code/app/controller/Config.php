@@ -117,7 +117,7 @@ class Config extends Common
                 foreach ($sqlArr as $sql) {
                     @Db::execute($sql.';');
                 }
-                file_put_contents('update.lock',$update_content);
+                file_put_contents($sqlPath.'/update.lock',$update_content);
             }
         }
         return view('config/update', $data);
