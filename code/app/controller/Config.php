@@ -112,6 +112,7 @@ class Config extends Common
                 }
             }
             if ($is_update) {
+                echo $filename;exit;
                 $content = file_get_contents($filename);
                 $sqlArr = explode(';',$content);
                 foreach ($sqlArr as $sql) {
