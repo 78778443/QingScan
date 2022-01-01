@@ -79,13 +79,47 @@ class Config extends Common
         }
     }
 
-    public function system_update(){
-        $path = \think\facade\App::getRootPath().'../';
+    public function system_update()
+    {
+        $path = \think\facade\App::getRootPath() . '../';
         $cmd = "cd {$path} && git pull";
-
         $result = systemLog($cmd);
         $result = implode("\n", $result);
         $data['info'] = $result;
-        return view('config/update',$data);
+
+        // 更新sql语句
+        $sqlPath = $path . 'docker/data';
+        $fileNameList = getDirFileName($sqlPath);
+        unset($fileNameList[count($fileNameList) - 1]);
+        if (!empty($fileNameList)) {
+            $filepath = $fileNameList[0];
+            foreach ($fileNameList as $v) {
+                if ($filepath < $v) {
+                    $filepath = $v;
+                }
+            }
+            $filename = explode('/',$filepath);
+            $filename = $filename[count($filename) - 1];
+            $update_file = $sqlPath.'/update.lock';
+            $update_content = $filename;
+            $is_update = true;// 是否需要更新
+            if (file_exists($update_file)) {    // 判断更新的版本是否大于已更新的版本
+                $update_filename = file_get_contents($update_file);
+                if ($filename > $update_filename) {
+                    $update_content = $filename;
+                } else {
+                    $is_update = false;
+                }
+            }
+            if ($is_update) {
+                $content = file_get_contents($filename);
+                $sqlArr = explode(';',$content);
+                foreach ($sqlArr as $sql) {
+                    @Db::execute($sql.';');
+                }
+                file_put_contents('update.lock',$update_content);
+            }
+        }
+        return view('config/update', $data);
     }
 }
