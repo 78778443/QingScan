@@ -91,7 +91,7 @@ function addOldData()
         file_put_contents('install.lock', '');
 
         // 更新sql语句
-        $sqlPath = '/data/tools/docker/data';
+        $sqlPath = '/root/qingscan/tools/docker/data';
         $fileNameList = getDirFileName($sqlPath);
         unset($fileNameList[count($fileNameList) - 1]);
         if (!empty($fileNameList)) {
