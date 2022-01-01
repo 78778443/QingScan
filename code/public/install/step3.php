@@ -34,7 +34,16 @@ use think\facade\Db;
                     $fileNameList = getDirFileName($sqlPath);
                     unset($fileNameList[count($fileNameList) - 1]);
                     if (!empty($fileNameList)) {
-                        echo 1;exit;
+                        $filepath = $fileNameList[0];
+                        foreach ($fileNameList as $v) {
+                            if ($filepath < $v) {
+                                $filepath = $v;
+                            }
+                        }
+                        $filename = explode('/',$filepath);
+                        $update_content = $filename[count($filename) - 1];
+                        var_dump($update_content);exit;
+                        file_put_contents('update.lock',$update_content);
                     }
 
                     //更新python配置
