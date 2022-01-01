@@ -361,10 +361,15 @@ class App extends Common
             }
         }
     }
+
     // 黑盒项目批量导入
     public function batch_import(Request $request){
         $file = $_FILES["file"]["tmp_name"];
-        $list = $this->importExecl($file);
+        $result = $this->importExecl($file);
+        if ($result['code'] == 0) {
+            $this->error($result['msg']);
+        }
+        $list = $result['data'];
         unset($list[0]);
         $temp_data = [];
         foreach ($list as $k=>$v) {

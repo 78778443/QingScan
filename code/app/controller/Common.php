@@ -192,7 +192,7 @@ class Common extends BaseController
             //$file = iconv("gb2312", "utf-8", $file);
 
             if (empty($file) OR !file_exists($file)) {
-                $this->error('文件不存在!');
+                return  ['code'=>0,'data'=>[],'msg'=>'文件不存在!'];
             }
             /** @var Xlsx $objRead */
             $objRead = IOFactory::createReader('Xls');
@@ -200,7 +200,7 @@ class Common extends BaseController
             if (!$objRead->canRead($file)) {
                 $objRead = new Csv();
                 if (!$objRead->canRead($file)) {
-                    $this->error('只支持导入Xls、Csv格式文件!');
+                    return  ['code'=>0,'data'=>[],'msg'=>'只支持导入Xls、Csv格式文件!'];
                 }
             }
 
@@ -268,9 +268,9 @@ class Common extends BaseController
                     unset($data[$_row]);
                 }
             }
-            return array_values($data);
+            return  ['code'=>1,'data'=>array_values($data),'msg'=>''];
         } catch (\Exception $e) {
-            $this->error($e->getMessage());
+            return  ['code'=>0,'data'=>[],'msg'=>$e->getMessage()];
         }
     }
 }
