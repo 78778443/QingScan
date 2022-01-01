@@ -80,7 +80,8 @@ class Config extends Common
     }
 
     public function system_update(){
-        $cmd = "cd /root/qingscan && git pull";
+        $path = \think\facade\App::getRootPath().'../';
+        $cmd = "cd {$path} && git pull";
 
         $result = systemLog($cmd);
         $result = implode("\n", $result);
