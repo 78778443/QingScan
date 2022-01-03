@@ -37,7 +37,7 @@ QingScan 是一款聚合扫描器，本身不生产安全扫描功能，但会�
 
 QingScan尽最大能力保障各位安装的顺畅，但QingScan人力有限，目前仍然无法预料到每一处场景，希望您尽量按照视频教程中的环境来搭建；
 
-如果在安装的过程中遇到比较麻烦的问题，也可以联系我们的工程师远程协助帮你解决问题(需淘宝下单`2.88`元人民币),下单后主动添加群里`婷婷的橙子`为好用，并将向日葵的ID和验证码发给她。
+如果在安装的过程中遇到比较麻烦的问题，也可以联系我们的工程师远程协助帮你解决问题(需淘宝下单`2.88`元人民币),下单后主动添加群里`婷婷的橙子`为好友，并将向日葵的ID和验证码发给她。
 
 淘宝链接地址：https://item.taobao.com/item.htm?spm=a2126o.success.0.0.5e484831UkSn6H&id=666295567386&mt=    
 
@@ -71,7 +71,7 @@ QingScan尽最大能力保障各位安装的顺畅，但QingScan人力有限，�
 ![image](https://user-images.githubusercontent.com/8509054/146304488-6f48260f-af5a-4071-91be-6fc718fce551.png)
 
 
-#### 功能展示
+## 功能展示
 ![image](https://user-images.githubusercontent.com/8509054/143174877-879408de-e594-4508-aa7c-b2fe095382cb.png)
 
 ![image](https://user-images.githubusercontent.com/8509054/143174979-f93bab2f-1506-4b01-9a2c-888a1c377478.png)
