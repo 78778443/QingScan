@@ -10,10 +10,12 @@ class CodeWebshellModel extends BaseModel
         ini_set('max_execution_time', 0);
         $tools = '/data/tools/hm-linux-amd64/';
         while (true) {
+            processSleep(1);
             $list = Db::name('code')->whereTime('webshell_scan_time', '<=', date('Y-m-d H:i:s', time() - (86400)))
                 ->where('is_delete', 0)->limit(10)->orderRand()->select()->toArray();
             //$list = Db::name('code')->where('id',1517)->select();
             foreach ($list as $v) {
+                PluginModel::addScanLog($v['id'], __METHOD__, 0,2);
                 $codePath = "/data/codeCheck/";
                 $value = $v;
                 $prName = cleanString($value['name']);
@@ -40,8 +42,9 @@ class CodeWebshellModel extends BaseModel
                     }
                     self::scanTime('code',$v['id'],'webshell_scan_time');
                 }
+                PluginModel::addScanLog($v['id'], __METHOD__, 1, 2);
             }
-            sleep(120);
+           sleep(120);
         }
     }
 }

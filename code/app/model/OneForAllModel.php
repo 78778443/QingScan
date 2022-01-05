@@ -14,11 +14,14 @@ class OneForAllModel extends BaseModel
     {
         ini_set('max_execution_time', 0);
         while (true) {
+            processSleep(1);
             $app_list = Db::name('app')->whereTime('subdomain_scan_time', '<=', date('Y-m-d H:i:s', time() - (86400 * 15)))->where('is_delete',0)->field('id,url,user_id')->orderRand()->limit(1)->select()->toArray();
             $tools = '/data/tools/OneForAll';
             foreach ($app_list as $k => $v) {
+                PluginModel::addScanLog($v['id'], __METHOD__, 0);
                 $host = parse_url($v['url'])['host'];
                 if (filter_var($host, FILTER_VALIDATE_IP)) {
+                    PluginModel::addScanLog($v['id'], __METHOD__, 2);
                     addlog(["此地址不是域名:{$v['url']}"]);
                     AppModel::updateScanTime($v['id'],'subdomain_scan_time');
                     continue;
@@ -31,6 +34,7 @@ class OneForAllModel extends BaseModel
                 systemLog($cmd);
                 $filename = $file_path.$domain.'.csv';
                 if (!file_exists($filename)) {
+                    PluginModel::addScanLog($v['id'], __METHOD__, 2);
                     addlog(["文件不存在:{$filename}"]);
                     AppModel::updateScanTime($v['id'],'subdomain_scan_time');
                     continue;
@@ -54,6 +58,7 @@ class OneForAllModel extends BaseModel
                 } else {
                     addlog(["内容获取失败:{$filename}"]);
                 }
+                PluginModel::addScanLog($v['id'], __METHOD__, 1);
             }
             sleep(10);
         }

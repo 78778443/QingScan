@@ -18,9 +18,8 @@ class App extends Common
 
     public function a()
     {
-        echo '<pre>';
-        //AppModel::whatweb();
-        HydraModel::sshScan();
+
+        processSleep(1);
     }
 
     public function index(Request $request){
@@ -163,7 +162,7 @@ class App extends Common
         Db::table('host_hydra_scan_details')->where(['app_id' => $id])->delete();
         Db::table('host_port')->where(['host' => $ip])->delete();
         Db::table('one_for_all')->where(['app_id' => $id])->delete();
-        Db::table('plugin_result')->where(['app_id' => $id])->delete();
+        Db::table('plugin_scan_log')->where(['app_id' => $id])->delete();
         Db::table('urls')->where(['app_id' => $id])->delete();
         Db::table('urls_sqlmap')->where(['app_id' => $id])->delete();
         Db::table('xray')->where(['app_id' => $id])->delete();
@@ -234,6 +233,11 @@ class App extends Common
         $data['app_info'] = Db::table('app_info')->where($where)->order("app_id", 'desc')->limit(0, 15)->select()->toArray();
         $data['app_vulmap'] = Db::table('app_vulmap')->where($where)->order("app_id", 'desc')->limit(0, 15)->select()->toArray();
         $data['app_dismap'] = Db::table('app_dismap')->where($where)->order("app_id", 'desc')->limit(0, 15)->select()->toArray();
+        $data['urls'] = Db::table('urls')->where($where)->order("app_id", 'desc')->limit(0, 15)->select()->toArray();
+        $data['xray'] = Db::table('xray')->where($where)->order("app_id", 'desc')->limit(0, 15)->select()->toArray();
+        $data['nuclei'] = Db::table('app_nuclei')->where($where)->order("app_id", 'desc')->limit(0, 15)->select()->toArray();
+        $data['crawlergo'] = Db::table('app_crawlergo')->where($where)->order("app_id", 'desc')->limit(0, 15)->select()->toArray();
+        $data['awvs'] = Db::table('awvs_vuln')->where($where)->order("app_id", 'desc')->limit(0, 15)->select()->toArray();
         //获取此域名对应主机的端口信息
         $urlInfo = parse_url($data['info']['url']);
         $ip = gethostbyname($urlInfo['host']);
@@ -279,10 +283,11 @@ class App extends Common
         Db::table('host_hydra_scan_details')->where(['app_id' => $id])->delete();
         Db::table('host_port')->where(['host' => $ip])->delete();
         Db::table('one_for_all')->where(['app_id' => $id])->delete();
-        Db::table('plugin_result')->where(['app_id' => $id])->delete();
+        Db::table('plugin_scan_log')->where(['app_id' => $id])->delete();
         Db::table('urls')->where(['app_id' => $id])->delete();
         Db::table('urls_sqlmap')->where(['app_id' => $id])->delete();
         Db::table('xray')->where(['app_id' => $id])->delete();
+        Db::table('plugin_scan_log')->where(['app_id' => $id])->delete();
 
         return redirect($_SERVER['HTTP_REFERER'] ?? '/');
     }

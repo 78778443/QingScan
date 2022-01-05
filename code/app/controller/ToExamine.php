@@ -254,12 +254,12 @@ class ToExamine extends Common
         if (!in_array($check_status, [0, 1,2])) {
             return $this->apiReturn(0, [], '请先选择审核状态');
         }
-        $info = Db::name('plugin_result')->where('id', $id)->find();
+        $info = Db::name('plugin_scan_log')->where('id', $id)->find();
         if (!$info) {
             return $this->apiReturn(0, [], '数据不存在');
         }
 
-        if (Db::name('plugin_result')->where('id', $id)->update(['check_status' => $check_status])) {
+        if (Db::name('plugin_scan_log')->where('id', $id)->update(['check_status' => $check_status])) {
             return $this->apiReturn(1, [], '操作成功');
         } else {
             return $this->apiReturn(0, [], '操作失败');

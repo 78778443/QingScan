@@ -25,7 +25,7 @@ class PluginResult extends Common
             $where[] = ['a.user_id', '=', $this->userId];
             $map[] = ['user_id', '=', $this->userId];
         }
-        $list = Db::table('plugin_result')->alias('a')
+        $list = Db::table('plugin_scan_log')->alias('a')
             ->leftJoin('plugin b','b.id=a.plugin_id')
             ->where($where)
             ->field('a.*,b.name,b.result_file')
@@ -48,7 +48,7 @@ class PluginResult extends Common
     public function details(){
         $id = getParam('id');
 
-        $info = Db::table('plugin_result')->where(['id'=>$id])->find();
+        $info = Db::table('plugin_scan_log')->where(['id'=>$id])->find();
 
         $data['info'] = $info;
         return View::fetch('detail', $data);

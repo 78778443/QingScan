@@ -192,6 +192,7 @@ class ConfigModel extends BaseModel
     public static function backup()
     {
         while (true) {
+            processSleep(1);
             $backup = config('app.backup');
             if (!file_exists($backup['path'])) {
                 mkdir($backup['path'], 0777, true);

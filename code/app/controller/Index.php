@@ -65,7 +65,6 @@ class Index extends Common
         //赞助信息
         $zanzhu = Db::table('system_zanzhu')->order('time','desc')->limit(15)->select()->toArray();
 
-
         $data = [
             ['key' => 'folderCount', 'data' => $folderCount, 'title' => "危害等级"],
             ['key' => 'shijianCount', 'data' => $shijianCount, 'title' => "新增统计"],

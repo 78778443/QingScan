@@ -14,6 +14,7 @@ class GithubNoticeModel extends BaseModel
         ini_set('max_execution_time', 0);
         echo "<pre>";
         while (true) {
+            processSleep(1);
             $url = 'https://github.com/advisories?page=';
             $shouye_temp = file_get_contents($url);
             if ($shouye_temp == false) {

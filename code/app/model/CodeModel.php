@@ -292,9 +292,11 @@ class CodeModel extends BaseModel
         ini_set('max_execution_time', 0);
         $codePath = "/data/codeCheck";
         while (true) {
+            processSleep(1);
             $list = Db::name('code')->whereTime('composer_scan_time', '<=', date('Y-m-d H:i:s', time() - (86400 * 15)))
                 ->where('is_delete', 0)->limit(1)->orderRand()->select()->toArray();
             foreach ($list as $k => $v) {
+                PluginModel::addScanLog($v['id'], __METHOD__, 0,2);
                 self::scanTime('code', $v['id'], 'composer_scan_time');
 
                 $value = $v;
@@ -302,16 +304,19 @@ class CodeModel extends BaseModel
                 $codeUrl = $value['ssh_url'];
                 $filepath = "/data/codeCheck/{$prName}";
                 if (!file_exists($filepath)) {
+
                     downCode($codePath, $prName, $codeUrl, $value['is_private'], $value['username'], $value['password'], $value['private_key']);
                 }
                 $fileArr = getFilePath($filepath, 'composer.json');
                 if (!$fileArr) {
+                    PluginModel::addScanLog($v['id'], __METHOD__, 2, 2);
                     addlog("扫描composer依赖失败,composer.json依赖文件不存在:{$filepath}");
                     continue;
                 }
                 foreach ($fileArr as $value) {
                     $json = file_get_contents($value['file']);
                     if (empty($json)) {
+                        PluginModel::addScanLog($v['id'], __METHOD__, 2, 2);
                         addlog("项目文件内容为空:{$value['file']}");
                         continue;
                     }
@@ -351,6 +356,7 @@ class CodeModel extends BaseModel
                         addlog("composer依赖扫描数据写入成功,内容为:".json_encode($data));
                     }
                 }
+                PluginModel::addScanLog($v['id'], __METHOD__, 1, 2);
             }
             sleep(10);
         }
@@ -359,6 +365,7 @@ class CodeModel extends BaseModel
     public static function giteeProject()
     {
         while (true) {
+            processSleep(1);
             ini_set('max_execution_time', 0);
 
             systemLog('cd /data/tools/reptile && python3 ./giteeProject.py');
