@@ -55,20 +55,12 @@ QingScan尽最大能力保障各位安装的顺畅，但QingScan人力有限，�
 
 微信交流群
 
-![image](https://user-images.githubusercontent.com/8509054/148043450-1908a652-c288-47ef-9020-d65b07bb5a59.png)
+![微信交流群](https://user-images.githubusercontent.com/8509054/148043450-1908a652-c288-47ef-9020-d65b07bb5a59.png)
 
 
-微信公众号
+公众号和个人微信
+![公众号和个人微信](https://user-images.githubusercontent.com/8509054/148171505-b9acd7d3-f48f-44b6-9967-2aa062e61ede.jpg)
 
-![3a1fbc142a0c35958c2f1dcd9b7cee6](https://user-images.githubusercontent.com/8509054/147898310-bf06e599-16ed-4869-9559-22f7f109a778.jpg)
-
-
-
-
-个人微信
-
-![image](https://user-images.githubusercontent.com/8509054/147581390-1948bc43-1de1-4404-ac9d-b0455d53c4d1.png)
-![image](https://user-images.githubusercontent.com/8509054/146304488-6f48260f-af5a-4071-91be-6fc718fce551.png)
 
 
 ## 功能展示
