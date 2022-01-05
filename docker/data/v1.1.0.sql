@@ -21,7 +21,7 @@ CREATE TABLE `QingScan`.`plugin_scan_log`  (
 
 CREATE TABLE `QingScan`.`plugin_store`  (
                                             `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '自增id',
-                                            `status` tinyint(3) UNSIGNED NOT NULL DEFAULT 1 COMMENT '状态;1:开启;0:禁用',
+                                            `status` tinyint(3) UNSIGNED NOT NULL DEFAULT 1 COMMENT '状态 1 开启 0 禁用',
                                             `create_time` int(10) UNSIGNED NOT NULL DEFAULT 0 COMMENT '插件安装时间',
                                             `name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '插件标识名,英文字母(惟一)',
                                             `title` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '插件名称',
