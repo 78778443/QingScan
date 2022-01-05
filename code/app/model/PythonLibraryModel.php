@@ -12,12 +12,13 @@ class PythonLibraryModel extends BaseModel
     {
         $codePath = "/data/codeCheck";
         while (true) {
+            processSleep(1);
             ini_set('max_execution_time', 0);
             $list = Db::name('code')->whereTime('python_scan_time', '<=', date('Y-m-d H:i:s', time() - (86400 * 15)))
                 ->where('is_delete', 0)->limit(1)->orderRand()->select()->toArray();
             //$list = Db::name('code')->where('id',20)->where('is_delete', 0)->field('id,name,user_id')->select()->toArray();
             foreach ($list as $k => $v) {
-
+                PluginModel::addScanLog($v['id'], __METHOD__, 0,2);
                 $value = $v;
                 $prName = cleanString($value['name']);
                 $codeUrl = $value['ssh_url'];
@@ -27,6 +28,7 @@ class PythonLibraryModel extends BaseModel
                 $data = [];
                 $fileArr = getFilePath($filepath, 'requirements.txt');
                 if (!$fileArr) {
+                    PluginModel::addScanLog($v['id'], __METHOD__, 2, 2);
                     addlog("Python依赖扫描失败,未找到依赖文件:{$filepath}");
                     continue;
                 }
@@ -52,6 +54,7 @@ class PythonLibraryModel extends BaseModel
                     Db::name('code_python')->insertAll($data);
                 }
                 self::scanTime('code', $v['id'], 'python_scan_time');
+                PluginModel::addScanLog($v['id'], __METHOD__, 1, 2);
             }
             sleep(10);
         }

@@ -54,7 +54,7 @@ class Scan extends Command
         } elseif ($func == "xray") {
             WebScanModel::xray();
         } elseif ($func == "awvs") {
-            AwvsModel::scan();
+            AwvsModel::awvsScan();
         } elseif ($func == "rad") {
             WebScanModel::rad();
         } elseif ($func == "host") {
@@ -64,17 +64,17 @@ class Scan extends Command
         } elseif ($func == "nmap") {
             HostPortModel::NmapPortScan();
         } elseif ($func == "fortify") {
-            CodeCheckModel::scan();
+            CodeCheckModel::fortifyScan();
         } elseif ($func == "kunlun") {
             CodeCheckModel::kunLunScan();
         } elseif ($func == "semgrep") {
             CodeCheckModel::semgrep();
         } elseif ($func == "subdomain") {
-            AppModel::subdomain();
+            AppModel::fofaSubdomain();
         } elseif ($func == "temp") {
             XrayModel::temp();
         } elseif ($func == "cve") {
-            CveModel::scan();
+            CveModel::cveScan();
         } elseif ($func == 'google') {
             GoogleModel::getBaseInfo();
         } elseif ($func == 'jietu') {
@@ -134,8 +134,8 @@ class Scan extends Command
         } elseif ($func == 'custom') {
             $custom = trim($input->getArgument('custom'));
             $scanType = $input->getArgument('scan_type');
-            $scanType = array_search($scanType, ['app','host','code','url']);
-            PluginModel::custom_event($custom,$scanType);
+            $scanType = array_search($scanType, ['app', 'host', 'code', 'url']);
+            PluginModel::custom_event($custom, $scanType);
         }
 
         // 指令输出

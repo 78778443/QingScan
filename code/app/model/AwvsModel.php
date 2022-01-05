@@ -7,7 +7,7 @@ use think\facade\Db;
 
 class AwvsModel extends BaseModel
 {
-    public static function scan()
+    public static function awvsScan()
     {
         $awvs_url = ConfigModel::value('awvs_url');
         $awvs_token = ConfigModel::value('awvs_token');
@@ -17,11 +17,14 @@ class AwvsModel extends BaseModel
             return false;
         }
         while (true) {
+            processSleep(1);
             $list = Db::table('app')->whereTime('awvs_scan_time', '<=', date('Y-m-d H:i:s', time() - (86400 * 15)))->where('is_delete', 0)->limit(1)->orderRand()->select()->toArray();
             foreach ($list as $val) {
+                PluginModel::addScanLog($val['id'], __METHOD__, 0);
                 $url = $val['url'];
                 $id = $val['id'];
                 if (filter_var($url, FILTER_VALIDATE_URL) === false) {
+                    PluginModel::addScanLog($val['id'], __METHOD__, 2);
                     addlog(["URL地址不正确", $id, $url]);
                     self::scanTime('app', $id, 'awvs_scan_time');
                     continue;
@@ -29,15 +32,19 @@ class AwvsModel extends BaseModel
                 //添加目标
                 $targetId = self::getTargetId($id, $url, $awvs_url, $awvs_token, $val['user_id']);
                 if (!$targetId) {
+                    PluginModel::addScanLog($val['id'], __METHOD__, 2);
                     addlog(["AWVS扫描失败", $id, $url]);
                     self::scanTime('app', $id, 'awvs_scan_time');
                     continue;
                 }
+
+                //获取扫描状态
                 $retArr = self::getScanStatus($targetId, $awvs_url, $awvs_token);
                 if (isset($retArr['code']) && $retArr['code'] == 404) {
                     addlog(["未在AWVS中找到此目标ID", $targetId]);
                     Db::table('awvs_app')->where(['target_id' => $targetId])->delete();
                 }
+                //API未授权
                 if (isset($retArr['code']) && $retArr['code'] == 401) {
                     addlog(["AWVS未授权,休息120秒...", $val]);
                     sleep(120);
@@ -45,8 +52,9 @@ class AwvsModel extends BaseModel
                 }
                 //判断目标扫描状态
                 if (isset($retArr['last_scan_session_status']) && $retArr['last_scan_session_status'] == 'completed') {
-                    self::addVulnList($retArr['last_scan_id'], $retArr['last_scan_session_id'], $awvs_url, $awvs_token, $val['user_id']);
+                    self::addVulnList($retArr['last_scan_id'], $retArr['last_scan_session_id'], $awvs_url, $awvs_token, $val['user_id'], $val['id']);
                     self::scanTime('app', $id, 'awvs_scan_time');
+                    PluginModel::addScanLog($val['id'], __METHOD__, 1);
                 }
             }
             addlog("AWVS累了，休息30秒钟...");
@@ -54,7 +62,7 @@ class AwvsModel extends BaseModel
         }
     }
 
-    public static function addVulnList($scanId, $scanSessionId, $awvs_url, $awvs_token, $user_id)
+    public static function addVulnList($scanId, $scanSessionId, $awvs_url, $awvs_token, $user_id, $appId)
     {
         $vulnList = self::getVulnList($scanId, $scanSessionId, $awvs_url, $awvs_token);
         foreach ($vulnList['vulnerabilities'] as $value) {
@@ -64,6 +72,7 @@ class AwvsModel extends BaseModel
                 $value[$k] = is_string($v) ? $v : json_encode($v, JSON_UNESCAPED_UNICODE);
             }
             $value['user_id'] = $user_id;
+            $value['app_id'] = $appId;
             Db::table('awvs_vuln')->extra('IGNORE')->insert($value);
         }
     }

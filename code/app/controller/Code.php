@@ -44,6 +44,30 @@ class Code extends Common
         return View::fetch('list', $data);
     }
 
+    public function detail(Request $request)
+    {
+
+        $codeId = $request->param('id');
+        $where[] = ['code_id', '=', $codeId];
+        $map[] = ['id', '=', $codeId];
+
+        $where1 = [];
+        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
+            //$where[] = ['user_id','=',$this->userId];
+            $map[] = ['user_id', '=', $this->userId];
+            $where1[] = ['user_id', '=', $this->userId];
+        }
+        $data['info'] = Db::name('app')->where($map)->find();
+
+        $data['fortify'] = Db::table('fortify')->where($where)->where($where1)->order("id", 'desc')->limit(0, 15)->select()->toArray();
+        $data['semgrep'] = Db::table('semgrep')->where($where)->where($where1)->order("id", 'desc')->limit(0, 15)->select()->toArray();
+        $data['java'] = Db::table('java')->where($where)->where($where1)->order("id", 'desc')->limit(0, 15)->select()->toArray();
+        $data['python'] = Db::table('python')->where($where)->where($where1)->order("id", 'desc')->limit(0, 15)->select()->toArray();
+        $data['php'] = Db::table('composer')->where($where)->where($where1)->order("id", 'desc')->limit(0, 15)->select()->toArray();
+
+        return View::fetch('details', $data);
+    }
+
     public function code_del(Request $request)
     {
         $id = $request->param('id');
@@ -255,7 +279,7 @@ class Code extends Common
         $data['projectArr'] = $projectArr;
         $data['CategoryList'] = $semgrepApi->where($where)->group('result_type')->column('result_type');
         $projectList = Db::connect('kunlun')->table("index_scanresulttask")->alias('a')
-            ->leftJoin('index_project b','b.id=a.scan_project_id')
+            ->leftJoin('index_project b', 'b.id=a.scan_project_id')
             ->where($where)
             ->group('scan_project_id')
             ->field('b.id,b.project_name as name')
@@ -403,7 +427,7 @@ class Code extends Common
             $data['pulling_mode'] = $request->param('pulling_mode');
             $data['ssh_url'] = $request->param('ssh_url');
             $data['username'] = $request->param('username');
-            $data['password'] = $request->param('password','','htmlspecialchars');
+            $data['password'] = $request->param('password', '', 'htmlspecialchars');
             $data['private_key'] = $request->param('private_key');
             $data['fortify_scan_time'] = $request->param('fortify_scan_time');
             $data['semgrep_scan_time'] = $request->param('semgrep_scan_time');
@@ -419,7 +443,7 @@ class Code extends Common
                     }
                 }
             }
-            if (Db::name('code')->where('id',$id)->update($data)) {
+            if (Db::name('code')->where('id', $id)->update($data)) {
                 return redirect(url('code/index'));
             } else {
                 $this->error('修改失败');

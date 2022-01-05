@@ -23,7 +23,7 @@
             <form class="row g-3" id="frmUpload" action="<?php echo url('app/batch_import') ?>" method="post"
                   enctype="multipart/form-data">
                 <div class="col-auto">
-                    <input type="file" class="form-control form-control" name="file" accept=".xls,.csv"/>
+                    <input type="file" class="form-control form-control" name="file" accept=".xls,.csv" required/>
                 </div>
                 <div class="col-auto">
                     <input type="submit" class="btn btn-outline-info" value="批量添加项目">
@@ -42,17 +42,8 @@
                 <tr>
                     <th>ID</th>
                     <th>名称</th>
-                    <th>状态码</th>
-                    <th style="width: 70px">状态</th>
                     <th>是否存在waf</th>
                     <th>创建时间</th>
-                    <th>awvs</th>
-                    <th>whatweb</th>
-                    <th>subdomain</th>
-                    <th>icon图标</th>
-                    <th>截图</th>
-                    <th>xray</th>
-                    <th>dirmap</th>
                     <th>是否内网</th>
                     <th style="width: 200px">操作</th>
                 </tr>
@@ -64,21 +55,8 @@
                         <td class="ellipsis-type">
                             <a href="{$value['url']}" title="{$value['url']}" target="_blank">{$value['name']} </a>
                         </td>
-                        <td><?php echo $value['statuscode'] ?? '' ?></td>
-                        <td><?php echo $statusArr[$value['status']] ?? '' ?></td>
                         <td><?php echo $value['is_waf'] ?></td>
                         <td><?php echo date('Y-m-d H:i', strtotime($value['create_time'])) ?></td>
-                        <td><?php echo date('m-d H:i', strtotime($value['awvs_scan_time'])) ?></td>
-                        <td><?php echo date('m-d H:i', strtotime($value['whatweb_scan_time'])) ?></td>
-                        <td><?php echo date('m-d H:i', strtotime($value['subdomain_scan_time'])) ?></td>
-                        <td>
-                            <img src="/<?php echo $value['icon'] ?>" alt="">
-                        </td>
-                        <td>
-                            <img src="/<?php echo $value['url_screenshot'] ?>" alt="">
-                        </td>
-                        <td><?php echo date('m-d H:i', strtotime($value['xray_scan_time'])) ?></td>
-                        <td><?php echo date('m-d H:i', strtotime($value['dirmap_scan_time'])) ?></td>
                         <td>{$value['is_intranet']}</td>
                         <td>
                             <?php if($value['xray_agent_port'] ?? ''){?>
@@ -100,6 +78,9 @@
                     </tr>
                 <?php } ?>
                 </tbody>
+                <?php if(empty($list)){?>
+                    <tr><td colspan="8" class="text-center">暂无目标</td></tr>
+                <?php }?>
             </table>
         </div>
         {include file='public/fenye' /}

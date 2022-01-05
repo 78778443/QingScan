@@ -54,14 +54,16 @@ class AppModel extends BaseModel
 
     }
 
-    public static function subdomain()
+    public static function fofaSubdomain()
     {
         $user = ConfigModel::value('fofa_user');
         $token = ConfigModel::value('fofa_token');
         while (true) {
+            processSleep(1);
             $endTime = date('Y-m-d', time() - 86400 * 15);
             $appList = Db::table(self::$tableName)->whereTime('subdomain_time', '<=', $endTime)->orderRand()->limit(10)->select()->toArray();
             foreach ($appList as $appInfo) {
+                PluginModel::addScanLog($appInfo['id'], __METHOD__, 0);
                 $str = urlencode(base64_encode('domain="' . parse_url($appInfo['url'])['host'] . '"'));
                 $list = Requests::get("https://fofa.so/api/v1/search/all?email={$user}&key={$token}&qbase64=" . $str);
 
@@ -78,6 +80,7 @@ class AppModel extends BaseModel
                 }
                 $appInfo['subdomain_time'] = date('Y-m-d H:i:s');
                 Db::table(self::$tableName)->save($appInfo);
+                PluginModel::addScanLog($appInfo['id'], __METHOD__, 1);
             }
 
             print_r("休息10秒..." . PHP_EOL);
@@ -285,14 +288,17 @@ class AppModel extends BaseModel
     {
         ini_set('max_execution_time', 0);
         while (true) {
+            processSleep(1);
             $list = Db::name('app')->whereTime('whatweb_scan_time', '<=', date('Y-m-d H:i:s', time() - (86400 * 15)))->limit(10)->orderRand()->where('is_delete',0)->field('id,url,user_id')->select()->toArray();
             $file_path = '/data/tools/whatweb';
             @mkdir($file_path,0777, true);
             foreach ($list as $k => $v) {
+                PluginModel::addScanLog($v['id'], __METHOD__, 0);
                 $filename = "{$file_path}/whatweb.json";
                 $cmd = "whatweb {$v['url']} --log-json $filename";
                 systemLog($cmd);
                 if (file_exists($filename) == false) {
+                    PluginModel::addScanLog($v['id'], __METHOD__, 2);
                     addlog(["文件不存在:{$filename}"]);
                     self::updateScanTime($v['id'],'whatweb_scan_time');
                     continue;
@@ -326,11 +332,12 @@ class AppModel extends BaseModel
                         Db::name('app_whatweb')->insert($data);
                     }
                 } else {
+                    PluginModel::addScanLog($v['id'], __METHOD__, 2);
                     addlog(["文件内容格式错误:{$filename}"]);
                     self::updateScanTime($v['id'],'whatweb_scan_time');
                 }
                 @unlink($filename);
-                sleep(3);
+                PluginModel::addScanLog($v['id'], __METHOD__, 1);
             }
             sleep(10);
         }
@@ -339,6 +346,7 @@ class AppModel extends BaseModel
     public static function whatwebPocTest(){
         ini_set('max_execution_time', 0);
         while (true) {
+            processSleep(1);
             $list = Db::name('app_whatweb')->whereTime('poc_scan_time', '<=', date('Y-m-d H:i:s', time() - (86400 * 15)))->limit(1)->orderRand()->select()->toArray();
             foreach ($list as $val) {
                 self::scanTime('app_whatweb',$val['id'],'poc_scan_time');

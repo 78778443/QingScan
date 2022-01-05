@@ -40,7 +40,7 @@ class PluginModel extends BaseModel
                         'content' => $content,
                         'create_time' => date('Y-m-d H:i:s', time()),
                     ];
-                    Db::name('plugin_result')->insert($data);
+                    Db::name('plugin_scan_log')->insert($data);
                     sleep(120);
                 }
             }
@@ -52,7 +52,7 @@ class PluginModel extends BaseModel
     {
         // 死循环不断监听任务是不是挂了
         $timeSleep = 15;
-        $scanType = ['app','host','code','url'];
+        $scanType = ['app', 'host', 'code', 'url'];
         while (true) {
             $key = Env::get('TASK_SCAN_BLACKLIST_KEY');
             $keyArr = explode(',', $key);
@@ -131,7 +131,7 @@ class PluginModel extends BaseModel
                 $content = implode("\n", $content);
 
                 $data = ['app_id' => $v['id'], 'user_id' => $v['user_id'] ?? 0, 'content' => $content,
-                    'scan_type' =>$info['scan_type'],
+                    'scan_type' => $info['scan_type'],
                     'plugin_id' => $info['id'], 'plugin_name' => $info['name']];
 
                 Db::table("plugin_result")->extra('IGNORE')->insert($data);
@@ -156,5 +156,28 @@ class PluginModel extends BaseModel
             $list = Db::name('url')->whereNotIn('id', $rids)->where('is_delete', 0)->limit(1)->orderRand()->select()->toArray();
         }
         return $list;
+    }
+
+
+    /**
+     * 添加扫描日志
+     * @param int $appId
+     * @param string $pluginName
+     * @param int $logType
+     * @param int $scanType
+     * @param array $data
+     */
+    public static function addScanLog(int $appId, string $pluginName, int $logType, int $scanType = 0, array $data = [])
+    {
+
+        $pluginName = explode('::', $pluginName)[1] ?? 'method_error';
+        $data['app_id'] = $appId;
+        $data['plugin_name'] = $pluginName;
+        $data['log_type'] = $logType;
+        $data['scan_type'] = $scanType;
+        $data['content'] = (isset($data['content']) && !is_string($data['content'])) ? var_export($data['content'], true) : '';
+        $data['content'] = substr($data['content'], 0, 4999);
+
+        Db::table('plugin_scan_log')->extra("IGNORE")->insert($data);
     }
 }

@@ -65,6 +65,7 @@ function getMysql()
 
 
 use app\model\BaseModel;
+use app\model\ConfigModel;
 use think\facade\Db;
 use think\facade\Log;
 
@@ -104,11 +105,9 @@ function getDirFileName($path): array
                         $arr = array_merge($temp, $arr);
                     }
                 }
-
             }
         }
     }
-
     return $arr;
 }
 
@@ -145,18 +144,18 @@ function getArrayField(array $data, array $fields)
 function addlog($content, $out = false)
 {
     $content1 = $content;
-    $content = ['app' => 'qing-scan-center', 'msg' => $content, 'time' => date('Y-m-d H:i:s')];
+    $content = ['app' => 'QingScan', 'msg' => $content, 'time' => date('Y-m-d H:i:s')];
     $data = json_encode($content, JSON_UNESCAPED_UNICODE) . PHP_EOL;
 
     $date = date('Y-m-d');
 //    file_put_contents("./logs/log{$date}.json", $data . PHP_EOL, FILE_APPEND);
     //Log::write($data . PHP_EOL);
     $dataArr = [
-        'app' => 'qing-scan-center',
+        'app' => 'QingScan',
         'content' => is_array($content1) ? var_export($content1, true) : $content1,
     ];
 
-    $dataArr['content'] = substr($dataArr['content'], 0, 512);
+    $dataArr['content'] = substr($dataArr['content'], 0, 4999);
     //echo '---'.strlen($dataArr['content']).'---';
     \think\facade\Db::name('log')->insert($dataArr);
     //删除5天前的日志
@@ -247,7 +246,7 @@ function addlogRaw($content)
 }
 
 //执行系统命令,并记录日志
-function systemLog($shell,$showRet = true)
+function systemLog($shell, $showRet = true)
 {
     //转换成字符串
     $remark = "即将执行命令:{$shell}";
@@ -760,6 +759,12 @@ function curl_get($url)
     //执行命令
     $data = curl_exec($curl);
 
+    //如果有异常，记录到日志当中
+    $curl_errno = curl_errno($curl);
+    if (curl_errno($curl)) {
+        //return 'Curl error: ' . curl_error($curl);
+    }
+
     curl_close($curl);
 
     return $data;
@@ -1017,4 +1022,68 @@ function iconv_gbk_to_uft8($string)
     }
     $encode = mb_detect_encoding($string, array("ASCII", "GB2312", "GBK", 'BIG5', 'UTF-8'));
     return iconv($encode, "UTF-8", $string);
+}
+
+function getScanStatus($appId, $pluginName, $scanType = 0)
+{
+    $where = ['app_id' => $appId, 'plugin_name' => $pluginName, 'scan_type' => $scanType];
+    $result = Db::table('plugin_scan_log')->where($where)->order('log_type', 'asc')->select()->toArray();
+    if (empty($result)) {
+        return "扫描未开始,请检查插件是否开启~";
+    } elseif (count($result) == 1) {
+        return "$pluginName 任务已在{$result[0]['create_time']}启动，请等待扫描结果~";
+    } elseif (count($result) == 2 && $result[1]['log_type'] == 2) {
+        return "$pluginName 任务在{$result[1]['create_time']}扫描失败:{$result[1]['content']}";
+    } elseif (count($result) == 2 && $result[1]['log_type'] == 1) {
+        return "$pluginName 任务在{$result[1]['create_time']}扫描成功，但无有效结果:{$result[1]['content']}";
+    } else{
+//        var_dump($result);exit;
+
+    }
+}
+
+function getProcessNum()
+{
+    //获取PHP进程ID
+    $cmd = "ps -ef | grep 'php think' | grep -v 'grep --color=auto' | awk {'print $2'}";
+    exec($cmd, $phpProcess);
+    //获取排除PHP的进程PID
+    $cmd = "ps -ef | grep -v 'php think'  | grep 'sh -c' | grep -v '0.0.0.0:8000' | awk {'print  $3'}";
+    exec($cmd, $subProcess);
+
+    //判断这些PID时候在PHP进程ID里面
+    $result = [];
+    foreach ($subProcess as $process) {
+        if (in_array($process, $phpProcess)) {
+            $result[] = $process;
+        }
+    }
+    //返回数量
+    return count($result);
+}
+
+function processSleep($time)
+{
+
+    $array = debug_backtrace();
+
+    $list = [];
+    foreach ($array as $arrInfo) {
+        if (isset($arrInfo['class'])) {
+            $list[] = $arrInfo['function'];
+        }
+    }
+
+    sleep(rand(1, 10));
+    //获取最大的同时运行进程数
+    $num = ConfigModel::value('maxProcesses');
+    $num = empty($num) ? 4 : $num;
+
+    if (getProcessNum() < $num) {
+        return true;
+    } else {
+        addlog("{$list[0]} 进程数量已到最大值 {$num},将休息30秒后运行");
+        echo "{$list[0]} 进程数量已到最大值: {$num},将休息30秒后运行";
+        processSleep(60);
+    }
 }

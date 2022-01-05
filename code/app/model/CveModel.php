@@ -17,9 +17,10 @@ class CveModel extends BaseModel
 {
 
 
-    public static function scan()
+    public static function cveScan()
     {
         while (true) {
+            processSleep(1);
             $endTime = date('Y-m-d', time() - 86400 * 15);
             $where = ['is_poc' => 1];
             $hostLit = Db::table('vulnerable')->where($where)->whereNotNull('fofa_con')->whereTime('scan_time', '<=', $endTime)->orderRand()->limit(5)->select()->toArray();
@@ -69,6 +70,7 @@ class CveModel extends BaseModel
         }
 
         while (true) {
+            processSleep(1);
             $endTime = date('Y-m-d', time() - 86400 * 15);
             $cveList = Db::table('vulnerable')->whereNotNull('fofa_con')->whereTime('scan_time', '<=', $endTime)->orderRand()->limit(2)->select()->toArray();
 

@@ -209,16 +209,19 @@ class UrlsModel extends BaseModel
     {
         ini_set('max_execution_time', 0);
         while (true) {
+            processSleep(1);
             $api = Db::name('urls')->whereTime('sqlmap_scan_time', '<=', date('Y-m-d H:i:s', time() - (86400 * 15)));
             $list = $api->where('is_delete', 0)->field('id,url,app_id,user_id')->limit(5)->orderRand()->select()->toArray();
             $tools = '/data/tools/sqlmap/';
             foreach ($list as $k => $v) {
+                PluginModel::addScanLog($v['id'], __METHOD__, 0,3);
                 self::scanTime('urls',$v['id'],'sqlmap_scan_time');
 
                 $arr = parse_url($v['url']);
                 $blackExt = ['.js', '.css', '.json', '.png', '.jpg', '.jpeg', '.gif', '.mp3', '.mp4'];
                 //没有可以注入的参数
                 if (!isset($arr['query']) or in_array_strpos($arr['path'], $blackExt) or (strpos($arr['query'], '=') === false)) {
+                    PluginModel::addScanLog($v['id'], __METHOD__, 2,3);
                     addlog(["URL地址不存在可以注入的参数", $v['url']]);
                     continue;
                 }
@@ -231,6 +234,7 @@ class UrlsModel extends BaseModel
 
                 //sqlmap输出异常
                 if (!is_dir($outdir) or !file_exists($outfilename) or !filesize($outfilename)) {
+                    PluginModel::addScanLog($v['id'], __METHOD__, 2,3);
                     addlog(["sqlmap没有找到注入点", $v['url']]);
                     continue;
                 }
@@ -261,6 +265,7 @@ class UrlsModel extends BaseModel
                 }
                 addlog(["sqlmap扫描成功数据已写入：", $v['url']]);
                 systemLog("rm -rf $outdir");
+                PluginModel::addScanLog($v['id'], __METHOD__, 1,3);
             }
             //exit;
             sleep(5);
@@ -271,15 +276,19 @@ class UrlsModel extends BaseModel
     {
         ini_set('max_execution_time', 0);
         while (true) {
+            processSleep(1);
             $list = Db::name('urls')->where('is_delete', 0)->field('id,url')->limit(5)->orderRand()->select()->toArray();
             foreach ($list as $k => $v) {
+                PluginModel::addScanLog($v['id'], __METHOD__, 0,3);
                 $arr = parse_url($v['url']);
                 if (in_array_strpos($arr['path'], ['.js', '.css', '.json', '.png', '.jpg', '.jpeg', '.gif', '.mp3', '.mp4'])) {
+                    PluginModel::addScanLog($v['id'], __METHOD__, 2,3);
                     addlog("此URL地址不是普通HTML文本:{$v['url']}");
                     continue;
                 }
                 $result = curl_get_url_head($v['url']);
                 if ($result['code'] != '200') {
+                    PluginModel::addScanLog($v['id'], __METHOD__, 2,3);
                     addlog("此URL地址状态码不是200:{$v['url']}");
                     continue;
                 }
@@ -309,6 +318,7 @@ class UrlsModel extends BaseModel
                 if ($data) {
                     Db::name('urls')->where('id', $v['id'])->update($data);
                 }
+                PluginModel::addScanLog($v['id'], __METHOD__, 1,3);
             }
             sleep(10);
         }

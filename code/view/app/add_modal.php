@@ -9,7 +9,9 @@
                 <input type="hidden" name="username" class="form-control" placeholder="账号">
                 <input type="hidden" name="password" class="form-control" placeholder="URL">
                 <div class="modal-body">
-                    <p style="color:red">注意:QingScan 仅授权你在遵循《网络安全法》的前提下使用，请不要擅自对未获得授权的目标进行安全测试！！！</p>
+                    <p style="color:red">QingScan 产品仅授权你在遵守《<a
+                                href="https://baike.baidu.com/item/%E4%B8%AD%E5%8D%8E%E4%BA%BA%E6%B0%91%E5%85%B1%E5%92%8C%E5%9B%BD%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E6%B3%95"
+                                target="_blank">中华人民共和国网络安全法</a>》前提下使用，请不要擅自对未获得授权的目标进行安全测试！！！</p>
                     <div class="mb-3">
                         <label class="form-label">应用名称</label>
                         <input type="text" name="name" class="form-control" placeholder="应用名称" required>
