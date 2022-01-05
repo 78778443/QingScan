@@ -15,13 +15,13 @@ services:
   qingscan:
     image: registry.cn-beijing.aliyuncs.com/daxia/qingscan:20211231_01
     container_name: qingscan
-    #network_mode: "host"
+    network_mode: "host"
     volumes:
       - type: bind
         source: "./files"
         target: "/root/files"
-    ports:
-      - "8000:8000"
+    #    ports:
+    #      - "8000:8000"
     stdin_open: true
     tty: true
     command: /bin/bash -c "php /root/qingscan/safe.php"
