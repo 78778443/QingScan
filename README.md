@@ -55,7 +55,7 @@ QingScan尽最大能力保障各位安装的顺畅，但QingScan人力有限，�
 
 微信交流群
 
-![微信交流群](https://user-images.githubusercontent.com/8509054/148043450-1908a652-c288-47ef-9020-d65b07bb5a59.png)
+![微信交流群](https://user-images.githubusercontent.com/8509054/148176355-a4ad75ee-0dd9-401e-8663-30f36ea86479.png)
 
 
 公众号和个人微信
