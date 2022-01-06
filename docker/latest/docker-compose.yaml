@@ -6,10 +6,10 @@ services:
     environment:
       - MYSQL_ROOT_PASSWORD=123
       - TZ=Asia/Shanghai
-    volumes:
-      - type: bind
-        source: "./mysql"
-        target: "/var/lib/mysql"
+#    volumes:
+#      - type: bind
+#        source: "./mysql"
+#        target: "/var/lib/mysql"
     ports:
       - "33306:3306"
   qingscan:
