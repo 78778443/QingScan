@@ -144,7 +144,7 @@ class PluginModel extends BaseModel
     private static function getScanList(string $name, int $scanType)
     {
         $rids = [0];
-        $tempRids = Db::table("plugin_result")->where(['plugin_name' => $name, 'scan_type' => $scanType])->field('app_id')->select()->toArray();
+        $tempRids = Db::table("plugin_scan_log")->where(['plugin_name' => $name, 'scan_type' => $scanType])->field('app_id')->select()->toArray();
         $rids = array_merge($rids, array_column($tempRids, 'app_id'));
         if ($scanType == 0) {
             $list = Db::name('app')->whereNotIn('id', $rids)->where('is_delete', 0)->limit(1)->orderRand()->select()->toArray();
