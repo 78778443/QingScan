@@ -134,7 +134,7 @@ class PluginModel extends BaseModel
                     'scan_type' => $info['scan_type'],
                     'plugin_id' => $info['id'], 'plugin_name' => $info['name']];
 
-                Db::table("plugin_result")->extra('IGNORE')->insert($data);
+                Db::table("plugin_scan_log")->extra('IGNORE')->insert($data);
             }
 
             sleep(10);
