@@ -27,7 +27,7 @@
                     </tr>
                     <tr>
                         <td>项目ID</td>
-                        <td><?php echo $base['project_id'] ?></td>
+                        <td><?php echo $base['code_id'] ?></td>
                     </tr>
                     <tr>
                         <td>漏洞描述</td>
@@ -131,7 +131,7 @@
         <div class="col-md-3 ">
             <div class=" row tuchu">
                 <a class="btn btn-outline-primary"
-                   href="/index.php?s=code_check/bug_list&project_id=<?php echo $base['project_id'] ?>">返回列表</a>
+                   href="/index.php?s=code_check/bug_list&=<?php echo $base['code_id'] ?>">返回列表</a>
                 <a class="btn btn-outline-success" href="/index.php?s=code_check/bug_detail&id=<?php echo $base['id'] + 1 ?>">下一个</a>
                 <a class="btn btn-outline-info" href="/index.php?s=code_check/bug_detail&id=<?php echo $base['id'] - 1 ?>">上一个</a>
             </div>

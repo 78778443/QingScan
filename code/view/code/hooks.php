@@ -21,10 +21,10 @@
                     </select>
                 </div>
                 <div class="mb-3">
-                    <select class="form-select" name="project_id">
+                    <select class="form-select" name="code_id">
                         <option value="">项目列表</option>
                         <?php foreach ($projectList as $value) { ?>
-                            <option value="<?php echo $value ?>" <?php echo ($_GET['project_id'] ?? '' == $value) ? 'selected' : '' ?>><?php echo $projectArr[$value]['path'] ?></option>
+                            <option value="<?php echo $value ?>" <?php echo ($_GET['code_id'] ?? '' == $value) ? 'selected' : '' ?>><?php echo $projectArr[$value]['path'] ?></option>
                         <?php } ?>
                     </select>
                 </div>

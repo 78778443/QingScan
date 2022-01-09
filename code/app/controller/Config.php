@@ -118,7 +118,9 @@ class Config extends Common
                 $content = file_get_contents($sqlPath.'/'.$filename);
                 $sqlArr = explode(';',$content);
                 foreach ($sqlArr as $sql) {
-                    @Db::execute($sql.';');
+                    if ($sql) {
+                        @Db::execute($sql.';');
+                    }
                 }
                 file_put_contents($sqlPath.'/update.lock',$update_content);
             }

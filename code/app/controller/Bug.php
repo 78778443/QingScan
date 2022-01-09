@@ -21,7 +21,7 @@ class Bug extends Common
         if (!empty($search)) {
             $where[] = ['vt_name|affects_url','like',"%{$search}%"];
         }
-        $pid = getParam('project_id');
+        $pid = getParam('code_id');
         $level = getParam('level'); // 等级
         $Category = getParam('Category');   // 分类
         $filename = getParam('filename');   // 文件名

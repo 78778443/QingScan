@@ -33,18 +33,34 @@ class Code extends Common
         $data['list'] = $list->toArray()['data'];
 
         //查询数量
-        $data['num_arr'] = Db::table('fortify')->where($map)
-            ->field('project_id,count(project_id) as num')
-            ->group('project_id')->select()->toArray();
-        $data['num_arr'] = array_column($data['num_arr'], 'num', 'project_id');
-
+        $codeIds = array_column($data['list'], 'id');
+        $data = array_merge($data, CodeModel::getScanNum($codeIds));
         // 获取分页显示
         $data['page'] = $list->render();
 
         return View::fetch('list', $data);
     }
 
-    public function detail(Request $request)
+    public function rescan(Request $request)
+    {
+        $id = $request->param('id');
+        $map[] = ['id', '=', $id];
+
+        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
+            $map[] = ['user_id', '=', $this->userId];
+        }
+        Db::table('fortify')->where(['code_id' => $id])->delete();
+        Db::table('semgrep')->where(['code_id' => $id])->delete();
+        Db::table('code_webshell')->where(['code_id' => $id])->delete();
+        Db::table('code_composer')->where(['code_id' => $id])->delete();
+        Db::table('code_python')->where(['code_id' => $id])->delete();
+        Db::table('code_java')->where(['code_id' => $id])->delete();
+
+        return redirect($_SERVER['HTTP_REFERER']);
+
+    }
+
+    public function details(Request $request)
     {
 
         $codeId = $request->param('id');
@@ -52,18 +68,21 @@ class Code extends Common
         $map[] = ['id', '=', $codeId];
 
         $where1 = [];
-        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
-            //$where[] = ['user_id','=',$this->userId];
-            $map[] = ['user_id', '=', $this->userId];
-            $where1[] = ['user_id', '=', $this->userId];
-        }
-        $data['info'] = Db::name('app')->where($map)->find();
+//        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
+//            //$where[] = ['user_id','=',$this->userId];
+//            $map[] = ['user_id', '=', $this->userId];
+//            $where1[] = ['user_id', '=', $this->userId];
+//        }
+        $data['info'] = Db::name('code')->where($map)->find();
 
-        $data['fortify'] = Db::table('fortify')->where($where)->where($where1)->order("id", 'desc')->limit(0, 15)->select()->toArray();
-        $data['semgrep'] = Db::table('semgrep')->where($where)->where($where1)->order("id", 'desc')->limit(0, 15)->select()->toArray();
-        $data['java'] = Db::table('java')->where($where)->where($where1)->order("id", 'desc')->limit(0, 15)->select()->toArray();
-        $data['python'] = Db::table('python')->where($where)->where($where1)->order("id", 'desc')->limit(0, 15)->select()->toArray();
-        $data['php'] = Db::table('composer')->where($where)->where($where1)->order("id", 'desc')->limit(0, 15)->select()->toArray();
+        $data['fortify'] = Db::table('fortify')->where($where)->where($where1)->order("id", 'desc')->limit(0, 10)->select()->toArray();
+        $data['semgrep'] = Db::table('semgrep')->where($where)->where($where1)->order("id", 'desc')->limit(0, 10)->select()->toArray();
+        $data['hema'] = Db::table('code_webshell')->where($where)->where($where1)->order("id", 'desc')->limit(0, 10)->select()->toArray();
+        $data['java'] = Db::table('code_java')->where($where)->where($where1)->order("id", 'desc')->limit(0, 10)->select()->toArray();
+        $data['python'] = Db::table('code_python')->where($where)->where($where1)->order("id", 'desc')->limit(0, 10)->select()->toArray();
+        $data['php'] = Db::table('code_composer')->where($where)->where($where1)->order("id", 'desc')->limit(0, 10)->select()->toArray();
+        $projectArr = Db::table('code')->where($map)->select()->toArray();
+        $data['projectArr'] = array_column($projectArr, null, 'id');
 
         return View::fetch('details', $data);
     }
@@ -88,7 +107,7 @@ class Code extends Common
         $page = $request->param('page', 1);
         $search = $request->param('search', '');
         $pageSize = 25;
-        $pid = $request->param('project_id');
+        $pid = $request->param('code_id');
         $Folder = $request->param('Folder');
         $Category = $request->param('Category');
         $Primary_filename = $request->param('Primary_filename');
@@ -97,7 +116,7 @@ class Code extends Common
         //准备查询条件
         //$where = ['check_status' => 0];
         $where = ['is_delete' => 0];
-        $where = $pid ? array_merge($where, ['project_id' => $pid]) : $where;
+        $where = $pid ? array_merge($where, ['code_id' => $pid]) : $where;
         $where = $Primary_filename ? array_merge($where, ['Primary_filename' => $Primary_filename]) : $where;
         $where = !empty($Folder) ? array_merge($where, ['Folder' => $Folder]) : $where;
         $where = !empty($Category) ? array_merge($where, ['Category' => $Category]) : $where;
@@ -126,8 +145,8 @@ class Code extends Common
         $fileList = Db::table('fortify')->where("Folder != 'Low'")->where($where)->field('Primary_filename')->group('Primary_filename')->select()->toArray();
         $fileList = array_column($fileList, 'Primary_filename');
         //查询项目列表
-        $fortifyProjectList = Db::table('fortify')->where($where)->where("Folder != 'Low'")->field('project_id')->group('project_id')->select()->toArray();
-        $fortifyProjectList = array_column($fortifyProjectList, 'project_id');
+        $fortifyProjectList = Db::table('fortify')->where($where)->where("Folder != 'Low'")->field('code_id')->group('code_id')->select()->toArray();
+        $fortifyProjectList = array_column($fortifyProjectList, 'code_id');
         $fortifyProjectList = Db::table('code')->whereIn('id', $fortifyProjectList)->field('id,name')->select()->toArray();
         $fortifyProjectList = array_column($fortifyProjectList, 'name', 'id');
         $objData = $fortifyApi->order('id', 'desc')->paginate(['list_rows' => $pageSize, 'query' => request()->param()]);
@@ -242,7 +261,7 @@ class Code extends Common
         $where[] = ['is_delete', '=', 0];
         $pageSize = 25;
         $search = $request->param('search', '');
-        $pid = $request->param('project_id');
+        $pid = $request->param('code_id');
         $level = $request->param('level'); // 等级
         $Category = $request->param('Category');   // 分类
         $filename = $request->param('filename');   // 文件名
@@ -338,7 +357,7 @@ class Code extends Common
         $search = $request->param('search', '');
         $pageSize = 25;
         $where[] = ['is_delete', '=', 0];
-        $pid = $request->param('project_id');
+        $pid = $request->param('code_id');
         $level = $request->param('level'); // 等级
         $Category = $request->param('Category');   // 分类
         $filename = $request->param('filename');   // 文件名
@@ -403,7 +422,7 @@ class Code extends Common
     {
         $id = $request->param('id');
         $data['base'] = FortifyModel::getInfo($id);
-        $data['project'] = Db::table('code')->where('id', $data['base']['project_id'])->find();
+        $data['project'] = Db::table('code')->where('id', $data['base']['code_id'])->find();
 
 
         $data['Primary'] = json_decode($data['base']['Primary'], true);
@@ -459,20 +478,20 @@ class Code extends Common
     {
         $page = $request->param('page', 1);
         $author = $request->param('author', '');
-        $project_id = $request->param('project_id', '');
+        $code_id = $request->param('code_id', '');
         $pageSize = 25;
 
         $where = ['author' => ['>', 1]];
         $where = !empty($author) ? array_merge($where, ['code_check.author' => $author]) : $where;
-        $where = !empty($project_id) ? array_merge($where, ['code_check.project_id' => $project_id]) : $where;
+        $where = !empty($code_id) ? array_merge($where, ['code_check.code_id' => $code_id]) : $where;
 
         //查询提交人
         $authList = Db::table('code_check')->where($where)->group('author')->field('author')->select()->toArray();
         $authList = array_column($authList, 'author');
 
         //查询项目ID
-        $projectList = Db::table('code_check')->where($where)->group('project_id')->field('project_id')->select()->toArray();
-        $projectList = array_column($projectList, 'project_id');
+        $projectList = Db::table('code_check')->where($where)->group('code_id')->field('code_id')->select()->toArray();
+        $projectList = array_column($projectList, 'code_id');
 
         //项目列表
         $projectArr = Db::table('code')->field('id,ssh_url,name')->select()->toArray();
@@ -487,8 +506,8 @@ class Code extends Common
         ];
         $data['count'] = Db::table('code_check')->count();
         $data['list'] = Db::table('code_check')
-            ->LeftJoin('fortify', 'fortify.id = code_check.project_id')
-            ->LeftJoin('gitlab_project p', 'p.id = code_check.project_id')
+            ->LeftJoin('fortify', 'fortify.id = code_check.code_id')
+            ->LeftJoin('gitlab_project p', 'p.id = code_check.code_id')
             ->where($where)
             ->order('code_check.id', 'desc')
             ->field("code_check.*,p.name,p.web_url")
@@ -517,7 +536,7 @@ class Code extends Common
         $id = intval($request->param('id'));
 
         $detail = Db::table('code_check')
-                ->LeftJoin('gitlab_project p', 'p.id = code_check.project_id')
+                ->LeftJoin('gitlab_project p', 'p.id = code_check.code_id')
                 ->where(['code_check.id' => $id])
                 ->field("code_check.*,p.name,p.web_url")
                 ->select()->toArray()[0] ?? [];
@@ -571,7 +590,7 @@ class Code extends Common
 
         $where = ['hash' => $project_hash];
 
-        $project_id = Db::name('gitlab_project')->where($where)->value('id');
+        $code_id = Db::name('gitlab_project')->where($where)->value('id');
         $temp = preg_match_all("/\/tmp.*?\.php/", $content, $result);
         $tempStr = implode("\n", $result[0]);
         $bugFile = preg_replace("/\/tmp\/.*-\d{2}\//", "/", $tempStr);
@@ -587,7 +606,7 @@ class Code extends Common
             'author' => $author,
             'version' => $version,
             'project_hash' => $project_hash,
-            'project_id' => $project_id,
+            'code_id' => $code_id,
             'files' => $bugFile
         ];
 

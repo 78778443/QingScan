@@ -175,7 +175,7 @@ class Api extends BaseController
         if (!$this->isMyCode()) {
             return $this->apiReturn(0, [], '项目信息不存在');
         }
-        $project_id = getParam('code_id');
+        $code_id = getParam('code_id');
         $Category = getParam('category');
         $Folder = getParam('folder');
         $Kingdom = getParam('kingdom');
@@ -187,7 +187,7 @@ class Api extends BaseController
         $Source_filename = getParam('source_filename');
         $Primary_filename = getParam('primary_filename');
         $hash = getParam('hash');
-        $data['project_id'] = $project_id;
+        $data['code_id'] = $code_id;
         $data['Category'] = $Category;
         $data['Folder'] = $Folder;
         $data['Kingdom'] = $Kingdom;
@@ -202,7 +202,7 @@ class Api extends BaseController
         $data['user_id'] = $this->user_id;
         $data['create_time'] = date('Y-m-d H:i:s', time());
         if (Db::name('fortify')->insert($data)) {
-            $this->scanTime('code',$project_id,'scan_time');
+            $this->scanTime('code',$code_id,'scan_time');
             return $this->apiReturn(1, [], '数据写入成功');
         } else {
             addlog('fortify数据写入失败：'.json_encode($data));
@@ -216,7 +216,7 @@ class Api extends BaseController
             return $this->apiReturn(0, [], '项目信息不存在');
         }
         $check_id = getParam('check_id');
-        $project_id = getParam('code_id');
+        $code_id = getParam('code_id');
         $end_col = getParam('end_col');
         $end_line = getParam('end_line');
         $end_offset = getParam('end_offset');
@@ -231,7 +231,7 @@ class Api extends BaseController
         $start_line = getParam('start_line');
         $start_offset = getParam('start_offset');
         $data['check_id'] = $check_id;
-        $data['project_id'] = $project_id;
+        $data['code_id'] = $code_id;
         $data['end_col'] = $end_col;
         $data['end_line'] = $end_line;
         $data['end_offset'] = $end_offset;
@@ -248,7 +248,7 @@ class Api extends BaseController
         $data['user_id'] = $this->user_id;
         $data['create_time'] = date('Y-m-d H:i:s', time());
         if (Db::name('fortify')->insert($data)) {
-            $this->scanTime('code',$project_id,'semgrep_scan_time');
+            $this->scanTime('code',$code_id,'semgrep_scan_time');
             return $this->apiReturn(1, [], '数据写入成功');
         } else {
             addlog('semgrep数据写入失败：'.json_encode($data));

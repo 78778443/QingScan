@@ -10,7 +10,7 @@ $searchArr = [
         ['type' => 'text', 'name' => 'search', 'placeholder' => 'search'],
         ['type' => 'select', 'name' => 'level', 'options' => $dengjiArr, 'frist_option' => '危险等级'],
         ['type' => 'select', 'name' => 'Category', 'options' => $CategoryList, 'frist_option' => '类别'],
-        ['type' => 'select', 'name' => 'project_id', 'options' => $projectList, 'frist_option' => '项目列表'],
+        ['type' => 'select', 'name' => 'code_id', 'options' => $projectList, 'frist_option' => '项目列表'],
         ['type' => 'select', 'name' => 'check_status', 'options' => $check_status_list, 'frist_option' => '审计状态', 'frist_option_value' => -1],
     ],
     'btnArr' => [

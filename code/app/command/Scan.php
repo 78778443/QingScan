@@ -98,7 +98,7 @@ class Scan extends Command
         } elseif ($func == 'reptile') {
             UrlsModel::reptile();
         } elseif ($func == 'getProjectComposer') {
-            CodeModel::getProjectComposer();
+            CodeModel::code_php();
         } elseif ($func == 'code_python') {
             PythonLibraryModel::code_python();
         } elseif ($func == 'code_java') {

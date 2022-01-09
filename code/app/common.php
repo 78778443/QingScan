@@ -114,7 +114,7 @@ function getDirFileName($path): array
 function getParam($key, $default = null)
 {
 
-    $paramAll = array_merge($_GET, $_POST);
+    $paramAll = array_merge(getallheaders(), $_GET, $_POST);
     foreach ($paramAll as &$value) {
         if (is_string($value)) {
             $value = addslashes($value);
@@ -930,6 +930,157 @@ function getFilePath($dir, $filename, $level = 1)
     return $files;
 }
 
+function getUninstallPath($name)
+{
+    $app = \think\facade\App::getAppPath();
+    // 获取sql或sh中符号的数据
+    $sqlOrsh = [];
+    $sqlOrsh_path = $app . '/plugins/';
+    foreach (scandir($sqlOrsh_path) as $value) {
+        if ($value != '.' && $value != '..') {
+            $preg = "/^{$name}(.*?)/";
+            if (preg_match($preg, $value)) {
+                $sqlOrsh[] = $sqlOrsh_path . $value;
+            }
+        }
+    }
+
+    // 获取controller中符合的数据
+    $controller = [];
+    $controller_path = $app . 'controller/';
+    foreach (scandir($controller_path) as $value) {
+        if ($value != '.' && $value != '..') {
+            $preg = "/^{$name}(.*?)Plugin\.php/";
+            if (preg_match($preg, $value)) {
+                $controller[] = $controller_path . $value;
+            }
+        }
+    }
+    // 获取model中符合的数据
+    $model = [];
+    $model_path = $app . 'model/';
+    foreach (scandir($model_path) as $value) {
+        if ($value != '.' && $value != '..') {
+            $preg = "/^{$name}(.*?)PluginModel\.php/";
+            if (preg_match($preg, $value)) {
+                $model[] = $model_path . $value;
+            }
+        }
+    }
+    $name = cc_format($name);
+
+    // 获取view中符合的数据
+    $view = [];
+    $view_path = \think\facade\App::getRootPath() . 'view/';
+    foreach (scandir($view_path) as $value) {
+        if ($value != '.' && $value != '..') {
+            $preg = "/^{$name}(.*?)_plugin/";
+            if (preg_match($preg, cc_format($value))) {
+                $view[] = $view_path . $value;
+            }
+        }
+    }
+    // 获取tools工具中符合的数据
+    $tools = [];
+    //$tools_path = '/data/tools/plugins/';
+    $tools_path = $app . '../../tools/plugins/';
+    foreach (scandir($tools_path) as $value) {
+        if ($value != '.' && $value != '..') {
+            $preg = "/^{$name}(.*?)/";
+            if (preg_match($preg, cc_format($value))) {
+                $tools[] = $tools_path . $value;
+            }
+        }
+    }
+
+    return array_merge($sqlOrsh, $controller, $model, $view, $tools);
+}
+
+function deldir($path)
+{
+    //如果是目录则继续
+    if (is_dir($path)) {
+        //扫描一个文件夹内的所有文件夹和文件并返回数组
+        $p = scandir($path);
+        //如果 $p 中有两个以上的元素则说明当前 $path 不为空
+        if (count($p) > 2) {
+            foreach ($p as $val) {
+                //排除目录中的.和..
+                if ($val != "." && $val != "..") {
+                    //如果是目录则递归子目录，继续操作
+                    if (is_dir($path . $val)) {
+                        //子目录中操作删除文件夹和文件
+                        deldir($path . $val . '/');
+                    } else {
+                        //如果是文件直接删除
+                        @unlink($path . '/' . $val);
+                    }
+                }
+            }
+        }
+    }
+    //删除目录
+    return rmdir($path);
+}
+
+
+function downloadFile($url, $save_dir = '', $filename = '', $type = 0)
+{
+    if (trim($save_dir) == '') {
+        $save_dir = './';
+    }
+    if (0 !== strrpos($save_dir, '/')) {
+        $save_dir .= '/';
+    }
+    //创建保存目录
+    if (!file_exists($save_dir) && !mkdir($save_dir, 0777, true)) {
+        return '保存目录创建失败';
+    }
+    //获取远程文件所采用的方法
+    $ch = curl_init();
+    $timeout = 5;
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
+    $content = curl_exec($ch);
+    //如果有异常，记录到日志当中
+    $curl_errno = curl_errno($ch);
+    if ($curl_errno > 0) {
+        return curl_error($ch);
+    }
+    curl_close($ch);
+    //文件大小
+    $fp2 = @fopen($save_dir . $filename, 'a');
+    fwrite($fp2, $content);
+    fclose($fp2);
+    unset($content, $url);
+    return true;
+}
+
+/*
+* $dirsrc 原目录
+* $dirto 目标目录
+*/
+function copydir($dirsrc, $dirto)
+{
+    if (!file_exists($dirto)) {
+        mkdir($dirto);
+    }
+    $dir = opendir($dirsrc);
+    while ($filename = readdir($dir)) {
+        if ($filename != "." && $filename != "..") {
+            $srcfile = $dirsrc . "/" . $filename; //原文件
+            $tofile = $dirto . "/" . $filename; //目标文件
+            if (is_dir($srcfile)) {
+                copydir($srcfile, $tofile); //递归处理所有子目录
+            } else {
+                //是文件就拷贝到目标目录
+                copy($srcfile, $tofile);
+            }
+        }
+    }
+}
+
 // 大写字母转"_"下划线
 function cc_format($name)
 {
@@ -1013,6 +1164,18 @@ function readCsv($uploadfile = '')
     return $data;
 }
 
+/**
+ * 获取code表信息
+ * @param int $id
+ * @return array|mixed|Db|\think\Model|null
+ * @throws \think\db\exception\DataNotFoundException
+ * @throws \think\db\exception\DbException
+ * @throws \think\db\exception\ModelNotFoundException
+ */
+function getCodeInfo(int $id)
+{
+    return Db::table("code")->where(['id' => $id])->find();
+}
 
 //转码
 function iconv_gbk_to_uft8($string)
@@ -1036,7 +1199,7 @@ function getScanStatus($appId, $pluginName, $scanType = 0)
         return "$pluginName 任务在{$result[1]['create_time']}扫描失败:{$result[1]['content']}";
     } elseif (count($result) == 2 && $result[1]['log_type'] == 1) {
         return "$pluginName 任务在{$result[1]['create_time']}扫描成功，但无有效结果:{$result[1]['content']}";
-    } else{
+    } else {
 //        var_dump($result);exit;
 
     }
