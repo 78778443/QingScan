@@ -1261,6 +1261,11 @@ INSERT INTO `system_zanzhu` VALUES (2, 'Maxx', 10, '2021-12-27', NULL);
 INSERT INTO `system_zanzhu` VALUES (3, '茜茜茜呀', 50, '2021-12-31', '谢谢师傅的工具');
 INSERT INTO `system_zanzhu` VALUES (4, 'Andy', 5, '2021-12-28', NULL);
 INSERT INTO `system_zanzhu` VALUES (5, 'tx', 50, '2021-12-30', NULL);
+INSERT INTO `system_zanzhu` VALUES (6, '缘分.', 28.88, '2022-01-03', NULL);
+INSERT INTO `system_zanzhu` VALUES (7, '缘分.', 20, '2022-01-03', NULL);
+INSERT INTO `system_zanzhu` VALUES (8, '鲸落', 20, '2022-01-06', '黑渊信息安全-鲸落');
+INSERT INTO `system_zanzhu` VALUES (9, '小小阳', 10, '2022-01-06', NULL);
+INSERT INTO `system_zanzhu` VALUES (10, '小孜然', 10, '2022-01-07', '国家网络安全的发展离不开每个人的努力。');
 
 -- ----------------------------
 -- Table structure for task_host_scan
