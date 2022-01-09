@@ -75,6 +75,12 @@
                         <td><?php echo $info['message'] ?></td>
                     </tr>
                 <?php } ?>
+                <tr>
+                    <th>总计金额</th>
+                    <th>---</th>
+                    <th><?php echo array_sum(array_column($zanzhu, 'amount')) ?>元</th>
+                    <th>感谢支持，QingScan会不断成长~</th>
+                </tr>
             </table>
             <img style="max-width:400px" src="http://oss.songboy.site/blog/20211231152624.png">
             <p>QingScan 的成长离不开大家的支持,如果你对QingScan感兴趣，不妨在GitHub上帮我们点个Star,

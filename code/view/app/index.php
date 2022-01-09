@@ -108,7 +108,7 @@
                     if (data.code) {
                         window.setTimeout(function(){
                             location.reload();
-                        },2000);
+                        },1000);
                     }
                 }
             });

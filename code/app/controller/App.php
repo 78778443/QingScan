@@ -22,7 +22,8 @@ class App extends Common
         processSleep(1);
     }
 
-    public function index(Request $request){
+    public function index(Request $request)
+    {
         $pageSize = 15;
         $page = $request->param('page', 1);
         $statusCode = $request->param('statuscode');
@@ -48,7 +49,7 @@ class App extends Common
         $data['serverArr'] = array_column($data['serverArr'], 'server');
         foreach ($data['list'] as &$v) {
             $v['is_waf'] = '否';
-            $wafw00f = Db::name('app_wafw00f')->where('app_id',$v['id'])->find();
+            $wafw00f = Db::name('app_wafw00f')->where('app_id', $v['id'])->find();
             if ($wafw00f && $wafw00f['detected']) {
                 $v['is_waf'] = '是';
             }
@@ -56,6 +57,11 @@ class App extends Common
                 $v['is_intranet'] = '是';
             } else {
                 $v['is_intranet'] = '否';
+            }
+            if ($v['status'] == 1) {
+                $v['status'] = '正常';
+            } else {
+                $v['status'] = '禁用';
             }
         }
         $data['pageSize'] = $pageSize;
@@ -145,7 +151,7 @@ class App extends Common
         if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
             $map[] = ['user_id', '=', $this->userId];
         }
-        $data['info'] = Db::name('app')->where(['id'=>$id])->find();
+        $data['info'] = Db::name('app')->where(['id' => $id])->find();
         $urlInfo = parse_url($data['info']['url']);
         $ip = gethostbyname($urlInfo['host']);
 
@@ -166,6 +172,7 @@ class App extends Common
         Db::table('urls')->where(['app_id' => $id])->delete();
         Db::table('urls_sqlmap')->where(['app_id' => $id])->delete();
         Db::table('xray')->where(['app_id' => $id])->delete();
+        Db::table('plugin_scan_log')->where(['app_id' => $id])->delete();
 
         if (Db::name('app')->where($map)->delete()) {
             return redirect($_SERVER['HTTP_REFERER']);
@@ -243,6 +250,7 @@ class App extends Common
         $ip = gethostbyname($urlInfo['host']);
         $data['host_port'] = Db::table('host_port')->where(['host' => $ip])->limit(0, 15)->select()->toArray();
         $data['host'] = Db::table('host')->where(['host' => $ip])->limit(0, 15)->select()->toArray();
+        $data['host_id'] = isset($data['host'][0]['id']) ? $data['host'][0]['id'] : 9999;
 
         return View::fetch('details', $data);
     }
@@ -265,7 +273,7 @@ class App extends Common
             'crawlergo_scan_time' => '2000-01-01 00:00:00',
             'vulmap_scan_time' => '2000-01-01 00:00:00',
         );
-        $data['info'] = Db::name('app')->where(['id'=>$id])->find();
+        $data['info'] = Db::name('app')->where(['id' => $id])->find();
         $urlInfo = parse_url($data['info']['url']);
         $ip = gethostbyname($urlInfo['host']);
 
@@ -295,7 +303,7 @@ class App extends Common
 
     public function start_agent(Request $request)
     {
-        $id = $request->param('id','','intval');
+        $id = $request->param('id', '', 'intval');
         $where[] = ['id', '=', $id];
         $where[] = ['is_delete', '=', 0];
         if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
@@ -319,11 +327,11 @@ class App extends Common
                 addlog("已强制终止xray代理模式:app_id = {$info['id']}");
             }
             $data = [
-                'xray_agent_port'=>0,
-                'agent_start_up'=>0,
-                'agent_time'=>date('Y-m-d H:i:s',time()),
+                'xray_agent_port' => 0,
+                'agent_start_up' => 0,
+                'agent_time' => date('Y-m-d H:i:s', time()),
             ];
-            Db::name('app')->where('id',$id)->update($data);
+            Db::name('app')->where('id', $id)->update($data);
 
             // 导入数据
             $filename = $agent . $info['id'] . '.json';
@@ -331,7 +339,7 @@ class App extends Common
                 return $this->apiReturn(1, [], "代理已关闭，数据导入失败");
             }
             $data = trim(file_get_contents($filename));
-            $data = ($data[strlen($data)-1] == ']') ? $data : "{$data}]";
+            $data = ($data[strlen($data) - 1] == ']') ? $data : "{$data}]";
             $data = json_decode($data, true);
             @unlink($filename);
             if (!$data) {
@@ -353,12 +361,12 @@ class App extends Common
             return $this->apiReturn(1, [], "代理已关闭，数据导入成功");
         } else { // 开启代理
             $port = rangeCrearePort();
-            if (!Db::name('app')->where('xray_agent_port',$port)->count('id')) {
+            if (!Db::name('app')->where('xray_agent_port', $port)->count('id')) {
                 $data = [
-                    'xray_agent_port'=>$port,
-                    'agent_time'=>date('Y-m-d H:i:s',time()),
+                    'xray_agent_port' => $port,
+                    'agent_time' => date('Y-m-d H:i:s', time()),
                 ];
-                Db::name('app')->where('id',$id)->update($data);
+                Db::name('app')->where('id', $id)->update($data);
 
                 return $this->apiReturn(1, [], "xray代理模式已开启，端口号：{$port}");
             } else {
@@ -368,7 +376,8 @@ class App extends Common
     }
 
     // 黑盒项目批量导入
-    public function batch_import(Request $request){
+    public function batch_import(Request $request)
+    {
         $file = $_FILES["file"]["tmp_name"];
         $result = $this->importExecl($file);
         if ($result['code'] == 0) {
@@ -377,7 +386,7 @@ class App extends Common
         $list = $result['data'];
         unset($list[0]);
         $temp_data = [];
-        foreach ($list as $k=>$v) {
+        foreach ($list as $k => $v) {
             $data['name'] = $v['A'];
             $data['url'] = $v['B'];
             $data['username'] = $v['C'];
@@ -390,7 +399,7 @@ class App extends Common
             $data['is_intranet'] = intval($v['J']);
 
             // 判断url是否已存在
-            if (Db::name('app')->where('url',$data['url'])->count('id')) {
+            if (Db::name('app')->where('url', $data['url'])->count('id')) {
                 $this->error("{$data['url']}地址已存在！");
             }
 
@@ -414,29 +423,30 @@ class App extends Common
         }
         if (Db::name('app')->insertAll($temp_data)) {
             $this->success('黑盒项目批量导入成功');
-        }else{
+        } else {
             $this->error('黑盒项目批量导入失败');
         }
     }
 
-    public function downloaAppTemplate(){
-        $file_dir = \think\facade\App::getRootPath().'public/static/';
+    public function downloaAppTemplate()
+    {
+        $file_dir = \think\facade\App::getRootPath() . 'public/static/';
         $file_name = '黑盒项目批量导入模版.xls';
         //以只读和二进制模式打开文件
-        $file = fopen ( $file_dir . $file_name, "rb" );
+        $file = fopen($file_dir . $file_name, "rb");
 
         //告诉浏览器这是一个文件流格式的文件
-        Header ( "Content-type: application/octet-stream" );
+        Header("Content-type: application/octet-stream");
         //请求范围的度量单位
-        Header ( "Accept-Ranges: bytes" );
+        Header("Accept-Ranges: bytes");
         //Content-Length是指定包含于请求或响应中数据的字节长度
-        Header ( "Accept-Length: " . filesize ( $file_dir . $file_name ) );
+        Header("Accept-Length: " . filesize($file_dir . $file_name));
         //用来告诉浏览器，文件是可以当做附件被下载，下载后的文件名称为$file_name该变量的值。
-        Header ( "Content-Disposition: attachment; filename=" . $file_name );
+        Header("Content-Disposition: attachment; filename=" . $file_name);
         ob_end_clean();
         //读取文件内容并直接输出到浏览器
-        echo fread ( $file, filesize ( $file_dir . $file_name ) );
-        fclose ( $file );
+        echo fread($file, filesize($file_dir . $file_name));
+        fclose($file);
         exit ();
     }
 }

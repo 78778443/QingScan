@@ -377,7 +377,7 @@ $typeArr = [
             <?php } ?>
             <?php if (empty($hydra)) { ?>
                 <tr>
-                    <td colspan="5" class="text-center"><?php echo getScanStatus($info['id'], 'sshScan'); ?></td>
+                    <td colspan="5" class="text-center"><?php echo getScanStatus($host_id, 'sshScan'); ?></td>
                 </tr>
             <?php } ?>
         </table>

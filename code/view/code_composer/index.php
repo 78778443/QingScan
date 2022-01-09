@@ -23,7 +23,6 @@ $searchArr = [
                     <th>version</th>
                     <th>source</th>
                     <th>authors</th>
-                    <th>keywords</th>
                     <th>时间</th>
                     <!--<th style="width: 200px">操作</th>-->
                 </tr>
@@ -34,9 +33,8 @@ $searchArr = [
                         <td><?php echo $value['code_name'] ?></td>
                         <td><?php echo $value['name'] ?></td>
                         <td><?php echo $value['version'] ?></td>
-                        <td><?php echo $value['source'] ?></td>
-                        <td><?php echo $value['authors'] ?></td>
-                        <td><?php echo $value['keywords'] ?></td>
+                        <td><pre><?php echo $value['source'] ?></pre></td>
+                        <td><pre><?php echo $value['require'] ?></pre></td>
                         <td><?php echo $value['create_time'] ?></td>
                         <!--<td>
                             <a href="<?php /*echo url('xray/del',['id'=>$value['id']])*/ ?>" class="btn btn-sm btn-outline-danger">删除</a>
