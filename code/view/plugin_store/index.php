@@ -33,15 +33,12 @@ $searchArr = [
                         <td><?php echo $value['status']?></td>
                         <td>
                             <?php if($value['is_install']){?>
-                                <a href="<?php echo url('plugin_store/install', ['id' => $value['id']]) ?>"
-                                   onClick="return confirm('确定要清空数据重新扫描吗?')"
-                                   class="btn btn-sm btn-outline-warning">禁用</a>
-                                <a href="<?php echo url('app/del', ['id' => $value['id']]) ?>"
-                                   onClick="return confirm('确定要删除吗?')"
+                                <a href="<?php echo url('uninstall', ['id' => $value['plugin_id']]) ?>"
+                                   onClick="return confirm('确定要卸载该插件吗?')"
                                    class="btn btn-sm btn-outline-danger">卸载</a>
                             <?php }else{?>
-                                <a href="<?php echo url('plugin_store/install', ['id' => $value['id']]) ?>"
-                                   class="btn btn-sm btn-outline-primary">安装</a>
+                                <a href="javascript:;<?php //echo url('plugin_store/install', ['id' => $value['id']])?>"
+                                   class="btn btn-sm btn-outline-primary" onclick="exchange_code(<?php echo $value['id']?>)">安装</a>
                             <?php }?>
                         </td>
                     </tr>
@@ -49,8 +46,8 @@ $searchArr = [
             </table>
         </div>
     </div>
-    <input type="hidden" id="to_examine_url" value="<?php echo url('to_examine/node') ?>">
-    {include file='public/to_examine' /}
+
     {include file='public/fenye' /}
+    {include file='plugin_store/exchange_code' /}
 </div>
 {include file='public/footer' /}

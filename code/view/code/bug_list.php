@@ -13,7 +13,7 @@ $searchArr = [
         ['type' => 'text', 'name' => 'search', 'placeholder' => "搜索的内容"],
         ['type' => 'select', 'name' => 'Folder', 'options' => $dengjiArr, 'frist_option' => '危险等级'],
         ['type' => 'select', 'name' => 'Category', 'options' => $CategoryList, 'frist_option' => '漏洞类别'],
-        ['type' => 'select', 'name' => 'project_id', 'options' => $fortifyProjectList, 'frist_option' => '项目列表'],
+        ['type' => 'select', 'name' => 'code_id', 'options' => $fortifyProjectList, 'frist_option' => '项目列表'],
         ['type' => 'select', 'name' => 'Primary_filename', 'options' => $fileList, 'frist_option' => '文件筛选'],
         ['type' => 'select', 'name' => 'check_status', 'options' => $check_status_list, 'frist_option' => '审计状态', 'frist_option_value' => -1],
     ]]; ?>
@@ -42,19 +42,19 @@ $searchArr = [
                         <span class="badge rounded-pill bg-<?php echo $dengjiArrColor[$value['Friority']] ?>"><?php echo $value['Friority'] ?></span>
                     </td>
                     <td title="<?php echo htmlentities($value['Source']['Snippet'] ?? '') ?>">
-                        <a href="<?php echo isset($projectArr[$value['project_id']]) ? $projectArr[$value['project_id']]['ssh_url'] : '' ?>/-/blob/master/<?php echo $value['Source']['FilePath'] ?? '' ?>"
+                        <a href="<?php echo isset($projectArr[$value['code_id']]) ? $projectArr[$value['code_id']]['ssh_url'] : '' ?>/-/blob/master/<?php echo $value['Source']['FilePath'] ?? '' ?>"
                            target="_blank">
                             <?php echo $value['Source']['FileName'] ?? '' ?>
                         </a>
                     </td>
                     <td title="<?php echo htmlentities($value['Primary']['Snippet']) ?>">
-                        <a href="<?php echo isset($projectArr[$value['project_id']]) ? $projectArr[$value['project_id']]['ssh_url'] : '' ?>/-/blob/master/<?php echo $value['Primary']['FilePath'] ?>"
+                        <a href="<?php echo isset($projectArr[$value['code_id']]) ? $projectArr[$value['code_id']]['ssh_url'] : '' ?>/-/blob/master/<?php echo $value['Primary']['FilePath'] ?>"
                            target="_blank">
                             <?php echo $value['Primary']['FileName'] ?>
                         </a>
                     </td>
-                    <td><a href="<?php echo U('code_check/bug_list', ['project_id' => $value['project_id']]) ?>">
-                            <?php echo isset($projectArr[$value['project_id']]) ? $projectArr[$value['project_id']]['name'] : '' ?></a>
+                    <td><a href="<?php echo U('code_check/bug_list', ['code_id' => $value['code_id']]) ?>">
+                            <?php echo isset($projectArr[$value['code_id']]) ? $projectArr[$value['code_id']]['name'] : '' ?></a>
                     </td>
                     <td><?php echo $value['create_time'] ?></td>
                     <td><select class="changCheckStatus form-select" data-id="<?php echo $value['id'] ?>">

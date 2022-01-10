@@ -85,44 +85,40 @@ class Config extends Common
     public function system_update()
     {
         $path = \think\facade\App::getRootPath() . '../';
-        $cmd = "cd {$path} && git pull";
-        $result = systemLog($cmd,false);
-        $result = implode("\n", $result);
-        $data['info'] = $result;
+        try {
+            $cmd = "cd {$path} && git pull";
+            $result = systemLog($cmd,false);
+            $result = implode("\n", $result);
+            $msg = '系统更新成功：'.$result;
 
-        // 更新sql语句
-        $sqlPath = $path . 'docker/data';
-        $fileNameList = getDirFileName($sqlPath);
-        unset($fileNameList[count($fileNameList) - 1]);
-        if (!empty($fileNameList)) {
-            $filepath = $fileNameList[0];
-            foreach ($fileNameList as $v) {
-                if ($filepath < $v) {
-                    $filepath = $v;
+            // 更新sql语句
+            $sqlPath = $path . 'docker/data';
+            $fileNameList = getDirFileName($sqlPath);
+            unset($fileNameList[count($fileNameList) - 1]);
+            unset($fileNameList[count($fileNameList) - 1]);
+            if (!empty($fileNameList)) {
+                $lock = $sqlPath.'/update.lock';
+                // 获取当前版本号
+                $version = file_get_contents($lock);
+                foreach ($fileNameList as $v) {
+                    $filename = substr($v,strripos($v,'/')+1,strlen($v));
+                    $newVersion = substr($filename,0,strripos($filename,'.'));
+                    if ($version < $newVersion) {
+                        $content = file_get_contents($sqlPath.'/'.$filename);
+                        $sqlArr = explode(';',$content);
+                        foreach ($sqlArr as $sql) {
+                            if ($sql) {
+                                Db::execute($sql.';');
+                            }
+                        }
+                        file_put_contents($lock,$newVersion);
+                    }
                 }
             }
-            $filename = explode('/',$filepath);
-            $filename = $filename[count($filename) - 1];
-            $update_file = $sqlPath.'/update.lock';
-            $update_content = $filename;
-            $is_update = true;// 是否需要更新
-            if (file_exists($update_file)) {    // 判断更新的版本是否大于已更新的版本
-                $update_filename = file_get_contents($update_file);
-                if ($filename > $update_filename) {
-                    $update_content = $filename;
-                } else {
-                    $is_update = false;
-                }
-            }
-            if ($is_update) {
-                $content = file_get_contents($sqlPath.'/'.$filename);
-                $sqlArr = explode(';',$content);
-                foreach ($sqlArr as $sql) {
-                    @Db::execute($sql.';');
-                }
-                file_put_contents($sqlPath.'/update.lock',$update_content);
-            }
+        } catch (\Exception $e) {
+            $msg = '系统更新失败：'.$e->getMessage();
         }
+        $data['info'] = $msg;
         return view('config/update', $data);
     }
 }

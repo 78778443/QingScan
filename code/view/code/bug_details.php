@@ -34,7 +34,7 @@
                             <div class="col-md-4">
                                 <dl>
                                     <dt>所属项目：</dt>
-                                    <dd><?php echo htmlentities($projectArr[$info['project_id']]['name']); ?></dd>
+                                    <dd><?php echo htmlentities($projectArr[$info['code_id']]['name']); ?></dd>
                                 </dl>
                                 <dl>
                                     <dt>审核状态：</dt>

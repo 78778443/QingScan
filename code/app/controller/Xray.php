@@ -18,7 +18,7 @@ class Xray extends Common
         $pageSize = 10;
         $where[] = ['is_delete','=',0];
         $search = getParam('search');
-        $pid = getParam('project_id');
+        $pid = getParam('code_id');
         $level = getParam('level'); // 等级
         $Category = getParam('Category');   // 分类
         $filename = getParam('filename');   // 文件名

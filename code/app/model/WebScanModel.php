@@ -184,6 +184,7 @@ class WebScanModel extends BaseModel
                 }
 
                 $data = json_decode(file_get_contents($pathArr['tool_result']), true);
+                $addr = [];
                 foreach ($data as $value) {
                     $newData = [
                         'app_id' => $val['id'],
@@ -196,9 +197,11 @@ class WebScanModel extends BaseModel
                         'user_id' => $user_id,
                         'poc' => $value['detail']['payload']
                     ];
+                    $addr[] = $newData;
                     echo "添加漏洞结果:" . json_encode($newData) . PHP_EOL;
                     XrayModel::addXray($newData);
                 }
+                addlog(["xray扫描数据写入成功:".json_encode($addr)]);
                 self::scanTime('app', $id, 'xray_scan_time');
 
                 PluginModel::addScanLog($val['id'], __METHOD__, 1);
@@ -472,7 +475,7 @@ class WebScanModel extends BaseModel
                 if ($data) {
                     Db::name('app_crawlergo')->insertAll($data);
                 }
-                PluginModel::addScanLog($v['id'], __METHOD__, 1);
+                PluginModel::addScanLog($val['id'], __METHOD__, 1);
             }
             sleep(120);
         }

@@ -90,20 +90,16 @@ function addOldData()
         echo " <a class=\"btn btn-lg btn-outline-success\" href='/' >导入数据成功!,进入首页</a>";
         file_put_contents('install.lock', '');
 
-        // 更新sql语句
+        // 更新版本号
         $sqlPath = '/root/qingscan/docker/data';
         $fileNameList = getDirFileName($sqlPath);
         unset($fileNameList[count($fileNameList) - 1]);
+        unset($fileNameList[count($fileNameList) - 1]);
         if (!empty($fileNameList)) {
             $filepath = $fileNameList[0];
-            foreach ($fileNameList as $v) {
-                if ($filepath < $v) {
-                    $filepath = $v;
-                }
-            }
-            $filename = explode('/',$filepath);
-            $update_content = $filename[count($filename) - 1];
-            file_put_contents($sqlPath.'/update.lock',$update_content);
+            $filename = substr($filepath,strripos($filepath,'/')+1,strlen($filepath));
+            $newVersion = substr($filename,0,strripos($filename,'.'));
+            file_put_contents($sqlPath.'/update.lock',$newVersion);
         }
     }
 }

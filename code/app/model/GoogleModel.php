@@ -95,7 +95,7 @@ class GoogleModel extends BaseModel
 
                 $icon = curl_get($v['url'] . '/favicon.ico');
                 $host = parse_url($v['url'])['host'];
-                $filename = "icon/{$host}.ico";
+                $filename = App::getRootPath()."public/icon/{$host}.ico";
                 file_exists(dirname($filename)) ? true : mkdir(dirname($filename), 0777, true);
                 file_put_contents($filename, $icon);
                 $data['icon'] = $filename;

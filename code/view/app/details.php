@@ -93,7 +93,9 @@ $typeArr = [
             <?php } ?>
             <?php if (empty($urls)) { ?>
                 <tr>
-                    <td colspan="7" class="text-center"><?php echo getScanStatus($info['id'], 'rad'); ?></td>
+                    <td colspan="7">
+                        <pre><?php echo getScanStatus($info['id'], 'rad'); ?></pre>
+                    </td>
                 </tr>
             <?php } ?>
         </table>
@@ -377,7 +379,7 @@ $typeArr = [
             <?php } ?>
             <?php if (empty($hydra)) { ?>
                 <tr>
-                    <td colspan="5" class="text-center"><?php echo getScanStatus($info['id'], 'sshScan'); ?></td>
+                    <td colspan="5" class="text-center"><?php echo getScanStatus($host_id, 'sshScan'); ?></td>
                 </tr>
             <?php } ?>
         </table>
