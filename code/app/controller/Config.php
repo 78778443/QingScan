@@ -95,9 +95,9 @@ class Config extends Common
             $sqlPath = $path . 'docker/data';
             $fileNameList = getDirFileName($sqlPath);
             unset($fileNameList[count($fileNameList) - 1]);
+            unset($fileNameList[count($fileNameList) - 1]);
             if (!empty($fileNameList)) {
                 $lock = $sqlPath.'/update.lock';
-
                 // 获取当前版本号
                 $version = file_get_contents($lock);
                 foreach ($fileNameList as $v) {
