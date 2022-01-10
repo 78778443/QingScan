@@ -49,6 +49,18 @@ class Code extends Common
         if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
             $map[] = ['user_id', '=', $this->userId];
         }
+
+        $array = [
+            'scan_time' => '2000-01-01 00:00:00',
+            'sonar_scan_time' => '2000-01-01 00:00:00',
+            'kunlun_scan_time' => '2000-01-01 00:00:00',
+            'semgrep_scan_time' => '2000-01-01 00:00:00',
+            'composer_scan_time' => '2000-01-01 00:00:00',
+            'java_scan_time' => '2000-01-01 00:00:00',
+            'python_scan_time' => '2000-01-01 00:00:00',
+            'webshell_scan_time' => '2000-01-01 00:00:00',
+        ];
+        Db::table('app')->where(['id' => $id])->save($array);
         Db::table('fortify')->where(['code_id' => $id])->delete();
         Db::table('semgrep')->where(['code_id' => $id])->delete();
         Db::table('code_webshell')->where(['code_id' => $id])->delete();
