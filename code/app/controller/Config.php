@@ -85,34 +85,38 @@ class Config extends Common
     public function system_update()
     {
         $path = \think\facade\App::getRootPath() . '../';
-        $cmd = "cd {$path} && git pull";
-        $result = systemLog($cmd,false);
-        $result = implode("\n", $result);
-        $data['info'] = $result;
+        try {
+            $cmd = "cd {$path} && git pull";
+            $result = systemLog($cmd,false);
+            $result = implode("\n", $result);
+            $data['info'] = $result;
 
-        // 更新sql语句
-        $sqlPath = $path . 'docker/data';
-        $fileNameList = getDirFileName($sqlPath);
-        unset($fileNameList[count($fileNameList) - 1]);
-        if (!empty($fileNameList)) {
-            $lock = $sqlPath.'/update.lock';
+            // 更新sql语句
+            $sqlPath = $path . 'docker/data';
+            $fileNameList = getDirFileName($sqlPath);
+            unset($fileNameList[count($fileNameList) - 1]);
+            if (!empty($fileNameList)) {
+                $lock = $sqlPath.'/update.lock';
 
-            // 获取当前版本号
-            $version = file_get_contents($lock);
-            foreach ($fileNameList as $v) {
-                $filename = substr($v,strripos($v,'/')+1,strlen($v));
-                $newVersion = substr($filename,0,strripos($filename,'.'));
-                if ($version < $newVersion) {
-                    $content = file_get_contents($sqlPath.'/'.$filename);
-                    $sqlArr = explode(';',$content);
-                    foreach ($sqlArr as $sql) {
-                        if ($sql) {
-                            @Db::execute($sql.';');
+                // 获取当前版本号
+                $version = file_get_contents($lock);
+                foreach ($fileNameList as $v) {
+                    $filename = substr($v,strripos($v,'/')+1,strlen($v));
+                    $newVersion = substr($filename,0,strripos($filename,'.'));
+                    if ($version < $newVersion) {
+                        $content = file_get_contents($sqlPath.'/'.$filename);
+                        $sqlArr = explode(';',$content);
+                        foreach ($sqlArr as $sql) {
+                            if ($sql) {
+                                Db::execute($sql.';');
+                            }
                         }
+                        file_put_contents($lock,$newVersion);
                     }
-                    file_put_contents($lock,$newVersion);
                 }
             }
+        } catch (\Exception $e) {
+            $data['info'] = $e->getMessage();
         }
         return view('config/update', $data);
     }
