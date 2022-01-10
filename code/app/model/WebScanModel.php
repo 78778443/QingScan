@@ -475,7 +475,7 @@ class WebScanModel extends BaseModel
                 if ($data) {
                     Db::name('app_crawlergo')->insertAll($data);
                 }
-                PluginModel::addScanLog($v['id'], __METHOD__, 1);
+                PluginModel::addScanLog($val['id'], __METHOD__, 1);
             }
             sleep(120);
         }
