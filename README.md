@@ -9,6 +9,7 @@ QingScan 是一款聚合扫描器，本身不生产安全扫描功能，但会�
 - 码云地址：https://gitee.com/songboy/QingScan
 - 详细文档：http://wiki.qingscan.songboy.site
 - 哔哩哔哩：https://space.bilibili.com/437273065
+- 官网地址：http://qingscan.songboy.site/
 
 
 ## 在线演示
@@ -35,6 +36,7 @@ QingScan尽最大能力保障各位安装的顺畅，但QingScan人力有限，�
 如果在安装的过程中遇到比较麻烦的问题，也可以联系我们的工程师远程协助帮你解决问题(需淘宝下单`2.88`元人民币),下单后主动添加群里`婷婷的橙子`为好友，并将向日葵的ID和验证码发给她。
 
 淘宝链接地址：https://item.taobao.com/item.htm?spm=a2126o.success.0.0.5e484831UkSn6H&id=666295567386&mt=
+![QingScan 远程协助安装二维码](https://user-images.githubusercontent.com/8509054/148786361-9bc7abd8-1db4-4b83-86c3-eaa6f1656d10.png)
 
 
 ## 靶场系统
@@ -53,14 +55,8 @@ QingScan尽最大能力保障各位安装的顺畅，但QingScan人力有限，�
 
 ## 联系我
 
-在使用过程中有任何问题，可以通过微信、钉钉、QQ 联系我们
-
-![微信交流群](https://user-images.githubusercontent.com/8509054/148176355-a4ad75ee-0dd9-401e-8663-30f36ea86479.png)
-
-
-公众号和个人微信
-![公众号和个人微信](https://user-images.githubusercontent.com/8509054/148171505-b9acd7d3-f48f-44b6-9967-2aa062e61ede.jpg)
-
+在使用过程中有任何问题，可以通过公众号、微信、微信群联系
+![image](https://user-images.githubusercontent.com/8509054/148784847-d142f7cc-510c-477c-9176-ecdf6e49ad12.png)
 
 
 ## 功能展示
@@ -85,7 +81,9 @@ QingScan尽最大能力保障各位安装的顺畅，但QingScan人力有限，�
 
 如您在使用本工具的过程中存在任何非法行为，您需自行承担相应后果，我们将不承担任何法律及连带责任。
 
-在使用本工具前，请您务必审慎阅读、充分理解各条款内容，限制、免责条款或者其他涉及您重大权益的条款可能会以加粗、加下划线等形式提示您重点注意。 除非您已充分阅读、完全理解并接受本协议所有条款，否则，请您不要使用本工具。您的使用行为或者您以其他任何明示或者默示方式表示接受本协议的，即视为您已阅读并同意本协议的约束。
+在使用本工具前，请您务必审慎阅读、充分理解各条款内容，限制、免责条款或者其他涉及您重大权益的条款可能会以加粗、加下划线等形式提示您重点注意。
+
+除非您已充分阅读、完全理解并接受本协议所有条款，否则，请您不要使用本工具。您的使用行为或者您以其他任何明示或者默示方式表示接受本协议的，即视为您已阅读并同意本协议的约束。
 
 ## 捐赠打赏
 
@@ -95,5 +93,4 @@ QingScan的迭代开发离不开每一位用户的支持，如果你觉得QingSc
 
 
 ## Stargazers
-
 [![Stargazers over time](https://starchart.cc/78778443/QingScan.svg?v211231)](https://github.com/78778443/QingScan)
