@@ -230,7 +230,10 @@ function downCode($codePath, $prName, $codeUrl, $is_private = 0, $username = '',
 
 function cleanString($string)
 {
-    $string = preg_replace("/[^a-z0-9]/i", "", $string);
+    $string = strtolower($string);
+    $string = preg_replace("/[^a-z0-9A-Z]/i", "", $string);
+
+    $string = empty($string) ? md5($string) : $string;
 
     return $string;
 }

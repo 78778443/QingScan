@@ -60,7 +60,7 @@ class Code extends Common
             'python_scan_time' => '2000-01-01 00:00:00',
             'webshell_scan_time' => '2000-01-01 00:00:00',
         ];
-        Db::table('app')->where(['id' => $id])->save($array);
+        Db::table('code')->where(['id' => $id])->save($array);
         Db::table('fortify')->where(['code_id' => $id])->delete();
         Db::table('semgrep')->where(['code_id' => $id])->delete();
         Db::table('code_webshell')->where(['code_id' => $id])->delete();

@@ -35,7 +35,7 @@ class OneForAllModel extends BaseModel
                 $filename = $file_path.$domain.'.csv';
                 if (!file_exists($filename)) {
                     PluginModel::addScanLog($v['id'], __METHOD__, 2);
-                    addlog(["文件不存在:{$filename}"]);
+                    addlog(["OneForAll子域名扫描结果，文件不存在:{$filename}"]);
                     AppModel::updateScanTime($v['id'],'subdomain_scan_time');
                     continue;
                 }
@@ -56,7 +56,7 @@ class OneForAllModel extends BaseModel
                     AppModel::updateScanTime($v['id'],'subdomain_scan_time');
                     @unlink($filename);
                 } else {
-                    addlog(["内容获取失败:{$filename}"]);
+                    addlog(["OneForAll子域名扫描,内容获取失败:{$filename}"]);
                 }
                 PluginModel::addScanLog($v['id'], __METHOD__, 1);
             }

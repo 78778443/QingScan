@@ -168,19 +168,21 @@ class WebScanModel extends BaseModel
                     $result = [];
                     execLog($cmd, $result);
                     $result = implode("\n", $result);
-                    addlog(["漏洞扫描结束", $id, $url, $cmd, base64_encode($result)]);
+                    addlog(["xray漏洞扫描结束", $id, $url, $cmd, base64_encode($result)]);
                     $result = file_put_contents($pathArr['cmd_result'], $result);
                     if ($result == false) {
-                        addlog(["写入执行结果失败", base64_encode($pathArr['cmd_result'])]);
+                        addlog(["xray写入执行结果失败", base64_encode($pathArr['cmd_result'])]);
+                        continue;
                     }
                 } else {
                     addlog("xray文件已存在:{$pathArr['tool_result']}");
                 }
                 //如果结果文件不存在
                 if (file_exists($pathArr['tool_result']) == false) {
-                    addlog("文件不存在:{$pathArr['tool_result']}  ,扫描URL失败: {$url}");
+                    addlog("xray扫描结果文件不存在:{$pathArr['tool_result']},扫描URL失败: {$url}");
                     Db::table('app')->where(['id' => $id])->save(['xray_scan_time' => date('2048-m-d H:i:s')]);
                     PluginModel::addScanLog($val['id'], __METHOD__, 2);
+                    continue;
                 }
 
                 $data = json_decode(file_get_contents($pathArr['tool_result']), true);
@@ -198,7 +200,7 @@ class WebScanModel extends BaseModel
                         'poc' => $value['detail']['payload']
                     ];
                     $addr[] = $newData;
-                    echo "添加漏洞结果:" . json_encode($newData) . PHP_EOL;
+                    echo "xray添加漏洞结果:" . json_encode($newData) . PHP_EOL;
                     XrayModel::addXray($newData);
                 }
                 addlog(["xray扫描数据写入成功:".json_encode($addr)]);
