@@ -36,6 +36,7 @@ QingScan尽最大能力保障各位安装的顺畅，但QingScan人力有限，�
 如果在安装的过程中遇到比较麻烦的问题，也可以联系我们的工程师远程协助帮你解决问题(需淘宝下单`2.88`元人民币),下单后主动添加群里`婷婷的橙子`为好友，并将向日葵的ID和验证码发给她。
 
 淘宝链接地址：https://item.taobao.com/item.htm?spm=a2126o.success.0.0.5e484831UkSn6H&id=666295567386&mt=
+![QingScan 远程协助安装二维码](https://user-images.githubusercontent.com/8509054/148786361-9bc7abd8-1db4-4b83-86c3-eaa6f1656d10.png)
 
 
 ## 靶场系统
