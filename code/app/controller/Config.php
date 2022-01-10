@@ -89,7 +89,7 @@ class Config extends Common
             $cmd = "cd {$path} && git pull";
             $result = systemLog($cmd,false);
             $result = implode("\n", $result);
-            $data['info'] = $result;
+            $msg = '系统更新成功：'.$result;
 
             // 更新sql语句
             $sqlPath = $path . 'docker/data';
@@ -116,8 +116,9 @@ class Config extends Common
                 }
             }
         } catch (\Exception $e) {
-            $data['info'] = $e->getMessage();
+            $msg = '系统更新失败：'.$e->getMessage();
         }
+        $data['info'] = $msg;
         return view('config/update', $data);
     }
 }
