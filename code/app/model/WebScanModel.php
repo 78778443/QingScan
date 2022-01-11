@@ -336,7 +336,7 @@ class WebScanModel extends BaseModel
                 while (!feof($file)) {
                     $result = fgets($file);
                     if (empty($result)) {
-                        addlog(["nuclei 扫描目标结果为空", $v['url']]);
+                        addlog(["nuclei扫描目标结果为空", $v['url']]);
                         continue;
                     }
                     $arr = json_decode($result, true);
@@ -367,7 +367,7 @@ class WebScanModel extends BaseModel
                 fclose($file);
                 if (!$temp) {
                     PluginModel::addScanLog($v['id'], __METHOD__, 2);
-                    addlog(["nuclei扫描数据写入失败:{$v['url']}"]);
+                    addlog(["nuclei扫描数据写入失败:{$v['url']}，数据结构：".json_encode($temp)]);
                     continue;
                 }
                 addlog(["nuclei扫描数据写入成功:" . json_encode($temp)]);
