@@ -366,8 +366,8 @@ class WebScanModel extends BaseModel
                 }
                 fclose($file);
                 if (!$temp) {
-                    PluginModel::addScanLog($v['id'], __METHOD__, 2);
-                    addlog(["nuclei扫描数据写入失败:{$v['url']}，数据结构：".json_encode($temp)]);
+                    PluginModel::addScanLog($v['id'], __METHOD__, 1);
+                    addlog(["nuclei扫描未发现漏洞:{$v['url']}，数据结构：".json_encode($temp)]);
                     continue;
                 }
                 addlog(["nuclei扫描数据写入成功:" . json_encode($temp)]);
