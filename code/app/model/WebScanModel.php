@@ -181,7 +181,7 @@ class WebScanModel extends BaseModel
                 if (file_exists($pathArr['tool_result']) == false) {
                     addlog("xray扫描结果文件不存在:{$pathArr['tool_result']},扫描URL失败: {$url}");
                     Db::table('app')->where(['id' => $id])->save(['xray_scan_time' => date('2048-m-d H:i:s')]);
-                    PluginModel::addScanLog($val['id'], __METHOD__, 2);
+                    PluginModel::addScanLog($val['id'], __METHOD__, 1);
                     continue;
                 }
 

@@ -153,7 +153,7 @@ class App extends Common
         }
         $data['info'] = Db::name('app')->where(['id' => $id])->find();
         $urlInfo = parse_url($data['info']['url']);
-        $ip = gethostbyname($urlInfo['host']);
+        $ip = gethostbyname($urlInfo['host'] ?? '127.0.0.1');
 
         Db::table('app_info')->where(['app_id' => $id])->delete();
         Db::table('app_crawlergo')->where(['app_id' => $id])->delete();
