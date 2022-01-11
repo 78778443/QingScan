@@ -155,6 +155,7 @@ class App extends Common
         $urlInfo = parse_url($data['info']['url']);
         $ip = gethostbyname($urlInfo['host']);
 
+        Db::table('app_info')->where(['app_id' => $id])->delete();
         Db::table('app_crawlergo')->where(['app_id' => $id])->delete();
         Db::table('app_dirmap')->where(['app_id' => $id])->delete();
         Db::table('app_nuclei')->where(['app_id' => $id])->delete();
@@ -278,6 +279,7 @@ class App extends Common
         $ip = gethostbyname($urlInfo['host']);
 
         Db::table('app')->where(['id' => $id])->save($array);
+        Db::table('app_info')->where(['app_id' => $id])->delete();
         Db::table('app_crawlergo')->where(['app_id' => $id])->delete();
         Db::table('app_dirmap')->where(['app_id' => $id])->delete();
         Db::table('app_nuclei')->where(['app_id' => $id])->delete();
