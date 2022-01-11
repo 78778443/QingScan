@@ -152,10 +152,13 @@ class App extends Common
             $map[] = ['user_id', '=', $this->userId];
         }
         $data['info'] = Db::name('app')->where(['id' => $id])->find();
-        $urlInfo = parse_url($data['info']['url']);
-        $ip = gethostbyname($urlInfo['host'] ?? '127.0.0.1');
-
-        Db::table('app_info')->where(['app_id' => $id])->delete();
+        if (!empty($data)) {
+            $urlInfo = parse_url($data['info']['url']);
+            $ip = gethostbyname($urlInfo['host'] ?? '127.0.0.1');
+            Db::table('app_info')->where(['app_id' => $id])->delete();
+            Db::table('host')->where(['host' => $ip])->delete();
+            Db::table('host_port')->where(['host' => $ip])->delete();
+        }
         Db::table('app_crawlergo')->where(['app_id' => $id])->delete();
         Db::table('app_dirmap')->where(['app_id' => $id])->delete();
         Db::table('app_nuclei')->where(['app_id' => $id])->delete();
@@ -165,9 +168,7 @@ class App extends Common
         Db::table('app_whatweb_poc')->where(['app_id' => $id])->delete();
         Db::table('app_xray_agent_port')->where(['app_id' => $id])->delete();
         Db::table('awvs_app')->where(['app_id' => $id])->delete();
-        Db::table('host')->where(['host' => $ip])->delete();
         Db::table('host_hydra_scan_details')->where(['app_id' => $id])->delete();
-        Db::table('host_port')->where(['host' => $ip])->delete();
         Db::table('one_for_all')->where(['app_id' => $id])->delete();
         Db::table('plugin_scan_log')->where(['app_id' => $id])->delete();
         Db::table('urls')->where(['app_id' => $id])->delete();
@@ -233,6 +234,9 @@ class App extends Common
             $where1[] = ['user_id', '=', $this->userId];
         }
         $data['info'] = Db::name('app')->where($map)->find();
+        if (empty($data['info'])) {
+            return redirect($_SERVER['HTTP_REFERER'] ?? U('index/index'));
+        }
         $data['whatweb'] = Db::table('app_whatweb')->where($where)->where($where1)->order("id", 'desc')->limit(0, 15)->select()->toArray();
         $data['oneforall'] = Db::table('one_for_all')->where($where)->order("id", 'desc')->limit(0, 15)->select()->toArray();
         $data['hydra'] = Db::table('host_hydra_scan_details')->where($where)->order("id", 'desc')->limit(0, 15)->select()->toArray();
