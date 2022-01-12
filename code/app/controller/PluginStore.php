@@ -104,6 +104,9 @@ class PluginStore extends Common
                     copydir($temp_plugin_path.'controller',$app.'controller');
                     copydir($temp_plugin_path.'model',$app.'model');
                     copydir($temp_plugin_path.'view',$app.'../view');
+                    if (!file_exists($app.'../../tools/plugins/')) {
+                        mkdir($app.'../../tools/plugins/', 0777, true);
+                    }
                     copydir($temp_plugin_path.'tools',$app.'../../tools/plugins/'.$info['name']);
 
                     // 删除压缩包目录文件
