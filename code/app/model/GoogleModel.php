@@ -52,14 +52,14 @@ class GoogleModel extends BaseModel
             processSleep(1);
             $api = Db::name('app')->whereTime('screenshot_time', '<=', date('Y-m-d H:i:s', time() - (86400 * 15)));
             $list = $api->where('is_delete', 0)->orderRand()->limit(3)->field('id,url')->select()->toArray();
-
             foreach ($list as $v) {
+                //更新扫描时间
+                self::updateScanTime($v['id']);
+
                 PluginModel::addScanLog($v['id'], __METHOD__, 0);
                 if (empty($v['url'])) {
                     PluginModel::addScanLog($v['id'], __METHOD__, 2);
                     addlog(["获取APP基础信息失败，没有找到URL", $v]);
-                    //更新扫描时间
-                    self::updateScanTime($v['id']);
                     continue;
                 }
 
@@ -67,8 +67,6 @@ class GoogleModel extends BaseModel
                 if (empty($result)) {
                     PluginModel::addScanLog($v['id'], __METHOD__, 2);
                     addlog(["获取APP基础信息失败，没有获得头信息", $v['url']]);
-                    //更新扫描时间
-                    self::updateScanTime($v['id']);
                     continue;
                 }
                 $data['statuscode'] = $result['code'];
@@ -79,7 +77,6 @@ class GoogleModel extends BaseModel
                 if (empty($htmlHeaders)) {
                     PluginModel::addScanLog($v['id'], __METHOD__,2);
                     addlog(["未匹配到head信息", $v['url'], $content]);
-                    self::updateScanTime($v['id']);
                     continue;
                 }
                 // 取得 <title> 中的文字
@@ -87,7 +84,6 @@ class GoogleModel extends BaseModel
                 if (empty($htmlTitles)) {
                     PluginModel::addScanLog($v['id'], __METHOD__, 2);
                     addlog(["未匹配到title信息", $v['url'], $htmlTitles]);
-                    self::updateScanTime($v['id']);
                     continue;
                 }
                 $title = $htmlTitles[1];
@@ -110,7 +106,6 @@ class GoogleModel extends BaseModel
 
                 //更新扫描时间
                 PluginModel::addScanLog($v['id'], __METHOD__, 1);
-                self::updateScanTime($v['id']);
             }
             echo "Google浏览器获取基础信息完成，休息30秒" . PHP_EOL;
             sleep(30);
