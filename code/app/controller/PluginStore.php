@@ -100,6 +100,9 @@ class PluginStore extends Common
                         }
                     }
                     // 移动相应的文件
+                    if (!file_exists($app.'plugins/')) {
+                        mkdir($app.'plugins/', 0777, true);
+                    }
                     copydir($temp_plugin_path.'sqlOrsh',$app.'plugins/'.$info['name']);
                     copydir($temp_plugin_path.'controller',$app.'controller');
                     copydir($temp_plugin_path.'model',$app.'model');
