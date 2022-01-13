@@ -86,7 +86,7 @@ class Config extends Common
     {
         $path = \think\facade\App::getRootPath() . '../';
         try {
-            $cmd = "cd {$path} && git config --global user.email 'you@example.com' && git config --global user.name 'Your Name' git pull";
+            $cmd = "cd {$path} && git config --global user.email 'you@example.com' && git config --global user.name 'Your Name' && git pull";
             $result = systemLog($cmd,false);
             $result = implode("\n", $result);
             $msg = '系统更新成功：'.$result;
