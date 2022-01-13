@@ -40,7 +40,11 @@ class AppWafw00fModel extends BaseModel
                     'manufacturer' => $result[0]['manufacturer'],
                     'create_time' => date('Y-m-d H:i:s', time()),
                 ];
-                Db::name('app_wafw00f')->insert($data);
+                if (Db::name('app_wafw00f')->insert($data)) {
+                    addlog(["wafw00f扫描结果数据写入成功：".json_encode($data)]);
+                } else {
+                    addlog(["wafw00f扫描结果数据写入失败：".json_encode($data)]);
+                }
                 @unlink($result_path);
                 PluginModel::addScanLog($v['id'], __METHOD__, 1);
             }
