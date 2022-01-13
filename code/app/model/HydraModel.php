@@ -37,13 +37,13 @@ class HydraModel extends BaseModel
                         Db::name('host_hydra_scan_details')->insertAll($dataAll);
                     } else {
                         PluginModel::addScanLog($v['id'], __METHOD__, 2,1);
-                        addlog(["文件内容格式错误：{$filename}"]);
+                        addlog(["hydra文件内容格式错误：{$filename}"]);
                         self::scanTime('host',$v['id'],'hydra_scan_time');
                     }
                     @unlink($filename);
                 } else {
                     PluginModel::addScanLog($v['id'], __METHOD__, 2,1);
-                    addlog(["文件内容获取失败：{$filename}"]);
+                    addlog(["hydra文件内容获取失败：{$filename}"]);
                     self::scanTime('host',$v['id'],'hydra_scan_time');
                 }
                 PluginModel::addScanLog($v['id'], __METHOD__, 1,1);

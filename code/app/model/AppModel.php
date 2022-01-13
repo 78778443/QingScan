@@ -299,7 +299,7 @@ class AppModel extends BaseModel
                 systemLog($cmd);
                 if (file_exists($filename) == false) {
                     PluginModel::addScanLog($v['id'], __METHOD__, 2);
-                    addlog(["文件不存在:{$filename}"]);
+                    addlog(["whatweb扫描结果文件不存在:{$filename}"]);
                     self::updateScanTime($v['id'],'whatweb_scan_time');
                     continue;
                 }
@@ -333,7 +333,7 @@ class AppModel extends BaseModel
                     }
                 } else {
                     PluginModel::addScanLog($v['id'], __METHOD__, 2);
-                    addlog(["文件内容格式错误:{$filename}"]);
+                    addlog(["whatweb扫描结果文件内容格式错误:{$filename}"]);
                     self::updateScanTime($v['id'],'whatweb_scan_time');
                 }
                 @unlink($filename);

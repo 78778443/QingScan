@@ -29,7 +29,7 @@
                                href="<?php echo url($v['href']) ?>"><?php echo $v['title'] ?></a>
                         <?php } ?>
                         <?php if (isset($v['children'])) { ?>
-                            <ul class="dropdown-menu" aria-labelledby="dropdown08">
+                            <ul class="dropdown-menu" aria-labelledby="dropdown08" style="z-index: 999999;">
                                 <?php foreach ($v['children'] as $key => $val) { ?>
                                     <li>
                                         <a class="dropdown-item" href="<?php echo url($val['href']) ?>" style="<?php echo $href == $val['href']?'color:red':''?>">
