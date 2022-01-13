@@ -21,7 +21,7 @@ class PluginStore extends Common
         $result = curl_get($this->plugin_store_domain.'plugin_store/list');
         $list = json_decode($result,true);
         if (!isset($list['data'])) {
-            $this->error('获取插件信息失败');
+            $this->error('获取插件信息失败：'.$list['msg']);
         }
         $list = $list['data'];
         foreach ($list as &$v) {

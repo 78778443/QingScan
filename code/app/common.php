@@ -763,9 +763,12 @@ function curl_get($url)
     $data = curl_exec($curl);
 
     //如果有异常，记录到日志当中
-    $curl_errno = curl_errno($curl);
-    if (curl_errno($curl)) {
-        //return 'Curl error: ' . curl_error($curl);
+    //$curl_errno = curl_errno($curl);
+    if ($data === false) {
+        return json([
+            'code'=>1,
+            'msg'=>curl_error($curl)
+        ]);
     }
 
     curl_close($curl);
