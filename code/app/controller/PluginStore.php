@@ -18,6 +18,7 @@ class PluginStore extends Common
     }
 
     public function index(){
+        ini_set('max_execution_time', 0);
         $result = curl_get($this->plugin_store_domain.'plugin_store/list');
         $list = json_decode($result,true);
         if (!isset($list['data'])) {
