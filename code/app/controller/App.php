@@ -312,6 +312,79 @@ class App extends Common
     }
 
 
+    public function rescan(Request $request){
+        $id = $request->param('id');
+        $where[] = ['id','=',$id];
+        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
+            $where[] = ['user_id','=',$this->userId];
+        }
+        $info = Db::name('app')->where($where)->find();
+        if (!$info) {
+            $this->error('黑盒数据不存在');
+        }
+        $tools_name = $request->param('tools_name','');
+        switch ($tools_name) {
+            case 'rad':
+                Db::table('urls')->where(['app_id' => $id])->delete();
+                Db::table('urls_sqlmap')->where(['app_id' => $id])->delete();
+                break;
+            case 'crawlergo':
+                Db::table('app_crawlergo')->where(['app_id' => $id])->delete();
+                break;
+            case 'awvs':
+                Db::table('awvs_app')->where(['app_id' => $id])->delete();
+                break;
+            case 'nuclei':
+                Db::table('app_nuclei')->where(['app_id' => $id])->delete();
+                break;
+            case 'xray':
+                Db::table('xray')->where(['app_id' => $id])->delete();
+                break;
+            case 'google':
+                Db::table('app_info')->where(['app_id' => $id])->delete();
+                break;
+            case 'whatweb':
+                Db::table('app_whatweb')->where(['app_id' => $id])->delete();
+                Db::table('app_whatweb_poc')->where(['app_id' => $id])->delete();
+                break;
+            case 'sqlmap':
+                Db::table('urls_sqlmap')->where(['app_id' => $id])->delete();
+                break;
+            case 'oneforall':
+                Db::table('one_for_all')->where(['app_id' => $id])->delete();
+                break;
+            case 'hydra':
+                Db::table('host_hydra_scan_details')->where(['app_id' => $id])->delete();
+                break;
+            case 'dirmap':
+                Db::table('app_dirmap')->where(['app_id' => $id])->delete();
+                break;
+            case 'namp':
+                Db::table('host_port')->where(['app_id' => $id])->update(['service'=>null]);
+                Db::table('host_hydra_scan_details')->where(['app_id' => $id])->delete();
+                break;
+            case 'vulmap':
+                Db::table('app_vulmap')->where(['app_id' => $id])->delete();
+                break;
+            case 'host':
+                Db::table('host')->where(['app_id' => $id])->delete();
+                Db::table('host_port')->where(['app_id' => $id])->delete();
+                Db::table('host_hydra_scan_details')->where(['app_id' => $id])->delete();
+                break;
+            case 'dismap':
+                Db::table('app_dismap')->where(['app_id' => $id])->delete();
+                break;
+            case 'plugin':
+                Db::table('plugin_scan_log')->where(['app_id' => $id])->delete();
+                break;
+            default:
+                $this->error('参数错误');
+                break;
+        }
+        return redirect($_SERVER['HTTP_REFERER'] ?? '/');
+    }
+
+
     public function start_agent(Request $request)
     {
         $id = $request->param('id', '', 'intval');

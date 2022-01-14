@@ -62,6 +62,9 @@ $typeArr = [
     <div class="col-auto  tuchu_col">
         <h4 class="text-center">
             RAD(URL爬虫)
+            <a href="<?php echo url('app/rescan', ['id'=>$info['id'],'tools_name' => 'rad']) ?>"
+               onClick="return confirm('确定要清空该工具数据重新扫描吗?')"
+               class="btn btn-sm btn-outline-warning">重新扫描</a>
         </h4>
         <table class="table table-bordered table-hover table-striped">
             <thead>
@@ -93,9 +96,7 @@ $typeArr = [
             <?php } ?>
             <?php if (empty($urls)) { ?>
                 <tr>
-                    <td colspan="7">
-                        <pre><?php echo getScanStatus($info['id'], 'rad'); ?></pre>
-                    </td>
+                    <td colspan="7" class="text-center"><?php echo getScanStatus($info['id'], 'rad'); ?></td>
                 </tr>
             <?php } ?>
         </table>
@@ -103,6 +104,9 @@ $typeArr = [
     <div class="col-auto  tuchu_col">
         <h4 class="text-center">
             crawlergo(URL爬虫扫描)
+            <a href="<?php echo url('app/rescan', ['id'=>$info['id'],'tools_name' => 'crawlergo']) ?>"
+               onClick="return confirm('确定要清空该工具数据重新扫描吗?')"
+               class="btn btn-sm btn-outline-warning">重新扫描</a>
         </h4>
         <table class="table table-bordered table-hover table-striped">
             <thead>
@@ -130,6 +134,9 @@ $typeArr = [
     <div class="col-auto  tuchu_col">
         <h4 class="text-center">
             AWVS(综合扫描)
+            <a href="<?php echo url('app/rescan', ['id'=>$info['id'],'tools_name' => 'awvs']) ?>"
+               onClick="return confirm('确定要清空该工具数据重新扫描吗?')"
+               class="btn btn-sm btn-outline-warning">重新扫描</a>
         </h4>
         <table class="table table-bordered table-hover table-striped">
             <thead>
@@ -164,6 +171,9 @@ $typeArr = [
     <div class="col-auto  tuchu_col">
         <h4 class="text-center">
             nuclei(POC扫描)
+            <a href="<?php echo url('app/rescan', ['id'=>$info['id'],'tools_name' => 'nuclei']) ?>"
+               onClick="return confirm('确定要清空该工具数据重新扫描吗?')"
+               class="btn btn-sm btn-outline-warning">重新扫描</a>
         </h4>
         <table class="table table-bordered table-hover table-striped">
             <thead>
@@ -193,6 +203,9 @@ $typeArr = [
     <div class="col-auto  tuchu_col">
         <h4 class="text-center">
             XRAY(黑盒+POC)
+            <a href="<?php echo url('app/rescan', ['id'=>$info['id'],'tools_name' => 'xray']) ?>"
+               onClick="return confirm('确定要清空该工具数据重新扫描吗?')"
+               class="btn btn-sm btn-outline-warning">重新扫描</a>
         </h4>
         <table class="table table-bordered table-hover table-striped">
             <thead>
@@ -221,6 +234,9 @@ $typeArr = [
     <div class="col-auto  tuchu_col">
         <h4 class="text-center">
             app信息
+            <a href="<?php echo url('app/rescan', ['id'=>$info['id'],'tools_name' => 'google']) ?>"
+               onClick="return confirm('确定要清空该工具数据重新扫描吗?')"
+               class="btn btn-sm btn-outline-warning">重新扫描</a>
         </h4>
         <table class="table table-bordered table-hover table-striped">
             <thead>
@@ -229,7 +245,6 @@ $typeArr = [
                 <th>cms</th>
                 <th>server</th>
                 <th>statuscode</th>
-                <th>title</th>
                 <th>length</th>
                 <th>page_title</th>
                 <th>header</th>
@@ -244,11 +259,10 @@ $typeArr = [
                     <td><?php echo $value['cms'] ?></td>
                     <td><?php echo $value['server'] ?></td>
                     <td><?php echo $value['statuscode'] ?></td>
-                    <td class="AutoNewline"><?php echo $value['title'] ?></td>
                     <td><?php echo $value['length'] ?></td>
                     <td><?php echo $value['page_title'] ?></td>
                     <td><?php echo $value['header'] ?></td>
-                    <td><?php echo $value['icon'] ?></td>
+                    <td><img src="<?php echo str_replace('/root/qingscan/code/public/', "", $value['icon']) ?>"></td>
                     <td><?php echo $value['url_screenshot'] ?></td>
                     <!--                    <td>--><?php //echo $value['create_time'] ?><!--</td>-->
                 </tr>
@@ -262,7 +276,12 @@ $typeArr = [
     </div>
 
     <div class="col-auto  tuchu_col">
-        <h4 class="text-center"> whatweb（指纹识别）</h4>
+        <h4 class="text-center">
+            whatweb（指纹识别）
+            <a href="<?php echo url('app/rescan', ['id'=>$info['id'],'tools_name' => 'whatweb']) ?>"
+               onClick="return confirm('确定要清空该工具数据重新扫描吗?')"
+               class="btn btn-sm btn-outline-warning">重新扫描</a>
+        </h4>
         <table class="table table-bordered table-hover table-striped">
             <thead>
             <tr>
@@ -293,7 +312,12 @@ $typeArr = [
     </div>
 
     <div class="col-auto  tuchu_col">
-        <h4 class="text-center">sqlmap（SQL注入）</h4>
+        <h4 class="text-center">
+            sqlmap（SQL注入）
+            <a href="<?php echo url('app/rescan', ['id'=>$info['id'],'tools_name' => 'sqlmap']) ?>"
+               onClick="return confirm('确定要清空该工具数据重新扫描吗?')"
+               class="btn btn-sm btn-outline-warning">重新扫描</a>
+        </h4>
         <table class="table table-bordered table-hover table-striped">
             <thead>
             <tr>
@@ -328,7 +352,12 @@ $typeArr = [
     </div>
 
     <div class="col-auto  tuchu_col">
-        <h4 class="text-center">oneforall（子域名）</h4>
+        <h4 class="text-center">
+            oneforall（子域名）
+            <a href="<?php echo url('app/rescan', ['id'=>$info['id'],'tools_name' => 'oneforall']) ?>"
+               onClick="return confirm('确定要清空该工具数据重新扫描吗?')"
+               class="btn btn-sm btn-outline-warning">重新扫描</a>
+        </h4>
         <table class="table table-bordered table-hover table-striped">
             <thead>
             <tr>
@@ -357,7 +386,12 @@ $typeArr = [
     </div>
 
     <div class="col-auto  tuchu_col">
-        <h4 class="text-center">hydra（主机暴力破解）</h4>
+        <h4 class="text-center">
+            hydra（主机暴力破解）
+            <a href="<?php echo url('app/rescan', ['id'=>$info['id'],'tools_name' => 'hydra']) ?>"
+               onClick="return confirm('确定要清空该工具数据重新扫描吗?')"
+               class="btn btn-sm btn-outline-warning">重新扫描</a>
+        </h4>
         <table class="table table-bordered table-hover table-striped">
             <thead>
             <tr>
@@ -386,7 +420,12 @@ $typeArr = [
     </div>
 
     <div class="col-auto  tuchu_col">
-        <h4 class="text-center"> dirmap（扫后台）</h4>
+        <h4 class="text-center">
+            dirmap（扫后台）
+            <a href="<?php echo url('app/rescan', ['id'=>$info['id'],'tools_name' => 'dirmap']) ?>"
+               onClick="return confirm('确定要清空该工具数据重新扫描吗?')"
+               class="btn btn-sm btn-outline-warning">重新扫描</a>
+        </h4>
         <table class="table table-bordered table-hover table-striped">
             <thead>
             <tr>
@@ -416,7 +455,12 @@ $typeArr = [
         </table>
     </div>
     <div class="col-auto  tuchu_col">
-        <h4 class="text-center">Nmap列表</h4>
+        <h4 class="text-center">
+            Nmap列表
+            <a href="<?php echo url('app/rescan', ['id'=>$info['id'],'tools_name' => 'namp']) ?>"
+               onClick="return confirm('确定要清空该工具数据重新扫描吗?')"
+               class="btn btn-sm btn-outline-warning">重新扫描</a>
+        </h4>
         <table class="table table-bordered table-hover table-striped">
             <thead>
             <tr>
@@ -461,7 +505,12 @@ $typeArr = [
     </div>
 
     <div class="col-auto  tuchu_col">
-        <h4 class="text-center">vulmap信息</h4>
+        <h4 class="text-center">
+            vulmap信息
+            <a href="<?php echo url('app/rescan', ['id'=>$info['id'],'tools_name' => 'vulmap']) ?>"
+               onClick="return confirm('确定要清空该工具数据重新扫描吗?')"
+               class="btn btn-sm btn-outline-warning">重新扫描</a>
+        </h4>
         <table class="table table-bordered table-hover table-striped">
             <thead>
             <tr>
@@ -511,7 +560,12 @@ $typeArr = [
         </table>
     </div>
     <div class="col-auto  tuchu_col">
-        <h4 class="text-center">主机列表</h4>
+        <h4 class="text-center">
+            主机列表
+            <a href="<?php echo url('app/rescan', ['id'=>$info['id'],'tools_name' => 'host']) ?>"
+               onClick="return confirm('确定要清空该工具数据重新扫描吗?')"
+               class="btn btn-sm btn-outline-warning">重新扫描</a>
+        </h4>
         <table class="table table-bordered table-hover table-striped">
             <thead>
             <tr>
@@ -562,7 +616,12 @@ $typeArr = [
     </div>
 
     <div class="col-auto  tuchu_col">
-        <h4 class="text-center">DisMap（CMS指纹识别）</h4>
+        <h4 class="text-center">
+            DisMap（CMS指纹识别）
+            <a href="<?php echo url('app/rescan', ['id'=>$info['id'],'tools_name' => 'dismap']) ?>"
+               onClick="return confirm('确定要清空该工具数据重新扫描吗?')"
+               class="btn btn-sm btn-outline-warning">重新扫描</a>
+        </h4>
         <table class="table table-bordered table-hover table-striped">
             <thead>
             <tr>
@@ -585,5 +644,56 @@ $typeArr = [
             <?php } ?>
         </table>
     </div>
+
+    <div class="col-auto  tuchu_col">
+        <h4 class="text-center">
+            自定义插件
+            <a href="<?php echo url('app/rescan', ['id'=>$info['id'],'tools_name' => 'plugin']) ?>"
+               onClick="return confirm('确定要清空该工具数据重新扫描吗?')"
+               class="btn btn-sm btn-outline-warning">重新扫描</a>
+        </h4>
+        <table class="table table-bordered table-hover table-striped">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>所属项目</th>
+                <th>插件名称</th>
+            </tr>
+            </thead>
+            <?php foreach ($pluginScanLog as $value) { ?>
+                <tr>
+                    <td><?php echo $value['id'] ?></td>
+                    <td><?php echo $value['plugin_id'] ?></td>
+                    <td><pre><?php echo $value['content'] ?></pre></td>
+                </tr>
+            <?php } ?>
+            <?php if (empty($app_dismap)) { ?>
+                <tr>
+                    <td colspan="3" class="text-center">暂无数据</td>
+                </tr>
+            <?php } ?>
+        </table>
+    </div>
+    <!--    <div class="col-auto  tuchu_col">-->
+    <!--        <button id="download_pdf" class="btn btn-primary">导出为PDF</button>-->
+    <!--    </div>-->
 </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+    $("#download_pdf").click(function () {
+
+        //可以是$("#id或类选择器").html()或val()
+        var element = $(":root").html()
+
+        html2pdf().from(element).set({
+            margin: 1,
+            filename: 'resume.pdf',
+            html2canvas: {scale: 2},
+            jsPDF: {orientation: 'portrait', unit: 'in', format: 'letter', compressPDF: false}
+        }).save();
+
+
+    });
+</script>
 {include file='public/footer' /}
