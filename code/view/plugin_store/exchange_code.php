@@ -41,9 +41,9 @@
             success: function (data) {
                 alert(data.msg)
                 if (data.code == 1) {
-                    window.setTimeout(function () {
+                     window.setTimeout(function () {
                         location.reload();
-                    }, 1000)
+                     }, 1000)
                 }
             }
         });

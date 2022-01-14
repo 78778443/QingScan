@@ -322,10 +322,10 @@ class AppModel extends BaseModel
                     $data = [
                         'app_id'=>$v['id'],
                         'user_id'=>$v['user_id'],
-                        'target'=>json_encode($target),
-                        'http_status'=>json_encode($http_status),
-                        'request_config'=>json_encode($request_config),
-                        'plugins'=>json_encode($plugins),
+                        'target'=>json_encode($target,JSON_UNESCAPED_UNICODE),
+                        'http_status'=>json_encode($http_status,JSON_UNESCAPED_UNICODE),
+                        'request_config'=>json_encode($request_config,JSON_UNESCAPED_UNICODE),
+                        'plugins'=>json_encode($plugins,JSON_UNESCAPED_UNICODE),
                         'create_time'=>date('Y-m-d H:i:s',time()),
                     ];
                     if ($data) {

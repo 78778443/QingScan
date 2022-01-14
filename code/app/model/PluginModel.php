@@ -132,7 +132,10 @@ class PluginModel extends BaseModel
 
                 $data = ['app_id' => $v['id'], 'user_id' => $v['user_id'] ?? 0, 'content' => $content,
                     'scan_type' => $info['scan_type'],
-                    'plugin_id' => $info['id'], 'plugin_name' => $info['name']];
+                    'plugin_id' => $info['id'],
+                    'plugin_name' => $info['name'],
+                    'log_type' => 1,
+                ];
 
                 Db::table("plugin_scan_log")->extra('IGNORE')->insert($data);
             }

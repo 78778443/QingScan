@@ -58,7 +58,7 @@ class DeskIndex extends BaseController
 
         ##########
         //资产探测
-        $hostCount = Db::table('one_for_all')->count();
+        $hostCount = Db::table('host')->count();
         //端口数量
         $portCount = Db::table('host_port')->count();
         //服务数量

@@ -117,7 +117,7 @@ class Config extends Common
                     }
                 }
             }
-            $msg = '系统更新成功，当前版本号：'.$version;
+            $msg = '系统更新成功，当前版本号：'.str_replace(".sql","",$version);
         } catch (\Exception $e) {
             $msg = '系统更新失败：'.$e->getMessage();
         }

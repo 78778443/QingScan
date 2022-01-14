@@ -762,8 +762,6 @@ function curl_get($url)
     //执行命令
     $data = curl_exec($curl);
 
-    //如果有异常，记录到日志当中
-    //$curl_errno = curl_errno($curl);
     if ($data === false) {
         return json_encode([
             'code'=>1,

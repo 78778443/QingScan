@@ -39,7 +39,7 @@ class AppDirmapModel extends BaseModel
                     $result = fgets($file);
                     if (empty($result)) {
                         PluginModel::addScanLog($v['id'], __METHOD__, 2);
-                        addlog(["dirmap扫描目标结果为空", $v['url']]);
+                        addlog(["dirmap 扫描目标结果为空", $v['url']]);
                         continue;
                     }
                     $arr = explode('http', $result);

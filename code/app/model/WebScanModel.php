@@ -203,7 +203,7 @@ class WebScanModel extends BaseModel
                     echo "xray添加漏洞结果:" . json_encode($newData) . PHP_EOL;
                     XrayModel::addXray($newData);
                 }
-                addlog(["xray扫描数据写入成功:".json_encode($addr)]);
+                addlog(["xray扫描数据写入成功:" . json_encode($addr)]);
                 self::scanTime('app', $id, 'xray_scan_time');
 
                 PluginModel::addScanLog($val['id'], __METHOD__, 1);
@@ -423,7 +423,7 @@ class WebScanModel extends BaseModel
                     ];
                     if (!Db::name('app_vulmap')->insert($data)) {
                         addlog(["app_vulmap数据写入失败:" . json_encode($data)]);
-                        PluginModel::addScanLog($v['id'], __METHOD__, 2,0,['content' => 'app_vulmap数据写入失败']);
+                        PluginModel::addScanLog($v['id'], __METHOD__, 2, 0, ['content' => 'app_vulmap数据写入失败']);
                     };
                 }
                 PluginModel::addScanLog($v['id'], __METHOD__, 1);
@@ -521,7 +521,7 @@ class WebScanModel extends BaseModel
                             'app_id' => $v['id'],
                             'user_id' => $v['user_id'],
                             'create_time' => date('Y-m-d H:i:s', time()),
-                            'result' => json_encode($acontent[1])
+                            'result' => json_encode($acontent[1], JSON_UNESCAPED_UNICODE)
                         ];
                     }
                 }

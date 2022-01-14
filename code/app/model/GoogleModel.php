@@ -103,7 +103,7 @@ class GoogleModel extends BaseModel
                     $data['app_id'] = $v['id'];
                     Db::name('app_info')->extra("IGNORE")->insert($data);
                 }
-
+                
                 //更新扫描时间
                 PluginModel::addScanLog($v['id'], __METHOD__, 1);
             }
