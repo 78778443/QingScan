@@ -191,19 +191,19 @@ class WebScanModel extends BaseModel
                     $newData = [
                         'app_id' => $val['id'],
                         'create_time' => substr($value['create_time'], 0, 10),
-                        'detail' => json_encode($value['detail']),
-                        'plugin' => json_encode($value['plugin']),
-                        'target' => json_encode($value['target']),
+                        'detail' => json_encode($value['detail'],JSON_UNESCAPED_UNICODE),
+                        'plugin' => json_encode($value['plugin'],JSON_UNESCAPED_UNICODE),
+                        'target' => json_encode($value['target'],JSON_UNESCAPED_UNICODE),
                         'url' => $value['detail']['addr'],
                         'url_id' => $val['id'],
                         'user_id' => $user_id,
                         'poc' => $value['detail']['payload']
                     ];
                     $addr[] = $newData;
-                    echo "xray添加漏洞结果:" . json_encode($newData) . PHP_EOL;
+                    echo "xray添加漏洞结果:" . json_encode($newData,JSON_UNESCAPED_UNICODE) . PHP_EOL;
                     XrayModel::addXray($newData);
                 }
-                addlog(["xray扫描数据写入成功:" . json_encode($addr)]);
+                addlog(["xray扫描数据写入成功:" . json_encode($addr,JSON_UNESCAPED_UNICODE)]);
                 self::scanTime('app', $id, 'xray_scan_time');
 
                 PluginModel::addScanLog($val['id'], __METHOD__, 1);

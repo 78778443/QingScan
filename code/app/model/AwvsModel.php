@@ -37,8 +37,9 @@ class AwvsModel extends BaseModel
                 //添加目标
                 $targetId = self::getTargetId($id, $url, $awvs_url, $awvs_token, $val['user_id']);
                 if (!$targetId) {
-                    PluginModel::addScanLog($val['id'], __METHOD__, 2);
-                    addlog(["AWVS扫描失败", $id, $url]);
+                    $errMsg = ["向AWVS添加目标失败,请检查QingScan容器是否能访问到AWVS服务器地址，以及token时候有效~", $id, $url];
+                    PluginModel::addScanLog($val['id'], __METHOD__, 2, 0, ["content" => $errMsg]);
+                    addlog($errMsg);
                     self::scanTime('app', $id, 'awvs_scan_time');
                     continue;
                 }
@@ -51,9 +52,11 @@ class AwvsModel extends BaseModel
                 }
                 //API未授权
                 if (isset($retArr['code']) && $retArr['code'] == 401) {
-                    addlog(["AWVS未授权,休息120秒...", $val]);
-                    sleep(120);
-                    break;
+                    $errMsg = ["AWVS未授权,请参照wiki配置地址和token...", $id, $url];
+                    addlog($errMsg);
+                    PluginModel::addScanLog($val['id'], __METHOD__, 2, 0, ["content" => $errMsg]);
+                    self::scanTime('app', $id, 'awvs_scan_time');
+                    continue;
                 }
                 //判断目标扫描状态
                 if (isset($retArr['last_scan_session_status']) && $retArr['last_scan_session_status'] == 'completed') {

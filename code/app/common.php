@@ -1196,7 +1196,7 @@ function getScanStatus($appId, $pluginName, $scanType = 0)
     $where = ['app_id' => $appId, 'plugin_name' => $pluginName, 'scan_type' => $scanType];
     $result = Db::table('plugin_scan_log')->where($where)->order('log_type', 'asc')->select()->toArray();
     if (empty($result)) {
-        return "扫描未开始,请检查插件是否开启~";
+        return "扫描未开始,请检查插件是否开启以及日志排队状态~";
     } elseif (count($result) == 1) {
         return "$pluginName 任务已在{$result[0]['create_time']}启动，请等待扫描结果~";
     } elseif (count($result) == 2 && $result[1]['log_type'] == 2) {
