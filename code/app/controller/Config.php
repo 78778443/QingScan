@@ -116,7 +116,7 @@ class Config extends Common
                     }
                 }
             }
-            if ($result != 'Already up to date.') {
+            if (trim($result) != 'Already up to date.') {
                 $msg = '系统更新成功，当前版本号：'.$version;
             }
         } catch (\Exception $e) {
