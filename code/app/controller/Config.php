@@ -112,6 +112,7 @@ class Config extends Common
                                 Db::execute($sql.';');
                             }
                         }
+                        $version = $newVersion;
                         file_put_contents($lock,$newVersion);
                     }
                 }
