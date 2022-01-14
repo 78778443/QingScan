@@ -1,0 +1,1 @@
+ALTER TABLE `QingScan`.`host_port` ADD COLUMN `app_id` int(11) NOT NULL DEFAULT 0;
