@@ -12,10 +12,7 @@ class AwvsModel extends BaseModel
         $awvs_url = ConfigModel::value('awvs_url');
         $awvs_token = ConfigModel::value('awvs_token');
 
-        if (empty($awvs_url) || empty($awvs_token)) {
-            addlog(["执行AWVS扫描任务失败,未找到有效得配置信息", $awvs_url, $awvs_token]);
-            return false;
-        }
+
         while (true) {
             processSleep(1);
             $list = Db::table('app')->whereTime('awvs_scan_time', '<=', date('Y-m-d H:i:s', time() - (86400 * 15)))->where('is_delete', 0)->limit(1)->orderRand()->select()->toArray();
@@ -23,8 +20,16 @@ class AwvsModel extends BaseModel
                 PluginModel::addScanLog($val['id'], __METHOD__, 0);
                 $url = $val['url'];
                 $id = $val['id'];
+                if (empty($awvs_url) || empty($awvs_token)) {
+                    self::scanTime('app', $id, 'awvs_scan_time');
+                    $errMsg = ["执行AWVS扫描任务失败,未找到有效得配置信息", $awvs_url, $awvs_token, $id, $url];
+                    PluginModel::addScanLog($val['id'], __METHOD__, 2, 0, ["content" => $errMsg]);
+                    addlog($errMsg);
+                    continue;
+                }
+
                 if (filter_var($url, FILTER_VALIDATE_URL) === false) {
-                    PluginModel::addScanLog($val['id'], __METHOD__, 2);
+                    PluginModel::addScanLog($val['id'], __METHOD__, 2, 0, ["content" => ["URL地址不正确", $id, $url]]);
                     addlog(["URL地址不正确", $id, $url]);
                     self::scanTime('app', $id, 'awvs_scan_time');
                     continue;
