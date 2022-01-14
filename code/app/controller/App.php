@@ -346,19 +346,19 @@ class App extends Common
                 Db::table('urls')->where(['app_id' => $id])->delete();
                 Db::table('urls_sqlmap')->where(['app_id' => $id])->delete();
                 break;
-            case 'crawlergo':
+            case 'crawlergoScan':
                 $data = [
                     'crawlergo_scan_time' => '2000-01-01 00:00:00',
                 ];
                 Db::table('app_crawlergo')->where(['app_id' => $id])->delete();
                 break;
-            case 'awvs':
+            case 'awvsScan':
                 $data = [
                     'awvs_scan_time' => '2000-01-01 00:00:00',
                 ];
                 Db::table('awvs_app')->where(['app_id' => $id])->delete();
                 break;
-            case 'nuclei':
+            case 'nucleiScan':
                 $data = [
                     'nuclei_scan_time' => '2000-01-01 00:00:00',
                 ];
@@ -370,7 +370,7 @@ class App extends Common
                 ];
                 Db::table('xray')->where(['app_id' => $id])->delete();
                 break;
-            case 'google':
+            case 'getBaseInfo':
                 $data = [
                     'screenshot_time' => '2000-01-01 00:00:00',
                 ];
@@ -383,41 +383,41 @@ class App extends Common
                 Db::table('app_whatweb')->where(['app_id' => $id])->delete();
                 Db::table('app_whatweb_poc')->where(['app_id' => $id])->delete();
                 break;
-            case 'sqlmap':
+            case 'sqlmapScan':
                 Db::table('urls')->where(['app_id' => $id])->update(['sqlmap_scan_time' => '2000-01-01 00:00:00']);
                 Db::table('urls_sqlmap')->where(['app_id' => $id])->delete();
                 break;
-            case 'oneforall':
+            case 'subdomainScan':
                 $data = [
                     'subdomain_scan_time' => '2000-01-01 00:00:00',
                 ];
                 Db::table('one_for_all')->where(['app_id' => $id])->delete();
                 break;
-            case 'hydra':
+            case 'sshScan':
                 Db::table('host')->where(['app_id' => $id])->update(['hydra_scan_time' => '2000-01-01 00:00:00']);
                 Db::table('host_hydra_scan_details')->where(['app_id' => $id])->delete();
                 break;
-            case 'dirmap':
+            case 'dirmapScan':
                 $data = [
                     'dirmap_scan_time' => '2000-01-01 00:00:00',
                 ];
                 Db::table('app_dirmap')->where(['app_id' => $id])->delete();
                 break;
-            case 'namp':
+            case 'NmapPortScan':
                 Db::table('host_port')->where(['app_id' => $id])->update(['service' => null]);
                 break;
-            case 'vulmap':
+            case 'vulmapPocTest':
                 $data = [
                     'vulmap_scan_time' => '2000-01-01 00:00:00',
                 ];
                 Db::table('app_vulmap')->where(['app_id' => $id])->delete();
                 break;
-            case 'host':
+            case 'autoAddHost':
                 Db::table('host')->where(['app_id' => $id])->delete();
                 Db::table('host_port')->where(['app_id' => $id])->delete();
                 Db::table('host_hydra_scan_details')->where(['app_id' => $id])->delete();
                 break;
-            case 'dismap':
+            case 'dismapScan':
                 $data = [
                     'dismap_scan_time' => '2000-01-01 00:00:00',
                 ];
