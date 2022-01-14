@@ -37,7 +37,7 @@ class AwvsModel extends BaseModel
                 //添加目标
                 $targetId = self::getTargetId($id, $url, $awvs_url, $awvs_token, $val['user_id']);
                 if (!$targetId) {
-                    $errMsg = ["向AWVS添加目标失败,请检查QingScan容器是否能访问到AWVS服务器地址，以及token时候有效~", $id, $url];
+                    $errMsg = ["任务发送到AWVS失败,请检查QingScan是否能访问到AWVS服务，以及token有效性~", $id, $url];
                     PluginModel::addScanLog($val['id'], __METHOD__, 2, 0, ["content" => $errMsg]);
                     addlog($errMsg);
                     self::scanTime('app', $id, 'awvs_scan_time');
