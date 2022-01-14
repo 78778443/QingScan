@@ -6,6 +6,7 @@ use app\BaseController;
 use app\model\AppModel;
 use app\model\HostModel;
 use app\model\UrlsModel;
+use app\Request;
 use think\facade\Db;
 use think\facade\View;
 
@@ -13,7 +14,7 @@ use think\facade\View;
 class Host extends Common
 {
 
-    public function index()
+    public function index(Request $request)
     {
         $pageSize = 20;
         $where[] = ['is_delete','=',0];
@@ -23,6 +24,10 @@ class Host extends Common
         }
         if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
             $where[] = ['user_id', '=', $this->userId];
+        }
+        $app_id = $request->param('app_id');
+        if (!empty($app_id)) {
+            $where[] = ['app_id','=',$app_id];
         }
         $list = Db::table('host')->where($where)->order("id", 'desc')->paginate([
             'list_rows'=> $pageSize,//每页数量

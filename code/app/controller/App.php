@@ -35,9 +35,10 @@ class App extends Common
         $where = $cms ? array_merge($where, ['info.cms' => $cms]) : $where;
         $where = $server ? array_merge($where, ['info.server' => $server]) : $where;
 
-
+        $where1 = [];
         if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
             $where = array_merge($where, ['user_id' => $this->userId]);
+            $where1[] = ['user_id','=',$this->userId];
         }
 
         $data['list'] = Db::table('app')->LeftJoin('app_info info', 'app.id = info.app_id')->where($where)->limit($pageSize)->page($page)->select()->toArray();
@@ -63,6 +64,20 @@ class App extends Common
             } else {
                 $v['status'] = '禁用';
             }
+
+            // 数据统计
+            $v['oneforall_num'] = Db::table('one_for_all')->where('app_id',$v['id'])->where($where1)->count('id');
+            $v['dirmap_num'] = Db::table('app_dirmap')->where('app_id',$v['id'])->where($where1)->count('id');
+            $v['sqlmap_num'] = Db::table('urls_sqlmap')->where('app_id',$v['id'])->where($where1)->count('id');
+            $v['vulmap_num'] = Db::table('app_vulmap')->where('app_id',$v['id'])->where($where1)->count('id');
+            //$data['dismap_num'] = Db::table('app_dismap')->where($where1)->count('id');
+            $v['urls_num'] = Db::table('urls')->where('app_id',$v['id'])->where($where1)->count('id');
+            $v['xray_num'] = Db::table('xray')->where('app_id',$v['id'])->where($where1)->count('id');
+            //$data['nuclei_num'] = Db::table('app_nuclei')->where($where1)->count('id');
+            $v['crawlergo_num'] = Db::table('app_crawlergo')->where('app_id',$v['id'])->where($where1)->count('id');
+            $v['awvs_num'] = Db::table('awvs_vuln')->where('app_id',$v['id'])->where($where1)->count('id');
+            $v['namp_num'] = Db::table('host_port')->where('app_id',$v['id'])->where($where1)->count('id');
+            $v['host_num'] = Db::table('host')->where('app_id',$v['id'])->where($where1)->count('id');
         }
         $data['pageSize'] = $pageSize;
         $data['count'] = Db::table('app')->Join('app_info info', 'app.id = info.app_id')->where($where)->count();
@@ -234,9 +249,6 @@ class App extends Common
             $where1[] = ['user_id', '=', $this->userId];
         }
         $data['info'] = Db::name('app')->where($map)->find();
-        if (empty($data['info'])) {
-            return redirect($_SERVER['HTTP_REFERER'] ?? U('index/index'));
-        }
         $data['whatweb'] = Db::table('app_whatweb')->where($where)->where($where1)->order("id", 'desc')->limit(0, 15)->select()->toArray();
         $data['oneforall'] = Db::table('one_for_all')->where($where)->order("id", 'desc')->limit(0, 15)->select()->toArray();
         $data['hydra'] = Db::table('host_hydra_scan_details')->where($where)->order("id", 'desc')->limit(0, 15)->select()->toArray();
@@ -250,6 +262,7 @@ class App extends Common
         $data['nuclei'] = Db::table('app_nuclei')->where($where)->order("app_id", 'desc')->limit(0, 15)->select()->toArray();
         $data['crawlergo'] = Db::table('app_crawlergo')->where($where)->order("app_id", 'desc')->limit(0, 15)->select()->toArray();
         $data['awvs'] = Db::table('awvs_vuln')->where($where)->order("app_id", 'desc')->limit(0, 15)->select()->toArray();
+        $data['pluginScanLog'] = Db::table('plugin_scan_log')->where($where)->where(['log_type' => 1])->order("app_id", 'desc')->limit(0, 15)->select()->toArray();
         //获取此域名对应主机的端口信息
         $urlInfo = parse_url($data['info']['url']);
         $ip = gethostbyname($urlInfo['host']);

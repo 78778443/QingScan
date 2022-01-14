@@ -18,13 +18,13 @@ class Xray extends Common
         $pageSize = 10;
         $where[] = ['is_delete','=',0];
         $search = getParam('search');
-        $pid = getParam('code_id');
+        $app_id = getParam('app_id');
         $level = getParam('level'); // 等级
         $Category = getParam('Category');   // 分类
         $filename = getParam('filename');   // 文件名
         $check_status = getParam('check_status');   // 审核状态
-        if (!empty($pid)) {
-            $where[] = ['app_id','=',$pid];
+        if (!empty($app_id)) {
+            $where[] = ['app_id','=',$app_id];
         }
         if (!empty($level) && $level != -1) {
             $where[] = ['hazard_level','=',$level];
@@ -40,7 +40,7 @@ class Xray extends Common
             $where[] = ['check_status','=',$check_status];
         }
         if (!empty($search)) {
-            $where[] = ['app_id','like',"%{$search}%"];
+            //$where[] = ['app_id','like',"%{$search}%"];
         }
         $map = [];
         if ($this->auth_group_id != 5 && !in_array($this->userId,config('app.ADMINISTRATOR'))) {
