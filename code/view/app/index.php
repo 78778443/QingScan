@@ -135,7 +135,7 @@
                 <?php } ?>
                 </tbody>
                 <?php if(empty($list)){?>
-                    <tr><td colspan="8" class="text-center">暂无目标</td></tr>
+                    <tr><td colspan="14" class="text-center">暂无目标</td></tr>
                 <?php }?>
             </table>
         </div>
