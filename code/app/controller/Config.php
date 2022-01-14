@@ -90,14 +90,13 @@ class Config extends Common
             $cmd = "cd {$path} && git config --global user.email 'you@example.com' && git config --global user.name 'Your Name' && git pull";
             $result = systemLog($cmd,false);
             $result = implode("\n", $result);
-            $msg = '系统更新成功：'.$result;
+            //$msg = '系统更新成功：'.$result;
 
             // 更新sql语句
             $sqlPath = $path . 'docker/data';
             $fileNameList = getDirFileName($sqlPath);
             unset($fileNameList[count($fileNameList) - 1]);
             unset($fileNameList[count($fileNameList) - 1]);
-            $version = 'v1.2.0';
             if (!empty($fileNameList)) {
                 $lock = $sqlPath.'/update.lock';
                 // 获取当前版本号
@@ -117,9 +116,7 @@ class Config extends Common
                     }
                 }
             }
-            if (trim($result) != 'Already up to date.') {
-                $msg = '系统更新成功，当前版本号：'.$version;
-            }
+            $msg = '系统更新成功，当前版本号：'.$version;
         } catch (\Exception $e) {
             $msg = '系统更新失败：'.$e->getMessage();
         }
