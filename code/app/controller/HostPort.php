@@ -10,11 +10,12 @@ use app\model\UrlsModel;
 use phpseclib3\File\ASN1\Maps\DSAPrivateKey;
 use think\facade\Db;
 use think\facade\View;
+use think\Request;
 
 
 class HostPort extends Common
 {
-    public function index()
+    public function index(Request $request)
     {
         $where[] = ['is_delete','=',0];
         $search = getParam('search','');    // 项目名称
@@ -39,6 +40,10 @@ class HostPort extends Common
         }
         if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
             $where[] = ['user_id', '=', $this->userId];
+        }
+        $app_id = $request->param('app_id');
+        if (!empty($app_id)) {
+            $where[] = ['app_id','=',$app_id];
         }
         $list = Db::table(HostPortModel::$tableName)->where($where)->paginate(10);
         $data = [];

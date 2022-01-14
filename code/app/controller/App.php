@@ -35,9 +35,10 @@ class App extends Common
         $where = $cms ? array_merge($where, ['info.cms' => $cms]) : $where;
         $where = $server ? array_merge($where, ['info.server' => $server]) : $where;
 
-
+        $where1 = [];
         if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
             $where = array_merge($where, ['user_id' => $this->userId]);
+            $where1[] = ['user_id', '=', $this->userId];
         }
 
         $data['list'] = Db::table('app')->LeftJoin('app_info info', 'app.id = info.app_id')->where($where)->limit($pageSize)->page($page)->select()->toArray();
@@ -63,6 +64,20 @@ class App extends Common
             } else {
                 $v['status'] = '禁用';
             }
+
+            // 数据统计
+            $v['oneforall_num'] = Db::table('one_for_all')->where('app_id', $v['id'])->where($where1)->count('id');
+            $v['dirmap_num'] = Db::table('app_dirmap')->where('app_id', $v['id'])->where($where1)->count('id');
+            $v['sqlmap_num'] = Db::table('urls_sqlmap')->where('app_id', $v['id'])->where($where1)->count('id');
+            $v['vulmap_num'] = Db::table('app_vulmap')->where('app_id', $v['id'])->where($where1)->count('id');
+            //$data['dismap_num'] = Db::table('app_dismap')->where($where1)->count('id');
+            $v['urls_num'] = Db::table('urls')->where('app_id', $v['id'])->where($where1)->count('id');
+            $v['xray_num'] = Db::table('xray')->where('app_id', $v['id'])->where($where1)->count('id');
+            //$data['nuclei_num'] = Db::table('app_nuclei')->where($where1)->count('id');
+            $v['crawlergo_num'] = Db::table('app_crawlergo')->where('app_id', $v['id'])->where($where1)->count('id');
+            $v['awvs_num'] = Db::table('awvs_vuln')->where('app_id', $v['id'])->where($where1)->count('id');
+            $v['namp_num'] = Db::table('host_port')->where('app_id', $v['id'])->where($where1)->count('id');
+            $v['host_num'] = Db::table('host')->where('app_id', $v['id'])->where($where1)->count('id');
         }
         $data['pageSize'] = $pageSize;
         $data['count'] = Db::table('app')->Join('app_info info', 'app.id = info.app_id')->where($where)->count();
@@ -152,9 +167,13 @@ class App extends Common
             $map[] = ['user_id', '=', $this->userId];
         }
         $data['info'] = Db::name('app')->where(['id' => $id])->find();
-        $urlInfo = parse_url($data['info']['url']);
-        $ip = gethostbyname($urlInfo['host']);
-
+        if (!empty($data)) {
+            $urlInfo = parse_url($data['info']['url']);
+            $ip = gethostbyname($urlInfo['host'] ?? '127.0.0.1');
+            Db::table('app_info')->where(['app_id' => $id])->delete();
+            Db::table('host')->where(['host' => $ip])->delete();
+            Db::table('host_port')->where(['host' => $ip])->delete();
+        }
         Db::table('app_crawlergo')->where(['app_id' => $id])->delete();
         Db::table('app_dirmap')->where(['app_id' => $id])->delete();
         Db::table('app_nuclei')->where(['app_id' => $id])->delete();
@@ -164,9 +183,7 @@ class App extends Common
         Db::table('app_whatweb_poc')->where(['app_id' => $id])->delete();
         Db::table('app_xray_agent_port')->where(['app_id' => $id])->delete();
         Db::table('awvs_app')->where(['app_id' => $id])->delete();
-        Db::table('host')->where(['host' => $ip])->delete();
         Db::table('host_hydra_scan_details')->where(['app_id' => $id])->delete();
-        Db::table('host_port')->where(['host' => $ip])->delete();
         Db::table('one_for_all')->where(['app_id' => $id])->delete();
         Db::table('plugin_scan_log')->where(['app_id' => $id])->delete();
         Db::table('urls')->where(['app_id' => $id])->delete();
@@ -245,6 +262,7 @@ class App extends Common
         $data['nuclei'] = Db::table('app_nuclei')->where($where)->order("app_id", 'desc')->limit(0, 15)->select()->toArray();
         $data['crawlergo'] = Db::table('app_crawlergo')->where($where)->order("app_id", 'desc')->limit(0, 15)->select()->toArray();
         $data['awvs'] = Db::table('awvs_vuln')->where($where)->order("app_id", 'desc')->limit(0, 15)->select()->toArray();
+        $data['pluginScanLog'] = Db::table('plugin_scan_log')->where($where)->where(['log_type' => 1])->order("app_id", 'desc')->limit(0, 15)->select()->toArray();
         //获取此域名对应主机的端口信息
         $urlInfo = parse_url($data['info']['url']);
         $ip = gethostbyname($urlInfo['host']);
@@ -273,13 +291,19 @@ class App extends Common
             'crawlergo_scan_time' => '2000-01-01 00:00:00',
             'vulmap_scan_time' => '2000-01-01 00:00:00',
         );
-        $data['info'] = Db::name('app')->where(['id' => $id])->find();
-        $urlInfo = parse_url($data['info']['url']);
-        $ip = gethostbyname($urlInfo['host']);
-
+        $where[] = ['id', '=', $id];
+        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
+            $where[] = ['user_id', '=', $this->userId];
+        }
+        $data['info'] = Db::name('app')->where($where)->find();
+        if (!$data['info']) {
+            $this->error('黑盒数据不存在');
+        }
         Db::table('app')->where(['id' => $id])->save($array);
+        Db::table('app_info')->where(['app_id' => $id])->delete();
         Db::table('app_crawlergo')->where(['app_id' => $id])->delete();
         Db::table('app_dirmap')->where(['app_id' => $id])->delete();
+        Db::table('app_dismap')->where(['app_id' => $id])->delete();
         Db::table('app_nuclei')->where(['app_id' => $id])->delete();
         Db::table('app_vulmap')->where(['app_id' => $id])->delete();
         Db::table('app_wafw00f')->where(['app_id' => $id])->delete();
@@ -287,9 +311,9 @@ class App extends Common
         Db::table('app_whatweb_poc')->where(['app_id' => $id])->delete();
         Db::table('app_xray_agent_port')->where(['app_id' => $id])->delete();
         Db::table('awvs_app')->where(['app_id' => $id])->delete();
-        Db::table('host')->where(['host' => $ip])->delete();
+        Db::table('host')->where(['app_id' => $id])->delete();
         Db::table('host_hydra_scan_details')->where(['app_id' => $id])->delete();
-        Db::table('host_port')->where(['host' => $ip])->delete();
+        Db::table('host_port')->where(['app_id' => $id])->delete();
         Db::table('one_for_all')->where(['app_id' => $id])->delete();
         Db::table('plugin_scan_log')->where(['app_id' => $id])->delete();
         Db::table('urls')->where(['app_id' => $id])->delete();
@@ -297,6 +321,119 @@ class App extends Common
         Db::table('xray')->where(['app_id' => $id])->delete();
         Db::table('plugin_scan_log')->where(['app_id' => $id])->delete();
 
+        return redirect($_SERVER['HTTP_REFERER'] ?? '/');
+    }
+
+
+    public function rescan(Request $request)
+    {
+        $id = $request->param('id');
+        $where[] = ['id', '=', $id];
+        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
+            $where[] = ['user_id', '=', $this->userId];
+        }
+        $info = Db::name('app')->where($where)->find();
+        if (!$info) {
+            $this->error('黑盒数据不存在');
+        }
+        $tools_name = $request->param('tools_name', '');
+
+        switch ($tools_name) {
+            case 'rad':
+                $data = [
+                    'crawler_time' => '2000-01-01 00:00:00'
+                ];
+                Db::table('urls')->where(['app_id' => $id])->delete();
+                Db::table('urls_sqlmap')->where(['app_id' => $id])->delete();
+                break;
+            case 'crawlergoScan':
+                $data = [
+                    'crawlergo_scan_time' => '2000-01-01 00:00:00',
+                ];
+                Db::table('app_crawlergo')->where(['app_id' => $id])->delete();
+                break;
+            case 'awvsScan':
+                $data = [
+                    'awvs_scan_time' => '2000-01-01 00:00:00',
+                ];
+                Db::table('awvs_app')->where(['app_id' => $id])->delete();
+                break;
+            case 'nucleiScan':
+                $data = [
+                    'nuclei_scan_time' => '2000-01-01 00:00:00',
+                ];
+                Db::table('app_nuclei')->where(['app_id' => $id])->delete();
+                break;
+            case 'xray':
+                $data = [
+                    'xray_scan_time' => '2000-01-01 00:00:00',
+                ];
+                Db::table('xray')->where(['app_id' => $id])->delete();
+                break;
+            case 'getBaseInfo':
+                $data = [
+                    'screenshot_time' => '2000-01-01 00:00:00',
+                ];
+                Db::table('app_info')->where(['app_id' => $id])->delete();
+                break;
+            case 'whatweb':
+                $data = [
+                    'whatweb_scan_time' => '2000-01-01 00:00:00',
+                ];
+                Db::table('app_whatweb')->where(['app_id' => $id])->delete();
+                Db::table('app_whatweb_poc')->where(['app_id' => $id])->delete();
+                break;
+            case 'sqlmapScan':
+                Db::table('urls')->where(['app_id' => $id])->update(['sqlmap_scan_time' => '2000-01-01 00:00:00']);
+                Db::table('urls_sqlmap')->where(['app_id' => $id])->delete();
+                break;
+            case 'subdomainScan':
+                $data = [
+                    'subdomain_scan_time' => '2000-01-01 00:00:00',
+                ];
+                Db::table('one_for_all')->where(['app_id' => $id])->delete();
+                break;
+            case 'sshScan':
+                Db::table('host')->where(['app_id' => $id])->update(['hydra_scan_time' => '2000-01-01 00:00:00']);
+                Db::table('host_hydra_scan_details')->where(['app_id' => $id])->delete();
+                break;
+            case 'dirmapScan':
+                $data = [
+                    'dirmap_scan_time' => '2000-01-01 00:00:00',
+                ];
+                Db::table('app_dirmap')->where(['app_id' => $id])->delete();
+                break;
+            case 'NmapPortScan':
+                Db::table('host_port')->where(['app_id' => $id])->update(['service' => null]);
+                break;
+            case 'vulmapPocTest':
+                $data = [
+                    'vulmap_scan_time' => '2000-01-01 00:00:00',
+                ];
+                Db::table('app_vulmap')->where(['app_id' => $id])->delete();
+                break;
+            case 'autoAddHost':
+                Db::table('host')->where(['app_id' => $id])->delete();
+                Db::table('host_port')->where(['app_id' => $id])->delete();
+                Db::table('host_hydra_scan_details')->where(['app_id' => $id])->delete();
+                break;
+            case 'dismapScan':
+                $data = [
+                    'dismap_scan_time' => '2000-01-01 00:00:00',
+                ];
+                Db::table('app_dismap')->where(['app_id' => $id])->delete();
+                break;
+            case 'plugin':
+                Db::table('plugin_scan_log')->where(['app_id' => $id])->delete();
+                break;
+            default:
+                $this->error('参数错误');
+                break;
+        }
+        Db::table('plugin_scan_log')->where(['app_id' => $id, 'scan_type' => 0,'plugin_name'=>$tools_name])->delete();
+        if (!empty($data)) {
+            Db::table('app')->where(['id' => $id])->update($data);
+        }
         return redirect($_SERVER['HTTP_REFERER'] ?? '/');
     }
 

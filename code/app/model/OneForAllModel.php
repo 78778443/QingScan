@@ -21,7 +21,7 @@ class OneForAllModel extends BaseModel
                 PluginModel::addScanLog($v['id'], __METHOD__, 0);
                 $host = parse_url($v['url'])['host'];
                 if (filter_var($host, FILTER_VALIDATE_IP)) {
-                    PluginModel::addScanLog($v['id'], __METHOD__, 2);
+                    PluginModel::addScanLog($v['id'], __METHOD__, 2,0,["content"=>"项目不是域名:{$v['url']}"]);
                     addlog(["此地址不是域名:{$v['url']}"]);
                     AppModel::updateScanTime($v['id'],'subdomain_scan_time');
                     continue;

@@ -82,14 +82,15 @@ class Config extends Common
         }
     }
 
+    // 系统更新
     public function system_update()
     {
         $path = \think\facade\App::getRootPath() . '../';
         try {
-            $cmd = "cd {$path} && git pull";
+            $cmd = "cd {$path} && git config --global user.email 'you@example.com' && git config --global user.name 'Your Name' && git pull";
             $result = systemLog($cmd,false);
             $result = implode("\n", $result);
-            $msg = '系统更新成功：'.$result;
+            //$msg = '系统更新成功：'.$result;
 
             // 更新sql语句
             $sqlPath = $path . 'docker/data';
@@ -111,10 +112,12 @@ class Config extends Common
                                 Db::execute($sql.';');
                             }
                         }
+                        $version = $newVersion;
                         file_put_contents($lock,$newVersion);
                     }
                 }
             }
+            $msg = '系统更新成功，当前版本号：'.str_replace(".sql","",$version);
         } catch (\Exception $e) {
             $msg = '系统更新失败：'.$e->getMessage();
         }

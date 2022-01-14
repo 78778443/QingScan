@@ -14,6 +14,10 @@ class Vulmap extends Common
         if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
             $where[] = ['user_id', '=', $this->userId];
         }
+        $app_id = getParam('app_id');
+        if (!empty($app_id)) {
+            $where[] = ['app_id','=',$app_id];
+        }
         $list = Db::table('app_vulmap')->where($where)->order("id", 'desc')->paginate($pageSize);
         $data['list'] = $list->items();
         foreach ($data['list'] as &$v) {

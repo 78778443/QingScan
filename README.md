@@ -19,7 +19,7 @@ QingScan 是一款聚合扫描器，本身不生产安全扫描功能，但会�
 
 ## 安装教程
 
-1. 需要安装docker、docker-compose 安装方法（http://get.daocloud.io/）
+1. 需要安装docker、docker-compose 安装方法 http://get.daocloud.io/ 
 2. 下载代码后,启动容器`cd QingScan/docker/latest  && docker-compose up -d `
 2. <b>首次</b>启动需要更新容器内代码`docker exec  qingscan sh -c 'cd /root/qingscan && git fetch && git reset --hard origin/main && rm code/public/install/install.lock' `
 3. 依次执行命令创建MySQL数据库`docker exec -it  mysqlser bash`,进入数据库交互`mysql -uroot -p123` ,执行创建数据库 `CREATE DATABASE IF NOT EXISTS QingScan;`

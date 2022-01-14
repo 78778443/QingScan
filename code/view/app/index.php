@@ -42,9 +42,17 @@
                 <tr>
                     <th>ID</th>
                     <th>名称</th>
-                    <th>是否存在waf</th>
+                    <th>rad</th>
+                    <th>crawlergo</th>
+                    <th>awvs</th>
+                    <th>xray</th>
+                    <th>sqlmap</th>
+                    <th>oneforall</th>
+                    <th>dirmap</th>
+                    <th>vulmap</th>
+                    <th>nmap</th>
+                    <th>主机数量</th>
                     <th>创建时间</th>
-                    <th>是否内网</th>
                     <th style="width: 200px">操作</th>
                 </tr>
                 </thead>
@@ -55,9 +63,57 @@
                         <td class="ellipsis-type">
                             <a href="{$value['url']}" title="{$value['url']}" target="_blank">{$value['name']} </a>
                         </td>
-                        <td><?php echo $value['is_waf'] ?></td>
+                        <td>
+                            <a title="扫描时间:<?php echo $value['crawler_time'] ?>"
+                               href="<?php echo url('urls/index', ['app_id' => $value['id']]); ?>"><?php echo $value['urls_num'] ?? 0 ?>
+                            </a>
+                        </td>
+                        <td>
+                            <a title="扫描时间:<?php echo $value['crawlergo_scan_time'] ?>"
+                               href="<?php echo url('app_crawlergo/index', ['app_id' => $value['id']]); ?>"><?php echo $value['crawlergo_num'] ?? 0 ?>
+                            </a>
+                        </td>
+                        <td>
+                            <a title="扫描时间:<?php echo $value['awvs_scan_time'] ?>"
+                               href="<?php echo url('bug/awvs', ['app_id' => $value['id']]); ?>"><?php echo $value['awvs_num'] ?? 0 ?>
+                            </a>
+                        </td>
+                        <td>
+                            <a title="扫描时间:<?php echo $value['xray_scan_time'] ?>"
+                               href="<?php echo url('xray/index', ['app_id' => $value['id']]); ?>"><?php echo $value['xray_num'] ?? 0 ?>
+                            </a>
+                        </td>
+                        <td>
+                            <a
+                               href="<?php echo url('sqlmap/index', ['app_id' => $value['id']]); ?>"><?php echo $value['sqlmap_num'] ?? 0 ?>
+                            </a>
+                        </td>
+                        <td>
+                            <a title="扫描时间:<?php echo $value['subdomain_scan_time'] ?>"
+                               href="<?php echo url('one_for_all/index', ['app_id' => $value['id']]); ?>"><?php echo $value['oneforall_num'] ?? 0 ?>
+                            </a>
+                        </td>
+                        <td>
+                            <a title="扫描时间:<?php echo $value['dirmap_scan_time'] ?>"
+                               href="<?php echo url('dirmap/index', ['app_id' => $value['id']]); ?>"><?php echo $value['dirmap_num'] ?? 0 ?>
+                            </a>
+                        </td>
+                        <td>
+                            <a title="扫描时间:<?php echo $value['vulmap_scan_time'] ?>"
+                               href="<?php echo url('vulmap/index', ['app_id' => $value['id']]); ?>"><?php echo $value['vulmap_num'] ?? 0 ?>
+                            </a>
+                        </td>
+                        <td>
+                            <a
+                               href="<?php echo url('host_port/index', ['app_id' => $value['id']]); ?>"><?php echo $value['namp_num'] ?? 0 ?>
+                            </a>
+                        </td>
+                        <td>
+                            <a
+                               href="<?php echo url('host/index', ['app_id' => $value['id']]); ?>"><?php echo $value['host_num'] ?? 0 ?>
+                            </a>
+                        </td>
                         <td><?php echo date('Y-m-d H:i', strtotime($value['create_time'])) ?></td>
-                        <td>{$value['is_intranet']}</td>
                         <td>
                             <?php if($value['xray_agent_port'] ?? ''){?>
                                 <a href="javascript:;" onclick="start_agent(<?php echo $value['id'] ?>)"
@@ -79,7 +135,7 @@
                 <?php } ?>
                 </tbody>
                 <?php if(empty($list)){?>
-                    <tr><td colspan="8" class="text-center">暂无目标</td></tr>
+                    <tr><td colspan="14" class="text-center">暂无目标</td></tr>
                 <?php }?>
             </table>
         </div>

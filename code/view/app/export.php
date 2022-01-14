@@ -1,13 +1,15 @@
-{include file='public/head' /}
-<?php
-$typeArr = [
-    'whatweb' => 'whatweb',
-    'oneforall' => 'oneforall',
-    'hydra' => 'hydra',
-    'dirmap' => 'dirmap',
-    'sqlmap' => 'sqlmap',
-];
-?>
+<html>
+<head>
+    <title>黑盒项目扫描结果 QingScan</title>
+    <link rel="shortcut icon" href="/static/favicon.svg" type="image/x-icon"/>
+    <script src="/static/js/jquery.min.js"></script>
+    <!--    <script src="/static/js/bootstrap.min.js"></script>-->
+    <link href="/static/bootstrap-5.1.3/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/css/qingscan.css" rel="stylesheet">
+    <script src="/static/bootstrap-5.1.3/js/bootstrap.min.js"></script>
+</head>
+<body style="background-color: #eeeeee; min-height: 1080px">
+<div class="container-fluid">
 <div class="col-md-12 ">
     <div class="row tuchu">
         <div class="col-md-4">
@@ -62,9 +64,6 @@ $typeArr = [
     <div class="col-auto  tuchu_col">
         <h4 class="text-center">
             RAD(URL爬虫)
-            <a href="<?php echo url('app/rescan', ['id'=>$info['id'],'tools_name' => 'rad']) ?>"
-               onClick="return confirm('确定要清空该工具数据重新扫描吗?')"
-               class="btn btn-sm btn-outline-warning">重新扫描</a>
         </h4>
         <table class="table table-bordered table-hover table-striped">
             <thead>
@@ -104,9 +103,6 @@ $typeArr = [
     <div class="col-auto  tuchu_col">
         <h4 class="text-center">
             crawlergo(URL爬虫扫描)
-            <a href="<?php echo url('app/rescan', ['id'=>$info['id'],'tools_name' => 'crawlergoScan']) ?>"
-               onClick="return confirm('确定要清空该工具数据重新扫描吗?')"
-               class="btn btn-sm btn-outline-warning">重新扫描</a>
         </h4>
         <table class="table table-bordered table-hover table-striped">
             <thead>
@@ -134,9 +130,6 @@ $typeArr = [
     <div class="col-auto  tuchu_col">
         <h4 class="text-center">
             AWVS(综合扫描)
-            <a href="<?php echo url('app/rescan', ['id'=>$info['id'],'tools_name' => 'awvsScan']) ?>"
-               onClick="return confirm('确定要清空该工具数据重新扫描吗?')"
-               class="btn btn-sm btn-outline-warning">重新扫描</a>
         </h4>
         <table class="table table-bordered table-hover table-striped">
             <thead>
@@ -171,9 +164,6 @@ $typeArr = [
     <div class="col-auto  tuchu_col">
         <h4 class="text-center">
             nuclei(POC扫描)
-            <a href="<?php echo url('app/rescan', ['id'=>$info['id'],'tools_name' => 'nucleiScan']) ?>"
-               onClick="return confirm('确定要清空该工具数据重新扫描吗?')"
-               class="btn btn-sm btn-outline-warning">重新扫描</a>
         </h4>
         <table class="table table-bordered table-hover table-striped">
             <thead>
@@ -203,9 +193,6 @@ $typeArr = [
     <div class="col-auto  tuchu_col">
         <h4 class="text-center">
             XRAY(黑盒+POC)
-            <a href="<?php echo url('app/rescan', ['id'=>$info['id'],'tools_name' => 'xray']) ?>"
-               onClick="return confirm('确定要清空该工具数据重新扫描吗?')"
-               class="btn btn-sm btn-outline-warning">重新扫描</a>
         </h4>
         <table class="table table-bordered table-hover table-striped">
             <thead>
@@ -234,9 +221,6 @@ $typeArr = [
     <div class="col-auto  tuchu_col">
         <h4 class="text-center">
             app信息
-            <a href="<?php echo url('app/rescan', ['id'=>$info['id'],'tools_name' => 'getBaseInfo']) ?>"
-               onClick="return confirm('确定要清空该工具数据重新扫描吗?')"
-               class="btn btn-sm btn-outline-warning">重新扫描</a>
         </h4>
         <table class="table table-bordered table-hover table-striped">
             <thead>
@@ -245,6 +229,7 @@ $typeArr = [
                 <th>cms</th>
                 <th>server</th>
                 <th>statuscode</th>
+                <th>title</th>
                 <th>length</th>
                 <th>page_title</th>
                 <th>header</th>
@@ -259,10 +244,11 @@ $typeArr = [
                     <td><?php echo $value['cms'] ?></td>
                     <td><?php echo $value['server'] ?></td>
                     <td><?php echo $value['statuscode'] ?></td>
+                    <td class="AutoNewline"><?php echo $value['title'] ?></td>
                     <td><?php echo $value['length'] ?></td>
                     <td><?php echo $value['page_title'] ?></td>
                     <td><?php echo $value['header'] ?></td>
-                    <td><img src="<?php echo str_replace('/root/qingscan/code/public/', "", $value['icon']) ?>"></td>
+                    <td><?php echo $value['icon'] ?></td>
                     <td><?php echo $value['url_screenshot'] ?></td>
                     <!--                    <td>--><?php //echo $value['create_time'] ?><!--</td>-->
                 </tr>
@@ -276,12 +262,7 @@ $typeArr = [
     </div>
 
     <div class="col-auto  tuchu_col">
-        <h4 class="text-center">
-            whatweb（指纹识别）
-            <a href="<?php echo url('app/rescan', ['id'=>$info['id'],'tools_name' => 'whatweb']) ?>"
-               onClick="return confirm('确定要清空该工具数据重新扫描吗?')"
-               class="btn btn-sm btn-outline-warning">重新扫描</a>
-        </h4>
+        <h4 class="text-center"> whatweb（指纹识别）</h4>
         <table class="table table-bordered table-hover table-striped">
             <thead>
             <tr>
@@ -312,12 +293,7 @@ $typeArr = [
     </div>
 
     <div class="col-auto  tuchu_col">
-        <h4 class="text-center">
-            sqlmap（SQL注入）
-            <a href="<?php echo url('app/rescan', ['id'=>$info['id'],'tools_name' => 'sqlmapScan']) ?>"
-               onClick="return confirm('确定要清空该工具数据重新扫描吗?')"
-               class="btn btn-sm btn-outline-warning">重新扫描</a>
-        </h4>
+        <h4 class="text-center">sqlmap（SQL注入）</h4>
         <table class="table table-bordered table-hover table-striped">
             <thead>
             <tr>
@@ -352,12 +328,7 @@ $typeArr = [
     </div>
 
     <div class="col-auto  tuchu_col">
-        <h4 class="text-center">
-            oneforall（子域名）
-            <a href="<?php echo url('app/rescan', ['id'=>$info['id'],'tools_name' => 'subdomainScan']) ?>"
-               onClick="return confirm('确定要清空该工具数据重新扫描吗?')"
-               class="btn btn-sm btn-outline-warning">重新扫描</a>
-        </h4>
+        <h4 class="text-center">oneforall（子域名）</h4>
         <table class="table table-bordered table-hover table-striped">
             <thead>
             <tr>
@@ -386,12 +357,7 @@ $typeArr = [
     </div>
 
     <div class="col-auto  tuchu_col">
-        <h4 class="text-center">
-            hydra（主机暴力破解）
-            <a href="<?php echo url('app/rescan', ['id'=>$info['id'],'tools_name' => 'sshScan']) ?>"
-               onClick="return confirm('确定要清空该工具数据重新扫描吗?')"
-               class="btn btn-sm btn-outline-warning">重新扫描</a>
-        </h4>
+        <h4 class="text-center">hydra（主机暴力破解）</h4>
         <table class="table table-bordered table-hover table-striped">
             <thead>
             <tr>
@@ -420,12 +386,7 @@ $typeArr = [
     </div>
 
     <div class="col-auto  tuchu_col">
-        <h4 class="text-center">
-            dirmap（扫后台）
-            <a href="<?php echo url('app/rescan', ['id'=>$info['id'],'tools_name' => 'dirmapScan']) ?>"
-               onClick="return confirm('确定要清空该工具数据重新扫描吗?')"
-               class="btn btn-sm btn-outline-warning">重新扫描</a>
-        </h4>
+        <h4 class="text-center"> dirmap（扫后台）</h4>
         <table class="table table-bordered table-hover table-striped">
             <thead>
             <tr>
@@ -455,12 +416,7 @@ $typeArr = [
         </table>
     </div>
     <div class="col-auto  tuchu_col">
-        <h4 class="text-center">
-            Nmap列表
-            <a href="<?php echo url('app/rescan', ['id'=>$info['id'],'tools_name' => 'NmapPortScan']) ?>"
-               onClick="return confirm('确定要清空该工具数据重新扫描吗?')"
-               class="btn btn-sm btn-outline-warning">重新扫描</a>
-        </h4>
+        <h4 class="text-center">Nmap列表</h4>
         <table class="table table-bordered table-hover table-striped">
             <thead>
             <tr>
@@ -505,12 +461,7 @@ $typeArr = [
     </div>
 
     <div class="col-auto  tuchu_col">
-        <h4 class="text-center">
-            vulmap信息
-            <a href="<?php echo url('app/rescan', ['id'=>$info['id'],'tools_name' => 'vulmapPocTest']) ?>"
-               onClick="return confirm('确定要清空该工具数据重新扫描吗?')"
-               class="btn btn-sm btn-outline-warning">重新扫描</a>
-        </h4>
+        <h4 class="text-center">vulmap信息</h4>
         <table class="table table-bordered table-hover table-striped">
             <thead>
             <tr>
@@ -560,12 +511,7 @@ $typeArr = [
         </table>
     </div>
     <div class="col-auto  tuchu_col">
-        <h4 class="text-center">
-            主机列表
-            <a href="<?php echo url('app/rescan', ['id'=>$info['id'],'tools_name' => 'autoAddHost']) ?>"
-               onClick="return confirm('确定要清空该工具数据重新扫描吗?')"
-               class="btn btn-sm btn-outline-warning">重新扫描</a>
-        </h4>
+        <h4 class="text-center">主机列表</h4>
         <table class="table table-bordered table-hover table-striped">
             <thead>
             <tr>
@@ -616,12 +562,7 @@ $typeArr = [
     </div>
 
     <div class="col-auto  tuchu_col">
-        <h4 class="text-center">
-            DisMap（CMS指纹识别）
-            <a href="<?php echo url('app/rescan', ['id'=>$info['id'],'tools_name' => 'dismapScan']) ?>"
-               onClick="return confirm('确定要清空该工具数据重新扫描吗?')"
-               class="btn btn-sm btn-outline-warning">重新扫描</a>
-        </h4>
+        <h4 class="text-center">DisMap（CMS指纹识别）</h4>
         <table class="table table-bordered table-hover table-striped">
             <thead>
             <tr>
@@ -644,56 +585,17 @@ $typeArr = [
             <?php } ?>
         </table>
     </div>
-
-    <div class="col-auto  tuchu_col">
-        <h4 class="text-center">
-            自定义插件
-            <a href="<?php echo url('app/rescan', ['id'=>$info['id'],'tools_name' => 'plugin']) ?>"
-               onClick="return confirm('确定要清空该工具数据重新扫描吗?')"
-               class="btn btn-sm btn-outline-warning">重新扫描</a>
-        </h4>
-        <table class="table table-bordered table-hover table-striped">
-            <thead>
-            <tr>
-                <th>ID</th>
-                <th>所属项目</th>
-                <th>插件名称</th>
-            </tr>
-            </thead>
-            <?php foreach ($pluginScanLog as $value) { ?>
-                <tr>
-                    <td><?php echo $value['id'] ?></td>
-                    <td><?php echo $value['plugin_id'] ?></td>
-                    <td><?php echo htmlspecialchars($value['content']) ?>/td>
-                </tr>
-            <?php } ?>
-            <?php if (empty($app_dismap)) { ?>
-                <tr>
-                    <td colspan="3" class="text-center">暂无数据</td>
-                </tr>
-            <?php } ?>
-        </table>
-    </div>
-    <!--    <div class="col-auto  tuchu_col">-->
-    <!--        <button id="download_pdf" class="btn btn-primary">导出为PDF</button>-->
-    <!--    </div>-->
 </div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script>
-    $("#download_pdf").click(function () {
-
-        //可以是$("#id或类选择器").html()或val()
-        var element = $(":root").html()
-
-        html2pdf().from(element).set({
-            margin: 1,
-            filename: 'resume.pdf',
-            html2canvas: {scale: 2},
-            jsPDF: {orientation: 'portrait', unit: 'in', format: 'letter', compressPDF: false}
-        }).save();
-
-
-    });
-</script>
-{include file='public/footer' /}
+</div>
+<footer class="footer navbar-fixed-bottom">
+    <div class=" footer-bottom">
+        <ul class="list-inline text-center">
+            <li style="color:red;">QingScan 产品仅授权你在遵守《<a
+                        href="https://baike.baidu.com/item/%E4%B8%AD%E5%8D%8E%E4%BA%BA%E6%B0%91%E5%85%B1%E5%92%8C%E5%9B%BD%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E6%B3%95"
+                        target="_blank">中华人民共和国网络安全法</a>》前提下使用，请不要擅自对未获得授权的目标进行安全测试！！！
+            </li>
+        </ul>
+    </div>
+</footer>
+</body>
+</html>

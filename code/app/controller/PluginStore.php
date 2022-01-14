@@ -18,10 +18,11 @@ class PluginStore extends Common
     }
 
     public function index(){
+        ini_set('max_execution_time', 0);
         $result = curl_get($this->plugin_store_domain.'plugin_store/list');
         $list = json_decode($result,true);
         if (!isset($list['data'])) {
-            $this->error('获取插件信息失败');
+            $this->error('获取插件信息失败：'.$list['msg']);
         }
         $list = $list['data'];
         foreach ($list as &$v) {
@@ -100,10 +101,16 @@ class PluginStore extends Common
                         }
                     }
                     // 移动相应的文件
+                    if (!file_exists($app.'plugins/')) {
+                        mkdir($app.'plugins/', 0777, true);
+                    }
                     copydir($temp_plugin_path.'sqlOrsh',$app.'plugins/'.$info['name']);
                     copydir($temp_plugin_path.'controller',$app.'controller');
                     copydir($temp_plugin_path.'model',$app.'model');
                     copydir($temp_plugin_path.'view',$app.'../view');
+                    if (!file_exists($app.'../../tools/plugins/')) {
+                        mkdir($app.'../../tools/plugins/', 0777, true);
+                    }
                     copydir($temp_plugin_path.'tools',$app.'../../tools/plugins/'.$info['name']);
 
                     // 删除压缩包目录文件

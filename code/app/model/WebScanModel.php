@@ -180,8 +180,8 @@ class WebScanModel extends BaseModel
                 //如果结果文件不存在
                 if (file_exists($pathArr['tool_result']) == false) {
                     addlog("xray扫描结果文件不存在:{$pathArr['tool_result']},扫描URL失败: {$url}");
-                    Db::table('app')->where(['id' => $id])->save(['xray_scan_time' => date('2048-m-d H:i:s')]);
-                    PluginModel::addScanLog($val['id'], __METHOD__, 2);
+                    Db::table('app')->where(['id' => $id])->save(['xray_scan_time' => date('Y-m-d H:i:s')]);
+                    PluginModel::addScanLog($val['id'], __METHOD__, 1);
                     continue;
                 }
 
@@ -191,19 +191,19 @@ class WebScanModel extends BaseModel
                     $newData = [
                         'app_id' => $val['id'],
                         'create_time' => substr($value['create_time'], 0, 10),
-                        'detail' => json_encode($value['detail']),
-                        'plugin' => json_encode($value['plugin']),
-                        'target' => json_encode($value['target']),
+                        'detail' => json_encode($value['detail'],JSON_UNESCAPED_UNICODE),
+                        'plugin' => json_encode($value['plugin'],JSON_UNESCAPED_UNICODE),
+                        'target' => json_encode($value['target'],JSON_UNESCAPED_UNICODE),
                         'url' => $value['detail']['addr'],
                         'url_id' => $val['id'],
                         'user_id' => $user_id,
                         'poc' => $value['detail']['payload']
                     ];
                     $addr[] = $newData;
-                    echo "xray添加漏洞结果:" . json_encode($newData) . PHP_EOL;
+                    echo "xray添加漏洞结果:" . json_encode($newData,JSON_UNESCAPED_UNICODE) . PHP_EOL;
                     XrayModel::addXray($newData);
                 }
-                addlog(["xray扫描数据写入成功:".json_encode($addr)]);
+                addlog(["xray扫描数据写入成功:" . json_encode($addr,JSON_UNESCAPED_UNICODE)]);
                 self::scanTime('app', $id, 'xray_scan_time');
 
                 PluginModel::addScanLog($val['id'], __METHOD__, 1);
@@ -336,7 +336,7 @@ class WebScanModel extends BaseModel
                 while (!feof($file)) {
                     $result = fgets($file);
                     if (empty($result)) {
-                        addlog(["nuclei 扫描目标结果为空", $v['url']]);
+                        addlog(["nuclei扫描目标结果为空", $v['url']]);
                         continue;
                     }
                     $arr = json_decode($result, true);
@@ -366,8 +366,8 @@ class WebScanModel extends BaseModel
                 }
                 fclose($file);
                 if (!$temp) {
-                    PluginModel::addScanLog($v['id'], __METHOD__, 2);
-                    addlog(["nuclei扫描数据写入失败:{$v['url']}"]);
+                    PluginModel::addScanLog($v['id'], __METHOD__, 1);
+                    addlog(["nuclei扫描未发现漏洞:{$v['url']}，数据结构：".json_encode($temp)]);
                     continue;
                 }
                 addlog(["nuclei扫描数据写入成功:" . json_encode($temp)]);
@@ -423,7 +423,7 @@ class WebScanModel extends BaseModel
                     ];
                     if (!Db::name('app_vulmap')->insert($data)) {
                         addlog(["app_vulmap数据写入失败:" . json_encode($data)]);
-                        PluginModel::addScanLog($v['id'], __METHOD__, 2,0,['content' => 'app_vulmap数据写入失败']);
+                        PluginModel::addScanLog($v['id'], __METHOD__, 2, 0, ['content' => 'app_vulmap数据写入失败']);
                     };
                 }
                 PluginModel::addScanLog($v['id'], __METHOD__, 1);
@@ -521,7 +521,7 @@ class WebScanModel extends BaseModel
                             'app_id' => $v['id'],
                             'user_id' => $v['user_id'],
                             'create_time' => date('Y-m-d H:i:s', time()),
-                            'result' => json_encode($acontent[1])
+                            'result' => json_encode($acontent[1], JSON_UNESCAPED_UNICODE)
                         ];
                     }
                 }

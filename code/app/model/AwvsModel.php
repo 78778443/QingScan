@@ -12,10 +12,7 @@ class AwvsModel extends BaseModel
         $awvs_url = ConfigModel::value('awvs_url');
         $awvs_token = ConfigModel::value('awvs_token');
 
-        if (empty($awvs_url) || empty($awvs_token)) {
-            addlog(["执行AWVS扫描任务失败,未找到有效得配置信息", $awvs_url, $awvs_token]);
-            return false;
-        }
+
         while (true) {
             processSleep(1);
             $list = Db::table('app')->whereTime('awvs_scan_time', '<=', date('Y-m-d H:i:s', time() - (86400 * 15)))->where('is_delete', 0)->limit(1)->orderRand()->select()->toArray();
@@ -23,8 +20,16 @@ class AwvsModel extends BaseModel
                 PluginModel::addScanLog($val['id'], __METHOD__, 0);
                 $url = $val['url'];
                 $id = $val['id'];
+                if (empty($awvs_url) || empty($awvs_token)) {
+                    self::scanTime('app', $id, 'awvs_scan_time');
+                    $errMsg = ["执行AWVS扫描任务失败,未找到有效得配置信息", $awvs_url, $awvs_token, $id, $url];
+                    PluginModel::addScanLog($val['id'], __METHOD__, 2, 0, ["content" => $errMsg]);
+                    addlog($errMsg);
+                    continue;
+                }
+
                 if (filter_var($url, FILTER_VALIDATE_URL) === false) {
-                    PluginModel::addScanLog($val['id'], __METHOD__, 2);
+                    PluginModel::addScanLog($val['id'], __METHOD__, 2, 0, ["content" => ["URL地址不正确", $id, $url]]);
                     addlog(["URL地址不正确", $id, $url]);
                     self::scanTime('app', $id, 'awvs_scan_time');
                     continue;
@@ -32,8 +37,9 @@ class AwvsModel extends BaseModel
                 //添加目标
                 $targetId = self::getTargetId($id, $url, $awvs_url, $awvs_token, $val['user_id']);
                 if (!$targetId) {
-                    PluginModel::addScanLog($val['id'], __METHOD__, 2);
-                    addlog(["AWVS扫描失败", $id, $url]);
+                    $errMsg = ["任务发送到AWVS失败,请检查QingScan是否能访问到AWVS服务，以及token有效性~", $id, $url];
+                    PluginModel::addScanLog($val['id'], __METHOD__, 2, 0, ["content" => $errMsg]);
+                    addlog($errMsg);
                     self::scanTime('app', $id, 'awvs_scan_time');
                     continue;
                 }
@@ -46,9 +52,11 @@ class AwvsModel extends BaseModel
                 }
                 //API未授权
                 if (isset($retArr['code']) && $retArr['code'] == 401) {
-                    addlog(["AWVS未授权,休息120秒...", $val]);
-                    sleep(120);
-                    break;
+                    $errMsg = ["AWVS未授权,请参照wiki配置地址和token...", $id, $url];
+                    addlog($errMsg);
+                    PluginModel::addScanLog($val['id'], __METHOD__, 2, 0, ["content" => $errMsg]);
+                    self::scanTime('app', $id, 'awvs_scan_time');
+                    continue;
                 }
                 //判断目标扫描状态
                 if (isset($retArr['last_scan_session_status']) && $retArr['last_scan_session_status'] == 'completed') {

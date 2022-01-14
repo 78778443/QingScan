@@ -67,6 +67,7 @@ class Code extends Common
         Db::table('code_composer')->where(['code_id' => $id])->delete();
         Db::table('code_python')->where(['code_id' => $id])->delete();
         Db::table('code_java')->where(['code_id' => $id])->delete();
+        Db::table('plugin_scan_log')->where(['app_id' => $id, 'scan_type' => 2])->delete();
 
         return redirect($_SERVER['HTTP_REFERER']);
 
