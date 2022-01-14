@@ -82,6 +82,7 @@ class Config extends Common
         }
     }
 
+    // 系统更新
     public function system_update()
     {
         $path = \think\facade\App::getRootPath() . '../';
