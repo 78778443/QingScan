@@ -366,7 +366,7 @@ class App extends Common
                 break;
             case 'xray':
                 $data = [
-                    'nuclei_scan_time' => '2000-01-01 00:00:00',
+                    'xray_scan_time' => '2000-01-01 00:00:00',
                 ];
                 Db::table('xray')->where(['app_id' => $id])->delete();
                 break;
