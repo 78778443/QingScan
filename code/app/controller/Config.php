@@ -96,6 +96,7 @@ class Config extends Common
             $fileNameList = getDirFileName($sqlPath);
             unset($fileNameList[count($fileNameList) - 1]);
             unset($fileNameList[count($fileNameList) - 1]);
+            $version = 'v1.2.0';
             if (!empty($fileNameList)) {
                 $lock = $sqlPath.'/update.lock';
                 // 获取当前版本号
@@ -116,7 +117,7 @@ class Config extends Common
                 }
             }
             if ($result != 'Already up to date.') {
-                $msg = '系统更新成功，当前版本 号：'.$version;
+                $msg = '系统更新成功，当前版本号：'.$version;
             }
         } catch (\Exception $e) {
             $msg = '系统更新失败：'.$e->getMessage();
