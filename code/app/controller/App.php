@@ -430,7 +430,7 @@ class App extends Common
                 $this->error('参数错误');
                 break;
         }
-        Db::table('plugin_scan_log')->where(['app_id' => $id, 'scan_type' => 0])->delete();
+        Db::table('plugin_scan_log')->where(['app_id' => $id, 'scan_type' => 0,'plugin_name'=>$tools_name])->delete();
         if (!empty($data)) {
             Db::table('app')->where(['id' => $id])->update($data);
         }
