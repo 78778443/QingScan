@@ -323,47 +323,79 @@ class App extends Common
             $this->error('黑盒数据不存在');
         }
         $tools_name = $request->param('tools_name','');
+
         switch ($tools_name) {
             case 'rad':
+                $data = [
+                    'crawler_time' => '2000-01-01 00:00:00'
+                ];
                 Db::table('urls')->where(['app_id' => $id])->delete();
                 Db::table('urls_sqlmap')->where(['app_id' => $id])->delete();
                 break;
             case 'crawlergo':
+                $data = [
+                    'crawlergo_scan_time' => '2000-01-01 00:00:00',
+                ];
                 Db::table('app_crawlergo')->where(['app_id' => $id])->delete();
                 break;
             case 'awvs':
+                $data = [
+                    'awvs_scan_time' => '2000-01-01 00:00:00',
+                ];
                 Db::table('awvs_app')->where(['app_id' => $id])->delete();
                 break;
             case 'nuclei':
+                $data = [
+                    'nuclei_scan_time' => '2000-01-01 00:00:00',
+                ];
                 Db::table('app_nuclei')->where(['app_id' => $id])->delete();
                 break;
             case 'xray':
+                $data = [
+                    'nuclei_scan_time' => '2000-01-01 00:00:00',
+                ];
                 Db::table('xray')->where(['app_id' => $id])->delete();
                 break;
             case 'google':
+                $data = [
+                    'screenshot_time' => '2000-01-01 00:00:00',
+                ];
                 Db::table('app_info')->where(['app_id' => $id])->delete();
                 break;
             case 'whatweb':
+                $data = [
+                    'whatweb_scan_time' => '2000-01-01 00:00:00',
+                ];
                 Db::table('app_whatweb')->where(['app_id' => $id])->delete();
                 Db::table('app_whatweb_poc')->where(['app_id' => $id])->delete();
                 break;
             case 'sqlmap':
+                Db::table('urls')->where(['app_id' => $id])->update(['sqlmap_scan_time'=>'2000-01-01 00:00:00']);
                 Db::table('urls_sqlmap')->where(['app_id' => $id])->delete();
                 break;
             case 'oneforall':
+                $data = [
+                    'subdomain_scan_time' => '2000-01-01 00:00:00',
+                ];
                 Db::table('one_for_all')->where(['app_id' => $id])->delete();
                 break;
             case 'hydra':
+                Db::table('host')->where(['app_id' => $id])->update(['hydra_scan_time'=>'2000-01-01 00:00:00']);
                 Db::table('host_hydra_scan_details')->where(['app_id' => $id])->delete();
                 break;
             case 'dirmap':
+                $data = [
+                    'dirmap_scan_time' => '2000-01-01 00:00:00',
+                ];
                 Db::table('app_dirmap')->where(['app_id' => $id])->delete();
                 break;
             case 'namp':
                 Db::table('host_port')->where(['app_id' => $id])->update(['service'=>null]);
-                Db::table('host_hydra_scan_details')->where(['app_id' => $id])->delete();
                 break;
             case 'vulmap':
+                $data = [
+                    'vulmap_scan_time' => '2000-01-01 00:00:00',
+                ];
                 Db::table('app_vulmap')->where(['app_id' => $id])->delete();
                 break;
             case 'host':
@@ -372,6 +404,9 @@ class App extends Common
                 Db::table('host_hydra_scan_details')->where(['app_id' => $id])->delete();
                 break;
             case 'dismap':
+                $data = [
+                    'dismap_scan_time' => '2000-01-01 00:00:00',
+                ];
                 Db::table('app_dismap')->where(['app_id' => $id])->delete();
                 break;
             case 'plugin':
@@ -380,6 +415,9 @@ class App extends Common
             default:
                 $this->error('参数错误');
                 break;
+        }
+        if (!empty($data)) {
+            Db::table('app')->where(['id' => $id])->update($data);
         }
         return redirect($_SERVER['HTTP_REFERER'] ?? '/');
     }
