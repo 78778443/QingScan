@@ -645,10 +645,10 @@ $typeArr = [
         </table>
     </div>
 
-    <div class="col-auto  tuchu_col">
+    <!--<div class="col-auto  tuchu_col">
         <h4 class="text-center">
             自定义插件
-            <a href="<?php echo url('app/rescan', ['id'=>$info['id'],'tools_name' => 'plugin']) ?>"
+            <a href="<?php /*echo url('app/rescan', ['id'=>$info['id'],'tools_name' => 'plugin']) */?>"
                onClick="return confirm('确定要清空该工具数据重新扫描吗?')"
                class="btn btn-sm btn-outline-warning">重新扫描</a>
         </h4>
@@ -660,20 +660,20 @@ $typeArr = [
                 <th>插件名称</th>
             </tr>
             </thead>
-            <?php foreach ($pluginScanLog as $value) { ?>
+            <?php /*foreach ($pluginScanLog as $value) { */?>
                 <tr>
-                    <td><?php echo $value['id'] ?></td>
-                    <td><?php echo $value['plugin_id'] ?></td>
-                    <td><pre><?php echo $value['content'] ?></pre></td>
+                    <td><?php /*echo $value['id'] */?></td>
+                    <td><?php /*echo $value['plugin_id'] */?></td>
+                    <td><pre><?php /*echo $value['content'] */?></pre></td>
                 </tr>
-            <?php } ?>
-            <?php if (empty($app_dismap)) { ?>
+            <?php /*} */?>
+            <?php /*if (empty($app_dismap)) { */?>
                 <tr>
                     <td colspan="3" class="text-center">暂无数据</td>
                 </tr>
-            <?php } ?>
+            <?php /*} */?>
         </table>
-    </div>
+    </div>-->
     <!--    <div class="col-auto  tuchu_col">-->
     <!--        <button id="download_pdf" class="btn btn-primary">导出为PDF</button>-->
     <!--    </div>-->
