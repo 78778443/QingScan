@@ -278,7 +278,14 @@ class App extends Common
             'crawlergo_scan_time' => '2000-01-01 00:00:00',
             'vulmap_scan_time' => '2000-01-01 00:00:00',
         );
-        $data['info'] = Db::name('app')->where(['id' => $id])->find();
+        $where[] = ['id','=',$id];
+        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
+            $where[] = ['user_id','=',$this->userId];
+        }
+        $data['info'] = Db::name('app')->where($where)->find();
+        if (!$data['info']) {
+            $this->error('黑盒数据不存在');
+        }
         $urlInfo = parse_url($data['info']['url']);
         $ip = gethostbyname($urlInfo['host']);
 
