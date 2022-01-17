@@ -87,16 +87,19 @@ class PluginStore extends Common
                 try {
                     // 执行sh文件
                     $sh = $temp_plugin_path.'sqlOrsh/exec.sh';
-                    $content = file_get_contents($sh);
-                    if (!empty($content)) {
-                        $cmdArr = explode(';',$content);
-                        unset($cmdArr[count($cmdArr)-1]);
-                        if (!empty($cmdArr[count($cmdArr)-1])) {
-                            foreach ($cmdArr as $cmd) {
-                                systemLog(trim($cmd),false);
+                    if (file_exists($sh)) {
+                        $content = file_get_contents($sh);
+                        if (!empty($content)) {
+                            $cmdArr = explode(';',$content);
+                            unset($cmdArr[count($cmdArr)-1]);
+                            if (!empty($cmdArr[count($cmdArr)-1])) {
+                                foreach ($cmdArr as $cmd) {
+                                    systemLog(trim($cmd),false);
+                                }
                             }
                         }
                     }
+
 
                     foreach (scandir($temp_plugin_path.'sqlOrsh') as $value){
                         if($value != '.' && $value != '..'){
