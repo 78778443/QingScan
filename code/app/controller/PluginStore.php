@@ -84,8 +84,20 @@ class PluginStore extends Common
                 $app = \think\facade\App::getAppPath();
                 $temp_plugin_path = $save_dir.$info['name'].'/';
 
-                // 执行sql文件
                 try {
+                    // 执行sh文件
+                    $sh = $temp_plugin_path.'sqlOrsh/exec.sh';
+                    $content = file_get_contents($sh);
+                    if (!empty($content)) {
+                        $cmdArr = explode(';',$content);
+                        unset($cmdArr[count($cmdArr)-1]);
+                        if (!empty($cmdArr[count($cmdArr)-1])) {
+                            foreach ($cmdArr as $cmd) {
+                                systemLog(trim($cmd),false);
+                            }
+                        }
+                    }
+
                     foreach (scandir($temp_plugin_path.'sqlOrsh') as $value){
                         if($value != '.' && $value != '..'){
                             $preg = "/(.*?)\.sql/";
