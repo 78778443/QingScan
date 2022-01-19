@@ -57,7 +57,9 @@ QingScan尽最大能力保障各位安装的顺畅，但QingScan人力有限，�
 ## 联系我
 
 在使用过程中有任何问题，可以通过公众号、微信、微信群联系
-![联系我们](https://user-images.githubusercontent.com/8509054/149257697-de7f8df6-4d50-4d4c-8880-2a9b6df88407.png)
+
+![联系我们](https://user-images.githubusercontent.com/8509054/150087919-fd22cc2f-9876-49b9-ab98-6157196c1052.png)
+
 
 ## 功能展示
 ![image](https://user-images.githubusercontent.com/8509054/143174877-879408de-e594-4508-aa7c-b2fe095382cb.png)
