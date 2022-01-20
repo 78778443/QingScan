@@ -497,7 +497,8 @@ class App extends Common
             }
             return $this->apiReturn(1, [], "代理已关闭，数据导入成功");
         } else { // 开启代理
-            $port = rangeCrearePort();
+            //$port = rangeCrearePort();
+            $port = 14256;
             if (!Db::name('app')->where('xray_agent_port', $port)->count('id')) {
                 $data = [
                     'xray_agent_port' => $port,
