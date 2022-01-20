@@ -43,7 +43,7 @@ QingScan尽最大能力保障各位安装的顺畅，但QingScan人力有限，�
 ## 靶场系统
 
 您在安装之后请不要对未获得足够授权的目标进行扫描，同时为了让你能够快速上手，我们搭建了一些靶场系统授权你进行安全扫描：
-1. http://txy8g.songboy.site:8888/home/index.php  轻松渗透测试系统测试
+1. http://permeate.qingscan.songboy.site/home/index.php  轻松渗透测试系统测试
 
 
 ## 迭代计划
