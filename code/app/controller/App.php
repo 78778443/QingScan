@@ -183,6 +183,7 @@ class App extends Common
         Db::table('app_whatweb_poc')->where(['app_id' => $id])->delete();
         Db::table('app_xray_agent_port')->where(['app_id' => $id])->delete();
         Db::table('awvs_app')->where(['app_id' => $id])->delete();
+        Db::table('awvs_vuln')->where(['app_id' => $id])->delete();
         Db::table('host_hydra_scan_details')->where(['app_id' => $id])->delete();
         Db::table('one_for_all')->where(['app_id' => $id])->delete();
         Db::table('plugin_scan_log')->where(['app_id' => $id])->delete();
@@ -311,6 +312,7 @@ class App extends Common
         Db::table('app_whatweb_poc')->where(['app_id' => $id])->delete();
         Db::table('app_xray_agent_port')->where(['app_id' => $id])->delete();
         Db::table('awvs_app')->where(['app_id' => $id])->delete();
+        Db::table('awvs_vuln')->where(['app_id' => $id])->delete();
         Db::table('host')->where(['app_id' => $id])->delete();
         Db::table('host_hydra_scan_details')->where(['app_id' => $id])->delete();
         Db::table('host_port')->where(['app_id' => $id])->delete();
@@ -357,6 +359,7 @@ class App extends Common
                     'awvs_scan_time' => '2000-01-01 00:00:00',
                 ];
                 Db::table('awvs_app')->where(['app_id' => $id])->delete();
+                Db::table('awvs_vuln')->where(['app_id' => $id])->delete();
                 break;
             case 'nucleiScan':
                 $data = [
