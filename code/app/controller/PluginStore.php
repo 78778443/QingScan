@@ -84,6 +84,7 @@ class PluginStore extends Common
                 $app = \think\facade\App::getAppPath();
                 $temp_plugin_path = $save_dir.$info['name'].'/';
 
+                Db::startTrans();
                 try {
                     // 执行sh文件
                     $sh = $temp_plugin_path.'sqlOrsh/exec.sh';
@@ -109,7 +110,7 @@ class PluginStore extends Common
                                 $sqlArr = explode(';',$content);
                                 foreach ($sqlArr as $sql) {
                                     if ($sql) {
-                                        @Db::execute($sql.';');
+                                        Db::execute($sql.';');
                                     }
                                 }
                             }
@@ -119,17 +120,19 @@ class PluginStore extends Common
                     if (!file_exists($app.'plugins/')) {
                         mkdir($app.'plugins/', 0777, true);
                     }
-                    copydir($temp_plugin_path.'sqlOrsh',$app.'plugins/'.$info['name']);
+                    $app_tools = $app.'plugins/'.$info['name'];
+                    copydir($temp_plugin_path.'sqlOrsh',$app_tools);
                     copydir($temp_plugin_path.'controller',$app.'controller');
                     copydir($temp_plugin_path.'model',$app.'model');
                     copydir($temp_plugin_path.'view',$app.'../view');
                     if (!file_exists($app.'../../tools/plugins/')) {
                         mkdir($app.'../../tools/plugins/', 0777, true);
                     }
-                    copydir($temp_plugin_path.'tools',$app.'../../tools/plugins/'.$info['name']);
+                    copydir($temp_plugin_path.'tools/',$app.'../../tools/plugins/');
 
                     // 删除压缩包目录文件
                     deldir($temp_plugin_path);
+                    deldir($app_tools);
                     @unlink($file_path);
 
                     $data = [
@@ -143,12 +146,13 @@ class PluginStore extends Common
                     ];
                     Db::name('plugin_store')->insert($data);
 
+                    Db::commit();
                     return $this->apiReturn(1,[],'插件安装成功');
-
                 } catch (\Exception $e) {
                     // 回退兑换码
                     $result = curl_get($this->plugin_store_domain.'plugin_store/no_use_code?code='.$code);
                     $result = json_decode($result,true);
+                    Db::rollback();
                     if (!$result['code']) {
                         return $this->apiReturn(0,[],'插件安装失败，错误原因：'.$result['msg']);
                     } else {
