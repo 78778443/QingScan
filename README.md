@@ -13,7 +13,7 @@ QingScan 是一款聚合扫描器，本身不生产安全扫描功能，但会�
 
 
 ## 在线演示
-在线体验地址：http://txy8g.songboy.site:8112/
+在线体验地址：http://demo.qingscan.songboy.site/
 用户名：admin   密码：admin
 > 注：在线体验地址为功能演示，不会对目标实际扫描~
 
