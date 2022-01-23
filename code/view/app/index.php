@@ -52,6 +52,8 @@
                     <th>vulmap</th>
                     <th>nmap</th>
                     <th>主机数量</th>
+                    <th>nuclei</th>
+                    <th>hydra</th>
                     <th>创建时间</th>
                     <th style="width: 200px">操作</th>
                 </tr>
@@ -85,7 +87,7 @@
                         </td>
                         <td>
                             <a
-                               href="<?php echo url('sqlmap/index', ['app_id' => $value['id']]); ?>"><?php echo $value['sqlmap_num'] ?? 0 ?>
+                                    href="<?php echo url('sqlmap/index', ['app_id' => $value['id']]); ?>"><?php echo $value['sqlmap_num'] ?? 0 ?>
                             </a>
                         </td>
                         <td>
@@ -105,12 +107,22 @@
                         </td>
                         <td>
                             <a
-                               href="<?php echo url('host_port/index', ['app_id' => $value['id']]); ?>"><?php echo $value['namp_num'] ?? 0 ?>
+                                    href="<?php echo url('host_port/index', ['app_id' => $value['id']]); ?>"><?php echo $value['namp_num'] ?? 0 ?>
                             </a>
                         </td>
                         <td>
                             <a
-                               href="<?php echo url('host/index', ['app_id' => $value['id']]); ?>"><?php echo $value['host_num'] ?? 0 ?>
+                                    href="<?php echo url('host/index', ['app_id' => $value['id']]); ?>"><?php echo $value['host_num'] ?? 0 ?>
+                            </a>
+                        </td>
+                        <td>
+                            <a title="扫描时间:<?php echo $value['nuclei_scan_time'] ?>"
+                               href="<?php echo url('app_nuclei/index', ['app_id' => $value['id']]); ?>"><?php echo $value['nuclei_num'] ?? 0 ?>
+                            </a>
+                        </td>
+                        <td>
+                            <a
+                                    href="<?php echo url('hydra/index', ['app_id' => $value['id']]); ?>"><?php echo $value['hydra_num'] ?? 0 ?>
                             </a>
                         </td>
                         <td><?php echo date('Y-m-d H:i', strtotime($value['create_time'])) ?></td>
@@ -135,7 +147,7 @@
                 <?php } ?>
                 </tbody>
                 <?php if(empty($list)){?>
-                    <tr><td colspan="14" class="text-center">暂无目标</td></tr>
+                    <tr><td colspan="8" class="text-center">暂无目标</td></tr>
                 <?php }?>
             </table>
         </div>
