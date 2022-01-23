@@ -263,6 +263,9 @@ class App extends Common
             $where1[] = ['user_id', '=', $this->userId];
         }
         $data['info'] = Db::name('app')->where($map)->find();
+        if (!$data['info']) {
+            return $this->error('数据不存在');
+        }
         $data['whatweb'] = Db::table('app_whatweb')->where($where)->where($where1)->order("id", 'desc')->limit(0, 15)->select()->toArray();
         $data['oneforall'] = Db::table('one_for_all')->where($where)->order("id", 'desc')->limit(0, 15)->select()->toArray();
         $data['hydra'] = Db::table('host_hydra_scan_details')->where($where)->order("id", 'desc')->limit(0, 15)->select()->toArray();
@@ -283,6 +286,8 @@ class App extends Common
         $data['host_port'] = Db::table('host_port')->where(['host' => $ip])->limit(0, 15)->select()->toArray();
         $data['host'] = Db::table('host')->where(['host' => $ip])->limit(0, 15)->select()->toArray();
         $data['host_id'] = isset($data['host'][0]['id']) ? $data['host'][0]['id'] : 9999;
+
+        $data['monitor_notice'] = Db::table('github_keyword_monitor_notice')->where($where)->order("app_id", 'desc')->limit(0, 15)->select()->toArray();
 
         return View::fetch('details', $data);
     }
