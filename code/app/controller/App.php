@@ -8,6 +8,7 @@ use app\model\HydraModel;
 use app\model\UrlsModel;
 use app\model\TaskModel;
 use app\model\XrayModel;
+use Org\Util\Date;
 use think\facade\Db;
 use think\facade\View;
 use think\Request;
@@ -111,7 +112,18 @@ class App extends Common
         $data['is_hydra'] = $request->param('is_hydra');
         $data['is_dirmap'] = $request->param('is_dirmap');
         $data['is_intranet'] = $request->param('is_intranet');
-        AppModel::addData($data);
+        $id = AppModel::addData($data);
+        $host = parse_url($data['url'])['host'];
+        if (!empty($host)) {
+            // 写入到关键词监控表中
+            $data = [
+                'user_id' => $this->userId,
+                'app_id' => $id,
+                'title' => $host,
+                'create_time' => date('Y-m-d H:i:s', time())
+            ];
+            Db::name('github_keyword_monitor')->insert($data);
+        }
 
         return redirect(url('app/index'));
     }
@@ -191,6 +203,7 @@ class App extends Common
         Db::table('urls_sqlmap')->where(['app_id' => $id])->delete();
         Db::table('xray')->where(['app_id' => $id])->delete();
         Db::table('plugin_scan_log')->where(['app_id' => $id])->delete();
+        Db::table('github_keyword_monitor')->where(['app_id' => $id])->delete();
 
         if (Db::name('app')->where($map)->delete()) {
             return redirect($_SERVER['HTTP_REFERER']);
@@ -433,7 +446,7 @@ class App extends Common
                 $this->error('参数错误');
                 break;
         }
-        Db::table('plugin_scan_log')->where(['app_id' => $id, 'scan_type' => 0,'plugin_name'=>$tools_name])->delete();
+        Db::table('plugin_scan_log')->where(['app_id' => $id, 'scan_type' => 0, 'plugin_name' => $tools_name])->delete();
         if (!empty($data)) {
             Db::table('app')->where(['id' => $id])->update($data);
         }
