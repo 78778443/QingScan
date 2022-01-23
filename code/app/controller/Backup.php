@@ -60,8 +60,11 @@ class Backup extends Common
         if (!file_exists($filename)) {
             return $this->error('文件不存在');
         }
-        $filename = substr($filename, strrpos($filename, "/") + 1, strlen($filename));
-        $file = ['name' => $filename, 'part' => 0];
+        exit;
+        //$filename = substr($filename, strrpos($filename, "/") + 1, strlen($filename));
+        $file['name'] = $filename;
+        $file[] = $filename;
+        $file[] = $filename;
         $result = $this->backup->setFile($file)->import(0);
         if ($result) {
             var_dump($result);exit;

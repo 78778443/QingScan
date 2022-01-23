@@ -38,8 +38,8 @@ $searchArr = [
                         <td><?php echo $value['size'] ?></td>
                         <td><?php echo $value['create_time'] ?></td>
                         <td>
-                            <a href="<?php echo url('recovery',['time'=>$value['time']])?>"
-                               class="btn btn-sm btn-outline-success">恢复</a>
+                            <!--<a href="<?php /*echo url('recovery',['time'=>$value['time']])*/?>"
+                               class="btn btn-sm btn-outline-success">恢复</a>-->
                             <a href="<?php echo url('download',['time'=>$value['time']])?>"
                                class="btn btn-sm btn-outline-success">下载</a>
                             <a href="<?php echo url('del',['time'=>$value['time']])?>" class="btn btn-sm btn-outline-danger">删除</a>
