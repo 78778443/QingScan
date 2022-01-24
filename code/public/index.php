@@ -15,6 +15,7 @@ if (!file_exists(__DIR__."/install/install.lock")) {
     header("location:/install/step1.php");exit();
 }
 
+header('Access-Control-Allow-Origin:*');
 
 require __DIR__ . '/../vendor/autoload.php';
 
