@@ -13,7 +13,7 @@ QingScan 是一款聚合扫描器，本身不生产安全扫描功能，但会�
 
 
 ## 在线演示
-在线体验地址：http://demo.qingscan.songboy.site/
+在线体验地址：http://demo.qingscan.site/
 用户名：admin   密码：admin
 > 注：在线体验地址为功能演示，不会对目标实际扫描~
 
@@ -43,7 +43,7 @@ QingScan尽最大能力保障各位安装的顺畅，但QingScan人力有限，�
 ## 靶场系统
 
 您在安装之后请不要对未获得足够授权的目标进行扫描，同时为了让你能够快速上手，我们搭建了一些靶场系统授权你进行安全扫描：
-1. http://permeate.qingscan.songboy.site/home/index.php  轻松渗透测试系统测试
+1. http://permeate.qingscan.site/  轻松渗透测试系统测试
 
 
 ## 迭代计划
