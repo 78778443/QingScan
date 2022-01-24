@@ -13,13 +13,13 @@ QingScan 是一款聚合扫描器，本身不生产安全扫描功能，但会�
 
 
 ## 在线演示
-在线体验地址：http://txy8g.songboy.site:8112/
+在线体验地址：http://demo.qingscan.site/
 用户名：admin   密码：admin
 > 注：在线体验地址为功能演示，不会对目标实际扫描~
 
 ## 安装教程
 
-1. 需要安装docker、docker-compose 安装方法 http://get.daocloud.io/ 
+1. 需要安装docker、docker-compose 安装方法 http://get.daocloud.io/
 2. 下载代码后,启动容器`cd QingScan/docker/latest  && docker-compose up -d `
 2. <b>首次</b>启动需要更新容器内代码`docker exec  qingscan sh -c 'cd /root/qingscan && git fetch && git reset --hard origin/main && rm code/public/install/install.lock' `
 3. 依次执行命令创建MySQL数据库`docker exec -it  mysqlser bash`,进入数据库交互`mysql -uroot -p123` ,执行创建数据库 `CREATE DATABASE IF NOT EXISTS QingScan;`
@@ -33,16 +33,17 @@ QingScan 是一款聚合扫描器，本身不生产安全扫描功能，但会�
 
 QingScan尽最大能力保障各位安装的顺畅，但QingScan人力有限，目前仍然无法预料到每一处场景，希望您尽量按照视频教程中的环境来搭建；
 
-如果在安装的过程中遇到比较麻烦的问题，也可以联系我们的工程师远程协助帮你解决问题(需淘宝下单`2.88`元人民币),下单后主动添加群里`婷婷的橙子`为好友，并将向日葵的ID和验证码发给她。
+如果在安装的过程中遇到比较麻烦的问题，也可以联系我们的工程师远程协助帮你解决问题(需淘宝下单`6.88`元人民币),下单后主动添加群里`婷婷的橙子`为好友，并将向日葵的ID和验证码发给她。
 
 淘宝链接地址：https://item.taobao.com/item.htm?spm=a2126o.success.0.0.5e484831UkSn6H&id=666295567386&mt=
-![QingScan 远程协助安装二维码](https://user-images.githubusercontent.com/8509054/148786361-9bc7abd8-1db4-4b83-86c3-eaa6f1656d10.png)
+![QingScan 远程协助安装二维码](https://user-images.githubusercontent.com/8509054/149115891-ef667823-393c-45cd-b5a7-b87c71ee3ba0.png)
+
 
 
 ## 靶场系统
 
 您在安装之后请不要对未获得足够授权的目标进行扫描，同时为了让你能够快速上手，我们搭建了一些靶场系统授权你进行安全扫描：
-1. http://txy8g.songboy.site:8888/home/index.php  轻松渗透测试系统测试
+1. http://permeate.qingscan.site/  轻松渗透测试系统测试
 
 
 ## 迭代计划
@@ -56,7 +57,8 @@ QingScan尽最大能力保障各位安装的顺畅，但QingScan人力有限，�
 ## 联系我
 
 在使用过程中有任何问题，可以通过公众号、微信、微信群联系
-![image](https://user-images.githubusercontent.com/8509054/148784847-d142f7cc-510c-477c-9176-ecdf6e49ad12.png)
+
+![联系我们](https://user-images.githubusercontent.com/8509054/150087919-fd22cc2f-9876-49b9-ab98-6157196c1052.png)
 
 
 ## 功能展示
