@@ -19,6 +19,25 @@ $searchArr = [
 ]]; ?>
 {include file='public/search' /}
 
+
+<div class="row tuchu">
+    <div class="col-md-12">
+        <form class="row g-3" id="frmUpload" action="<?php echo url('pocs_file/batch_import') ?>" method="post"
+              enctype="multipart/form-data">
+            <div class="col-auto">
+                <input type="file" class="form-control form-control" name="file" accept=".xls,.csv" required/>
+            </div>
+            <div class="col-auto">
+                <input type="submit" class="btn btn-outline-info" value="批量添加项目">
+            </div>
+            <div class="col-auto">
+                <a href="<?php echo url('pocs_file/downloaAppTemplate') ?>"
+                   class="btn btn-outline-success">下载模板</a>
+            </div>
+        </form>
+    </div>
+</div>
+
 <div class="col-md-12 ">
     <div class="row tuchu">
         <!--            <div class="col-md-1"></div>-->

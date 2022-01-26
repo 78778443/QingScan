@@ -47,7 +47,7 @@ class App extends Common
         $data['statuscodeArr'] = array_column($data['statuscodeArr'], 'statuscode');
         $data['cmsArr'] = Db::table('app')->Join('app_info info', 'app.id = info.app_id')->where($where)->group('info.cms')->field('cms')->select()->toArray();
         $data['cmsArr'] = array_column($data['cmsArr'], 'cms');
-        $data['serverArr'] = Db::table('app')->Join('app_info info', 'app.id = info.app_id')->where($where)->order('id', 'desc')->group('info.server')->field('server')->select()->toArray();
+        $data['serverArr'] = Db::table('app')->Join('app_info info', 'app.id = info.app_id')->where($where)->group('info.server')->field('server')->select()->toArray();
         $data['serverArr'] = array_column($data['serverArr'], 'server');
         foreach ($data['list'] as &$v) {
             $v['is_waf'] = '否';
@@ -578,6 +578,7 @@ class App extends Common
             if ($is_dirmap == 0) {
                 $data['dirmap_scan_time'] = $datetime;
             }
+            $data['user_id'] = $this->userId;
             $temp_data[] = $data;
         }
         if (Db::name('app')->insertAll($temp_data)) {
