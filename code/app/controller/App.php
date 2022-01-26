@@ -204,6 +204,7 @@ class App extends Common
         Db::table('xray')->where(['app_id' => $id])->delete();
         Db::table('plugin_scan_log')->where(['app_id' => $id])->delete();
         Db::table('github_keyword_monitor')->where(['app_id' => $id])->delete();
+        Db::table('github_keyword_monitor_notice')->where(['app_id' => $id])->delete();
 
         if (Db::name('app')->where($map)->delete()) {
             return redirect($_SERVER['HTTP_REFERER']);
