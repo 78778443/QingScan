@@ -94,7 +94,7 @@ class PocsFile extends Common
     }
 
 
-    // 黑盒项目批量导入
+    // 批量导入
     public function batch_import(Request $request)
     {
         $file = $_FILES["file"]["tmp_name"];

@@ -1,5 +1,39 @@
 {include file='public/head' /}
 
+<?php
+$searchArr = [
+    'action' => url('code/bug_list'),
+    'method' => 'get',
+    'inputs' => [
+        ['type' => 'text', 'name' => 'search', 'placeholder' => "搜索"],
+    ],
+    'btnArr' => [
+        ['text' => '添加', 'ext' => [
+            "href" => url('add'),
+            "class" => "btn btn-outline-success"
+        ]
+        ]
+    ]]; ?>
+{include file='public/search' /}
+
+
+<div class="row tuchu">
+    <div class="col-md-12">
+        <form class="row g-3" id="frmUpload" action="<?php echo url('vul_target/batch_import') ?>" method="post"
+              enctype="multipart/form-data">
+            <div class="col-auto">
+                <input type="file" class="form-control form-control" name="file" accept=".xls,.csv" required/>
+            </div>
+            <div class="col-auto">
+                <input type="submit" class="btn btn-outline-info" value="批量添加项目">
+            </div>
+            <div class="col-auto">
+                <a href="<?php echo url('vul_target/downloaAppTemplate') ?>"
+                   class="btn btn-outline-success">下载模板</a>
+            </div>
+        </form>
+    </div>
+</div>
 
 <div class="row tuchu">
     <div class="col-md-12 ">
@@ -32,6 +66,8 @@
                             <?php if ($value['content']) { ?>
                                 <a class="btn btn-outline-info">POC验证</a>
                             <?php } ?>
+                            <a href="<?php echo url('del', ['id' => $value['id']]) ?>"
+                               class="btn btn-sm btn-outline-danger">删除</a>
                         </td>
                     </tr>
                 <?php } ?>
