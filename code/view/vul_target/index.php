@@ -13,7 +13,9 @@ $searchArr = [
             "class" => "btn btn-outline-success"
         ]
         ]
-    ]]; ?>
+    ]
+];
+?>
 {include file='public/search' /}
 
 

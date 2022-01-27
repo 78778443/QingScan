@@ -9,9 +9,36 @@ $searchArr = [
     'method' => 'get',
     'inputs' => [
         ['type' => 'text', 'name' => 'search', 'placeholder' => "搜索的内容"],
-    ]]; ?>
+    ],
+    'btnArr' => [
+        ['text' => '添加', 'ext' => [
+            "href" => url('add_pocsuite'),
+            "class" => "btn btn-outline-success"
+        ]
+        ]
+    ]
+]; ?>
+
 {include file='public/search' /}
 
+
+<div class="row tuchu">
+    <div class="col-md-12">
+        <form class="row g-3" id="frmUpload" action="<?php echo url('batch_import') ?>" method="post"
+              enctype="multipart/form-data">
+            <div class="col-auto">
+                <input type="file" class="form-control form-control" name="file" accept=".xls,.csv" required/>
+            </div>
+            <div class="col-auto">
+                <input type="submit" class="btn btn-outline-info" value="批量添加项目">
+            </div>
+            <div class="col-auto">
+                <a href="<?php echo url('downloaAppTemplate') ?>"
+                   class="btn btn-outline-success">下载模板</a>
+            </div>
+        </form>
+    </div>
+</div>
 
 <div class="row tuchu">
     <div class="col-md-12 ">
