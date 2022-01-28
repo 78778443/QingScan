@@ -5,6 +5,7 @@ $searchArr = [
     'action' => $_SERVER['REQUEST_URI'],
     'method' => 'get',
     'inputs' => [
+        ['type' => 'text', 'name' => 'search', 'placeholder' =>'search'],
     ]];
 ?>
 {include file='public/search' /}

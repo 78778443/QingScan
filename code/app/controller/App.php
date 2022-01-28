@@ -26,7 +26,7 @@ class App extends Common
     public function index(Request $request)
     {
         $pageSize = 15;
-        $page = $request->param('page', 1);
+        $page = $request->param('page', 1,'intval');
         $statusCode = $request->param('statuscode');
         $cms = base64_decode($_GET['cms'] ?? '');
         $server = base64_decode($_GET['server'] ?? '');
@@ -172,7 +172,7 @@ class App extends Common
 
     public function del(Request $request)
     {
-        $id = $request->param('id');
+        $id = $request->param('id','0','intval');
         $map[] = ['id', '=', $id];
 
         if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
@@ -254,7 +254,7 @@ class App extends Common
 
     public function details(Request $request)
     {
-        $app_id = $request->param('id');
+        $app_id = $request->param('id','0','intval');
         $where[] = ['app_id', '=', $app_id];
         $map[] = ['id', '=', $app_id];
         $where1 = [];
@@ -282,10 +282,10 @@ class App extends Common
         $data['awvs'] = Db::table('awvs_vuln')->where($where)->order("app_id", 'desc')->limit(0, 15)->select()->toArray();
         $data['pluginScanLog'] = Db::table('plugin_scan_log')->where($where)->where(['log_type' => 1])->order("app_id", 'desc')->limit(0, 15)->select()->toArray();
         //获取此域名对应主机的端口信息
-        $urlInfo = parse_url($data['info']['url']);
-        $ip = gethostbyname($urlInfo['host']);
-        $data['host_port'] = Db::table('host_port')->where(['host' => $ip])->limit(0, 15)->select()->toArray();
-        $data['host'] = Db::table('host')->where(['host' => $ip])->limit(0, 15)->select()->toArray();
+        //$urlInfo = parse_url($data['info']['url']);
+        //$ip = gethostbyname($urlInfo['host']);
+        $data['host_port'] = Db::table('host_port')->where(['app_id' => $app_id])->limit(0, 15)->select()->toArray();
+        $data['host'] = Db::table('host')->where(['app_id' => $app_id])->limit(0, 15)->select()->toArray();
         $data['host_id'] = isset($data['host'][0]['id']) ? $data['host'][0]['id'] : 9999;
 
         $data['monitor_notice'] = Db::table('github_keyword_monitor_notice')->where($where)->order("app_id", 'desc')->limit(0, 15)->select()->toArray();
@@ -295,7 +295,7 @@ class App extends Common
 
     public function qingkong(Request $request)
     {
-        $id = $request->param('id');
+        $id = $request->param('id','','intval');
         $array = array(
             'crawler_time' => '2000-01-01 00:00:00',
             'awvs_scan_time' => '2000-01-01 00:00:00',
@@ -348,7 +348,7 @@ class App extends Common
 
     public function rescan(Request $request)
     {
-        $id = $request->param('id');
+        $id = $request->param('id','','intval');
         $where[] = ['id', '=', $id];
         if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
             $where[] = ['user_id', '=', $this->userId];

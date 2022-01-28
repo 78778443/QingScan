@@ -27,7 +27,7 @@ class PocsFile extends Common
             $data['status'] = $request->param('status');
             $data['tools'] = $request->param('tools');
             $data['name'] = $request->param('name');
-            $data['content'] = input('content');
+            $data['content'] = getParam('content');
             if (empty($data['content'])   || !$data['name']) {
                 $this->error('数据不能为空');
             }

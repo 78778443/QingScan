@@ -627,20 +627,6 @@ class Code extends Common
         // $this->Location("index.php?s=code_check/index");
     }
 
-
-    public function add_api_url()
-    {
-        $data['app_list'] = AppModel::getListByWhere([]);
-        $this->show('code_check/add_api_url', $data);
-    }
-
-    public function _add_api_url()
-    {
-        CodeCheckModel::addData($_POST);
-        $this->Location("index.php?s=code_check/index");
-    }
-
-
     public function load_xml()
     {
         $cmd = "ls /data/fortify_result/*.xml";

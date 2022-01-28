@@ -5,13 +5,14 @@ namespace app\controller;
 
 
 use think\facade\Db;
+use think\Request;
 
 class Config extends Common
 {
-    public function index()
+    public function index(Request $request)
     {
         $where[] = ['is_delete', '=', 0];
-        $search = getParam('search');
+        $search = $request->param('search');
         if (!empty($search)) {
             $where[] = ['key|name|value', 'like', "%{$search}%"];
         }
@@ -21,12 +22,12 @@ class Config extends Common
         return view('config/index', $data);
     }
 
-    public function add()
+    public function add(Request $request)
     {
-        if (request()->isPost()) {
-            $data['key'] = getParam('key');
-            $data['name'] = getParam('name');
-            $data['value'] = getParam('value');
+        if ($request->isPost()) {
+            $data['key'] = $request->param('key');
+            $data['name'] = $request->param('name');
+            $data['value'] = $request->param('value');
             if (!$data['key'] || !$data['name'] || !$data['value']) {
                 $this->error('参数不能为空');
             }
@@ -40,16 +41,16 @@ class Config extends Common
         }
     }
 
-    public function edit()
+    public function edit(Request $request)
     {
-        $id = getParam('id');
+        $id = $request->param('id');
         if (!$id) {
             $this->error('参数错误');
         }
         if (request()->isPost()) {
-            $data['key'] = getParam('key');
-            $data['name'] = getParam('name');
-            $data['value'] = getParam('value');
+            $data['key'] = $request->param('key');
+            $data['name'] = $request->param('name');
+            $data['value'] = $request->param('value');
             if (!$data['key'] || !$data['name'] || !$data['value']) {
                 $this->error('参数不能为空');
             }
@@ -69,9 +70,9 @@ class Config extends Common
         }
     }
 
-    public function del()
+    public function del(Request $request)
     {
-        $id = getParam('id');
+        $id = $request->param('id');
         if (!$id) {
             $this->error('参数错误');
         }

@@ -4,6 +4,7 @@ namespace app\controller;
 
 use think\facade\Db;
 use think\facade\View;
+use think\Request;
 
 class Proxy extends Common
 {
@@ -17,12 +18,12 @@ class Proxy extends Common
         return View::fetch('index', $data);
     }
 
-    public function add()
+    public function add(Request $request)
     {
-        if (request()->isPost()) {
+        if ($request->isPost()) {
             ini_set('max_execution_time', 0);
-            $data['host'] = getParam('host');
-            $data['port'] = getParam('port');
+            $data['host'] = $request->param('host');
+            $data['port'] = $request->param('port');
             if (Db::name('proxy')->where('host', $data['host'])->where('port', $data['port'])->count('id')) {
                 $this->error('代理已存在');
             }
@@ -44,17 +45,17 @@ class Proxy extends Common
     }
 
 
-    public function edit()
+    public function edit(Request $request)
     {
-        $id = getParam('id');
+        $id = $request->param('id');
         $info = Db::name('proxy')->where('id', $id)->find();
         if (!$info) {
             $this->error('数据不存在');
         }
-        if (request()->isPost()) {
+        if ($request->isPost()) {
             ini_set('max_execution_time', 0);
-            $data['host'] = getParam('host');
-            $data['port'] = getParam('port');
+            $data['host'] = $request->param('host');
+            $data['port'] = $request->param('port');
             if (Db::name('proxy')->where('host', $data['host'])->where('port', $data['port'])->where('id', '<>', $id)->count('id')) {
                 $this->error('代理已存在');
             }
@@ -77,9 +78,9 @@ class Proxy extends Common
     }
 
 
-    public function del()
+    public function del(Request $request)
     {
-        $id = getParam('id');
+        $id = $request->param('id');
         if (Db::name('proxy')->where('id', $id)->delete()) {
             $this->success('代理删除成功');
         } else {
@@ -87,13 +88,13 @@ class Proxy extends Common
         }
     }
 
-    public function test_speed()
+    public function test_speed(Request $request)
     {
-        $id = getParam('id');
+        $id = $request->param('id');
         $info = Db::name('proxy')->where('id', $id)->find();
         $info['proxy'] = 'http://' . $info['host'] . ":{$info['port']}";
         if (request()->isPost()) {
-            $url = getParam('url');
+            $url = $request->param('url');
         } else {
             $url = 'http://www.baidu.com';
         }
