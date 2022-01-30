@@ -108,6 +108,14 @@ class Code extends Common
             $map[] = ['user_id', '=', $this->userId];
         }
         if (Db::name('code')->where($map)->update(['is_delete' => 1])) {
+            Db::table('fortify')->where(['code_id' => $id])->delete();
+            Db::table('semgrep')->where(['code_id' => $id])->delete();
+            Db::table('code_webshell')->where(['code_id' => $id])->delete();
+            Db::table('code_composer')->where(['code_id' => $id])->delete();
+            Db::table('code_python')->where(['code_id' => $id])->delete();
+            Db::table('code_java')->where(['code_id' => $id])->delete();
+            Db::table('plugin_scan_log')->where(['app_id' => $id, 'scan_type' => 2])->delete();
+
             return redirect($_SERVER['HTTP_REFERER']);
         } else {
             $this->error('删除失败');
