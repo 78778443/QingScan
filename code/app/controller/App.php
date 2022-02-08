@@ -461,7 +461,7 @@ class App extends Common
 
 
     // 批量删除
-    public function dela(Request $request){
+    public function batchDel(Request $request){
         $ids = $request->param('ids');
         if (!$ids) {
             $this->error('请先选择要删除的数据');
