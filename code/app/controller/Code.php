@@ -378,13 +378,13 @@ class Code extends Common
         $search = $request->param('search', '');
         $pageSize = 25;
         $where[] = ['is_delete', '=', 0];
-        $pid = $request->param('code_id');
+        $project_id = $request->param('project_id');
         $level = $request->param('level'); // 等级
         $Category = $request->param('Category');   // 分类
         $filename = $request->param('filename');   // 文件名
         $check_status = $request->param('check_status');   // 审核状态
-        if (!empty($pid)) {
-            $where[] = ['code_id', '=', $pid];
+        if (!empty($project_id)) {
+            $where[] = ['code_id', '=', $project_id];
         }
         if (!empty($level)) {
             $where[] = ['extra_severity', '=', $level];

@@ -460,6 +460,52 @@ class App extends Common
     }
 
 
+    // 批量删除
+    public function dela(Request $request){
+        $ids = $request->param('ids');
+        if (!$ids) {
+            $this->error('请先选择要删除的数据');
+        }
+        $map[] = ['app_id','in',$ids];
+        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
+            $map[] = ['user_id', '=', $this->userId];
+        }
+        $data['info'] = Db::name('app')->where('id','in',$ids)->find();
+        if (!empty($data)) {
+            $urlInfo = parse_url($data['info']['url']);
+            $ip = gethostbyname($urlInfo['host'] ?? '127.0.0.1');
+            Db::table('app_info')->where($map)->delete();
+            Db::table('host')->where(['host' => $ip])->delete();
+            Db::table('host_port')->where(['host' => $ip])->delete();
+        }
+        Db::table('app_crawlergo')->where($map)->delete();
+        Db::table('app_dirmap')->where($map)->delete();
+        Db::table('app_nuclei')->where($map)->delete();
+        Db::table('app_vulmap')->where($map)->delete();
+        Db::table('app_wafw00f')->where($map)->delete();
+        Db::table('app_whatweb')->where($map)->delete();
+        Db::table('app_whatweb_poc')->where($map)->delete();
+        Db::table('app_xray_agent_port')->where($map)->delete();
+        Db::table('awvs_app')->where($map)->delete();
+        Db::table('awvs_vuln')->where($map)->delete();
+        Db::table('host_hydra_scan_details')->where($map)->delete();
+        Db::table('one_for_all')->where($map)->delete();
+        Db::table('plugin_scan_log')->where($map)->delete();
+        Db::table('urls')->where($map)->delete();
+        Db::table('urls_sqlmap')->where($map)->delete();
+        Db::table('xray')->where($map)->delete();
+        Db::table('plugin_scan_log')->where($map)->delete();
+        Db::table('github_keyword_monitor')->where($map)->delete();
+        Db::table('github_keyword_monitor_notice')->where($map)->delete();
+
+        if (Db::name('app')->where($map)->delete()) {
+            return redirect($_SERVER['HTTP_REFERER']);
+        } else {
+            $this->error('删除失败');
+        }
+    }
+
+
     public function start_agent(Request $request)
     {
         $id = $request->param('id', '', 'intval');
