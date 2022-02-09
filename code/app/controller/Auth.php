@@ -22,8 +22,8 @@ class Auth extends Common
         $ids = implode(',', config('app.ADMINISTRATOR'));
         $map = "a.id not in($ids) and is_delete = 0";
         $list = UserModel::getListPage($map);
-        $data['list'] = $list['data'];
-        $data['page'] = $list['current_page'];
+        $data['list'] = $list->toArray()['data'];
+        $data['page'] = $list->render();
         return View::fetch('auth/user_list', $data);
     }
 
