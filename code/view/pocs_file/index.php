@@ -19,7 +19,6 @@ $searchArr = [
 ]]; ?>
 {include file='public/search' /}
 
-
 <div class="row tuchu">
     <div class="col-md-12">
         <form class="row g-3" id="frmUpload" action="<?php echo url('pocs_file/batch_import') ?>" method="post"

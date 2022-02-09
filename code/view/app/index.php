@@ -87,7 +87,7 @@
                         </td>
                         <td>
                             <a
-                                    href="<?php echo url('sqlmap/index', ['app_id' => $value['id']]); ?>"><?php echo $value['sqlmap_num'] ?? 0 ?>
+                               href="<?php echo url('sqlmap/index', ['app_id' => $value['id']]); ?>"><?php echo $value['sqlmap_num'] ?? 0 ?>
                             </a>
                         </td>
                         <td>
@@ -107,12 +107,12 @@
                         </td>
                         <td>
                             <a
-                                    href="<?php echo url('host_port/index', ['app_id' => $value['id']]); ?>"><?php echo $value['namp_num'] ?? 0 ?>
+                               href="<?php echo url('host_port/index', ['app_id' => $value['id']]); ?>"><?php echo $value['namp_num'] ?? 0 ?>
                             </a>
                         </td>
                         <td>
                             <a
-                                    href="<?php echo url('host/index', ['app_id' => $value['id']]); ?>"><?php echo $value['host_num'] ?? 0 ?>
+                               href="<?php echo url('host/index', ['app_id' => $value['id']]); ?>"><?php echo $value['host_num'] ?? 0 ?>
                             </a>
                         </td>
                         <td>
@@ -122,7 +122,7 @@
                         </td>
                         <td>
                             <a
-                                    href="<?php echo url('hydra/index', ['app_id' => $value['id']]); ?>"><?php echo $value['hydra_num'] ?? 0 ?>
+                               href="<?php echo url('hydra/index', ['app_id' => $value['id']]); ?>"><?php echo $value['hydra_num'] ?? 0 ?>
                             </a>
                         </td>
                         <td><?php echo date('Y-m-d H:i', strtotime($value['create_time'])) ?></td>

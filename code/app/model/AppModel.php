@@ -279,7 +279,7 @@ class AppModel extends BaseModel
         if ($data['is_dirmap'] == 0) {
             $data['dirmap_scan_time'] = $datetime;
         }
-        //Db::table(self::$tableName)->insert($data);
+        //return Db::table(self::$tableName)->insert($data);
         return Db::table(self::$tableName)->insertGetId($data);
     }
 
