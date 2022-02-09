@@ -378,6 +378,7 @@ class Code extends Common
         $search = $request->param('search', '');
         $pageSize = 25;
         $where[] = ['is_delete', '=', 0];
+        $map[] = ['is_delete', '=', 0];
         $project_id = $request->param('project_id');
         $level = $request->param('level'); // 等级
         $Category = $request->param('Category');   // 分类
@@ -401,7 +402,6 @@ class Code extends Common
         if (!empty($search)) {
             $where[] = ['check_id', 'like', "%{$search}%"];
         }
-        $map = [];
         if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
             $where[] = ['user_id', '=', $this->userId];
             $map[] = ['user_id', '=', $this->userId];
@@ -413,12 +413,12 @@ class Code extends Common
         $projectArr = Db::table('code')->where($map)->select()->toArray();
         $projectArr = array_column($projectArr, null, 'id');
         $data['projectArr'] = $projectArr;
-        $data['CategoryList'] = Db::table('semgrep')->where($where)->group('check_id')->column('check_id');
+        $data['CategoryList'] = Db::table('semgrep')->where($map)->group('check_id')->column('check_id');
 
-        $data['fileList'] = Db::table('semgrep')->where($where)->group('path')->column('path');
+        $data['fileList'] = Db::table('semgrep')->where($map)->group('path')->column('path');
         $data['check_status_list'] = ['未审计', '有效漏洞', '无效漏洞'];
         //查询项目列表
-        $projectList = Db::table('semgrep')->where($where)->group('code_id')->column('code_id');
+        $projectList = Db::table('semgrep')->where($map)->group('code_id')->column('code_id');
         $projectList = Db::table('code')->whereIn('id', $projectList)->field('id,name')->select()->toArray();
         $data['projectList'] = array_column($projectList, 'name', 'id');
 
