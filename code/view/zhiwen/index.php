@@ -30,7 +30,7 @@ $searchArr = [
                 <?php foreach ($list as $value) { ?>
                     <tr>
                         <td><?php echo $value['add_by'] ?></td>
-                        <td><?php echo $value['add_time'] ?></td>
+                        <td><?php echo date('Y-m-d H:i:s',substr($value['add_time'],0,10)) ?></td>
                         <td><?php echo $value['filters'] ?></td>
                         <td><?php echo $value['keyword'] ?></td>
                         <td><?php echo $value['md5'] ?></td>
