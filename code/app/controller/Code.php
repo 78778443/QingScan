@@ -122,6 +122,33 @@ class Code extends Common
         }
     }
 
+
+    // 批量删除
+    public function batch_del(Request $request){
+        $ids = $request->param('ids');
+        if (!$ids) {
+            return $this->apiReturn(0,[],'请先选择要删除的数据');
+        }
+        $map[] = ['code_id','in',$ids];
+        $where[] = ['id','in',$ids];
+        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
+            $where[] = ['user_id', '=', $this->userId];
+        }
+        if (Db::name('code')->where($where)->update(['is_delete' => 1])) {
+            Db::table('fortify')->where($map)->delete();
+            Db::table('semgrep')->where($map)->delete();
+            Db::table('code_webshell')->where($map)->delete();
+            Db::table('code_composer')->where($map)->delete();
+            Db::table('code_python')->where($map)->delete();
+            Db::table('code_java')->where($map)->delete();
+            Db::table('plugin_scan_log')->whereIn('app_id',$ids)->where('scan_type',2)->delete();
+
+            return $this->apiReturn(1,[],'批量删除成功');
+        } else {
+            return $this->apiReturn(0,[],'批量删除失败');
+        }
+    }
+
     public function bug_list(Request $request)
     {
         //接收参数

@@ -36,6 +36,11 @@
                     <a href="<?php echo url('app/suspend_scan') ?>"
                        class="btn btn-outline-success">暂停扫描</a>
                 </div>
+
+                <div class="col-auto">
+                    <a href="javascript:;" onclick="batch_del()"
+                       class="btn btn-outline-success">批量删除</a>
+                </div>
             </form>
         </div>
     </div>
@@ -44,7 +49,11 @@
             <table class="table table-bordered table-hover table-striped">
                 <thead>
                 <tr>
-                    <td></td>
+                    <th>
+                        <label>
+                            <input type="checkbox" value="-1" onclick="quanxuan(this)">全选
+                        </label>
+                    </th>
                     <th>ID</th>
                     <th>名称</th>
                     <th>rad</th>
@@ -68,7 +77,7 @@
                     <tr>
                         <td>
                             <label>
-                                <input type="checkbox" name="ids[]" value="<?php echo $value['id'] ?>">
+                                <input type="checkbox" class="ids" name="ids[]" value="<?php echo $value['id'] ?>">
                             </label>
                         </td>
                         <td><?php echo $value['id'] ?></td>
@@ -187,6 +196,47 @@
                         window.setTimeout(function(){
                             location.reload();
                         },1000);
+                    }
+                }
+            });
+        }
+
+
+        function quanxuan(obj){
+            var child = $('.table').find('input[type="checkbox"]');
+            child.each(function(index, item){
+                if (obj.checked) {
+                    item.checked = true
+                } else {
+                    item.checked = false
+                }
+            })
+        }
+
+        function batch_del(){
+            var child = $('.table').find('input[type="checkbox"]');
+            var ids = ''
+            child.each(function(index, item){
+                if (item.value != -1 && item.checked) {
+                    if (ids == '') {
+                        ids = item.value
+                    } else {
+                        ids = ids+','+item.value
+                    }
+                }
+            })
+
+            $.ajax({
+                type: "post",
+                url: "<?php echo url('app/batch_del')?>",
+                data: {ids: ids},
+                dataType: "json",
+                success: function (data) {
+                    alert(data.msg)
+                    if (data.code == 1) {
+                        window.setTimeout(function () {
+                            location.reload();
+                        }, 2000)
                     }
                 }
             });

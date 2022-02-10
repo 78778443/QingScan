@@ -473,10 +473,10 @@ class App extends Common
 
 
     // 批量删除
-    public function batchDel(Request $request){
+    public function batch_del(Request $request){
         $ids = $request->param('ids');
         if (!$ids) {
-            $this->error('请先选择要删除的数据');
+            return $this->apiReturn(0,[],'请先选择要删除的数据');
         }
         $map[] = ['app_id','in',$ids];
         if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
@@ -511,9 +511,9 @@ class App extends Common
         Db::table('github_keyword_monitor_notice')->where($map)->delete();
 
         if (Db::name('app')->where('id','in',$ids)->delete()) {
-            return redirect($_SERVER['HTTP_REFERER']);
+            return $this->apiReturn(1,[],'批量删除成功');
         } else {
-            $this->error('删除失败');
+            return $this->apiReturn(0,[],'批量删除失败');
         }
     }
 
