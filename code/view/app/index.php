@@ -32,6 +32,10 @@
                     <a href="<?php echo url('app/downloaAppTemplate') ?>"
                        class="btn btn-outline-success">下载模板</a>
                 </div>
+                <div class="col-auto">
+                    <a href="<?php echo url('app/suspend_scan') ?>"
+                       class="btn btn-outline-success">暂停扫描</a>
+                </div>
             </form>
         </div>
     </div>
@@ -40,6 +44,7 @@
             <table class="table table-bordered table-hover table-striped">
                 <thead>
                 <tr>
+                    <td></td>
                     <th>ID</th>
                     <th>名称</th>
                     <th>rad</th>
@@ -61,6 +66,11 @@
                 <tbody>
                 <?php foreach ($list as $value) { ?>
                     <tr>
+                        <td>
+                            <label>
+                                <input type="checkbox" name="ids[]" value="<?php echo $value['id'] ?>">
+                            </label>
+                        </td>
                         <td><?php echo $value['id'] ?></td>
                         <td class="ellipsis-type">
                             <a href="{$value['url']}" title="{$value['url']}" target="_blank">{$value['name']} </a>

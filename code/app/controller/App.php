@@ -460,8 +460,15 @@ class App extends Common
     }
 
     // 暂停扫描
-    public function a(){
-        
+    public function suspend_scan(){
+        $num = ConfigModel::value('maxProcesses');
+        if ($num != -1) {
+            ConfigModel::set_value('maxProcesses',-1);
+        } else {
+            //ConfigModel::set_value('maxProcesses',0);
+            //$this->success('扫描已启动');
+        }
+        $this->success('扫描已暂停');
     }
 
 
