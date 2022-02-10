@@ -459,6 +459,11 @@ class App extends Common
         return redirect($_SERVER['HTTP_REFERER'] ?? '/');
     }
 
+    // 暂停扫描
+    public function a(){
+        
+    }
+
 
     // 批量删除
     public function batchDel(Request $request){

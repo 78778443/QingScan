@@ -43,6 +43,7 @@ class Scan extends Command
             ->addArgument("func", Argument::OPTIONAL, "扫描的内容")
             ->addArgument("custom", Argument::OPTIONAL, "自定义工具名")
             ->addArgument("scan_type", Argument::OPTIONAL, "自定义工具扫描类型")
+            ->addArgument("custom_store", Argument::OPTIONAL, "自定义工具结果分析")
             ->setDescription('the scan command');
     }
 
@@ -136,6 +137,10 @@ class Scan extends Command
             $scanType = $input->getArgument('scan_type');
             $scanType = array_search($scanType, ['app', 'host', 'code', 'url']);
             PluginModel::custom_event($custom, $scanType);
+        } elseif($func == 'custom_store'){
+            $className = 'app\model\\'.trim($input->getArgument('custom')).'PluginsModel';
+            $funcName = $input->getArgument('scan_type');
+            $className::$funcName();
         }
 
         // 指令输出
