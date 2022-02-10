@@ -498,7 +498,7 @@ class App extends Common
         Db::table('github_keyword_monitor')->where($map)->delete();
         Db::table('github_keyword_monitor_notice')->where($map)->delete();
 
-        if (Db::name('app')->where($map)->delete()) {
+        if (Db::name('app')->where('id','in',$ids)->delete()) {
             return redirect($_SERVER['HTTP_REFERER']);
         } else {
             $this->error('删除失败');
