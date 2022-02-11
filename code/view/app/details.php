@@ -674,6 +674,41 @@ $typeArr = [
             <?php } ?>
         </table>
     </div>
+    <div class="col-auto  tuchu_col">
+        <h4 class="text-center">
+            github关键词监控结果列表
+            <!--<a href="<?php /*echo url('app/rescan', ['id'=>$info['id'],'tools_name' => 'plugin']) */?>"
+               onClick="return confirm('确定要清空该工具数据重新扫描吗?')"
+               class="btn btn-sm btn-outline-warning">重新扫描</a>-->
+        </h4>
+        <table class="table table-bordered table-hover table-striped">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>关键词名称</th>
+                <th>github名称</th>
+                <th>路径</th>
+                <th>url地址</th>
+                <th>时间</th>
+            </tr>
+            </thead>
+            <?php foreach ($monitor_notice as $value) { ?>
+                <tr>
+                    <td><?php echo $value['id'] ?></td>
+                    <td><?php echo $value['title'] ?></td>
+                    <td><?php echo $value['name'] ?></td>
+                    <td><?php echo $value['path'] ?></td>
+                    <td><?php echo $value['html_url'] ?></td>
+                    <td><?php echo $value['create_time'] ?></td>
+                </tr>
+            <?php } ?>
+            <?php if (empty($app_dismap)) { ?>
+                <tr>
+                    <td colspan="3" class="text-center">暂无数据</td>
+                </tr>
+            <?php } ?>
+        </table>
+    </div>
     <!--    <div class="col-auto  tuchu_col">-->
     <!--        <button id="download_pdf" class="btn btn-primary">导出为PDF</button>-->
     <!--    </div>-->

@@ -10,6 +10,17 @@
                 <input type="text" name="name" class="form-control" placeholder="例如 sqlmap" required>
             </div>
             <div class="mb-3">
+                <label class="form-label">命令类型</label><br>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="type" id="plugin_type1" checked value="1">
+                    <label class="form-check-label" for="plugin_type1">工具扫描</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="type" id="plugin_type2" value="2">
+                    <label class="form-check-label" for="plugin_type2">结果分析</label>
+                </div>
+            </div>
+            <div class="mb-3">
                 <label class="form-label">插件执行命令</label>
                 <input type="text" name="cmd" class="form-control" placeholder="_####_  代表扫描地址" required>
             </div>

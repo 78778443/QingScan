@@ -29,7 +29,7 @@ timeStamp = int(time.mktime(threeDayAgo.timetuple()))
 # 转换为其他字符串格式
 where_scan_time = threeDayAgo.strftime("%Y-%m-%d %H:%M:%S")
 
-sql = "select id,user_id,title from github_keyword_monitor where scan_time <= '" + where_scan_time + "'"
+sql = "select id,user_id,title,app_id from github_keyword_monitor where scan_time <= '" + where_scan_time + "'"
 cur.execute(sql)
 # 使用 fetchall() 获取所有查询结果
 keyword_list = cur.fetchall()
@@ -44,19 +44,20 @@ for i in keyword_list:
     for j in list:
         data['parent_id'] = i['id']
         data['user_id'] = i['user_id']
+        data['app_id'] = i['app_id']
         data['keyword'] = i['title']
         data['name'] = j['repository']['full_name']
         data['path'] = j['path']
         data['html_url'] = j['html_url']
         data['create_time'] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
 
-        sql = "select count(id) as num from github_keyword_monitor_notice where parent_id = "+str(data['parent_id'])+" and user_id = "+str(data['user_id'])+" and keyword = '" + data['keyword'] + "' and name = '"+data['name']+"' and path = '"+data['path']+"' and html_url = '"+data['html_url']+"'"
+        sql = "select count(id) as num from github_keyword_monitor_notice where parent_id = "+str(data['parent_id'])+" and user_id = "+str(data['user_id'])+" and keyword = '" + data['keyword'] + "' and name = '"+data['name']+"' and path = '"+data['path']+"' and html_url = '"+data['html_url']+"' and app_id = "+str(data['app_id'])
         cur.execute(sql)
         # 使用 fetchall() 获取所有查询结果
         result = cur.fetchall()
         if result[0]['num'] == 0:
-            insert = 'insert into github_keyword_monitor_notice(parent_id,user_id,keyword,name,path,html_url,create_time) value(%s,%s,%s,%s,%s,%s,%s)'
-            cur.execute(insert, (data['parent_id'],data['user_id'],data['keyword'], data['name'], data['path'], data['html_url'], data['create_time']))
+            insert = 'insert into github_keyword_monitor_notice(parent_id,user_id,keyword,name,path,html_url,create_time,app_id) value(%s,%s,%s,%s,%s,%s,%s,%s)'
+            cur.execute(insert, (data['parent_id'],data['user_id'],data['keyword'], data['name'], data['path'], data['html_url'], data['create_time'], data['app_id']))
             db.commit()
             # 获取用户的钉钉token
             sql = "select nickname,dd_token from user where  id = " + str(data['user_id'])

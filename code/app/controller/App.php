@@ -8,6 +8,7 @@ use app\model\HydraModel;
 use app\model\UrlsModel;
 use app\model\TaskModel;
 use app\model\XrayModel;
+use Org\Util\Date;
 use think\facade\Db;
 use think\facade\View;
 use think\Request;
@@ -25,7 +26,7 @@ class App extends Common
     public function index(Request $request)
     {
         $pageSize = 15;
-        $page = $request->param('page', 1);
+        $page = $request->param('page', 1,'intval');
         $statusCode = $request->param('statuscode');
         $cms = base64_decode($_GET['cms'] ?? '');
         $server = base64_decode($_GET['server'] ?? '');
@@ -46,7 +47,7 @@ class App extends Common
         $data['statuscodeArr'] = array_column($data['statuscodeArr'], 'statuscode');
         $data['cmsArr'] = Db::table('app')->Join('app_info info', 'app.id = info.app_id')->where($where)->group('info.cms')->field('cms')->select()->toArray();
         $data['cmsArr'] = array_column($data['cmsArr'], 'cms');
-        $data['serverArr'] = Db::table('app')->Join('app_info info', 'app.id = info.app_id')->where($where)->order('id', 'desc')->group('info.server')->field('server')->select()->toArray();
+        $data['serverArr'] = Db::table('app')->Join('app_info info', 'app.id = info.app_id')->where($where)->group('info.server')->field('server')->select()->toArray();
         $data['serverArr'] = array_column($data['serverArr'], 'server');
         foreach ($data['list'] as &$v) {
             $v['is_waf'] = '否';
@@ -111,7 +112,18 @@ class App extends Common
         $data['is_hydra'] = $request->param('is_hydra');
         $data['is_dirmap'] = $request->param('is_dirmap');
         $data['is_intranet'] = $request->param('is_intranet');
-        AppModel::addData($data);
+        $id = AppModel::addData($data);
+        $host = parse_url($data['url'])['host'];
+        if (!empty($host)) {
+            // 写入到关键词监控表中
+            $data = [
+                'user_id' => $this->userId,
+                'app_id' => $id,
+                'title' => $host,
+                'create_time' => date('Y-m-d H:i:s', time())
+            ];
+            Db::name('github_keyword_monitor')->insert($data);
+        }
 
         return redirect(url('app/index'));
     }
@@ -160,7 +172,7 @@ class App extends Common
 
     public function del(Request $request)
     {
-        $id = $request->param('id');
+        $id = $request->param('id','0','intval');
         $map[] = ['id', '=', $id];
 
         if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
@@ -183,6 +195,7 @@ class App extends Common
         Db::table('app_whatweb_poc')->where(['app_id' => $id])->delete();
         Db::table('app_xray_agent_port')->where(['app_id' => $id])->delete();
         Db::table('awvs_app')->where(['app_id' => $id])->delete();
+        Db::table('awvs_vuln')->where(['app_id' => $id])->delete();
         Db::table('host_hydra_scan_details')->where(['app_id' => $id])->delete();
         Db::table('one_for_all')->where(['app_id' => $id])->delete();
         Db::table('plugin_scan_log')->where(['app_id' => $id])->delete();
@@ -190,6 +203,8 @@ class App extends Common
         Db::table('urls_sqlmap')->where(['app_id' => $id])->delete();
         Db::table('xray')->where(['app_id' => $id])->delete();
         Db::table('plugin_scan_log')->where(['app_id' => $id])->delete();
+        Db::table('github_keyword_monitor')->where(['app_id' => $id])->delete();
+        Db::table('github_keyword_monitor_notice')->where(['app_id' => $id])->delete();
 
         if (Db::name('app')->where($map)->delete()) {
             return redirect($_SERVER['HTTP_REFERER']);
@@ -239,7 +254,7 @@ class App extends Common
 
     public function details(Request $request)
     {
-        $app_id = $request->param('id');
+        $app_id = $request->param('id','0','intval');
         $where[] = ['app_id', '=', $app_id];
         $map[] = ['id', '=', $app_id];
         $where1 = [];
@@ -249,6 +264,9 @@ class App extends Common
             $where1[] = ['user_id', '=', $this->userId];
         }
         $data['info'] = Db::name('app')->where($map)->find();
+        if (!$data['info']) {
+            return $this->error('数据不存在');
+        }
         $data['whatweb'] = Db::table('app_whatweb')->where($where)->where($where1)->order("id", 'desc')->limit(0, 15)->select()->toArray();
         $data['oneforall'] = Db::table('one_for_all')->where($where)->order("id", 'desc')->limit(0, 15)->select()->toArray();
         $data['hydra'] = Db::table('host_hydra_scan_details')->where($where)->order("id", 'desc')->limit(0, 15)->select()->toArray();
@@ -264,18 +282,20 @@ class App extends Common
         $data['awvs'] = Db::table('awvs_vuln')->where($where)->order("app_id", 'desc')->limit(0, 15)->select()->toArray();
         $data['pluginScanLog'] = Db::table('plugin_scan_log')->where($where)->where(['log_type' => 1])->order("app_id", 'desc')->limit(0, 15)->select()->toArray();
         //获取此域名对应主机的端口信息
-        $urlInfo = parse_url($data['info']['url']);
-        $ip = gethostbyname($urlInfo['host']);
-        $data['host_port'] = Db::table('host_port')->where(['host' => $ip])->limit(0, 15)->select()->toArray();
-        $data['host'] = Db::table('host')->where(['host' => $ip])->limit(0, 15)->select()->toArray();
+        //$urlInfo = parse_url($data['info']['url']);
+        //$ip = gethostbyname($urlInfo['host']);
+        $data['host_port'] = Db::table('host_port')->where(['app_id' => $app_id])->limit(0, 15)->select()->toArray();
+        $data['host'] = Db::table('host')->where(['app_id' => $app_id])->limit(0, 15)->select()->toArray();
         $data['host_id'] = isset($data['host'][0]['id']) ? $data['host'][0]['id'] : 9999;
+
+        $data['monitor_notice'] = Db::table('github_keyword_monitor_notice')->where($where)->order("app_id", 'desc')->limit(0, 15)->select()->toArray();
 
         return View::fetch('details', $data);
     }
 
     public function qingkong(Request $request)
     {
-        $id = $request->param('id');
+        $id = $request->param('id','','intval');
         $array = array(
             'crawler_time' => '2000-01-01 00:00:00',
             'awvs_scan_time' => '2000-01-01 00:00:00',
@@ -311,6 +331,7 @@ class App extends Common
         Db::table('app_whatweb_poc')->where(['app_id' => $id])->delete();
         Db::table('app_xray_agent_port')->where(['app_id' => $id])->delete();
         Db::table('awvs_app')->where(['app_id' => $id])->delete();
+        Db::table('awvs_vuln')->where(['app_id' => $id])->delete();
         Db::table('host')->where(['app_id' => $id])->delete();
         Db::table('host_hydra_scan_details')->where(['app_id' => $id])->delete();
         Db::table('host_port')->where(['app_id' => $id])->delete();
@@ -327,7 +348,7 @@ class App extends Common
 
     public function rescan(Request $request)
     {
-        $id = $request->param('id');
+        $id = $request->param('id','','intval');
         $where[] = ['id', '=', $id];
         if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
             $where[] = ['user_id', '=', $this->userId];
@@ -357,6 +378,7 @@ class App extends Common
                     'awvs_scan_time' => '2000-01-01 00:00:00',
                 ];
                 Db::table('awvs_app')->where(['app_id' => $id])->delete();
+                Db::table('awvs_vuln')->where(['app_id' => $id])->delete();
                 break;
             case 'nucleiScan':
                 $data = [
@@ -430,11 +452,69 @@ class App extends Common
                 $this->error('参数错误');
                 break;
         }
-        Db::table('plugin_scan_log')->where(['app_id' => $id, 'scan_type' => 0,'plugin_name'=>$tools_name])->delete();
+        Db::table('plugin_scan_log')->where(['app_id' => $id, 'scan_type' => 0, 'plugin_name' => $tools_name])->delete();
         if (!empty($data)) {
             Db::table('app')->where(['id' => $id])->update($data);
         }
         return redirect($_SERVER['HTTP_REFERER'] ?? '/');
+    }
+
+    // 暂停扫描
+    public function suspend_scan(){
+        $num = ConfigModel::value('maxProcesses');
+        if ($num != -1) {
+            ConfigModel::set_value('maxProcesses',-1);
+        } else {
+            //ConfigModel::set_value('maxProcesses',0);
+            //$this->success('扫描已启动');
+        }
+        $this->success('扫描已暂停');
+    }
+
+
+    // 批量删除
+    public function batch_del(Request $request){
+        $ids = $request->param('ids');
+        if (!$ids) {
+            return $this->apiReturn(0,[],'请先选择要删除的数据');
+        }
+        $map[] = ['app_id','in',$ids];
+        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
+            $map[] = ['user_id', '=', $this->userId];
+        }
+        $data['info'] = Db::name('app')->where('id','in',$ids)->find();
+        if (!empty($data)) {
+            $urlInfo = parse_url($data['info']['url']);
+            $ip = gethostbyname($urlInfo['host'] ?? '127.0.0.1');
+            Db::table('app_info')->where($map)->delete();
+            Db::table('host')->where(['host' => $ip])->delete();
+            Db::table('host_port')->where(['host' => $ip])->delete();
+        }
+        Db::table('app_crawlergo')->where($map)->delete();
+        Db::table('app_dirmap')->where($map)->delete();
+        Db::table('app_nuclei')->where($map)->delete();
+        Db::table('app_vulmap')->where($map)->delete();
+        Db::table('app_wafw00f')->where($map)->delete();
+        Db::table('app_whatweb')->where($map)->delete();
+        Db::table('app_whatweb_poc')->where($map)->delete();
+        Db::table('app_xray_agent_port')->where($map)->delete();
+        Db::table('awvs_app')->where($map)->delete();
+        Db::table('awvs_vuln')->where($map)->delete();
+        Db::table('host_hydra_scan_details')->where($map)->delete();
+        Db::table('one_for_all')->where($map)->delete();
+        Db::table('plugin_scan_log')->where($map)->delete();
+        Db::table('urls')->where($map)->delete();
+        Db::table('urls_sqlmap')->where($map)->delete();
+        Db::table('xray')->where($map)->delete();
+        Db::table('plugin_scan_log')->where($map)->delete();
+        Db::table('github_keyword_monitor')->where($map)->delete();
+        Db::table('github_keyword_monitor_notice')->where($map)->delete();
+
+        if (Db::name('app')->where('id','in',$ids)->delete()) {
+            return $this->apiReturn(1,[],'批量删除成功');
+        } else {
+            return $this->apiReturn(0,[],'批量删除失败');
+        }
     }
 
 
@@ -497,7 +577,8 @@ class App extends Common
             }
             return $this->apiReturn(1, [], "代理已关闭，数据导入成功");
         } else { // 开启代理
-            $port = rangeCrearePort();
+            //$port = rangeCrearePort();
+            $port = 14256;
             if (!Db::name('app')->where('xray_agent_port', $port)->count('id')) {
                 $data = [
                     'xray_agent_port' => $port,
@@ -556,6 +637,7 @@ class App extends Common
             if ($is_dirmap == 0) {
                 $data['dirmap_scan_time'] = $datetime;
             }
+            $data['user_id'] = $this->userId;
             $temp_data[] = $data;
         }
         if (Db::name('app')->insertAll($temp_data)) {

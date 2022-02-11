@@ -31,7 +31,7 @@
                     </tr>
                     <tr>
                         <td>漏洞描述</td>
-                        <td><?php echo $base['Abstract'] ?></td>
+                        <td><?php echo isset($base['Abstract'])?$base['Abstract']:'' ?></td>
                     </tr>
                 </table>
             </div>
@@ -54,7 +54,7 @@
                         </tr>
                         <tr>
                             <td>行号</td>
-                            <td><?php echo $Source['LineStart'] ?></td>
+                            <td><?php echo isset($Source['LineStart'])?$Source['LineStart']:'' ?></td>
                         </tr>
                         <tr>
                             <td>漏洞位置</td>
@@ -66,7 +66,7 @@
                         </tr>
                         <tr>
                             <td>目标函数</td>
-                            <td><?php echo $Source['TargetFunction'] ?></td>
+                            <td><?php echo isset($Source['TargetFunction'])?$Source['TargetFunction']:'' ?></td>
                         </tr>
                         <tr>
                             <td>源码内容</td>
@@ -112,7 +112,7 @@
                     </tr>
                     <tr>
                         <td>目标函数</td>
-                        <td><?php echo $Primary['TargetFunction'] ?></td>
+                        <td><?php echo isset($Primary['TargetFunction'])?$Primary['TargetFunction']:'' ?></td>
                     </tr>
                     <tr>
                         <td>源码内容</td>

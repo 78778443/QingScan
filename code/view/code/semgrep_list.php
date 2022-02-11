@@ -1,7 +1,7 @@
 {include file='public/head' /}
 
 <?php
-$dengjiArr = ['Low', 'Medium', 'High', 'Critical'];
+$dengjiArr = ['ERROR','Low', 'Medium', 'High', 'Critical'];
 ?>
 <?php
 $searchArr = [

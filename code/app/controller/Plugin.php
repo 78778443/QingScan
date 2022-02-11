@@ -10,6 +10,22 @@ class Plugin extends Common
 
     public function index()
     {
+        //echo '<pre>';
+        /*$where[] = ['is_read','=',1];
+        $where[] = ['plugin_name','=','TideFinger'];
+        $where[] = ['scan_type','=',0];
+        $where[] = ['log_type','=',1];
+        $results = Db::table("plugin_scan_log")->where($where)->field('id,app_id,plugin_id,user_id,content,file_content')->select()->toArray();
+        foreach ($results as $val) {
+            echo $val['content'],'<br>';
+            $regex = '/32m (.*?) \[0m/';
+            preg_match($regex, $val['content'], $content);
+            var_dump($content);
+            exit;
+            $arr = explode(' [0m [1;32m ',$val['content']);
+            var_dump($arr);
+        }
+        exit;*/
         $pageSize = 20;
         $where[] = ['is_delete','=',0];
         $search = getParam('search');
@@ -38,6 +54,7 @@ class Plugin extends Common
             $data['result_type'] = getParam('result_type');
             $data['scan_type'] = getParam('scan_type');
             $data['create_time'] = date('Y-m-d h:i:s', time());
+            $data['type'] = getParam('type');
             if (Db::name('plugin')->insert($data)) {
                 $this->success('数据添加成功','index');
             } else {
@@ -68,6 +85,7 @@ class Plugin extends Common
             $data['scan_type'] = getParam('scan_type');
             $data['tool_path'] = getParam('tool_path');
             $data['result_file'] = getParam('result_file');
+            $data['type'] = getParam('type');
             $data['status'] = getParam('status');
             if (Db::name('plugin')->where('id', $id)->update($data)) {
                 $this->success('数据编辑成功');

@@ -261,4 +261,76 @@ class Vulnerable extends Common
             $this->error('删除失败');
         }
     }
+
+    public function add_pocsuite(Request $request){
+        if ($request->isPost()) {
+            $data = $request->post();
+            $data['user_id'] = $this->userId;
+            if (Db::name('pocsuite3')->insert($data)) {
+                return $this->success('数据添加成功');
+            } else {
+                return $this->error('数据添加失败');
+            }
+        } else {
+            return View::fetch('add_pocsuite');
+        }
+    }
+
+    // 批量导入
+    public function batch_import(Request $request)
+    {
+        $file = $_FILES["file"]["tmp_name"];
+        $result = $this->importExecl($file);
+        if ($result['code'] == 0) {
+            $this->error($result['msg']);
+        }
+        $list = $result['data'];
+        unset($list[0]);
+        $temp_data = [];
+        foreach ($list as $k => $v) {
+            $data['url'] = $v['A'];
+            $data['name'] = $v['B'];
+            $data['ssv_id'] = $v['C'];
+            $data['cms'] = $v['D'];
+            $data['version'] = $v['E'];
+            $data['is_max'] = $v['F'];
+            $data['tel'] = $v['G'];
+            $data['regaddress'] = $v['H'];
+            $data['ip'] = $v['I'];
+            $data['CompanyName'] = $v['J'];
+            $data['SiteLicense'] = $v['K'];
+            $data['CompanyType'] = $v['L'];
+            $data['regcapital'] = $v['M'];
+            $data['user_id'] = $this->userId;
+
+            $temp_data[] = $data;
+        }
+        if (Db::name('pocsuite3')->insertAll($temp_data)) {
+            $this->success('漏洞实例批量导入成功');
+        } else {
+            $this->error('漏洞实例批量导入失败');
+        }
+    }
+
+    public function downloaAppTemplate()
+    {
+        $file_dir = \think\facade\App::getRootPath() . 'public/static/';
+        $file_name = '漏洞实例批量导入模版.xls';
+        //以只读和二进制模式打开文件
+        $file = fopen($file_dir . $file_name, "rb");
+
+        //告诉浏览器这是一个文件流格式的文件
+        Header("Content-type: application/octet-stream");
+        //请求范围的度量单位
+        Header("Accept-Ranges: bytes");
+        //Content-Length是指定包含于请求或响应中数据的字节长度
+        Header("Accept-Length: " . filesize($file_dir . $file_name));
+        //用来告诉浏览器，文件是可以当做附件被下载，下载后的文件名称为$file_name该变量的值。
+        Header("Content-Disposition: attachment; filename=" . $file_name);
+        ob_end_clean();
+        //读取文件内容并直接输出到浏览器
+        echo fread($file, filesize($file_dir . $file_name));
+        fclose($file);
+        exit ();
+    }
 }

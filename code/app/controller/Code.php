@@ -108,9 +108,44 @@ class Code extends Common
             $map[] = ['user_id', '=', $this->userId];
         }
         if (Db::name('code')->where($map)->update(['is_delete' => 1])) {
+            Db::table('fortify')->where(['code_id' => $id])->delete();
+            Db::table('semgrep')->where(['code_id' => $id])->delete();
+            Db::table('code_webshell')->where(['code_id' => $id])->delete();
+            Db::table('code_composer')->where(['code_id' => $id])->delete();
+            Db::table('code_python')->where(['code_id' => $id])->delete();
+            Db::table('code_java')->where(['code_id' => $id])->delete();
+            Db::table('plugin_scan_log')->where(['app_id' => $id, 'scan_type' => 2])->delete();
+
             return redirect($_SERVER['HTTP_REFERER']);
         } else {
             $this->error('删除失败');
+        }
+    }
+
+
+    // 批量删除
+    public function batch_del(Request $request){
+        $ids = $request->param('ids');
+        if (!$ids) {
+            return $this->apiReturn(0,[],'请先选择要删除的数据');
+        }
+        $map[] = ['code_id','in',$ids];
+        $where[] = ['id','in',$ids];
+        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
+            $where[] = ['user_id', '=', $this->userId];
+        }
+        if (Db::name('code')->where($where)->update(['is_delete' => 1])) {
+            Db::table('fortify')->where($map)->delete();
+            Db::table('semgrep')->where($map)->delete();
+            Db::table('code_webshell')->where($map)->delete();
+            Db::table('code_composer')->where($map)->delete();
+            Db::table('code_python')->where($map)->delete();
+            Db::table('code_java')->where($map)->delete();
+            Db::table('plugin_scan_log')->whereIn('app_id',$ids)->where('scan_type',2)->delete();
+
+            return $this->apiReturn(1,[],'批量删除成功');
+        } else {
+            return $this->apiReturn(0,[],'批量删除失败');
         }
     }
 
@@ -370,13 +405,14 @@ class Code extends Common
         $search = $request->param('search', '');
         $pageSize = 25;
         $where[] = ['is_delete', '=', 0];
-        $pid = $request->param('code_id');
+        $map[] = ['is_delete', '=', 0];
+        $project_id = $request->param('project_id');
         $level = $request->param('level'); // 等级
         $Category = $request->param('Category');   // 分类
         $filename = $request->param('filename');   // 文件名
         $check_status = $request->param('check_status');   // 审核状态
-        if (!empty($pid)) {
-            $where[] = ['code_id', '=', $pid];
+        if (!empty($project_id)) {
+            $where[] = ['code_id', '=', $project_id];
         }
         if (!empty($level)) {
             $where[] = ['extra_severity', '=', $level];
@@ -393,7 +429,6 @@ class Code extends Common
         if (!empty($search)) {
             $where[] = ['check_id', 'like', "%{$search}%"];
         }
-        $map = [];
         if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
             $where[] = ['user_id', '=', $this->userId];
             $map[] = ['user_id', '=', $this->userId];
@@ -405,12 +440,12 @@ class Code extends Common
         $projectArr = Db::table('code')->where($map)->select()->toArray();
         $projectArr = array_column($projectArr, null, 'id');
         $data['projectArr'] = $projectArr;
-        $data['CategoryList'] = Db::table('semgrep')->where($where)->group('check_id')->column('check_id');
+        $data['CategoryList'] = Db::table('semgrep')->where($map)->group('check_id')->column('check_id');
 
-        $data['fileList'] = Db::table('semgrep')->where($where)->group('path')->column('path');
+        $data['fileList'] = Db::table('semgrep')->where($map)->group('path')->column('path');
         $data['check_status_list'] = ['未审计', '有效漏洞', '无效漏洞'];
         //查询项目列表
-        $projectList = Db::table('semgrep')->where($where)->group('code_id')->column('code_id');
+        $projectList = Db::table('semgrep')->where($map)->group('code_id')->column('code_id');
         $projectList = Db::table('code')->whereIn('id', $projectList)->field('id,name')->select()->toArray();
         $data['projectList'] = array_column($projectList, 'name', 'id');
 
@@ -626,20 +661,6 @@ class Code extends Common
         $result = CodeCheckModel::addData($data);
         // $this->Location("index.php?s=code_check/index");
     }
-
-
-    public function add_api_url()
-    {
-        $data['app_list'] = AppModel::getListByWhere([]);
-        $this->show('code_check/add_api_url', $data);
-    }
-
-    public function _add_api_url()
-    {
-        CodeCheckModel::addData($_POST);
-        $this->Location("index.php?s=code_check/index");
-    }
-
 
     public function load_xml()
     {

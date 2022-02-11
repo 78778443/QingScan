@@ -7,20 +7,24 @@ use app\model\AppModel;
 use app\model\UrlsModel;
 use think\facade\Db;
 use think\facade\View;
+use think\Request;
 
 
 class Urls extends Common
 {
 
-    public function index()
+    public function index(Request $request)
     {
         $pageSize = 20;
-        $app_id = getParam('app_id');
+        $search = $request->param('search');
         $where = [];
+        if (!empty($search)) {
+            $where[] = ['url','like',"%{$search}%"];
+        }
         $where = !empty($app_id) ? array_merge($where, ['app_id' => $app_id]) : $where;
 
         if ($this->auth_group_id != 5 && !in_array($this->userId,config('app.ADMINISTRATOR'))) {
-            $where = array_merge($where, ['user_id' => $this->userId]);
+            $where[] = ['user_id','=',$this->userId];
         }
 
         $list = Db::table('urls')->where($where)->where('is_delete', 0)->order("id", 'desc')->paginate($pageSize);
@@ -47,12 +51,13 @@ class Urls extends Common
         return View::fetch('add', $data);
     }
 
-    public function _add()
+    public function _add(Request $request)
     {
+        $data = $request->post();
         if ($this->auth_group_id != 5 && !in_array($this->userId,config('app.ADMINISTRATOR'))) {
-            $_POST['user_id'] = $this->userId;
+            $data['user_id'] = $this->userId;
         }
-        UrlsModel::addData($_POST);
+        UrlsModel::addData($data);
 
         $this->success('添加成功','index');
     }
@@ -63,12 +68,13 @@ class Urls extends Common
         $this->show('urls/add_api_url', $data);
     }
 
-    public function _add_api_url()
+    public function _add_api_url(Request $request)
     {
+        $data = $request->post();
         if ($this->auth_group_id != 5 && !in_array($this->userId,config('app.ADMINISTRATOR'))) {
-            $_POST['user_id'] = $this->userId;
+            $data['user_id'] = $this->userId;
         }
-        UrlsModel::addData($_POST);
+        UrlsModel::addData($data);
         $this->success('添加成功','index');
     }
 
@@ -123,9 +129,9 @@ class Urls extends Common
 
     }
 
-    public function del()
+    public function del(Request $request)
     {
-        $id = getParam('id');
+        $id = $request->param('id','','intval');
         $map[] = ['id','=',$id];
         if ($this->auth_group_id != 5 && !in_array($this->userId,config('app.ADMINISTRATOR'))) {
             $map[] = ['user_id','=',$this->userId];

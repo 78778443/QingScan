@@ -7,6 +7,7 @@ use think\App;
 use think\facade\Db;
 use think\facade\Config;
 use think\facade\View;
+use think\Request;
 
 class Auth extends Common
 {
@@ -21,24 +22,24 @@ class Auth extends Common
         $ids = implode(',', config('app.ADMINISTRATOR'));
         $map = "a.id not in($ids) and is_delete = 0";
         $list = UserModel::getListPage($map);
-        $data['list'] = $list['data'];
-        $data['page'] = $list['current_page'];
+        $data['list'] = $list->toArray()['data'];
+        $data['page'] = $list->render();
         return View::fetch('auth/user_list', $data);
     }
 
     // 添加管理员
-    public function userAdd()
+    public function userAdd(Request $request)
     {
-        if (request()->isPost()) {
-            $data['username'] = getParam('username');
-            $data['nickname'] = getParam('nickname');
-            $data['auth_group_id'] = getParam('auth_group_id');
-            $data['status'] = getParam('status');
-            $data['sex'] = getParam('sex', 0);
-            $data['phone'] = getParam('phone');
-            $data['dd_token'] = getParam('dd_token');
-            $data['email'] = getParam('email');
-            $password = getParam('password');
+        if ($request->isPost()) {
+            $data['username'] = $request->param('username');
+            $data['nickname'] = $request->param('nickname');
+            $data['auth_group_id'] = $request->param('auth_group_id');
+            $data['status'] = $request->param('status');
+            $data['sex'] = $request->param('sex', 0);
+            $data['phone'] = $request->param('phone');
+            $data['dd_token'] = $request->param('dd_token');
+            $data['email'] = $request->param('email');
+            $password = $request->param('password');
             $check_user = Db::name('user')->where('username', $data['username'])->where('is_delete',0)->find();
             if (!$password || !$data['username'] || !$data['nickname'] || !$data['auth_group_id']) {
                 $this->error('参数不能为空');
@@ -68,19 +69,19 @@ class Auth extends Common
         }
     }
 
-    public function userEdit()
+    public function userEdit(Request $request)
     {
-        $id = getParam('id');
-        if (request()->isPost()) {
-            $data['username'] = getParam('username');
-            $data['nickname'] = getParam('nickname');
-            $data['auth_group_id'] = getParam('auth_group_id');
-            $data['status'] = getParam('status');
-            $data['sex'] = getParam('sex', 0);
-            $data['phone'] = getParam('phone');
-            $data['dd_token'] = getParam('dd_token');
-            $data['email'] = getParam('email');
-            $password = getParam('password');
+        $id = $request->param('id');
+        if ($request->isPost()) {
+            $data['username'] = $request->param('username');
+            $data['nickname'] = $request->param('nickname');
+            $data['auth_group_id'] = $request->param('auth_group_id');
+            $data['status'] = $request->param('status');
+            $data['sex'] = $request->param('sex', 0);
+            $data['phone'] = $request->param('phone');
+            $data['dd_token'] = $request->param('dd_token');
+            $data['email'] = $request->param('email');
+            $password = $request->param('password');
             if (!$id || !$data['username'] || !$data['nickname'] || !$data['auth_group_id']) {
                 $this->error('参数不能为空');
             }
@@ -118,18 +119,18 @@ class Auth extends Common
         }
     }
 
-    public function user_info()
+    public function user_info(Request $request)
     {
         $id = $this->userId;
-        if (request()->isPost()) {
-            $data['nickname'] = getParam('nickname');
-            $data['sex'] = getParam('sex');
-            $data['phone'] = getParam('phone');
-            $data['dd_token'] = getParam('dd_token');
-            $data['email'] = getParam('email');
-            $data['token'] = getParam('token', '');
-            $data['url'] = getParam('url', '');
-            $password = getParam('password');
+        if ($request->isPost()) {
+            $data['nickname'] = $request->param('nickname');
+            $data['sex'] = $request->param('sex');
+            $data['phone'] = $request->param('phone');
+            $data['dd_token'] = $request->param('dd_token');
+            $data['email'] = $request->param('email');
+            $data['token'] = $request->param('token', '');
+            $data['url'] = $request->param('url', '');
+            $password = $request->param('password');
 
             /*if ($password) {
                 $data['password'] = ucenter_md5($password . 'test1', config('app.UC_AUTH_KEY'));
@@ -149,13 +150,13 @@ class Auth extends Common
         }
     }
 
-    public function user_password()
+    public function user_password(Request $request)
     {
         $id = $this->userId;
-        if (request()->isPost()) {
-            $password = getParam('password');
-            $news_password = getParam('news_password');
-            $news_password1 = getParam('news_password1');
+        if ($request) {
+            $password = $request->param('password');
+            $news_password = $request->param('news_password');
+            $news_password1 = $request->param('news_password1');
             if ($news_password != $news_password1) {
                 $this->error('新密码和确认密码不一致');
             }
@@ -178,9 +179,9 @@ class Auth extends Common
     }
 
     //删除管理员
-    public function userDel()
+    public function userDel(Request $request)
     {
-        $id = getParam('id');
+        $id = $request->param('id');
         if (in_array($id, config('ADMINISTRATOR')))
             $this->error('该用户不允许删除');
         if (Db::name('user')->where('id', $id)->update(['is_delete' => -1, 'update_time' => time()])) {
@@ -216,11 +217,11 @@ class Auth extends Common
     }
 
     //添加用户分组
-    public function authGroupAdd()
+    public function authGroupAdd(Request $request)
     {
-        if (request()->isPost()) {
-            $data['title'] = getParam('title');
-            $data['status'] = getParam('status');
+        if ($request->isPost()) {
+            $data['title'] = $request->param('title');
+            $data['status'] = $request->param('status');
             $data['created_at'] = time();
             $data['update_time'] = time();
             if (Db::name('auth_group')->insert($data)) {
@@ -234,12 +235,12 @@ class Auth extends Common
     }
 
     //修改用户分组
-    public function authGroupEdit()
+    public function authGroupEdit(Request $request)
     {
-        if (request()->isPost()) {
-            $auth_group_id = getParam('auth_group_id');
-            $data['title'] = getParam('title');
-            $data['status'] = getParam('status');
+        if ($request->isPost()) {
+            $auth_group_id = $request->param('auth_group_id');
+            $data['title'] = $request->param('title');
+            $data['status'] = $request->param('status');
             $data['update_time'] = time();
             if (Db::name('auth_group')->where('auth_group_id', $auth_group_id)->update($data)) {
                 return redirect(url('auth/auth_group_list'));
@@ -247,16 +248,16 @@ class Auth extends Common
                 $this->error('用户组修改失败', url('auth/authGroupEdit', ['auth_group_id' => $auth_group_id]));
             }
         } else {
-            $auth_group_id = getParam('auth_group_id');
+            $auth_group_id = $request->param('auth_group_id');
             $data['info'] = Db::name('auth_group')->where('auth_group_id', $auth_group_id)->find();
             return View::fetch('auth_group_edit', $data);
         }
     }
 
     //删除用户分组
-    public function authGroupDel()
+    public function authGroupDel(Request $request)
     {
-        $auth_group_id = getParam('auth_group_id');
+        $auth_group_id = $request->param('auth_group_id');
         if ($auth_group_id == 1) {
             $this->error('该分组不能删除', 'auth/auth_group_list');
         }
@@ -268,13 +269,13 @@ class Auth extends Common
     }
 
     //分组配置规则
-    public function authGroupAccess()
+    public function authGroupAccess(Request $request)
     {
         $nav = new \Leftnav();
         $map['is_delete'] = 0;
         //$map['menu_status'] = 1;
         $auth_rule = Db::name('auth_rule')->where($map)->field('auth_rule_id,pid,title,href')->order('sort asc')->select()->toArray();
-        $auth_group_id = getParam('auth_group_id');
+        $auth_group_id = $request->param('auth_group_id');
         $rules = Db::name('auth_group')->where('auth_group_id', $auth_group_id)->value('rules');
         foreach ($auth_rule as &$v) {
             if (!empty($v['href'])) {
@@ -294,13 +295,13 @@ class Auth extends Common
     }
 
     // 用户组状态操作
-    public function authGroupSetaccess()
+    public function authGroupSetaccess(Request $request)
     {
-        $data['rules'] = getParam('rules');
+        $data['rules'] = $request->param('rules');
         if (empty($data['rules'])) {
             return $this->apiReturn(0, [], '请选择权限');
         }
-        $auth_group_id = getParam('auth_group_id');
+        $auth_group_id = $request->param('auth_group_id');
         if (Db::name('auth_group')->where('auth_group_id', $auth_group_id)->update($data)) {
             return $this->apiReturn(1, [], '保存成功');
         } else {
@@ -321,15 +322,15 @@ class Auth extends Common
         return View::fetch('auth/auth_rule_list', $data);
     }
 
-    public function ruleAdd()
+    public function ruleAdd(Request $request)
     {
-        if (request()->isPost()) {
-            $data['href'] = getParam('href');
-            $data['title'] = getParam('title');
-            $data['is_open_auth'] = getParam('is_open_auth');
-            $data['menu_status'] = getParam('menu_status');
-            $data['sort'] = getParam('sort');
-            $data['pid'] = getParam('pid');
+        if ($request->isPost()) {
+            $data['href'] = $request->param('href');
+            $data['title'] = $request->param('title');
+            $data['is_open_auth'] = $request->param('is_open_auth');
+            $data['menu_status'] = $request->param('menu_status');
+            $data['sort'] = $request->param('sort');
+            $data['pid'] = $request->param('pid');
             $data['created_at'] = time();
             $map['href'] = $data['href'];
             $map['is_delete'] = 0;
@@ -356,7 +357,7 @@ class Auth extends Common
             $map['is_delete'] = 0;
             $authRule = Db::name('authRule')->where($map)->field('auth_rule_id,title,pid,href')->order('sort asc')->select();
             $arr = $nav->menu($authRule);
-            $auth_rule_id = getParam('auth_rule_id');
+            $auth_rule_id = $request->param('auth_rule_id');
             if ($auth_rule_id) {
                 $where['auth_rule_id'] = $auth_rule_id;
                 $where['is_delete'] = 0;
@@ -376,16 +377,16 @@ class Auth extends Common
     }
 
 
-    public function ruleEdit()
+    public function ruleEdit(Request $request)
     {
-        if (request()->isPost()) {
-            $auth_rule_id = getParam('auth_rule_id');
-            $data['href'] = getParam('href');
-            $data['title'] = getParam('title');
-            $data['is_open_auth'] = getParam('is_open_auth');
-            $data['menu_status'] = getParam('menu_status');
-            $data['sort'] = getParam('sort');
-            $data['pid'] = getParam('pid');
+        if ($request->isPost()) {
+            $auth_rule_id = $request->param('auth_rule_id');
+            $data['href'] = $request->param('href');
+            $data['title'] = $request->param('title');
+            $data['is_open_auth'] = $request->param('is_open_auth');
+            $data['menu_status'] = $request->param('menu_status');
+            $data['sort'] = $request->param('sort');
+            $data['pid'] = $request->param('pid');
             $data['update_time'] = time();
             $map = [
                 ['href', '=', $data['href']],
@@ -432,12 +433,12 @@ class Auth extends Common
     }
 
     // 删除菜单
-    public function ruleDel()
+    public function ruleDel(Request $request)
     {
-        if (in_array(getParam('auth_rule_id'), config('app.not_del'))) {
+        if (in_array($request->param('auth_rule_id'), config('app.not_del'))) {
             $this->error('该菜单权限不能删除');
         }
-        if (Db::name('auth_rule')->where('auth_rule_id', getParam('auth_rule_id'))->update(['is_delete' => 1, 'delete_time' => time()])) {
+        if (Db::name('auth_rule')->where('auth_rule_id', $request->param('auth_rule_id'))->update(['is_delete' => 1, 'delete_time' => time()])) {
             return redirect($_SERVER['HTTP_REFERER']);
         } else {
             $this->error('删除失败');

@@ -468,7 +468,6 @@ function getIspByIp($ip)
 function getFileList($dir, $extName, &$fileList)
 {
     $dir = rtrim($dir, '/');
-
     $files = [];
     if (@$handle = opendir($dir)) {
         while (($file = readdir($handle)) !== false) {
@@ -764,8 +763,8 @@ function curl_get($url)
 
     if ($data === false) {
         return json_encode([
-            'code'=>1,
-            'msg'=>curl_error($curl)
+            'code' => 1,
+            'msg' => curl_error($curl)
         ]);
     }
 
@@ -1253,4 +1252,42 @@ function processSleep($time)
         echo "{$list[0]} 进程数量已到最大值: {$num},将休息30秒后运行";
         processSleep(60);
     }
+}
+
+function download($filepath, $filename)
+{
+    //以只读和二进制模式打开文件
+    $file = fopen($filepath . $filename, "rb");
+    //告诉浏览器这是一个文件流格式的文件
+    Header("Content-type: application/octet-stream");
+    //请求范围的度量单位
+    Header("Accept-Ranges: bytes");
+    //Content-Length是指定包含于请求或响应中数据的字节长度
+    Header("Accept-Length: " . filesize($filepath . $filename));
+    //用来告诉浏览器，文件是可以当做附件被下载，下载后的文件名称为$file_name该变量的值。
+    Header("Content-Disposition: attachment; filename=" . $filename);
+    ob_end_clean();
+    //读取文件内容并直接输出到浏览器
+    echo fread($file, filesize($filepath . $filename));
+    fclose($file);
+}
+
+function ByteSize($file_size)
+{
+    $file_size = $file_size - 1;
+
+    if ($file_size >= 1099511627776) $show_filesize = number_format(($file_size / 1099511627776), 2) . " TB";
+
+    elseif ($file_size >= 1073741824) $show_filesize = number_format(($file_size / 1073741824), 2) . " GB";
+
+    elseif ($file_size >= 1048576) $show_filesize = number_format(($file_size / 1048576), 2) . " MB";
+
+    elseif ($file_size >= 1024) $show_filesize = number_format(($file_size / 1024), 2) . " KB";
+
+    elseif ($file_size > 0) $show_filesize = $file_size . " b";
+
+    elseif ($file_size == 0 || $file_size == -1) $show_filesize = "0 b";
+
+    return $show_filesize;
+
 }

@@ -32,6 +32,15 @@
                     <a href="<?php echo url('app/downloaAppTemplate') ?>"
                        class="btn btn-outline-success">下载模板</a>
                 </div>
+                <div class="col-auto">
+                    <a href="<?php echo url('app/suspend_scan') ?>"
+                       class="btn btn-outline-success">暂停扫描</a>
+                </div>
+
+                <div class="col-auto">
+                    <a href="javascript:;" onclick="batch_del()"
+                       class="btn btn-outline-success">批量删除</a>
+                </div>
             </form>
         </div>
     </div>
@@ -40,6 +49,11 @@
             <table class="table table-bordered table-hover table-striped">
                 <thead>
                 <tr>
+                    <th>
+                        <label>
+                            <input type="checkbox" value="-1" onclick="quanxuan(this)">全选
+                        </label>
+                    </th>
                     <th>ID</th>
                     <th>名称</th>
                     <th>rad</th>
@@ -52,6 +66,8 @@
                     <th>vulmap</th>
                     <th>nmap</th>
                     <th>主机数量</th>
+                    <th>nuclei</th>
+                    <th>hydra</th>
                     <th>创建时间</th>
                     <th style="width: 200px">操作</th>
                 </tr>
@@ -59,6 +75,11 @@
                 <tbody>
                 <?php foreach ($list as $value) { ?>
                     <tr>
+                        <td>
+                            <label>
+                                <input type="checkbox" class="ids" name="ids[]" value="<?php echo $value['id'] ?>">
+                            </label>
+                        </td>
                         <td><?php echo $value['id'] ?></td>
                         <td class="ellipsis-type">
                             <a href="{$value['url']}" title="{$value['url']}" target="_blank">{$value['name']} </a>
@@ -113,6 +134,16 @@
                                href="<?php echo url('host/index', ['app_id' => $value['id']]); ?>"><?php echo $value['host_num'] ?? 0 ?>
                             </a>
                         </td>
+                        <td>
+                            <a title="扫描时间:<?php echo $value['nuclei_scan_time'] ?>"
+                               href="<?php echo url('app_nuclei/index', ['app_id' => $value['id']]); ?>"><?php echo $value['nuclei_num'] ?? 0 ?>
+                            </a>
+                        </td>
+                        <td>
+                            <a
+                               href="<?php echo url('hydra/index', ['app_id' => $value['id']]); ?>"><?php echo $value['hydra_num'] ?? 0 ?>
+                            </a>
+                        </td>
                         <td><?php echo date('Y-m-d H:i', strtotime($value['create_time'])) ?></td>
                         <td>
                             <?php if($value['xray_agent_port'] ?? ''){?>
@@ -135,7 +166,7 @@
                 <?php } ?>
                 </tbody>
                 <?php if(empty($list)){?>
-                    <tr><td colspan="14" class="text-center">暂无目标</td></tr>
+                    <tr><td colspan="8" class="text-center">暂无目标</td></tr>
                 <?php }?>
             </table>
         </div>
@@ -165,6 +196,47 @@
                         window.setTimeout(function(){
                             location.reload();
                         },1000);
+                    }
+                }
+            });
+        }
+
+
+        function quanxuan(obj){
+            var child = $('.table').find('input[type="checkbox"]');
+            child.each(function(index, item){
+                if (obj.checked) {
+                    item.checked = true
+                } else {
+                    item.checked = false
+                }
+            })
+        }
+
+        function batch_del(){
+            var child = $('.table').find('input[type="checkbox"]');
+            var ids = ''
+            child.each(function(index, item){
+                if (item.value != -1 && item.checked) {
+                    if (ids == '') {
+                        ids = item.value
+                    } else {
+                        ids = ids+','+item.value
+                    }
+                }
+            })
+
+            $.ajax({
+                type: "post",
+                url: "<?php echo url('app/batch_del')?>",
+                data: {ids: ids},
+                dataType: "json",
+                success: function (data) {
+                    alert(data.msg)
+                    if (data.code == 1) {
+                        window.setTimeout(function () {
+                            location.reload();
+                        }, 2000)
                     }
                 }
             });
