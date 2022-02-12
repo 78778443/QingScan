@@ -6,12 +6,17 @@ namespace app\controller;
 
 use think\facade\Db;
 use think\facade\View;
+use think\Request;
 
 class CodeComposer extends Common
 {
-    public function index(){
+    public function index(Request $request){
         $pageSize = 20;
         $where = [];
+        $search = $request->param('search');
+        if (!empty($search)) {
+            $where[] = ['name|version|source|authors','like',"%{$search}%"];
+        }
         if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
             $where[] = ['user_id', '=', $this->userId];
         }

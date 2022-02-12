@@ -184,16 +184,16 @@ class Code extends Common
         $fortifyApi = $fortifyApi->where("Folder != 'Low'");
         $fortifyCountApi = Db::table('fortify')->where($where)->where("Folder != 'Low'");
         //获取分类分组
-        $categoryList = Db::table('fortify')->where($where)->where("Folder != 'Low'")->group('Category')->field('Category')->select()->toArray();
+        $categoryList = Db::table('fortify')->where($map)->where("Folder != 'Low'")->group('Category')->field('Category')->select()->toArray();
         $CategoryList = array_column($categoryList, 'Category');
         //查询项目数据
         $projectArr = Db::table('code')->where($map)->select()->toArray();
         $projectArr = array_column($projectArr, null, 'id');
         //获取文件分组
-        $fileList = Db::table('fortify')->where("Folder != 'Low'")->where($where)->field('Primary_filename')->group('Primary_filename')->select()->toArray();
+        $fileList = Db::table('fortify')->where("Folder != 'Low'")->where($map)->field('Primary_filename')->group('Primary_filename')->select()->toArray();
         $fileList = array_column($fileList, 'Primary_filename');
         //查询项目列表
-        $fortifyProjectList = Db::table('fortify')->where($where)->where("Folder != 'Low'")->field('code_id')->group('code_id')->select()->toArray();
+        $fortifyProjectList = Db::table('fortify')->where($map)->where("Folder != 'Low'")->field('code_id')->group('code_id')->select()->toArray();
         $fortifyProjectList = array_column($fortifyProjectList, 'code_id');
         $fortifyProjectList = Db::table('code')->whereIn('id', $fortifyProjectList)->field('id,name')->select()->toArray();
         $fortifyProjectList = array_column($fortifyProjectList, 'name', 'id');

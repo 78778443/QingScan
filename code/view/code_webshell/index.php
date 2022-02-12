@@ -1,7 +1,7 @@
 {include file='public/head' /}
 <?php
 $searchArr = [
-    'action' => url('hydra/index'),
+    'action' => url('code_webshell/index'),
     'method' => 'get',
     'inputs' => [
         ['type' => 'text', 'name' => 'search', 'placeholder' => "搜索的内容"],

@@ -6,7 +6,7 @@ $searchArr = [
     'method' => 'get',
     'inputs' => [
         ['type' => 'text', 'name' => 'search', 'placeholder' => "依赖库"],
-        ['type' => 'select', 'name' => 'name', 'options' => $nameArr, 'frist_option' => '请选择'],
+        //['type' => 'select', 'name' => 'name', 'options' => $nameArr, 'frist_option' => '请选择'],
     ]];
 ?>
 {include file='public/search' /}
@@ -32,7 +32,7 @@ $searchArr = [
                         <td><?php echo $value['name'] ?></td>
                         <td><?php echo $value['create_time'] ?></td>
                         <td>
-                            <a href="<?php echo url('xray/del', ['id' => $value['id']]) ?>"
+                            <a href="<?php echo url('code_python/del', ['id' => $value['id']]) ?>"
                                class="btn btn-sm btn-outline-danger">删除</a>
                         </td>
                     </tr>
