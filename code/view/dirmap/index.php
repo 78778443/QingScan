@@ -1,7 +1,7 @@
 {include file='public/head' /}
 <?php
 $searchArr = [
-    'action' => url('hydra/index'),
+    'action' => url('dirmap/index'),
     'method' => 'get',
     'inputs' => [
         ['type' => 'text', 'name' => 'search', 'placeholder' => "搜索的内容"],
@@ -35,7 +35,7 @@ $searchArr = [
                     <td><?php echo $value['url'] ?></td>
                     <td><?php echo $value['create_time'] ?></td>
                     <td>
-                        <a href="<?php echo url('xray/del',['id'=>$value['id']])?>" class="btn btn-sm btn-outline-danger">删除</a>
+                        <a href="<?php echo url('dirmap/del',['id'=>$value['id']])?>" class="btn btn-sm btn-outline-danger">删除</a>
                     </td>
                 </tr>
             <?php } ?>

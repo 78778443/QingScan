@@ -18,14 +18,14 @@ class HostPort extends Common
     public function index(Request $request)
     {
         $where[] = ['is_delete','=',0];
-        $search = getParam('search','');    // 项目名称
+        $search = $request->param('search');    // 项目名称
         if (!empty($search)) {
             $where[] = ['port|host','like',"%{$search}%"];
         }
-        $host = getParam('host'); // 主机名称
-        $port = getParam('port');   // 端口名称
-        $service = getParam('service');   // 组件类型
-        $check_status = getParam('check_status');   // 审核状态
+        $host = $request->param('host'); // 主机名称
+        $port = $request->param('port');   // 端口名称
+        $service = $request->param('service');   // 组件类型
+        $check_status = $request->param('check_status');   // 审核状态
         if (!empty($host)) {
             $where[] = ['host','=',$host];
         }

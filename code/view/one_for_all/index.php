@@ -34,9 +34,7 @@ $searchArr = [
                     <td><?php echo $value['ip'] ?></td>
                     <td><?php echo $value['status'] ?></td>
                     <td>
-                        <a href="<?php echo url('xray/details',['id'=>$value['id']])?>"
-                           class="btn btn-sm btn-outline-primary">查看漏洞</a>
-                        <a href="<?php echo url('xray/del',['id'=>$value['id']])?>" class="btn btn-sm btn-outline-danger">删除</a>
+                        <a href="<?php echo url('one_for_all/del',['id'=>$value['id']])?>" class="btn btn-sm btn-outline-danger">删除</a>
                     </td>
                 </tr>
             <?php } ?>
