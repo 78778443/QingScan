@@ -6,17 +6,18 @@ namespace app\controller;
 
 use think\facade\Db;
 use think\facade\View;
+use think\Request;
 
 class Hydra extends Common
 {
-    public function index(){
+    public function index(Request $request){
         $pageSize = 20;
         $where = [];
-        $search = getParam('search');
+        $search = $request->param('search');
         if (!empty($search)) {
-            $where[] = ['type','like',"%{$search}%"];
+            $where[] = ['host|type','like',"%{$search}%"];
         }
-        $app_id = getParam('app_id');
+        $app_id = $request->param('app_id');
         if (!empty($app_id)) {
             $where[] = ['app_id','=',$app_id];
         }
