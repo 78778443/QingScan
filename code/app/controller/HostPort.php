@@ -30,7 +30,7 @@ class HostPort extends Common
             $where[] = ['host','=',$host];
         }
         if (!empty($port)) {
-            $where[] = ['check_id','=',$port];
+            $where[] = ['port','=',$port];
         }
         if (!empty($service)) {
             $where[] = ['service','=',$service];
