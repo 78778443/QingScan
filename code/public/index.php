@@ -11,11 +11,12 @@
 // [ 应用入口文件 ]
 namespace think;
 
+header('Access-Control-Allow-Origin:*');
+header('Access-Control-Allow-Headers: content-type,token');
+
 if (!file_exists(__DIR__."/install/install.lock")) {
     header("location:/install/step1.php");exit();
 }
-
-header('Access-Control-Allow-Origin:*');
 
 require __DIR__ . '/../vendor/autoload.php';
 
