@@ -12,7 +12,8 @@
 namespace think;
 
 header('Access-Control-Allow-Origin:*');
-header('Access-Control-Allow-Headers: content-type,token');
+header("Access-Control-Allow-Methods: POST, GET, OPTIONS, PUT, DELETE");
+header('Access-Control-Allow-Headers:Origin,Content-Type,Accept,token,X-Requested-With,device');
 
 if (!file_exists(__DIR__."/install/install.lock")) {
     header("location:/install/step1.php");exit();
