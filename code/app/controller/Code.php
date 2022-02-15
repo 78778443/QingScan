@@ -122,7 +122,6 @@ class Code extends Common
         }
     }
 
-
     // 批量删除
     public function batch_del(Request $request){
         $ids = $request->param('ids');
@@ -209,6 +208,16 @@ class Code extends Common
         // 获取分页显示
         //$pageRaw = $fortifyApi->paginate($pageSize)->render();
 
+        foreach ($projectArr as $k=>$v) {
+            // 判断类型
+            if (preg_match('/gitee\.com/', $v['ssh_url'])) {   // 码云
+                $path = substr($v['ssh_url'],strripos($v['ssh_url'],':')+1,strlen($v['ssh_url']));
+                $projectArr[$k]['domain_name'] =  "https://gitee.com/{$path}/blob/main";
+            } elseif (preg_match('/github\.com/', $v['ssh_url'])) {    // github
+                $path = substr($v['ssh_url'],strripos($v['ssh_url'],'github.com/')+1,strlen($v['ssh_url']));
+                $projectArr[$k]['domain_name'] =  "https://github.com/{$path}/blob/main";
+            }
+        }
         //分配数据
         $data = [
             'search' => $search,

@@ -42,13 +42,13 @@ $searchArr = [
                         <span class="badge rounded-pill bg-<?php echo $dengjiArrColor[$value['Friority']] ?>"><?php echo $value['Friority'] ?></span>
                     </td>
                     <td title="<?php echo htmlentities($value['Source']['Snippet'] ?? '') ?>">
-                        <a href="<?php echo isset($projectArr[$value['code_id']]) ? $projectArr[$value['code_id']]['ssh_url'] : '' ?>/-/blob/master/<?php echo $value['Source']['FilePath'] ?? '' ?>"
+                        <a href="<?php echo isset($projectArr[$value['code_id']]) ? $projectArr[$value['code_id']]['domain_name'] : '' ?>/<?php echo isset($value['Source']['FilePath']) ? $value['Source']['FilePath'].'#L'.$value['Source']['LineStart'] :'' ?>"
                            target="_blank">
                             <?php echo $value['Source']['FileName'] ?? '' ?>
                         </a>
                     </td>
                     <td title="<?php echo htmlentities($value['Primary']['Snippet']) ?>">
-                        <a href="<?php echo isset($projectArr[$value['code_id']]) ? $projectArr[$value['code_id']]['ssh_url'] : '' ?>/-/blob/master/<?php echo $value['Primary']['FilePath'] ?>"
+                        <a href="<?php echo isset($projectArr[$value['code_id']]) ? $projectArr[$value['code_id']]['domain_name'] : '' ?>/<?php echo $value['Primary']['FilePath'].'#L'.$value['Primary']['LineStart'] ?>"
                            target="_blank">
                             <?php echo $value['Primary']['FileName'] ?>
                         </a>
