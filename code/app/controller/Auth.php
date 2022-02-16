@@ -153,7 +153,7 @@ class Auth extends Common
     public function user_password(Request $request)
     {
         $id = $this->userId;
-        if ($request) {
+        if ($request->isPost()) {
             $password = $request->param('password');
             $news_password = $request->param('news_password');
             $news_password1 = $request->param('news_password1');
