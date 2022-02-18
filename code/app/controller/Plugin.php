@@ -4,11 +4,12 @@ namespace app\controller;
 
 use think\facade\Db;
 use think\facade\View;
+use think\Request;
 
 class Plugin extends Common
 {
 
-    public function index()
+    public function index(Request $request)
     {
         //echo '<pre>';
         /*$where[] = ['is_read','=',1];
@@ -28,14 +29,17 @@ class Plugin extends Common
         exit;*/
         $pageSize = 20;
         $where[] = ['is_delete','=',0];
-        $search = getParam('search');
+        $search = $request->param('search');
         if ($search) {
             $where[] = ['name','like',"%{$search}%"];
         }
         if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
             $where[] = ['user_id', '=', $this->userId];
         }
-        $list = Db::table('plugin')->where($where)->order("id", 'desc')->paginate($pageSize);
+        $list = Db::table('plugin')->where($where)->order("id", 'desc')->paginate([
+            'list_rows'=> $pageSize,//每页数量
+            'query' => $request->param(),
+        ]);
         $data['list'] = $list->items();
         $data['page'] = $list->render();
         return View::fetch('index', $data);

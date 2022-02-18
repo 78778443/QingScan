@@ -9,7 +9,7 @@ $searchArr = [
     'method' => 'get',
     'inputs' => [
         ['type' => 'text', 'name' => 'search', 'placeholder' => "搜索的内容"],
-        ['type' => 'select', 'name' => 'level', 'options' => $vul_level, 'frist_option' => '危险等级'],
+        ['type' => 'select', 'name' => 'vul_level', 'options' => $vul_level, 'frist_option' => '危险等级'],
         ['type' => 'select', 'name' => 'product_field', 'options' => $product_field, 'frist_option' => '行业'],
         ['type' => 'select', 'name' => 'product_type', 'options' => $product_type, 'frist_option' => '项目类型'],
         ['type' => 'select', 'name' => 'product_cate', 'options' => $product_cate, 'frist_option' => '平台分类'],

@@ -14,7 +14,7 @@ class AppNuclei extends Common
         $where = [];
         $search = $request->param('search');
         if (!empty($search)) {
-            $where[] = ['name|host','like',"%{$search}%"];
+            $where[] = ['name|host', 'like', "%{$search}%"];
         }
         $app_id = $request->param('app_id');
         if (!empty($app_id)) {
@@ -26,7 +26,10 @@ class AppNuclei extends Common
         $list = Db::table('app_nuclei')
             ->where($where)
             ->order("id", 'desc')
-            ->paginate(['list_rows' => $pageSize, 'query' => request()->param()]);
+            ->paginate([
+                'list_rows' => $pageSize,
+                'query' => $request->param()
+            ]);
         $data['list'] = $list->items();
         foreach ($data['list'] as &$v) {
             $v['app_name'] = Db::name('app')->where('id', $v['app_id'])->value('name');

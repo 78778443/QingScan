@@ -15,7 +15,7 @@ class Urls extends Common
 
     public function index(Request $request)
     {
-        $pageSize = 20;
+        $pageSize = 10;
         $search = $request->param('search');
         $where = [];
         if (!empty($search)) {
@@ -27,12 +27,13 @@ class Urls extends Common
             $where[] = ['user_id','=',$this->userId];
         }
 
-        $list = Db::table('urls')->where($where)->where('is_delete', 0)->order("id", 'desc')->paginate($pageSize);
-
-        $data['list'] = $list->toArray()['data'];
+        $list = Db::table('urls')->where($where)->where('is_delete', 0)->order("id", 'desc')->paginate([
+            'list_rows'=> $pageSize,//每页数量
+            'query' => $request->param(),
+        ]);
+        $data['list'] = $list->items();
 
         $appList = Db::table('app')->select()->toArray();
-
         $data['appArr'] = array_column($appList, 'name', 'id');
 
         // 获取分页显示

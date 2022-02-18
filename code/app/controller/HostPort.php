@@ -17,6 +17,7 @@ class HostPort extends Common
 {
     public function index(Request $request)
     {
+        $pageSize = 10;
         $where[] = ['is_delete','=',0];
         $search = $request->param('search');    // 项目名称
         if (!empty($search)) {
@@ -45,13 +46,15 @@ class HostPort extends Common
         if (!empty($app_id)) {
             $where[] = ['app_id','=',$app_id];
         }
-        $list = Db::table(HostPortModel::$tableName)->where($where)->paginate(10);
+        $list = Db::table(HostPortModel::$tableName)->where($where)->paginate([
+            'list_rows' => $pageSize,
+            'query' => $request->param()
+        ]);
         $data = [];
-        $data['list'] = $list->toArray()['data'];
+        $data['list'] = $list->items();
+        $data['page'] = $list->render();
         $data['classify'] = HostPortModel::getClassify($where);
         $data['appArr'] = AppModel::getAppName();
-        // 获取分页显示
-        $data['page'] = $list->render();
         $projectArr = Db::table('code')->select()->toArray();
         $projectArr = array_column($projectArr, null, 'id');
         $data['projectArr'] = $projectArr;

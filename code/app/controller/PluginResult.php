@@ -4,19 +4,20 @@ namespace app\controller;
 
 use think\facade\Db;
 use think\facade\View;
+use think\Request;
 
 class PluginResult extends Common
 {
 
-    public function index()
+    public function index(Request $request)
     {
-        $pageSize = 20;
+        $pageSize = 2;
         $where[] = ['is_delete','=',0];
-        $search = getParam('search');
+        $search = $request->param('search');
         if ($search) {
             $where[] = ['name','like',"%{$search}%"];
         }
-        $app_id = getParam('app_id');
+        $app_id = $request->param('app_id');
         if ($app_id) {
             $where[] = ['app_id','=',$app_id];
         }
@@ -30,7 +31,10 @@ class PluginResult extends Common
             ->where($where)
             ->field('a.*,b.name,b.result_file')
             ->order("a.id", 'desc')
-            ->paginate($pageSize);
+            ->paginate([
+                'list_rows'=> $pageSize,//每页数量
+                'query' => $request->param(),
+            ]);
         $data['list'] = $list->items();
         foreach ($data['list'] as &$v) {
             $v['app_name'] = Db::name('app')->where('id',$v['app_id'])->value('name');

@@ -8,11 +8,14 @@ use think\Request;
 
 class Proxy extends Common
 {
-    public function index()
+    public function index(Request $request)
     {
         $pageSize = 20;
         $where = [];
-        $list = Db::table('proxy')->where($where)->order("id", 'desc')->paginate($pageSize);
+        $list = Db::table('proxy')->where($where)->order("id", 'desc')->paginate([
+            'list_rows' => $pageSize,
+            'query' => $request->param()
+        ]);
         $data['list'] = $list->items();
         $data['page'] = $list->render();
         return View::fetch('index', $data);

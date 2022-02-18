@@ -28,9 +28,12 @@ class Code extends Common
         if (!empty($search)) {
             $where[] = ['name', 'like', "%{$search}%"];
         }
-        $list = Db::table('code')->where($where)->order('scan_time', 'desc')->paginate($pageSize);
+        $list = Db::table('code')->where($where)->order('scan_time', 'desc')->paginate([
+            'list_rows'=> $pageSize,//每页数量
+            'query' => $request->param(),
+        ]);
 
-        $data['list'] = $list->toArray()['data'];
+        $data['list'] = $list->items();
 
         //查询数量
         $codeIds = array_column($data['list'], 'id');
@@ -196,7 +199,7 @@ class Code extends Common
         $fortifyProjectList = array_column($fortifyProjectList, 'code_id');
         $fortifyProjectList = Db::table('code')->whereIn('id', $fortifyProjectList)->field('id,name')->select()->toArray();
         $fortifyProjectList = array_column($fortifyProjectList, 'name', 'id');
-        $objData = $fortifyApi->order('id', 'desc')->paginate(['list_rows' => $pageSize, 'query' => request()->param()]);
+        $objData = $fortifyApi->order('id', 'desc')->paginate(['list_rows' => $pageSize, 'query' => $request->param()]);
         $list = $objData->items();
         $pageRaw = $objData->render();
         //获取列表数据
@@ -442,8 +445,8 @@ class Code extends Common
             $where[] = ['user_id', '=', $this->userId];
             $map[] = ['user_id', '=', $this->userId];
         }
-        $list = Db::table('semgrep')->where($where)->order('id', 'desc')->paginate(['list_rows' => $pageSize, 'query' => request()->param()]);
-        $data['list'] = $list->toArray()['data'];
+        $list = Db::table('semgrep')->where($where)->order('id', 'desc')->paginate(['list_rows' => $pageSize, 'query' => $request->param()]);
+        $data['list'] = $list->items();
         $data['page'] = $list->render();
 
         $projectArr = Db::table('code')->where($map)->select()->toArray();

@@ -26,7 +26,6 @@ class App extends Common
     public function index(Request $request)
     {
         $pageSize = 15;
-        $page = $request->param('page', 1,'intval');
         $statusCode = $request->param('statuscode');
         $cms = base64_decode($_GET['cms'] ?? '');
         $server = base64_decode($_GET['server'] ?? '');
@@ -42,7 +41,12 @@ class App extends Common
             $where1[] = ['user_id', '=', $this->userId];
         }
 
-        $data['list'] = Db::table('app')->LeftJoin('app_info info', 'app.id = info.app_id')->where($where)->limit($pageSize)->page($page)->select()->toArray();
+        $list = Db::table('app')->LeftJoin('app_info info', 'app.id = info.app_id')->where($where)->paginate([
+            'list_rows'=> $pageSize,//每页数量
+            'query' => $request->param(),
+        ]);
+        $data['list'] = $list->items();
+        $data['page'] = $list->render();
         $data['statuscodeArr'] = Db::table('app')->Join('app_info info', 'app.id = info.app_id')->where($where)->group('info.statuscode')->field('statuscode')->select()->toArray();
         $data['statuscodeArr'] = array_column($data['statuscodeArr'], 'statuscode');
         $data['cmsArr'] = Db::table('app')->Join('app_info info', 'app.id = info.app_id')->where($where)->group('info.cms')->field('cms')->select()->toArray();
@@ -80,20 +84,11 @@ class App extends Common
             $v['namp_num'] = Db::table('host_port')->where('app_id', $v['id'])->where($where1)->count('id');
             $v['host_num'] = Db::table('host')->where('app_id', $v['id'])->where($where1)->count('id');
         }
-        $data['pageSize'] = $pageSize;
-        $data['count'] = Db::table('app')->Join('app_info info', 'app.id = info.app_id')->where($where)->count();
         $configArr = ConfigModel::getNameArr();
         $data['statusArr'] = $this->statusArr;
         $data['GET'] = $_GET;
-        // 获取分页显示
-        $data['page'] = Db::name('app')->where($where)->LeftJoin('app_info info', 'app.id = info.app_id')->paginate($pageSize)->render();
         $data = array_merge($data, $configArr);
         return View::fetch('index', $data);
-    }
-
-    public function add()
-    {
-        $this->show('app/add');
     }
 
     public function _add(Request $request)

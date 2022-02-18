@@ -5,7 +5,7 @@ $dengjiArr = ['Low', 'Medium', 'High', 'Critical'];
 
 <?php
 $searchArr = [
-    'action' => url('code/bug_list'),
+    'action' => url('index'),
     'method' => 'get',
     'inputs' => [
         ['type' => 'text', 'name' => 'search', 'placeholder' => "搜索"],

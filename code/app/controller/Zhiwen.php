@@ -20,7 +20,10 @@ class Zhiwen extends Common
         if (!empty($search)) {
             $where[] = ['filters|keyword|supplier|tags|title','like',"%{$search}%"];
         }
-        $list = Db::table('zhiwen')->where($where)->paginate($pageSize);
+        $list = Db::table('zhiwen')->where($where)->paginate([
+            'list_rows' => $pageSize,
+            'query' => request()->param()
+        ]);
         $data['list'] = $list->items();
         $data['page'] = $list->render();
         return View::fetch('index', $data);

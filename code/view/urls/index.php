@@ -7,7 +7,7 @@
         'action' => $_SERVER['REQUEST_URI'],
         'method' => 'get',
         'inputs' => [
-            ['type' => 'text', 'name' => 'url', 'placeholder' => 'URL'],
+            ['type' => 'text', 'name' => 'search', 'placeholder' => '请输入要搜索的关键字'],
         ],
         'btnArr' => [
             ['text' => '添加URL', 'ext' => [

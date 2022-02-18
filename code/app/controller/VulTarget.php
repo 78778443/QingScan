@@ -10,10 +10,14 @@ use think\Request;
 class VulTarget extends Common
 {
 
-    public function index()
+    public function index(Request $request)
     {
         $where = [];
         $pageSize = 25;
+        $search = $request->param('search','');
+        if (!empty($search)) {
+            $where[] = ['addr|ip|port|query','like',"%{$search}%"];
+        }
         if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
             $where[] = ['v.user_id', '=', $this->userId];
         }
@@ -22,7 +26,10 @@ class VulTarget extends Common
             ->where($where)
             ->order('v.id', 'desc')
             ->field('v.*,p.name,p.content')
-            ->paginate($pageSize);
+            ->paginate([
+                'list_rows'=> $pageSize,//每页数量
+                'query' => $request->param(),
+            ]);
         $data = [];
         $data['list'] = $list->toArray()['data'];
         $data['page'] = $list->render();

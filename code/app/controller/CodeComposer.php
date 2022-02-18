@@ -20,7 +20,10 @@ class CodeComposer extends Common
         if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
             $where[] = ['user_id', '=', $this->userId];
         }
-        $list = Db::table('code_composer')->where($where)->order("id", 'desc')->paginate($pageSize);
+        $list = Db::table('code_composer')->where($where)->order("id", 'desc')->paginate([
+            'list_rows'=> $pageSize,//每页数量
+            'query' => $request->param(),
+        ]);
         $data['list'] = $list->items();
         foreach ($data['list'] as &$v) {
             $v['code_name'] = Db::table('code')->where('id',$v['code_id'])->value('name');

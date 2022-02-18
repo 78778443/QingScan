@@ -24,7 +24,10 @@ class CodeWebshell extends Common
             $where[] = ['user_id', '=', $this->userId];
             $map[] = ['user_id', '=', $this->userId];
         }
-        $list = Db::table('code_webshell')->where($where)->order("id", 'desc')->paginate(['list_rows'=>$pageSize,'query'=>request()->param()]);
+        $list = Db::table('code_webshell')->where($where)->order("id", 'desc')->paginate([
+            'list_rows'=> $pageSize,//每页数量
+            'query' => $request->param(),
+        ]);
         $data['list'] = $list->items();
         foreach ($data['list'] as &$v) {
             $v['name'] = Db::name('code')->where('id',$v['code_id'])->value('name');

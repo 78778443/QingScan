@@ -24,7 +24,10 @@ class Hydra extends Common
         if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
             $where[] = ['user_id', '=', $this->userId];
         }
-        $list = Db::table('host_hydra_scan_details')->where($where)->order("id", 'desc')->paginate(['list_rows'=>$pageSize,'query'=>request()->param()]);
+        $list = Db::table('host_hydra_scan_details')->where($where)->order("id", 'desc')->paginate([
+            'list_rows'=>$pageSize,
+            'query'=>$request->param()
+        ]);
         $data['list'] = $list->items();
         foreach ($data['list'] as &$v) {
             $v['host'] = Db::name('host')->where('id',$v['host_id'])->value('hsot');

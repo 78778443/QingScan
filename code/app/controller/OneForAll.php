@@ -24,7 +24,10 @@ class OneForAll extends Common
         if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
             $where[] = ['user_id', '=', $this->userId];
         }
-        $list = Db::table('one_for_all')->where($where)->order("id", 'desc')->paginate(['list_rows'=>$pageSize,'query'=>request()->param()]);
+        $list = Db::table('one_for_all')->where($where)->order("id", 'desc')->paginate([
+            'list_rows'=>$pageSize,
+            'query'=>$request->param()
+        ]);
         $data['list'] = $list->items();
         foreach ($data['list'] as &$v) {
             $v['app_name'] = Db::name('app')->where('id',$v['app_id'])->value('name');

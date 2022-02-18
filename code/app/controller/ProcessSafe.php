@@ -24,7 +24,10 @@ class ProcessSafe extends Common
             $type = array_search($type,$this->typeArr);
             $where[] = ['type','=',$type];
         }
-        $list = Db::table('process_safe')->where($where)->order("id", 'desc')->paginate($pageSize);
+        $list = Db::table('process_safe')->where($where)->order("id", 'desc')->paginate([
+            'list_rows'=> $pageSize,//每页数量
+            'query' => $request->param(),
+        ]);
         $data['list'] = $list->items();
         $data['page'] = $list->render();
         return View::fetch('index', $data);

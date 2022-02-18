@@ -20,7 +20,10 @@ class Sqlmap extends Common
         if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
             $where[] = ['user_id', '=', $this->userId];
         }
-        $list = Db::table('urls_sqlmap')->where($where)->order("id", 'desc')->paginate($pageSize);
+        $list = Db::table('urls_sqlmap')->where($where)->order("id", 'desc')->paginate([
+            'list_rows'=> $pageSize,//每页数量
+            'query' => $request->param(),
+        ]);
         $data['list'] = $list->items();
         foreach ($data['list'] as &$val) {
             $val['uels'] = Db::name('urls')->where('id',$val['urls_id'])->value('url');

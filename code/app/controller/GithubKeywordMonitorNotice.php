@@ -12,11 +12,17 @@ class GithubKeywordMonitorNotice extends Common
     {
         $pageSize = 20;
         $where = [];
-        $keyword = $request->param('search');
-        if (!empty($keyword)) {
-            $where[] = ['keyword','like',"%{$keyword}%"];
+        $search = $request->param('search');
+        if (!empty($search)) {
+            $where[] = ['keyword','like',"%{$search}%"];
         }
-        $list = Db::table('github_keyword_monitor_notice')->where($where)->order("id", 'desc')->paginate($pageSize);
+        if ($this->auth_group_id != 5 && !in_array($this->userId,config('app.ADMINISTRATOR'))) {
+            $where[] = ['user_id','=',$this->userId];
+        }
+        $list = Db::table('github_keyword_monitor_notice')->where($where)->order("id", 'desc')->paginate([
+            'list_rows' => $pageSize,
+            'query' => $request->param()
+        ]);
         $data['list'] = $list->items();
         $data['page'] = $list->render();
         return View::fetch('index', $data);
