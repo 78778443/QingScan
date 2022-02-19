@@ -466,6 +466,58 @@ class App extends Common
         $this->success('扫描已暂停');
     }
 
+    public function again_scan(Request $request){
+        $array = array(
+            'crawler_time' => '2000-01-01 00:00:00',
+            'awvs_scan_time' => '2000-01-01 00:00:00',
+            'subdomain_time' => '2000-01-01 00:00:00',
+            'whatweb_scan_time' => '2000-01-01 00:00:00',
+            'subdomain_scan_time' => '2000-01-01 00:00:00',
+            'screenshot_time' => '2000-01-01 00:00:00',
+            'xray_scan_time' => '2000-01-01 00:00:00',
+            'dirmap_scan_time' => '2000-01-01 00:00:00',
+            'wafw00f_scan_time' => '2000-01-01 00:00:00',
+            'nuclei_scan_time' => '2000-01-01 00:00:00',
+            'dismap_scan_time' => '2000-01-01 00:00:00',
+            'crawlergo_scan_time' => '2000-01-01 00:00:00',
+            'vulmap_scan_time' => '2000-01-01 00:00:00',
+        );
+        $ids = $request->param('ids');
+        $where[] = ['id','in',$ids];
+        $map[] = ['app_id','in',$ids];
+        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
+            $where[] = ['user_id', '=', $this->userId];
+        }
+        $data['info'] = Db::name('app')->where($where)->find();
+        if (!$data['info']) {
+            return $this->apiReturn(0,[],'黑盒数据不存在');
+        }
+        Db::table('app')->where($where)->save($array);
+        Db::table('app_info')->where($map)->delete();
+        Db::table('app_crawlergo')->where($map)->delete();
+        Db::table('app_dirmap')->where($map)->delete();
+        Db::table('app_dismap')->where($map)->delete();
+        Db::table('app_nuclei')->where($map)->delete();
+        Db::table('app_vulmap')->where($map)->delete();
+        Db::table('app_wafw00f')->where($map)->delete();
+        Db::table('app_whatweb')->where($map)->delete();
+        Db::table('app_whatweb_poc')->where($map)->delete();
+        Db::table('app_xray_agent_port')->where($map)->delete();
+        Db::table('awvs_app')->where($map)->delete();
+        Db::table('awvs_vuln')->where($map)->delete();
+        Db::table('host')->where($map)->delete();
+        Db::table('host_hydra_scan_details')->where($map)->delete();
+        Db::table('host_port')->where($map)->delete();
+        Db::table('one_for_all')->where($map)->delete();
+        Db::table('plugin_scan_log')->where($map)->delete();
+        Db::table('urls')->where($map)->delete();
+        Db::table('urls_sqlmap')->where($map)->delete();
+        Db::table('xray')->where($map)->delete();
+        Db::table('plugin_scan_log')->where($map)->delete();
+
+        return $this->apiReturn(1,[],'操作成功');
+    }
+
 
     // 批量删除
     public function batch_del(Request $request){

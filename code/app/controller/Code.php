@@ -151,6 +151,39 @@ class Code extends Common
         }
     }
 
+    public function again_scan(Request $request){
+        $ids = $request->param('ids');
+        if (!$ids) {
+            return $this->apiReturn(0,[],'请先选择要删除的数据');
+        }
+        $map[] = ['code_id','in',$ids];
+        $where[] = ['id','in',$ids];
+        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
+            $where[] = ['user_id', '=', $this->userId];
+            $map[] = ['user_id', '=', $this->userId];
+        }
+        $array = [
+            'scan_time' => '2000-01-01 00:00:00',
+            'sonar_scan_time' => '2000-01-01 00:00:00',
+            'kunlun_scan_time' => '2000-01-01 00:00:00',
+            'semgrep_scan_time' => '2000-01-01 00:00:00',
+            'composer_scan_time' => '2000-01-01 00:00:00',
+            'java_scan_time' => '2000-01-01 00:00:00',
+            'python_scan_time' => '2000-01-01 00:00:00',
+            'webshell_scan_time' => '2000-01-01 00:00:00',
+        ];
+        Db::table('code')->where($where)->save($array);
+        Db::table('fortify')->where($map)->delete();
+        Db::table('semgrep')->where($map)->delete();
+        Db::table('code_webshell')->where($map)->delete();
+        Db::table('code_composer')->where($map)->delete();
+        Db::table('code_python')->where($map)->delete();
+        Db::table('code_java')->where($map)->delete();
+        Db::table('plugin_scan_log')->whereIn('app_id',$ids)->where(['scan_type' => 2])->delete();
+
+        return $this->apiReturn(1,[],'操作成功');
+    }
+
     public function bug_list(Request $request)
     {
         //接收参数

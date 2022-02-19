@@ -21,6 +21,10 @@ $searchArr = [
         <form class="row g-3" id="frmUpload" action="<?php echo url('app/batch_import') ?>" method="post"
               enctype="multipart/form-data">
             <div class="col-auto">
+                <a href="javascript:;" onclick="again_scan()"
+                   class="btn btn-outline-success">重新扫描</a>
+            </div>
+            <div class="col-auto">
                 <a href="javascript:;" onclick="batch_del()"
                    class="btn btn-outline-success">批量删除</a>
             </div>
@@ -146,6 +150,35 @@ $searchArr = [
         $.ajax({
             type: "post",
             url: "<?php echo url('code/batch_del')?>",
+            data: {ids: ids},
+            dataType: "json",
+            success: function (data) {
+                alert(data.msg)
+                if (data.code == 1) {
+                    window.setTimeout(function () {
+                        location.reload();
+                    }, 2000)
+                }
+            }
+        });
+    }
+
+    function again_scan(){
+        var child = $('.table').find('input[type="checkbox"]');
+        var ids = ''
+        child.each(function(index, item){
+            if (item.value != -1 && item.checked) {
+                if (ids == '') {
+                    ids = item.value
+                } else {
+                    ids = ids+','+item.value
+                }
+            }
+        })
+
+        $.ajax({
+            type: "post",
+            url: "<?php echo url('again_scan')?>",
             data: {ids: ids},
             dataType: "json",
             success: function (data) {
