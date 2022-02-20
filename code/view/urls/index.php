@@ -19,10 +19,27 @@
 
 
     <div class="row tuchu">
+        <div class="col-md-12">
+            <form class="row g-3" id="frmUpload" action="<?php echo url('app/batch_import') ?>" method="post"
+                  enctype="multipart/form-data">
+                <div class="col-auto">
+                    <a href="javascript:;" onclick="batch_del()"
+                       class="btn btn-outline-success">批量删除</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="row tuchu">
         <div class="col-md-12 ">
             <table class="table table-bordered table-hover table-striped">
                 <thead>
                 <tr>
+                    <th>
+                        <label>
+                            <input type="checkbox" value="-1" onclick="quanxuan(this)">全选
+                        </label>
+                    </th>
                     <th>ID</th>
                     <th>URL</th>
                     <th>APP</th>
@@ -39,6 +56,11 @@
                 </thead>
                 <?php foreach ($list as $value) { ?>
                     <tr>
+                        <td>
+                            <label>
+                                <input type="checkbox" class="ids" name="ids[]" value="<?php echo $value['id'] ?>">
+                            </label>
+                        </td>
                         <td><?php echo $value['id'] ?></td>
                         <td class="ellipsis-type"><a href="<?php echo $value['url'] ?>"
                                                      target="_blank"><?php echo $value['url'] ?></a></td>
@@ -68,3 +90,45 @@
     {include file='public/fenye' /}
 </div>
 {include file='public/footer' /}
+
+<script>
+    function quanxuan(obj){
+        var child = $('.table').find('.ids');
+        child.each(function(index, item){
+            if (obj.checked) {
+                item.checked = true
+            } else {
+                item.checked = false
+            }
+        })
+    }
+
+    function batch_del(){
+        var child = $('.table').find('.ids');
+        var ids = ''
+        child.each(function(index, item){
+            if (item.value != -1 && item.checked) {
+                if (ids == '') {
+                    ids = item.value
+                } else {
+                    ids = ids+','+item.value
+                }
+            }
+        })
+
+        $.ajax({
+            type: "post",
+            url: "<?php echo url('batch_del')?>",
+            data: {ids: ids},
+            dataType: "json",
+            success: function (data) {
+                alert(data.msg)
+                if (data.code == 1) {
+                    window.setTimeout(function () {
+                        location.reload();
+                    }, 2000)
+                }
+            }
+        });
+    }
+</script>
