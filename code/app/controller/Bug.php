@@ -62,9 +62,9 @@ class Bug extends Common
         return View::fetch('awvs_list', $data);
     }
 
-    public function awvs_del()
+    public function awvs_del(Request $request)
     {
-        $id = getParam('id');
+        $id = $request->param('id');
         if (Db::name('awvs_vuln')->where('id', $id)->delete()) {
             return redirect($_SERVER['HTTP_REFERER']);
         } else {
@@ -72,9 +72,27 @@ class Bug extends Common
         }
     }
 
-    public function xray()
+
+    // 批量删除
+    public function awvs_batch_del(Request $request){
+        $ids = $request->param('ids');
+        if (!$ids) {
+            return $this->apiReturn(0,[],'请先选择要删除的数据');
+        }
+        $map[] = ['id','in',$ids];
+        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
+            $map[] = ['user_id', '=', $this->userId];
+        }
+        if (Db::name('awvs_vuln')->where($map)->delete()) {
+            return $this->apiReturn(1,[],'批量删除成功');
+        } else {
+            return $this->apiReturn(0,[],'批量删除失败');
+        }
+    }
+
+    public function xray(Request $request)
     {
-        $page = getParam('page', 1);
+        $page = $request->param('page', 1);
         $pageSize = 25;
         $data['list'] = Db::table('xray')->limit($pageSize)->page($page)->select()->toArray();
         $data['page'] = Db::name('xray')->paginate($pageSize)->render();
@@ -83,9 +101,9 @@ class Bug extends Common
         return View::fetch('xray_list', $data);
     }
 
-    public function pocsuite()
+    public function pocsuite(Request $request)
     {
-        $page = getParam('page', 1);
+        $page = $request->param('page', 1);
         $pageSize = 25;
         $data['list'] = Db::table('pocsuite3')->limit($pageSize)->page($page)->select()->toArray();
         $data['page'] = Db::name('pocsuite3')->paginate($pageSize)->render();
