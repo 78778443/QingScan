@@ -11,11 +11,15 @@ class PluginResult extends Common
 
     public function index(Request $request)
     {
-        $pageSize = 2;
+        $pageSize = 20;
         $where[] = ['is_delete','=',0];
         $search = $request->param('search');
         if ($search) {
             $where[] = ['name','like',"%{$search}%"];
+        }
+        $plugin_id = $request->param('plugin_id');
+        if ($plugin_id) {
+            $where[] = ['plugin_id','=',$plugin_id];
         }
         $app_id = $request->param('app_id');
         if ($app_id) {
@@ -49,12 +53,43 @@ class PluginResult extends Common
         return View::fetch('index', $data);
     }
 
-    public function details(){
-        $id = getParam('id');
-
+    public function details(Request $request){
+        $id = $request->param('id');
         $info = Db::table('plugin_scan_log')->where(['id'=>$id])->find();
-
         $data['info'] = $info;
         return View::fetch('detail', $data);
+    }
+
+    public function del(Request $request){
+        $id = $request->param('id');
+        if (!$id) {
+            $this->error('请先选择要删除的数据');
+        }
+        $map[] = ['id','=',$id];
+        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
+            $map[] = ['user_id', '=', $this->userId];
+        }
+        if (Db::name('plugin_scan_log')->where($map)->delete()) {
+            return redirect($_SERVER['HTTP_REFERER']);
+        } else {
+            $this->error('删除失败');
+        }
+    }
+
+    // 批量删除
+    public function batch_del(Request $request){
+        $ids = $request->param('ids');
+        if (!$ids) {
+            return $this->apiReturn(0,[],'请先选择要删除的数据');
+        }
+        $map[] = ['id','in',$ids];
+        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
+            $map[] = ['user_id', '=', $this->userId];
+        }
+        if (Db::name('plugin_scan_log')->where($map)->delete()) {
+            return $this->apiReturn(1,[],'批量删除成功');
+        } else {
+            return $this->apiReturn(0,[],'批量删除失败');
+        }
     }
 }
