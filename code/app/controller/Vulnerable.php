@@ -79,7 +79,7 @@ class Vulnerable extends Common
     }
 
 
-    public function details(){
+    public function details(Request $request){
         $id = $request->param('id');
         if (!$id) {
             $this->error('参数不能为空');
@@ -243,7 +243,7 @@ class Vulnerable extends Common
         }
     }
 
-    public function vulnerable_del()
+    public function vulnerable_del(Request $request)
     {
         $id = $request->param('id');
         $where[] = ['id','=',$id];
@@ -257,7 +257,7 @@ class Vulnerable extends Common
         }
     }
 
-    public function pocsuite_del()
+    public function pocsuite_del(Request $request)
     {
         $id = $request->param('id');
         $where[] = ['id','=',$id];
