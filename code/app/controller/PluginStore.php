@@ -45,9 +45,7 @@ class PluginStore extends Common
     }
 
     public function install(Request $request){
-        //echo '<pre>';
         $code = $request->param('code');
-        //echo md5('dsaewqvdi43tbnkjad21');exit;
         $result = curl_get($this->plugin_store_domain.'plugin_store/code_info?code='.$code);
         $result = json_decode($result,true);
         if (!$result['code']) {
@@ -181,6 +179,7 @@ class PluginStore extends Common
         }
     }
 
+    // 卸载
     public function uninstall(Request $request){
         $id = $request->param('id',0,'intval');
         $info = Db::name('plugin_store')->where('id',$id)->find();
