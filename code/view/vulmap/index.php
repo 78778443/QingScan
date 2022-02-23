@@ -77,7 +77,6 @@ $searchArr = [
 {include file='public/fenye' /}
 {include file='public/footer' /}
 
-
 <script>
     function quanxuan(obj){
         var child = $('.table').find('.ids');

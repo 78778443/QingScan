@@ -1,4 +1,5 @@
 {include file='public/head' /}
+
 <?php
 $dengjiArr = ['Low', 'Medium', 'High', 'Critical'];
 ?>

@@ -10,8 +10,19 @@ class Proxy extends Common
 {
     public function index(Request $request)
     {
+        $data['statusList'] = ['无效','有效'];
+
         $pageSize = 20;
         $where = [];
+        $search = $request->param('search');
+        if ($search) {
+            $where[] = ['name','like',"%{$search}%"];
+        }
+        $status = $request->param('status');
+        if ($status) {
+            $status = array_keys($data['statusList'],$status)[0];
+            $where[] = ['status','=',$status];
+        }
         $list = Db::table('proxy')->where($where)->order("id", 'desc')->paginate([
             'list_rows' => $pageSize,
             'query' => $request->param()
@@ -88,6 +99,20 @@ class Proxy extends Common
             $this->success('代理删除成功');
         } else {
             $this->error('代理删除失败');
+        }
+    }
+
+    // 批量删除
+    public function batch_del(Request $request){
+        $ids = $request->param('ids');
+        if (!$ids) {
+            return $this->apiReturn(0,[],'请先选择要删除的数据');
+        }
+        $map[] = ['id','in',$ids];
+        if (Db::name('proxy')->where($map)->delete()) {
+            return $this->apiReturn(1,[],'批量删除成功');
+        } else {
+            return $this->apiReturn(0,[],'批量删除失败');
         }
     }
 
