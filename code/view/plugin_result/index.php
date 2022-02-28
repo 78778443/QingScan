@@ -13,25 +13,20 @@
 ?>
 {include file='public/search' /}
 
-<div class="row tuchu">
-    <div class="col-md-12">
-        <form class="row g-3" id="frmUpload" action="<?php echo url('app/batch_import') ?>" method="post"
-              enctype="multipart/form-data">
-            <div class="col-auto">
-                <a href="javascript:;" onclick="batch_del()"
-                   class="btn btn-outline-success">批量删除</a>
-            </div>
-        </form>
-    </div>
-</div>
 
 <div class="col-md-12 ">
     <div class="row tuchu">
         <div class="col-md-12 ">
+            <form class="row g-3">
+                <div class="col-auto">
+                    <a href="javascript:;" onclick="batch_del()"
+                       class="btn btn-outline-success">批量删除</a>
+                </div>
+            </form>
             <table class="table table-bordered table-hover table-striped">
                 <thead>
                 <tr>
-                    <th>
+                    <th width="100">
                         <label>
                             <input type="checkbox" value="-1" onclick="quanxuan(this)">全选
                         </label>

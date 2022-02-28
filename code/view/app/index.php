@@ -36,6 +36,12 @@
                     <a href="<?php echo url('app/suspend_scan') ?>"
                        class="btn btn-outline-success">暂停扫描</a>
                 </div>
+            </form>
+        </div>
+    </div>
+    <div class="row tuchu">
+        <div class="col-md-12 ">
+            <form class="row g-3">
                 <div class="col-auto">
                     <a href="javascript:;" onclick="again_scan()"
                        class="btn btn-outline-success">重新扫描</a>
@@ -45,10 +51,7 @@
                        class="btn btn-outline-success">批量删除</a>
                 </div>
             </form>
-        </div>
-    </div>
-    <div class="row tuchu">
-        <div class="col-md-12 ">
+
             <table class="table table-bordered table-hover table-striped">
                 <thead>
                 <tr>
