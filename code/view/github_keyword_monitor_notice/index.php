@@ -41,7 +41,7 @@ $dengjiArr = ['Low', 'Medium', 'High', 'Critical'];
             <table class="table table-bordered table-hover table-striped">
                 <thead>
                 <tr>
-                    <th>
+                    <th width="80">
                         <label>
                             <input type="checkbox" value="-1" onclick="quanxuan(this)">全选
                         </label>

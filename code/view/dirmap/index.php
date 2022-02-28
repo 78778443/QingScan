@@ -45,7 +45,7 @@ $searchArr = [
             </thead>
             <?php foreach ($list as $value) { ?>
                 <tr>
-                    <td>
+                    <td width="80">
                         <label>
                             <input type="checkbox" class="ids" name="ids[]" value="<?php echo $value['id'] ?>">
                         </label>
