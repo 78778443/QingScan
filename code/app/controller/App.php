@@ -483,6 +483,9 @@ class App extends Common
             'vulmap_scan_time' => '2000-01-01 00:00:00',
         );
         $ids = $request->param('ids');
+        if (!$ids) {
+            return $this->apiReturn(0,[],'请选择要重新扫描的数据');
+        }
         $where[] = ['id','in',$ids];
         $map[] = ['app_id','in',$ids];
         if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {

@@ -154,7 +154,7 @@ class Code extends Common
     public function again_scan(Request $request){
         $ids = $request->param('ids');
         if (!$ids) {
-            return $this->apiReturn(0,[],'请先选择要删除的数据');
+            return $this->apiReturn(0,[],'请先选择要重新扫描的数据');
         }
         $map[] = ['code_id','in',$ids];
         $where[] = ['id','in',$ids];
