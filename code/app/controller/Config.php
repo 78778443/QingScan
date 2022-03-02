@@ -11,14 +11,18 @@ class Config extends Common
 {
     public function index(Request $request)
     {
+        $pageSize = 25;
         $where[] = ['is_delete', '=', 0];
         $search = $request->param('search');
         if (!empty($search)) {
             $where[] = ['key|name|value', 'like', "%{$search}%"];
         }
-        $list = Db::name('system_config')->where($where)->order('id', 'desc')->paginate(25)->toArray();
-        $data['list'] = $list['data'];
-        $data['page'] = $list['current_page'];
+        $list = Db::name('system_config')->where($where)->order('id', 'desc')->paginate([
+            'list_rows' => $pageSize,
+            'query' => $request->param()
+        ]);
+        $data['list'] = $list->items();
+        $data['page'] = $list->render();
         return view('config/index', $data);
     }
 

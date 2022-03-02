@@ -31,9 +31,9 @@ class Host extends Common
         }
         $list = Db::table('host')->where($where)->order("id", 'desc')->paginate([
             'list_rows'=> $pageSize,//每页数量
-            'query' => request()->param(),
+            'query' => $request->param(),
         ]);
-        $data['list'] = $list->toArray()['data'];
+        $data['list'] = $list->items();
         $data['page'] = $list->render();
 
         $data['appArr'] = AppModel::getAppName();

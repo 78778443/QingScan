@@ -5,7 +5,7 @@ $dengjiArr = ['Low', 'Medium', 'High', 'Critical'];
 
 <?php
 $searchArr = [
-    'action' => url('code/bug_list'),
+    'action' => url('index'),
     'method' => 'get',
     'inputs' => [
         ['type' => 'text', 'name' => 'search', 'placeholder' => "搜索"],
@@ -33,6 +33,10 @@ $searchArr = [
                 <a href="<?php echo url('pocs_file/downloaAppTemplate') ?>"
                    class="btn btn-outline-success">下载模板</a>
             </div>
+            <div class="col-auto">
+                <a href="javascript:;" onclick="batch_del()"
+                   class="btn btn-outline-success">批量删除</a>
+            </div>
         </form>
     </div>
 </div>
@@ -44,6 +48,11 @@ $searchArr = [
             <table class="table table-bordered table-hover table-striped">
                 <thead>
                 <tr>
+                    <th width="100">
+                        <label>
+                            <input type="checkbox" value="-1" onclick="quanxuan(this)">全选
+                        </label>
+                    </th>
                     <th>ID</th>
                     <th>cve_num</th>
                     <th>名称</th>
@@ -54,6 +63,11 @@ $searchArr = [
                 </thead>
                 <?php foreach ($list as $value) { ?>
                     <tr>
+                        <td>
+                            <label>
+                                <input type="checkbox" class="ids" name="ids[]" value="<?php echo $value['id'] ?>">
+                            </label>
+                        </td>
                         <td><?php echo $value['id'] ?></td>
                         <td><?php echo $value['cve_num'] ?></td>
                         <td><?php echo $value['name'] ?></td>
@@ -74,3 +88,46 @@ $searchArr = [
     {include file='public/fenye' /}
 </div>
 {include file='public/footer' /}
+
+
+<script>
+    function quanxuan(obj){
+        var child = $('.table').find('.ids');
+        child.each(function(index, item){
+            if (obj.checked) {
+                item.checked = true
+            } else {
+                item.checked = false
+            }
+        })
+    }
+
+    function batch_del(){
+        var child = $('.table').find('.ids');
+        var ids = ''
+        child.each(function(index, item){
+            if (item.value != -1 && item.checked) {
+                if (ids == '') {
+                    ids = item.value
+                } else {
+                    ids = ids+','+item.value
+                }
+            }
+        })
+
+        $.ajax({
+            type: "post",
+            url: "<?php echo url('batch_del')?>",
+            data: {ids: ids},
+            dataType: "json",
+            success: function (data) {
+                alert(data.msg)
+                if (data.code == 1) {
+                    window.setTimeout(function () {
+                        location.reload();
+                    }, 2000)
+                }
+            }
+        });
+    }
+</script>

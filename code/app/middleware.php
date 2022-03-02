@@ -8,5 +8,5 @@ return [
     // Session初始化
     think\middleware\SessionInit::class,
     // 跨域问题支持
-    think\middleware\AllowCrossDomain::class
+    //think\middleware\AllowCrossDomain::class
 ];

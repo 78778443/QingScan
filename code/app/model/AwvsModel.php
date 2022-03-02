@@ -215,6 +215,10 @@ class AwvsModel extends BaseModel
                 $appInfo['app_id'] = $id;
                 $appInfo['user_id'] = $user_id;
                 Db::table('awvs_app')->insert($appInfo);
+            } else {
+                if (!isset($appInfo['target_id'])) {
+                    return false;
+                }
             }
             //添加扫描任务
             self::startScan($appInfo['target_id'], $awvs_url, $awvs_token);

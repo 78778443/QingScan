@@ -12,16 +12,28 @@ function getRabbitMq()
 
 function getGitAddr($prName, $sshUrl, $filePath, $line = "")
 {
+    // 判断类型
+    if (preg_match('/gitee\.com/', $sshUrl)) {   // 码云
+        $path = substr($sshUrl,strripos($sshUrl,':')+1,strlen($sshUrl));
+        $domain_name =  "https://gitee.com/{$path}";
+    } elseif (preg_match('/github\.com/', $sshUrl)) {    // github
+        $path = substr($sshUrl,strripos($sshUrl,'github.com/')+1,strlen($sshUrl));
+        $domain_name =  "https://github.com/{$path}";
+    }
     $zhengze = "/\/data\/codeCheck\/[a-zA-Z0-9]*\//";
+    $path = preg_replace($zhengze, "/blob/master/", $filePath);
+    $url = $domain_name.$path;
+    if ($line != "") {
+        $url .= "#L{$line}";
+    }
+    return $url;
 
-    $gitlabPath = preg_replace($zhengze, "/-/blob/master/", $filePath);
-
-    $url = str_replace(':', '/', $sshUrl);
+    /*$url = str_replace(':', '/', $sshUrl);
     $url = str_replace('git@', 'http://', $url);
     $url = str_replace('.git', $gitlabPath, $url);
     if ($line != "") {
         $url .= "#L{$line}";
-    }
+    }*/
 
     return $url;
 }

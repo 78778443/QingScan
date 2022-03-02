@@ -10,27 +10,30 @@ use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Message\AMQPMessage;
 use think\facade\Db;
 use think\facade\View;
+use think\Request;
 
 class Xray extends Common
 {
-    public function index()
+    public function index(Request $request)
     {
-        $pageSize = 10;
+        $dengjiArr = ['Low', 'Medium', 'High', 'Critical'];
+
+        $pageSize = 15;
         $where[] = ['is_delete','=',0];
-        $search = getParam('search');
-        $app_id = getParam('app_id');
-        $level = getParam('level'); // 等级
-        $Category = getParam('Category');   // 分类
-        $filename = getParam('filename');   // 文件名
-        $check_status = getParam('check_status');   // 审核状态
+        $search = $request->param('search');
+        $app_id = $request->param('app_id');
+        $level = $request->param('level'); // 等级
+        $Category = $request->param('Category');   // 分类
+        $filename = $request->param('filename');   // 文件名
+        $check_status = $request->param('check_status');   // 审核状态
         if (!empty($app_id)) {
             $where[] = ['app_id','=',$app_id];
         }
         if (!empty($level) && $level != -1) {
+            $level = array_keys($dengjiArr,$level)[0];
             $where[] = ['hazard_level','=',$level];
         }
         if (!empty($Category)) {
-            //$where[] = ['plugin','like',"%{$Category}%"];
             $where[] = ['plugin','=',json_encode($Category)];
         }
         if (!empty($filename)) {
@@ -39,9 +42,6 @@ class Xray extends Common
         if ($check_status !== null && in_array($check_status,[0,1,2])) {
             $where[] = ['check_status','=',$check_status];
         }
-        if (!empty($search)) {
-            //$where[] = ['app_id','like',"%{$search}%"];
-        }
         $map = [];
         if ($this->auth_group_id != 5 && !in_array($this->userId,config('app.ADMINISTRATOR'))) {
             $where[] = ['user_id','=',$this->userId];
@@ -49,7 +49,7 @@ class Xray extends Common
         }
         $list = Db::table('xray')->where($where)->order("id", 'desc')->paginate([
             'list_rows'=> $pageSize,//每页数量
-            'query' => request()->param(),
+            'query' => $request->param(),
         ]);
         $data['list'] = $list->toArray()['data'];
         foreach ($data['list'] as &$v) {
@@ -58,23 +58,22 @@ class Xray extends Common
         }
         $data['page'] = $list->render();
 
-        $data['appArr'] = AppModel::getAppName();
-
-        $data['projectArr'] = self::getMyAppList($where);
         $data['CategoryList'] = Db::table('xray')->where($where)->group('plugin')->column('plugin');
         foreach ($data['CategoryList'] as &$v) {
             $v = json_decode($v,true);
         }
-        $data['projectList'] = Db::table('xray')->where($where)->where('app_id','<>',0)->group('app_id')->column('app_id');
-        $data['fileList'] = Db::table('xray')->where($where)->group('url_source')->column('url_source');
+
+        $appList = Db::table('app')->select()->toArray();
+        $data['projectList'] = array_column($appList, 'name', 'id');
+
         $data['check_status_list'] = ['未审计','有效漏洞','无效漏洞'];
 
         return View::fetch('index', $data);
     }
 
 
-    public function details(){
-        $id = getParam('id');
+    public function details(Request $request){
+        $id = $request->param('id');
         if (!$id) {
             $this->error('参数错误');
         }
@@ -94,11 +93,6 @@ class Xray extends Common
         $info['lower_id'] = $lower_id?:$id;
 
         $data['info'] = $info;
-        /*var_dump($info['detail']);
-        echo '<br/>';
-        echo '<br/>';
-        echo '<br/>';
-        var_dump($info['detail']['snapshot'][0][1]);exit;*/
         return View::fetch('details', $data);
     }
 
@@ -176,16 +170,13 @@ class Xray extends Common
                 'url' => $value['target']['url'],
                 'poc' => $value['detail']['payload']
             ];
-
             TaskModel::addTask($newData);
         }
-
-
     }
 
-    public function del()
+    public function del(Request $request)
     {
-        $id = getParam('id');
+        $id = $request->param('id');
         $map[] = ['id','=',$id];
         if ($this->auth_group_id != 5 && !in_array($this->userId,config('app.ADMINISTRATOR'))) {
             $map[] = ['user_id','=',$this->userId];
@@ -197,4 +188,20 @@ class Xray extends Common
         }
     }
 
+    // 批量删除
+    public function batch_del(Request $request){
+        $ids = $request->param('ids');
+        if (!$ids) {
+            return $this->apiReturn(0,[],'请先选择要删除的数据');
+        }
+        $map[] = ['id','in',$ids];
+        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
+            $map[] = ['user_id', '=', $this->userId];
+        }
+        if (Db::name('xray')->where($map)->delete()) {
+            return $this->apiReturn(1,[],'批量删除成功');
+        } else {
+            return $this->apiReturn(0,[],'批量删除失败');
+        }
+    }
 }
