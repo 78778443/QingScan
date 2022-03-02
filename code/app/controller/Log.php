@@ -18,7 +18,10 @@ class Log extends Common
         if ($search) {
             $where[] = ['content','like',"%{$search}%"];
         }
-        $list = Db::table('log')->where($where)->order("id", 'desc')->paginate(['list_rows' => $pageSize, 'query' => request()->param()]);
+        $list = Db::table('log')->where($where)->order("id", 'desc')->paginate([
+            'list_rows' => $pageSize,
+            'query' => $request->param()
+        ]);
         $data['list'] = $list->items();
         $data['page'] = $list->render();
         return View::fetch('index', $data);

@@ -10,10 +10,14 @@ use think\Request;
 class VulTarget extends Common
 {
 
-    public function index()
+    public function index(Request $request)
     {
         $where = [];
-        $pageSize = 25;
+        $pageSize = 20;
+        $search = $request->param('search','');
+        if (!empty($search)) {
+            $where[] = ['addr|ip|port|query','like',"%{$search}%"];
+        }
         if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
             $where[] = ['v.user_id', '=', $this->userId];
         }
@@ -21,10 +25,13 @@ class VulTarget extends Common
             ->leftJoin('pocs_file p','v.id = p.vul_id')
             ->where($where)
             ->order('v.id', 'desc')
-            ->field('v.*,p.name,p.content')
-            ->paginate($pageSize);
+            ->field('v.id,v.addr,v.ip,v.port,v.query,v.create_time,v.is_vul,v.vul_id,p.name,p.content')
+            ->paginate([
+                'list_rows'=> $pageSize,//每页数量
+                'query' => $request->param(),
+            ]);
         $data = [];
-        $data['list'] = $list->toArray()['data'];
+        $data['list'] = $list->items();
         $data['page'] = $list->render();
 
         return View::fetch('index', $data);
@@ -60,6 +67,23 @@ class VulTarget extends Common
             return redirect($_SERVER['HTTP_REFERER']);
         } else {
             $this->error('删除失败');
+        }
+    }
+
+    // 批量删除
+    public function batch_del(Request $request){
+        $ids = $request->param('ids');
+        if (!$ids) {
+            return $this->apiReturn(0,[],'请先选择要删除的数据');
+        }
+        $map[] = ['id','in',$ids];
+        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
+            $map[] = ['user_id', '=', $this->userId];
+        }
+        if (Db::name('vul_target')->where($map)->delete()) {
+            return $this->apiReturn(1,[],'批量删除成功');
+        } else {
+            return $this->apiReturn(0,[],'批量删除失败');
         }
     }
 

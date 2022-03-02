@@ -26,7 +26,6 @@ class App extends Common
     public function index(Request $request)
     {
         $pageSize = 15;
-        $page = $request->param('page', 1,'intval');
         $statusCode = $request->param('statuscode');
         $cms = base64_decode($_GET['cms'] ?? '');
         $server = base64_decode($_GET['server'] ?? '');
@@ -42,7 +41,12 @@ class App extends Common
             $where1[] = ['user_id', '=', $this->userId];
         }
 
-        $data['list'] = Db::table('app')->LeftJoin('app_info info', 'app.id = info.app_id')->where($where)->limit($pageSize)->page($page)->select()->toArray();
+        $list = Db::table('app')->LeftJoin('app_info info', 'app.id = info.app_id')->where($where)->paginate([
+            'list_rows'=> $pageSize,//每页数量
+            'query' => $request->param(),
+        ]);
+        $data['list'] = $list->items();
+        $data['page'] = $list->render();
         $data['statuscodeArr'] = Db::table('app')->Join('app_info info', 'app.id = info.app_id')->where($where)->group('info.statuscode')->field('statuscode')->select()->toArray();
         $data['statuscodeArr'] = array_column($data['statuscodeArr'], 'statuscode');
         $data['cmsArr'] = Db::table('app')->Join('app_info info', 'app.id = info.app_id')->where($where)->group('info.cms')->field('cms')->select()->toArray();
@@ -80,20 +84,11 @@ class App extends Common
             $v['namp_num'] = Db::table('host_port')->where('app_id', $v['id'])->where($where1)->count('id');
             $v['host_num'] = Db::table('host')->where('app_id', $v['id'])->where($where1)->count('id');
         }
-        $data['pageSize'] = $pageSize;
-        $data['count'] = Db::table('app')->Join('app_info info', 'app.id = info.app_id')->where($where)->count();
         $configArr = ConfigModel::getNameArr();
         $data['statusArr'] = $this->statusArr;
         $data['GET'] = $_GET;
-        // 获取分页显示
-        $data['page'] = Db::name('app')->where($where)->LeftJoin('app_info info', 'app.id = info.app_id')->paginate($pageSize)->render();
         $data = array_merge($data, $configArr);
         return View::fetch('index', $data);
-    }
-
-    public function add()
-    {
-        $this->show('app/add');
     }
 
     public function _add(Request $request)
@@ -469,6 +464,61 @@ class App extends Common
             //$this->success('扫描已启动');
         }
         $this->success('扫描已暂停');
+    }
+
+    public function again_scan(Request $request){
+        $array = array(
+            'crawler_time' => '2000-01-01 00:00:00',
+            'awvs_scan_time' => '2000-01-01 00:00:00',
+            'subdomain_time' => '2000-01-01 00:00:00',
+            'whatweb_scan_time' => '2000-01-01 00:00:00',
+            'subdomain_scan_time' => '2000-01-01 00:00:00',
+            'screenshot_time' => '2000-01-01 00:00:00',
+            'xray_scan_time' => '2000-01-01 00:00:00',
+            'dirmap_scan_time' => '2000-01-01 00:00:00',
+            'wafw00f_scan_time' => '2000-01-01 00:00:00',
+            'nuclei_scan_time' => '2000-01-01 00:00:00',
+            'dismap_scan_time' => '2000-01-01 00:00:00',
+            'crawlergo_scan_time' => '2000-01-01 00:00:00',
+            'vulmap_scan_time' => '2000-01-01 00:00:00',
+        );
+        $ids = $request->param('ids');
+        if (!$ids) {
+            return $this->apiReturn(0,[],'请选择要重新扫描的数据');
+        }
+        $where[] = ['id','in',$ids];
+        $map[] = ['app_id','in',$ids];
+        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
+            $where[] = ['user_id', '=', $this->userId];
+        }
+        $data['info'] = Db::name('app')->where($where)->find();
+        if (!$data['info']) {
+            return $this->apiReturn(0,[],'黑盒数据不存在');
+        }
+        Db::table('app')->where($where)->save($array);
+        Db::table('app_info')->where($map)->delete();
+        Db::table('app_crawlergo')->where($map)->delete();
+        Db::table('app_dirmap')->where($map)->delete();
+        Db::table('app_dismap')->where($map)->delete();
+        Db::table('app_nuclei')->where($map)->delete();
+        Db::table('app_vulmap')->where($map)->delete();
+        Db::table('app_wafw00f')->where($map)->delete();
+        Db::table('app_whatweb')->where($map)->delete();
+        Db::table('app_whatweb_poc')->where($map)->delete();
+        Db::table('app_xray_agent_port')->where($map)->delete();
+        Db::table('awvs_app')->where($map)->delete();
+        Db::table('awvs_vuln')->where($map)->delete();
+        Db::table('host')->where($map)->delete();
+        Db::table('host_hydra_scan_details')->where($map)->delete();
+        Db::table('host_port')->where($map)->delete();
+        Db::table('one_for_all')->where($map)->delete();
+        Db::table('plugin_scan_log')->where($map)->delete();
+        Db::table('urls')->where($map)->delete();
+        Db::table('urls_sqlmap')->where($map)->delete();
+        Db::table('xray')->where($map)->delete();
+        Db::table('plugin_scan_log')->where($map)->delete();
+
+        return $this->apiReturn(1,[],'操作成功');
     }
 
 

@@ -17,20 +17,21 @@ class HostPort extends Common
 {
     public function index(Request $request)
     {
+        $pageSize = 10;
         $where[] = ['is_delete','=',0];
-        $search = getParam('search','');    // 项目名称
+        $search = $request->param('search');    // 项目名称
         if (!empty($search)) {
             $where[] = ['port|host','like',"%{$search}%"];
         }
-        $host = getParam('host'); // 主机名称
-        $port = getParam('port');   // 端口名称
-        $service = getParam('service');   // 组件类型
-        $check_status = getParam('check_status');   // 审核状态
+        $host = $request->param('host'); // 主机名称
+        $port = $request->param('port');   // 端口名称
+        $service = $request->param('service');   // 组件类型
+        $check_status = $request->param('check_status');   // 审核状态
         if (!empty($host)) {
             $where[] = ['host','=',$host];
         }
         if (!empty($port)) {
-            $where[] = ['check_id','=',$port];
+            $where[] = ['port','=',$port];
         }
         if (!empty($service)) {
             $where[] = ['service','=',$service];
@@ -45,13 +46,15 @@ class HostPort extends Common
         if (!empty($app_id)) {
             $where[] = ['app_id','=',$app_id];
         }
-        $list = Db::table(HostPortModel::$tableName)->where($where)->paginate(10);
+        $list = Db::table(HostPortModel::$tableName)->where($where)->paginate([
+            'list_rows' => $pageSize,
+            'query' => $request->param()
+        ]);
         $data = [];
-        $data['list'] = $list->toArray()['data'];
+        $data['list'] = $list->items();
+        $data['page'] = $list->render();
         $data['classify'] = HostPortModel::getClassify($where);
         $data['appArr'] = AppModel::getAppName();
-        // 获取分页显示
-        $data['page'] = $list->render();
         $projectArr = Db::table('code')->select()->toArray();
         $projectArr = array_column($projectArr, null, 'id');
         $data['projectArr'] = $projectArr;

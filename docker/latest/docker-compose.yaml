@@ -1,9 +1,11 @@
 version: "3.2"
 services:
   mysqlserver:
-    image: registry.cn-beijing.aliyuncs.com/daxia/qingscan:mysql5.6
+    #image: registry.cn-beijing.aliyuncs.com/daxia/qingscan:mysql5.6
+    image: mysql:5.7
     container_name: mysqlser
     environment:
+      - MYSQL_DATABASE=QingScan
       - MYSQL_ROOT_PASSWORD=123
       - TZ=Asia/Shanghai
 #    volumes:
@@ -20,8 +22,8 @@ services:
       - mysqlserver:mysql_addr
     volumes:
       - type: bind
-        source: "./files"
-        target: "/root/files"
+        source: "../../"
+        target: "/root/qingscan"
     ports:
       - "8000:8000"
     stdin_open: true

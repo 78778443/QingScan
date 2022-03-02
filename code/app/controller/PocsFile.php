@@ -10,10 +10,17 @@ use think\Request;
 
 class PocsFile extends Common
 {
-    public function index(){
+    public function index(Request $request){
         $pageSize = 20;
         $where = [];
-        $list = Db::table('pocs_file')->where($where)->order("id", 'desc')->paginate($pageSize);
+        $search = $request->param('search','');
+        if (!empty($search)) {
+            $where[] = ['name|cve_num','like',"%{$search}%"];
+        }
+        $list = Db::table('pocs_file')->where($where)->order("id", 'desc')->paginate([
+            'list_rows'=> $pageSize,//每页数量
+            'query' => $request->param(),
+        ]);
         $data['list'] = $list->items();
         $data['page'] = $list->render();
         return View::fetch('index', $data);
@@ -93,6 +100,22 @@ class PocsFile extends Common
         }
     }
 
+    // 批量删除
+    public function batch_del(Request $request){
+        $ids = $request->param('ids');
+        if (!$ids) {
+            return $this->apiReturn(0,[],'请先选择要删除的数据');
+        }
+        $map[] = ['id','in',$ids];
+        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
+            $map[] = ['user_id', '=', $this->userId];
+        }
+        if (Db::name('pocs_file')->where($map)->delete()) {
+            return $this->apiReturn(1,[],'批量删除成功');
+        } else {
+            return $this->apiReturn(0,[],'批量删除失败');
+        }
+    }
 
     // 批量导入
     public function batch_import(Request $request)
