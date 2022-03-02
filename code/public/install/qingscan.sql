@@ -441,9 +441,9 @@ INSERT INTO `auth_rule` VALUES (105, 'code/details', '未知', 0, 1, 43, 0, 1641
 INSERT INTO `auth_rule` VALUES (106, 'code/rescan', '未知', 0, 1, 43, 0, 1641664261, 1, 0, 3, 0, '');
 INSERT INTO `auth_rule` VALUES (107, 'code_webshell/index', '河马(WebShell)', 0, 1, 14, 7, 1641671594, 1, 1641671642, 2, 0, '');
 INSERT INTO `auth_rule` VALUES (108, 'app/export', '未知', 0, 1, 43, 0, 1641736005, 1, 0, 3, 0, '');
-INSERT INTO `auth_rule` VALUES (111, '', '插件中心', 0, 1, 0, 8, 1642257783, 1, 0, 1, 0, '');
+INSERT INTO `auth_rule` VALUES (111, '', '插件中心', 0, 1, 0, 8, 1642257783, 0, 0, 1, 0, '');
 INSERT INTO `auth_rule` VALUES (110, 'app/rescan', '未知', 0, 1, 43, 0, 1642142719, 1, 0, 3, 0, '');
-INSERT INTO `auth_rule` VALUES (129, 'qing_scan_knock_plugins/index', 'knock列表', 0, 1, 35, 1, 1642257816, 1, 1642746924, 2, 0, '');
+INSERT INTO `auth_rule` VALUES (129, 'qing_scan_knock_plugins/index', 'knock列表', 0, 1, 35, 1, 1642257816, 0, 1642746924, 2, 0, '');
 INSERT INTO `auth_rule` VALUES (114, 'qing_scan_struts2_scan_plugins/index', 'struts2Scan列表', 0, 1, 111, 2, 1642340081, 1, 1642340121, 2, 0, '');
 INSERT INTO `auth_rule` VALUES (115, 'qing_scan_fscan_plugins/index', 'fscan列表', 0, 1, 111, 3, 1642348571, 1, 0, 2, 0, '');
 INSERT INTO `auth_rule` VALUES (116, 'test_demo_plugin/index', '测试', 1, 1, 1, 4, 1642388656, 1, 0, 2, 1642746510, '');
