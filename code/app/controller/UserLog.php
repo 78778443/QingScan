@@ -4,7 +4,6 @@ namespace app\controller;
 
 use think\facade\Db;
 use think\facade\View;
-
 use think\Request;
 
 class UserLog extends Common
