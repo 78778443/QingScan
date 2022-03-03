@@ -10,18 +10,18 @@ use think\Request;
 class Vulnerable extends Common
 {
 
-    public function index()
+    public function index(Request $request)
     {
         $where[] = ['is_delete','=',0];
-        $search = getParam('search','');
+        $search = $request->param('search','');
         if (!empty($search)) {
             $where[] = ['name|cve_num|cnvd_num','like',"%{$search}%"];
         }
-        $vul_level = getParam('vul_level'); // 等级
-        $product_field = getParam('product_field');   // 行业
-        $product_type = getParam('product_type');   // 项目类型
-        $product_cate = getParam('product_cate');   // 平台分类
-        $check_status = getParam('check_status');   // 审核类型
+        $vul_level = $request->param('vul_level'); // 等级
+        $product_field = $request->param('product_field');   // 行业
+        $product_type = $request->param('product_type');   // 项目类型
+        $product_cate = $request->param('product_cate');   // 平台分类
+        $check_status = $request->param('check_status');   // 审核类型
         if (!empty($vul_level)) {
             $where[] = ['vul_level','=',$vul_level];
         }
@@ -44,9 +44,12 @@ class Vulnerable extends Common
             $where[] = ['user_id', '=', $this->userId];
         }
         $pageSize = 25;
-        $list = Db::table('vulnerable')->where($where)->order('id','desc')->paginate($pageSize);
+        $list = Db::table('vulnerable')->where($where)->order('id','desc')->paginate([
+            'list_rows'=> $pageSize,//每页数量
+            'query' => $request->param(),
+        ]);
         $data = [];
-        $data['list'] = $list->toArray()['data'];
+        $data['list'] = $list->items();
         $data['page'] = $list->render();
         $data['vul_level'] = Db::table('vulnerable')->where($where)->where('vul_level','<>','')->group('vul_level')->column('vul_level');
         $data['product_field'] = Db::table('vulnerable')->where($where)->where('product_field','<>','')->group('product_field')->column('product_field');
@@ -58,20 +61,26 @@ class Vulnerable extends Common
         return View::fetch('index', $data);
     }
 
-    public function pocsuite()
+    public function pocsuite(Request $request)
     {
-        $page = getParam('page', 1);
         $pageSize = 25;
-        $data['list'] = Db::table('pocsuite3')->where('is_delete','=',0)->limit($pageSize)->page($page)->select()->toArray();
-        $data['page'] = Db::name('pocsuite3')->where('is_delete','=',0)->paginate($pageSize)->render();
-
-
+        $where = [];
+        $search = $request->param('search','');
+        if (!empty($search)) {
+            $where[] = ['name|name|cms','like',"%{$search}%"];
+        }
+        $list = Db::table('pocsuite3')->where('is_delete','=',0)->paginate([
+            'list_rows'=> $pageSize,//每页数量
+            'query' => $request->param(),
+        ]);
+        $data['list'] = $list->items();
+        $data['page'] = $list->render();
         return View::fetch('pocsuite_list', $data);
     }
 
 
-    public function details(){
-        $id = getParam('id');
+    public function details(Request $request){
+        $id = $request->param('id');
         if (!$id) {
             $this->error('参数不能为空');
         }
@@ -234,9 +243,9 @@ class Vulnerable extends Common
         }
     }
 
-    public function vulnerable_del()
+    public function vulnerable_del(Request $request)
     {
-        $id = getParam('id');
+        $id = $request->param('id');
         $where[] = ['id','=',$id];
         if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
             $where[] = ['user_id', '=', $this->userId];
@@ -248,9 +257,26 @@ class Vulnerable extends Common
         }
     }
 
-    public function pocsuite_del()
+    // 批量删除
+    public function vulnerable_batch_del(Request $request){
+        $ids = $request->param('ids');
+        if (!$ids) {
+            return $this->apiReturn(0,[],'请先选择要删除的数据');
+        }
+        $map[] = ['id','in',$ids];
+        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
+            $map[] = ['user_id', '=', $this->userId];
+        }
+        if (Db::name('vulnerable')->where($map)->delete()) {
+            return $this->apiReturn(1,[],'批量删除成功');
+        } else {
+            return $this->apiReturn(0,[],'批量删除失败');
+        }
+    }
+
+    public function pocsuite_del(Request $request)
     {
-        $id = getParam('id');
+        $id = $request->param('id');
         $where[] = ['id','=',$id];
         if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
             $where[] = ['user_id', '=', $this->userId];
@@ -259,6 +285,23 @@ class Vulnerable extends Common
             return redirect($_SERVER['HTTP_REFERER']);
         } else {
             $this->error('删除失败');
+        }
+    }
+
+    // 批量删除
+    public function pocsuite_batch_del(Request $request){
+        $ids = $request->param('ids');
+        if (!$ids) {
+            return $this->apiReturn(0,[],'请先选择要删除的数据');
+        }
+        $map[] = ['id','in',$ids];
+        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
+            $map[] = ['user_id', '=', $this->userId];
+        }
+        if (Db::name('pocsuite3')->where($map)->delete()) {
+            return $this->apiReturn(1,[],'批量删除成功');
+        } else {
+            return $this->apiReturn(0,[],'批量删除失败');
         }
     }
 

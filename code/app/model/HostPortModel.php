@@ -120,7 +120,7 @@ class HostPortModel extends BaseModel
     {
 
         $list = Db::table(self::$tableName)
-            ->field('id,service as name,count(service) as num')
+            ->field('service as name,count(service) as num')
             ->where($where)
             ->group('service')
             ->having("num > 50")
@@ -135,7 +135,7 @@ class HostPortModel extends BaseModel
     private static function getPort($where)
     {
         $list = Db::table(self::$tableName)
-            ->field('id,port as name,count(port) as num')
+            ->field('port as name,count(port) as num')
             ->where($where)
             ->group('port')
             ->having("num > 50")

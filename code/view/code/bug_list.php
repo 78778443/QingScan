@@ -18,11 +18,19 @@ $searchArr = [
         ['type' => 'select', 'name' => 'check_status', 'options' => $check_status_list, 'frist_option' => '审计状态', 'frist_option_value' => -1],
     ]]; ?>
 {include file='public/search' /}
+
+
 <div class="row tuchu">
     <div class="col-md-12 ">
+        {include file='public/batch_del' /}
         <table class="table table-bordered table-hover table-striped">
             <thead>
             <tr>
+                <th width="80">
+                    <label>
+                        <input type="checkbox" value="-1" onclick="quanxuan(this)">全选
+                    </label>
+                </th>
                 <th>ID</th>
                 <th>漏洞类型</th>
                 <th>危险等级</th>
@@ -36,19 +44,24 @@ $searchArr = [
             </thead>
             <?php foreach ($list as $value) { ?>
                 <tr>
+                    <td>
+                        <label>
+                            <input type="checkbox" class="ids" name="ids[]" value="<?php echo $value['id'] ?>">
+                        </label>
+                    </td>
                     <td><?php echo $value['id'] ?></td>
                     <td><?php echo $value['Category'] ?></td>
                     <td>
                         <span class="badge rounded-pill bg-<?php echo $dengjiArrColor[$value['Friority']] ?>"><?php echo $value['Friority'] ?></span>
                     </td>
                     <td title="<?php echo htmlentities($value['Source']['Snippet'] ?? '') ?>">
-                        <a href="<?php echo isset($projectArr[$value['code_id']]) ? $projectArr[$value['code_id']]['ssh_url'] : '' ?>/-/blob/master/<?php echo $value['Source']['FilePath'] ?? '' ?>"
+                        <a href="<?php echo isset($projectArr[$value['code_id']]) ? $projectArr[$value['code_id']]['domain_name'] : '' ?>/<?php echo isset($value['Source']['FilePath']) ? $value['Source']['FilePath'].'#L'.$value['Source']['LineStart'] :'' ?>"
                            target="_blank">
                             <?php echo $value['Source']['FileName'] ?? '' ?>
                         </a>
                     </td>
                     <td title="<?php echo htmlentities($value['Primary']['Snippet']) ?>">
-                        <a href="<?php echo isset($projectArr[$value['code_id']]) ? $projectArr[$value['code_id']]['ssh_url'] : '' ?>/-/blob/master/<?php echo $value['Primary']['FilePath'] ?>"
+                        <a href="<?php echo isset($projectArr[$value['code_id']]) ? $projectArr[$value['code_id']]['domain_name'] : '' ?>/<?php echo $value['Primary']['FilePath'].'#L'.$value['Primary']['LineStart'] ?>"
                            target="_blank">
                             <?php echo $value['Primary']['FileName'] ?>
                         </a>
@@ -81,3 +94,45 @@ $searchArr = [
 {include file='public/to_examine' /}
 {include file='public/fenye' /}
 {include file='public/footer' /}
+
+<script>
+    function quanxuan(obj){
+        var child = $('.table').find('.ids');
+        child.each(function(index, item){
+            if (obj.checked) {
+                item.checked = true
+            } else {
+                item.checked = false
+            }
+        })
+    }
+
+    function batch_del(){
+        var child = $('.table').find('.ids');
+        var ids = ''
+        child.each(function(index, item){
+            if (item.value != -1 && item.checked) {
+                if (ids == '') {
+                    ids = item.value
+                } else {
+                    ids = ids+','+item.value
+                }
+            }
+        })
+
+        $.ajax({
+            type: "post",
+            url: "<?php echo url('bug_batch_del')?>",
+            data: {ids: ids},
+            dataType: "json",
+            success: function (data) {
+                alert(data.msg)
+                if (data.code == 1) {
+                    window.setTimeout(function () {
+                        location.reload();
+                    }, 2000)
+                }
+            }
+        });
+    }
+</script>
