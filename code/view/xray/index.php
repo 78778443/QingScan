@@ -28,14 +28,7 @@ $searchArr = [
     <div class="row tuchu">
         <!--            <div class="col-md-1"></div>-->
         <div class="col-md-12 ">
-
-            <form class="row g-3">
-                <div class="col-auto">
-                    <a href="javascript:;" onclick="batch_del()"
-                       class="btn btn-outline-success">批量删除</a>
-                </div>
-            </form>
-
+            {include file='public/batch_del' /}
             <table class="table table-bordered table-hover table-striped">
                 <thead>
                 <tr>
