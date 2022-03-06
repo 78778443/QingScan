@@ -75,19 +75,7 @@ class Bug extends Common
 
     // 批量删除
     public function awvs_batch_del(Request $request){
-        $ids = $request->param('ids');
-        if (!$ids) {
-            return $this->apiReturn(0,[],'请先选择要删除的数据');
-        }
-        $map[] = ['id','in',$ids];
-        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
-            $map[] = ['user_id', '=', $this->userId];
-        }
-        if (Db::name('awvs_vuln')->where($map)->delete()) {
-            return $this->apiReturn(1,[],'批量删除成功');
-        } else {
-            return $this->apiReturn(0,[],'批量删除失败');
-        }
+        return $this->batch_del_that($request,'awvs_vuln');
     }
 
     public function xray(Request $request)

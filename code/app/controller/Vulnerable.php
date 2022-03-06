@@ -259,19 +259,7 @@ class Vulnerable extends Common
 
     // 批量删除
     public function vulnerable_batch_del(Request $request){
-        $ids = $request->param('ids');
-        if (!$ids) {
-            return $this->apiReturn(0,[],'请先选择要删除的数据');
-        }
-        $map[] = ['id','in',$ids];
-        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
-            $map[] = ['user_id', '=', $this->userId];
-        }
-        if (Db::name('vulnerable')->where($map)->delete()) {
-            return $this->apiReturn(1,[],'批量删除成功');
-        } else {
-            return $this->apiReturn(0,[],'批量删除失败');
-        }
+        return $this->batch_del_that($request,'vulnerable');
     }
 
     public function pocsuite_del(Request $request)
@@ -290,19 +278,7 @@ class Vulnerable extends Common
 
     // 批量删除
     public function pocsuite_batch_del(Request $request){
-        $ids = $request->param('ids');
-        if (!$ids) {
-            return $this->apiReturn(0,[],'请先选择要删除的数据');
-        }
-        $map[] = ['id','in',$ids];
-        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
-            $map[] = ['user_id', '=', $this->userId];
-        }
-        if (Db::name('pocsuite3')->where($map)->delete()) {
-            return $this->apiReturn(1,[],'批量删除成功');
-        } else {
-            return $this->apiReturn(0,[],'批量删除失败');
-        }
+        return $this->batch_del_that($request,'pocsuite3');
     }
 
     public function add_pocsuite(Request $request){
