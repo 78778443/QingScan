@@ -54,6 +54,56 @@ class ProcessSafeModel extends BaseModel
                     addlog("已强制终止任务:{$value}");
                 }
             }
+            // 处理垃圾进程问题
+
+
+            /*$pid = pcntl_fork();//开启子进程
+            if ($pid > 0) {
+                echo "我是主进程,我的ppid是" . posix_getppid() . ",我的pid是" . getmypid() . "\n";
+                cli_set_process_title('php think scan safe');//修改PHP进程的名字
+                pcntl_wait($status);
+                echo "我是在后面哦\n";
+                sleep(60);
+            } else if (0 == $pid) {
+                echo "我是子进程,我的ppid是" . posix_getppid() . ",我的pid是" . getmypid() . "\n";
+                cli_set_process_title('php son process');//修改PHP进程的名字
+                $cpid = pcntl_fork();
+                if ($cpid == -1) {
+                    die("fork error");
+                } else if ($cpid) {
+                    //这里是子进程，直接退出
+                    exit;
+                } else {
+                    //这里是孙进程，处理业务逻辑
+                    cli_set_process_title('php grandson process');//修改PHP进程的名字
+                    for ($i = 0; $i < 5; ++$i) {
+                        echo "我是孙子进程,我的ppid是" . posix_getppid() . ",我的pid是" . getmypid() . "\n";
+                        sleep(1);
+                    }
+                }
+            } else {//-1 不会创建子进程
+                echo "创建进程失败了" . PHP_EOL;
+            }*/
+
+
+            $key1 = '\[php\] <defunct>';
+            $cmd = "ps -ef | grep '\[php\] <defunct>' | grep -v ' grep'";
+            $result1 = [];
+            //exec($cmd, $result1);
+            /*$key2 = 'php <defunct>';
+            $cmd = "ps -ef | grep '{$key2}' | grep -v ' grep'";
+            $result2 = [];
+            exec($cmd, $result2);*/
+            /*if (count($result1)) {
+                $cmd = "kill -9 $(ps -ef |  grep defunct  | more grep -v grep | awk '{print \$2}')";
+            ps -ef |  grep '\[php\] <defunct>' | grep -v grep | awk '{print $2}' | xargs kill -9
+            ps aux|grep '\[php\] <defunct>'|awk '{print $2}'|xargs kill -9
+                systemLog($cmd);
+            } elseif(count($result2)){
+                $cmd = "kill -9 $(ps -ef |  grep '{$key2}'  | grep -v grep | awk '{print \$2}')";
+                systemLog($cmd);
+            }*/
+
             // 每次循环完毕将休眠2个小时
             sleep($timeSleep);
         }
