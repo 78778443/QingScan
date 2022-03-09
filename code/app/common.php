@@ -965,7 +965,7 @@ function getUninstallPath($name)
     $controller_path = $app . 'controller/';
     foreach (scandir($controller_path) as $value) {
         if ($value != '.' && $value != '..') {
-            $preg = "/^{$name}(.*?)Plugin\.php/";
+            $preg = "/^{$name}(.*?)Plugins\.php/";
             if (preg_match($preg, $value)) {
                 $controller[] = $controller_path . $value;
             }
@@ -976,22 +976,9 @@ function getUninstallPath($name)
     $model_path = $app . 'model/';
     foreach (scandir($model_path) as $value) {
         if ($value != '.' && $value != '..') {
-            $preg = "/^{$name}(.*?)PluginModel\.php/";
+            $preg = "/^{$name}(.*?)PluginsModel\.php/";
             if (preg_match($preg, $value)) {
                 $model[] = $model_path . $value;
-            }
-        }
-    }
-    $name = cc_format($name);
-
-    // 获取view中符合的数据
-    $view = [];
-    $view_path = \think\facade\App::getRootPath() . 'view/';
-    foreach (scandir($view_path) as $value) {
-        if ($value != '.' && $value != '..') {
-            $preg = "/^{$name}(.*?)_plugin/";
-            if (preg_match($preg, cc_format($value))) {
-                $view[] = $view_path . $value;
             }
         }
     }
@@ -1002,8 +989,21 @@ function getUninstallPath($name)
     foreach (scandir($tools_path) as $value) {
         if ($value != '.' && $value != '..') {
             $preg = "/^{$name}(.*?)/";
-            if (preg_match($preg, cc_format($value))) {
+            if (preg_match($preg, $value)) {
                 $tools[] = $tools_path . $value;
+            }
+        }
+    }
+
+    $name = cc_format($name);
+    // 获取view中符合的数据
+    $view = [];
+    $view_path = \think\facade\App::getRootPath() . 'view/';
+    foreach (scandir($view_path) as $value) {
+        if ($value != '.' && $value != '..') {
+            $preg = "/^{$name}(.*?)_plugins/";
+            if (preg_match($preg, cc_format($value))) {
+                $view[] = $view_path . $value;
             }
         }
     }
@@ -1023,9 +1023,11 @@ function deldir($path)
                 //排除目录中的.和..
                 if ($val != "." && $val != "..") {
                     //如果是目录则递归子目录，继续操作
-                    if (is_dir($path . $val)) {
+                    if (is_dir($path .'/'. $val)) {
                         //子目录中操作删除文件夹和文件
-                        deldir($path . $val . '/');
+                        deldir($path .'/'. $val . '/');
+                    } elseif($val == '.git'){
+                        deldir($path .'/'. $val . '/');
                     } else {
                         //如果是文件直接删除
                         @unlink($path . '/' . $val);

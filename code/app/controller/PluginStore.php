@@ -73,6 +73,13 @@ class PluginStore extends Common
         $filename = substr($download_url, strrpos($download_url, '/') + 1);
         if (downloadFile($download_url, $save_dir, $filename) === true) {
             $file_path = $save_dir.$filename;
+
+            // 删除原有目录
+            $temp_plugin_path = $save_dir.$info['name'].'/';
+            if(is_dir($temp_plugin_path)) {
+                deldir($temp_plugin_path);
+            }
+
             // 解压目录
             $zip = new \ZipArchive();
             if ($zip->open($file_path) === TRUE) {//中文文件名要使用ANSI编码的文件格式
@@ -80,7 +87,6 @@ class PluginStore extends Common
                 $zip->close();
 
                 $app = \think\facade\App::getAppPath();
-                $temp_plugin_path = $save_dir.$info['name'].'/';
 
                 Db::startTrans();
                 try {
@@ -187,7 +193,7 @@ class PluginStore extends Common
             $this->error('插件未安装');
         }
         // 删除相关信息
-        $pathArr = getUninstallPath('TestDemo');
+        $pathArr = getUninstallPath($info['name']);
         foreach ($pathArr as $value) {
             if(!is_dir($value)) {
                 @unlink($value);
