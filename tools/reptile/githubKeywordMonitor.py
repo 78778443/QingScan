@@ -22,7 +22,6 @@ header = {
     "Authorization": "token "+github_token[0]['value'],
     "User-Agent": "https://api.github.com/meta"
 }
-print(header)
 threeDayAgo = (datetime.datetime.now() - datetime.timedelta(days=15))
 # 转换为时间戳
 timeStamp = int(time.mktime(threeDayAgo.timetuple()))
