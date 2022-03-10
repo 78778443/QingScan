@@ -35,20 +35,17 @@ $searchArr = [
                 <a href="<?php echo url('downloaAppTemplate') ?>"
                    class="btn btn-outline-success">下载模板</a>
             </div>
-            <div class="col-auto">
-                <a href="javascript:;" onclick="batch_del()"
-                   class="btn btn-outline-success">批量删除</a>
-            </div>
         </form>
     </div>
 </div>
 
 <div class="row tuchu">
     <div class="col-md-12 ">
+        {include file='public/batch_del' /}
         <table class="table table-bordered table-hover table-striped">
             <thead>
             <tr>
-                <th width="100">
+                <th width="80">
                     <label>
                         <input type="checkbox" value="-1" onclick="quanxuan(this)">全选
                     </label>

@@ -26,7 +26,8 @@ $searchArr = [
 {include file='public/search' /}
 <div class="col-md-12 ">
     <div class="row tuchu">
-        <div class="col-md-12">
+        <!--            <div class="col-md-1"></div>-->
+        <div class="col-md-12 ">
             <form class="row g-3" id="frmUpload" action="" method="post" enctype="multipart/form-data">
                 <div class="col-auto">
                     <a href="javascript:;" onclick="update_status(1)"
@@ -38,12 +39,6 @@ $searchArr = [
                        class="btn btn-outline-success">禁用</a>
                 </div>
             </form>
-        </div>
-    </div>
-
-    <div class="row tuchu">
-        <!--            <div class="col-md-1"></div>-->
-        <div class="col-md-12 ">
             <table class="table table-bordered table-hover table-striped">
                 <thead>
                 <tr>
