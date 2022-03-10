@@ -187,6 +187,7 @@ class PluginStore extends Common
 
     // 卸载
     public function uninstall(Request $request){
+        // 测试代码
         $id = $request->param('id',0,'intval');
         $info = Db::name('plugin_store')->where('id',$id)->find();
         if (!$info) {
