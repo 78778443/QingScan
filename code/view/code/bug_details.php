@@ -34,7 +34,7 @@
                             <div class="col-md-4">
                                 <dl>
                                     <dt>所属项目：</dt>
-                                    <dd><?php echo htmlentities($projectArr[$info['project_id']]['name']); ?></dd>
+                                    <dd><?php echo htmlentities($projectArr[$info['code_id']]['name']); ?></dd>
                                 </dl>
                                 <dl>
                                     <dt>审核状态：</dt>
@@ -98,7 +98,7 @@
                                 <dl>
                                     <dt>目标函数：</dt>
                                     <dd>
-                                        <?php echo $Source['TargetFunction'] ?>
+                                        <?php echo isset($Source['TargetFunction'])?$Source['TargetFunction']:'' ?>
                                     </dd>
                                 </dl>
 
@@ -140,7 +140,7 @@
                             <dl>
                                 <dt>目标函数：</dt>
                                 <dd>
-                                    <?php echo $Primary['TargetFunction'] ?>
+                                    <?php echo isset($Primary['TargetFunction'])?$Primary['TargetFunction']:'' ?>
                                 </dd>
                             </dl>
 

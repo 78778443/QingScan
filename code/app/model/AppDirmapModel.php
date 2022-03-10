@@ -13,12 +13,13 @@ class AppDirmapModel extends BaseModel
     {
         ini_set('max_execution_time', 0);
         while (true) {
+            processSleep(1);
             $list = Db::name('app')->whereTime('dirmap_scan_time', '<=', date('Y-m-d H:i:s', time() - (86400 * 15)))->where('is_delete', 0)->orderRand()->limit(1)->field('id,url,user_id')->select();
             $file_path = '/data/tools/dirmap/';
             foreach ($list as $k => $v) {
+                PluginModel::addScanLog($v['id'], __METHOD__, 0);
                 self::scanTime('app', $v['id'], 'dirmap_scan_time');
 
-                //$v['url'] = $url;
                 $cmd = "cd {$file_path}  && python3 ./dirmap.py -i {$v['url']} -lcf";
                 systemLog($cmd);
                 $host = parse_url($v['url'])['host'];
@@ -26,6 +27,7 @@ class AppDirmapModel extends BaseModel
                 $port = $port ? "_{$port}" : "";
                 $filename = $file_path . "output/{$host}{$port}.txt";
                 if (!file_exists($filename)) {
+                    PluginModel::addScanLog($v['id'], __METHOD__, 2);
                     addlog(["dirmap扫描结果文件不存在:{$filename}", $v]);
                     continue;
                 }
@@ -36,6 +38,8 @@ class AppDirmapModel extends BaseModel
                 while (!feof($file)) {
                     $result = fgets($file);
                     if (empty($result)) {
+                        PluginModel::addScanLog($v['id'], __METHOD__, 2);
+                        addlog(["dirmap 扫描目标结果为空", $v['url']]);
                         continue;
                     }
                     $arr = explode('http', $result);
@@ -57,6 +61,7 @@ class AppDirmapModel extends BaseModel
                     Db::name('app_dirmap')->insertAll($data);
                 }
                 @unlink($filename);
+                PluginModel::addScanLog($v['id'], __METHOD__, 1);
             }
             sleep(10);
         }

@@ -216,12 +216,15 @@ class HostModel extends BaseModel
     public static function autoAddHost()
     {
         while (true) {
+            processSleep(1);
             $appList = Db::table('app')->where(['status' => 1])->limit(100)->order('id','desc')->select()->toArray();
             foreach ($appList as $app) {
+                PluginModel::addScanLog($app['id'], __METHOD__, 0);
                 $domain = parse_url($app['url'])['host'];
                 $host = gethostbyname($domain);
                 if (!filter_var($host, FILTER_VALIDATE_IP)) {
                     addlog(["此域名{$domain}不能解析成IP"]);
+                    PluginModel::addScanLog($app['id'], __METHOD__, 2,0,['content'=>"此域名{$domain}不能解析成IP"]);
                     continue;
                 }
 
@@ -234,7 +237,8 @@ class HostModel extends BaseModel
                         $data = [
                             'app_id' => $app['id'],
                             'domain' => $domain,
-                            'host' => $v['ip']
+                            'host' => $v['ip'],
+                            'user_id'=>$app['user_id']
                         ];
                         Db::table(self::$tableName)->extra("IGNORE")->insert($data);
                     }
@@ -242,10 +246,12 @@ class HostModel extends BaseModel
                     $data = [
                         'app_id' => $app['id'],
                         'domain' => $domain,
-                        'host' => $host
+                        'host' => $host,
+                        'user_id'=>$app['user_id']
                     ];
                     Db::table(self::$tableName)->extra("IGNORE")->insert($data);
                 }
+                PluginModel::addScanLog($app['id'], __METHOD__, 1);
             }
             addlog("自动添加主机记录完成,即将休息300秒...");
             sleep(300);

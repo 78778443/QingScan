@@ -17,9 +17,10 @@ class CveModel extends BaseModel
 {
 
 
-    public static function scan()
+    public static function cveScan()
     {
         while (true) {
+            processSleep(1);
             $endTime = date('Y-m-d', time() - 86400 * 15);
             $where = ['is_poc' => 1];
             $hostLit = Db::table('vulnerable')->where($where)->whereNotNull('fofa_con')->whereTime('scan_time', '<=', $endTime)->orderRand()->limit(5)->select()->toArray();
@@ -27,7 +28,6 @@ class CveModel extends BaseModel
                 self::cve($val);
                 Db::table('host')->where(['id' => $val['id']])->save(['scan_time' => date('Y-m-d H:i:s')]);
             }
-
             print_r("本轮CVE扫描完成，休息10秒...");
             sleep(10);
         }
@@ -70,6 +70,7 @@ class CveModel extends BaseModel
         }
 
         while (true) {
+            processSleep(1);
             $endTime = date('Y-m-d', time() - 86400 * 15);
             $cveList = Db::table('vulnerable')->whereNotNull('fofa_con')->whereTime('scan_time', '<=', $endTime)->orderRand()->limit(2)->select()->toArray();
 
@@ -80,7 +81,7 @@ class CveModel extends BaseModel
                 $list = json_decode($list->body, true)['results'] ?? [];
 
                 foreach ($list as $temp) {
-                    $info = ['addr' => $temp[0], 'ip' => $temp[1], 'port' => $temp[2], 'query' => $keywords, 'vul_id' => $val['id']];
+                    $info = ['addr' => $temp[0], 'ip' => $temp[1], 'port' => $temp[2], 'query' => $keywords, 'vul_id' => $val['id'],'user_id'=>$val['user_id']];
                     Db::table('vul_target')->extra("IGNORE")->insert($info);
                 }
                 Db::table('vulnerable')->where(['id' => $val['id']])->save(['target_scan_time' => date('Y-m-d H:i:s')]);

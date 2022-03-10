@@ -2,19 +2,19 @@
 
 namespace app\controller;
 
-use app\BaseController;
 use app\model\AppModel;
 use app\model\CodeCheckModel;
 use app\model\FortifyModel;
 use app\model\CodeModel;
 use think\facade\Db;
 use think\facade\View;
+use think\Request;
 
 
 class Code extends Common
 {
 
-    public function index()
+    public function index(Request $request)
     {
         $pageSize = 25;
 
@@ -24,56 +24,182 @@ class Code extends Common
             $where[] = ['user_id', '=', $this->userId];
             $map[] = ['user_id', '=', $this->userId];
         }
-        $search = getParam('search');
+        $search = $request->param('search');
         if (!empty($search)) {
             $where[] = ['name', 'like', "%{$search}%"];
         }
-        $list = Db::table('code')->where($where)->order('scan_time', 'desc')->paginate($pageSize);
+        $list = Db::table('code')->where($where)->order('scan_time', 'desc')->paginate([
+            'list_rows'=> $pageSize,//每页数量
+            'query' => $request->param(),
+        ]);
 
-        $data['list'] = $list->toArray()['data'];
+        $data['list'] = $list->items();
 
         //查询数量
-        $data['num_arr'] = Db::table('fortify')->where($map)
-            ->field('project_id,count(project_id) as num')
-            ->group('project_id')->select()->toArray();
-        $data['num_arr'] = array_column($data['num_arr'], 'num', 'project_id');
-
+        $codeIds = array_column($data['list'], 'id');
+        $data = array_merge($data, CodeModel::getScanNum($codeIds));
         // 获取分页显示
         $data['page'] = $list->render();
 
         return View::fetch('list', $data);
     }
 
-    public function code_del()
+    public function rescan(Request $request)
     {
-        $id = getParam('id');
+        $id = $request->param('id');
+        $map[] = ['id', '=', $id];
+
+        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
+            $map[] = ['user_id', '=', $this->userId];
+        }
+
+        $array = [
+            'scan_time' => '2000-01-01 00:00:00',
+            'sonar_scan_time' => '2000-01-01 00:00:00',
+            'kunlun_scan_time' => '2000-01-01 00:00:00',
+            'semgrep_scan_time' => '2000-01-01 00:00:00',
+            'composer_scan_time' => '2000-01-01 00:00:00',
+            'java_scan_time' => '2000-01-01 00:00:00',
+            'python_scan_time' => '2000-01-01 00:00:00',
+            'webshell_scan_time' => '2000-01-01 00:00:00',
+        ];
+        Db::table('code')->where(['id' => $id])->save($array);
+        Db::table('fortify')->where(['code_id' => $id])->delete();
+        Db::table('semgrep')->where(['code_id' => $id])->delete();
+        Db::table('code_webshell')->where(['code_id' => $id])->delete();
+        Db::table('code_composer')->where(['code_id' => $id])->delete();
+        Db::table('code_python')->where(['code_id' => $id])->delete();
+        Db::table('code_java')->where(['code_id' => $id])->delete();
+        Db::table('plugin_scan_log')->where(['app_id' => $id, 'scan_type' => 2])->delete();
+
+        return redirect($_SERVER['HTTP_REFERER']);
+
+    }
+
+    public function details(Request $request)
+    {
+
+        $codeId = $request->param('id');
+        $where[] = ['code_id', '=', $codeId];
+        $map[] = ['id', '=', $codeId];
+
+        $where1 = [];
+//        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
+//            //$where[] = ['user_id','=',$this->userId];
+//            $map[] = ['user_id', '=', $this->userId];
+//            $where1[] = ['user_id', '=', $this->userId];
+//        }
+        $data['info'] = Db::name('code')->where($map)->find();
+
+        $data['fortify'] = Db::table('fortify')->where($where)->where($where1)->order("id", 'desc')->limit(0, 10)->select()->toArray();
+        $data['semgrep'] = Db::table('semgrep')->where($where)->where($where1)->order("id", 'desc')->limit(0, 10)->select()->toArray();
+        $data['hema'] = Db::table('code_webshell')->where($where)->where($where1)->order("id", 'desc')->limit(0, 10)->select()->toArray();
+        $data['java'] = Db::table('code_java')->where($where)->where($where1)->order("id", 'desc')->limit(0, 10)->select()->toArray();
+        $data['python'] = Db::table('code_python')->where($where)->where($where1)->order("id", 'desc')->limit(0, 10)->select()->toArray();
+        $data['php'] = Db::table('code_composer')->where($where)->where($where1)->order("id", 'desc')->limit(0, 10)->select()->toArray();
+        $projectArr = Db::table('code')->where($map)->select()->toArray();
+        $data['projectArr'] = array_column($projectArr, null, 'id');
+
+        return View::fetch('details', $data);
+    }
+
+    public function code_del(Request $request)
+    {
+        $id = $request->param('id');
         $map[] = ['id', '=', $id];
         if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
             $map[] = ['user_id', '=', $this->userId];
         }
         if (Db::name('code')->where($map)->update(['is_delete' => 1])) {
+            Db::table('fortify')->where(['code_id' => $id])->delete();
+            Db::table('semgrep')->where(['code_id' => $id])->delete();
+            Db::table('code_webshell')->where(['code_id' => $id])->delete();
+            Db::table('code_composer')->where(['code_id' => $id])->delete();
+            Db::table('code_python')->where(['code_id' => $id])->delete();
+            Db::table('code_java')->where(['code_id' => $id])->delete();
+            Db::table('plugin_scan_log')->where(['app_id' => $id, 'scan_type' => 2])->delete();
+
             return redirect($_SERVER['HTTP_REFERER']);
         } else {
             $this->error('删除失败');
         }
     }
 
-    public function bug_list()
+    // 批量删除
+    public function batch_del(Request $request){
+        $ids = $request->param('ids');
+        if (!$ids) {
+            return $this->apiReturn(0,[],'请先选择要删除的数据');
+        }
+        $map[] = ['code_id','in',$ids];
+        $where[] = ['id','in',$ids];
+        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
+            $where[] = ['user_id', '=', $this->userId];
+        }
+        if (Db::name('code')->where($where)->update(['is_delete' => 1])) {
+            Db::table('fortify')->where($map)->delete();
+            Db::table('semgrep')->where($map)->delete();
+            Db::table('code_webshell')->where($map)->delete();
+            Db::table('code_composer')->where($map)->delete();
+            Db::table('code_python')->where($map)->delete();
+            Db::table('code_java')->where($map)->delete();
+            Db::table('plugin_scan_log')->whereIn('app_id',$ids)->where('scan_type',2)->delete();
+
+            return $this->apiReturn(1,[],'批量删除成功');
+        } else {
+            return $this->apiReturn(0,[],'批量删除失败');
+        }
+    }
+
+    public function again_scan(Request $request){
+        $ids = $request->param('ids');
+        if (!$ids) {
+            return $this->apiReturn(0,[],'请先选择要重新扫描的数据');
+        }
+        $map[] = ['code_id','in',$ids];
+        $where[] = ['id','in',$ids];
+        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
+            $where[] = ['user_id', '=', $this->userId];
+            $map[] = ['user_id', '=', $this->userId];
+        }
+        $array = [
+            'scan_time' => '2000-01-01 00:00:00',
+            'sonar_scan_time' => '2000-01-01 00:00:00',
+            'kunlun_scan_time' => '2000-01-01 00:00:00',
+            'semgrep_scan_time' => '2000-01-01 00:00:00',
+            'composer_scan_time' => '2000-01-01 00:00:00',
+            'java_scan_time' => '2000-01-01 00:00:00',
+            'python_scan_time' => '2000-01-01 00:00:00',
+            'webshell_scan_time' => '2000-01-01 00:00:00',
+        ];
+        Db::table('code')->where($where)->save($array);
+        Db::table('fortify')->where($map)->delete();
+        Db::table('semgrep')->where($map)->delete();
+        Db::table('code_webshell')->where($map)->delete();
+        Db::table('code_composer')->where($map)->delete();
+        Db::table('code_python')->where($map)->delete();
+        Db::table('code_java')->where($map)->delete();
+        Db::table('plugin_scan_log')->whereIn('app_id',$ids)->where(['scan_type' => 2])->delete();
+
+        return $this->apiReturn(1,[],'操作成功');
+    }
+
+    public function bug_list(Request $request)
     {
         //接收参数
-        $page = getParam('page', 1);
-        $search = getParam('search', '');
+        $page = $request->param('page', 1);
+        $search = $request->param('search', '');
         $pageSize = 25;
-        $pid = getParam('project_id');
-        $Folder = getParam('Folder');
-        $Category = getParam('Category');
-        $Primary_filename = getParam('Primary_filename');
-        $check_status = getParam('check_status', '-2');
+        $pid = $request->param('code_id');
+        $Folder = $request->param('Folder');
+        $Category = $request->param('Category');
+        $Primary_filename = $request->param('Primary_filename');
+        $check_status = $request->param('check_status', '-2');
 
         //准备查询条件
         //$where = ['check_status' => 0];
         $where = ['is_delete' => 0];
-        $where = $pid ? array_merge($where, ['project_id' => $pid]) : $where;
+        $where = $pid ? array_merge($where, ['code_id' => $pid]) : $where;
         $where = $Primary_filename ? array_merge($where, ['Primary_filename' => $Primary_filename]) : $where;
         $where = !empty($Folder) ? array_merge($where, ['Folder' => $Folder]) : $where;
         $where = !empty($Category) ? array_merge($where, ['Category' => $Category]) : $where;
@@ -93,20 +219,20 @@ class Code extends Common
         $fortifyApi = $fortifyApi->where("Folder != 'Low'");
         $fortifyCountApi = Db::table('fortify')->where($where)->where("Folder != 'Low'");
         //获取分类分组
-        $categoryList = Db::table('fortify')->where($where)->where("Folder != 'Low'")->group('Category')->field('Category')->select()->toArray();
+        $categoryList = Db::table('fortify')->where($map)->where("Folder != 'Low'")->group('Category')->field('Category')->select()->toArray();
         $CategoryList = array_column($categoryList, 'Category');
         //查询项目数据
         $projectArr = Db::table('code')->where($map)->select()->toArray();
         $projectArr = array_column($projectArr, null, 'id');
         //获取文件分组
-        $fileList = Db::table('fortify')->where("Folder != 'Low'")->where($where)->field('Primary_filename')->group('Primary_filename')->select()->toArray();
+        $fileList = Db::table('fortify')->where("Folder != 'Low'")->where($map)->field('Primary_filename')->group('Primary_filename')->select()->toArray();
         $fileList = array_column($fileList, 'Primary_filename');
         //查询项目列表
-        $fortifyProjectList = Db::table('fortify')->where($where)->where("Folder != 'Low'")->field('project_id')->group('project_id')->select()->toArray();
-        $fortifyProjectList = array_column($fortifyProjectList, 'project_id');
+        $fortifyProjectList = Db::table('fortify')->where($map)->where("Folder != 'Low'")->field('code_id')->group('code_id')->select()->toArray();
+        $fortifyProjectList = array_column($fortifyProjectList, 'code_id');
         $fortifyProjectList = Db::table('code')->whereIn('id', $fortifyProjectList)->field('id,name')->select()->toArray();
         $fortifyProjectList = array_column($fortifyProjectList, 'name', 'id');
-        $objData = $fortifyApi->order('id', 'desc')->paginate(['list_rows' => $pageSize, 'query' => request()->param()]);
+        $objData = $fortifyApi->order('id', 'desc')->paginate(['list_rows' => $pageSize, 'query' => $request->param()]);
         $list = $objData->items();
         $pageRaw = $objData->render();
         //获取列表数据
@@ -118,6 +244,16 @@ class Code extends Common
         // 获取分页显示
         //$pageRaw = $fortifyApi->paginate($pageSize)->render();
 
+        foreach ($projectArr as $k=>$v) {
+            // 判断类型
+            if (preg_match('/gitee\.com/', $v['ssh_url'])) {   // 码云
+                $path = substr($v['ssh_url'],strripos($v['ssh_url'],':')+1,strlen($v['ssh_url']));
+                $projectArr[$k]['domain_name'] =  "https://gitee.com/{$path}/blob/main";
+            } elseif (preg_match('/github\.com/', $v['ssh_url'])) {    // github
+                $path = substr($v['ssh_url'],strripos($v['ssh_url'],'github.com/')+1,strlen($v['ssh_url']));
+                $projectArr[$k]['domain_name'] =  "https://github.com/{$path}/blob/main";
+            }
+        }
         //分配数据
         $data = [
             'search' => $search,
@@ -135,9 +271,9 @@ class Code extends Common
         return View::fetch('bug_list', $data);
     }
 
-    public function bug_details()
+    public function bug_details(Request $request)
     {
-        $id = getParam('id');
+        $id = $request->param('id');
         if (!$id) {
             $this->error('参数不能为空');
         }
@@ -169,9 +305,9 @@ class Code extends Common
         return View::fetch('bug_details', $data);
     }
 
-    public function bug_del()
+    public function bug_del(Request $request)
     {
-        $id = getParam('id');
+        $id = $request->param('id');
         $map[] = ['id', '=', $id];
         if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
             $map[] = ['user_id', '=', $this->userId];
@@ -183,9 +319,26 @@ class Code extends Common
         }
     }
 
-    public function semgrep_details()
+    // 批量删除
+    public function bug_batch_del(Request $request){
+        $ids = $request->param('ids');
+        if (!$ids) {
+            return $this->apiReturn(0,[],'请先选择要删除的数据');
+        }
+        $map[] = ['id','in',$ids];
+        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
+            $map[] = ['user_id', '=', $this->userId];
+        }
+        if (Db::name('fortify')->where($map)->update(['is_delete' => 1])) {
+            return $this->apiReturn(1,[],'批量删除成功');
+        } else {
+            return $this->apiReturn(0,[],'批量删除失败');
+        }
+    }
+
+    public function semgrep_details(Request $request)
     {
-        $id = getParam('id');
+        $id = $request->param('id');
         if (!$id) {
             $this->error('参数不能为空');
         }
@@ -211,18 +364,18 @@ class Code extends Common
         return View::fetch('semgrep_details', $data);
     }
 
-    public function kunlun_list()
+    public function kunlun_list(Request $request)
     {
         $data = [];
 
         $where[] = ['is_delete', '=', 0];
         $pageSize = 25;
-        $search = getParam('search', '');
-        $pid = getParam('project_id');
-        $level = getParam('level'); // 等级
-        $Category = getParam('Category');   // 分类
-        $filename = getParam('filename');   // 文件名
-        $check_status = getParam('check_status');   // 审核状态
+        $search = $request->param('search', '');
+        $pid = $request->param('code_id');
+        $level = $request->param('level'); // 等级
+        $Category = $request->param('Category');   // 分类
+        $filename = $request->param('filename');   // 文件名
+        $check_status = $request->param('check_status');   // 审核状态
         if (!empty($pid)) {
             $where[] = ['scan_project_id', '=', $pid];
         }
@@ -254,16 +407,22 @@ class Code extends Common
         $projectArr = array_column($projectArr, null, 'id');
         $data['projectArr'] = $projectArr;
         $data['CategoryList'] = $semgrepApi->where($where)->group('result_type')->column('result_type');
-        $data['projectList'] = $semgrepApi->where($where)->group('scan_project_id')->column('scan_project_id');
+        $projectList = Db::connect('kunlun')->table("index_scanresulttask")->alias('a')
+            ->leftJoin('index_project b', 'b.id=a.scan_project_id')
+            ->where($where)
+            ->group('scan_project_id')
+            ->field('b.id,b.project_name as name')
+            ->select()
+            ->toArray();
+        $data['projectList'] = array_column($projectList, 'name', 'id');
         $data['fileList'] = $semgrepApi->where($where)->group('vulfile_path')->column('vulfile_path');
         $data['check_status_list'] = ['未审计', '有效漏洞', '无效漏洞'];
-
         return View::fetch('kunlun_list', $data);
     }
 
-    public function kunlun_details()
+    public function kunlun_details(Request $request)
     {
-        $id = getParam('id');
+        $id = $request->param('id');
         if (!$id) {
             $this->error('参数不能为空');
         }
@@ -288,9 +447,9 @@ class Code extends Common
         return View::fetch('kunlun_details', $data);
     }
 
-    public function kunlun_del()
+    public function kunlun_del(Request $request)
     {
-        $id = getParam('id');
+        $id = $request->param('id');
         $map[] = ['id', '=', $id];
         if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
             $map[] = ['user_id', '=', $this->userId];
@@ -302,20 +461,20 @@ class Code extends Common
         }
     }
 
-    public function semgrep_list()
+    public function semgrep_list(Request $request)
     {
-
         $data = [];
-        $search = getParam('search', '');
+        $search = $request->param('search', '');
         $pageSize = 25;
         $where[] = ['is_delete', '=', 0];
-        $pid = getParam('project_id');
-        $level = getParam('level'); // 等级
-        $Category = getParam('Category');   // 分类
-        $filename = getParam('filename');   // 文件名
-        $check_status = getParam('check_status');   // 审核状态
-        if (!empty($pid)) {
-            $where[] = ['code_id', '=', $pid];
+        $map[] = ['is_delete', '=', 0];
+        $project_id = $request->param('project_id');
+        $level = $request->param('level'); // 等级
+        $Category = $request->param('Category');   // 分类
+        $filename = $request->param('filename');   // 文件名
+        $check_status = $request->param('check_status');   // 审核状态
+        if (!empty($project_id)) {
+            $where[] = ['code_id', '=', $project_id];
         }
         if (!empty($level)) {
             $where[] = ['extra_severity', '=', $level];
@@ -332,33 +491,32 @@ class Code extends Common
         if (!empty($search)) {
             $where[] = ['check_id', 'like', "%{$search}%"];
         }
-        $map = [];
         if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
             $where[] = ['user_id', '=', $this->userId];
             $map[] = ['user_id', '=', $this->userId];
         }
-        $list = Db::table('semgrep')->where($where)->order('id', 'desc')->paginate(['list_rows' => $pageSize, 'query' => request()->param()]);
-        $data['list'] = $list->toArray()['data'];
+        $list = Db::table('semgrep')->where($where)->order('id', 'desc')->paginate(['list_rows' => $pageSize, 'query' => $request->param()]);
+        $data['list'] = $list->items();
         $data['page'] = $list->render();
 
         $projectArr = Db::table('code')->where($map)->select()->toArray();
         $projectArr = array_column($projectArr, null, 'id');
         $data['projectArr'] = $projectArr;
-        $data['CategoryList'] = Db::table('semgrep')->where($where)->group('check_id')->column('check_id');
+        $data['CategoryList'] = Db::table('semgrep')->where($map)->group('check_id')->column('check_id');
 
-        $data['fileList'] = Db::table('semgrep')->where($where)->group('path')->column('path');
+        $data['fileList'] = Db::table('semgrep')->where($map)->group('path')->column('path');
         $data['check_status_list'] = ['未审计', '有效漏洞', '无效漏洞'];
         //查询项目列表
-        $projectList = Db::table('semgrep')->where($where)->group('code_id')->column('code_id');
+        $projectList = Db::table('semgrep')->where($map)->group('code_id')->column('code_id');
         $projectList = Db::table('code')->whereIn('id', $projectList)->field('id,name')->select()->toArray();
         $data['projectList'] = array_column($projectList, 'name', 'id');
 
         return View::fetch('semgrep_list', $data);
     }
 
-    public function semgrep_del()
+    public function semgrep_del(Request $request)
     {
-        $id = getParam('id');
+        $id = $request->param('id');
         $map[] = ['id', '=', $id];
         if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
             $map[] = ['user_id', '=', $this->userId];
@@ -369,12 +527,28 @@ class Code extends Common
             $this->error('删除失败');
         }
     }
+    // 批量删除
+    public function semgrep_batch_del(Request $request){
+        $ids = $request->param('ids');
+        if (!$ids) {
+            return $this->apiReturn(0,[],'请先选择要删除的数据');
+        }
+        $map[] = ['id','in',$ids];
+        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
+            $map[] = ['user_id', '=', $this->userId];
+        }
+        if (Db::name('semgrep')->where($map)->update(['is_delete' => 1])) {
+            return $this->apiReturn(1,[],'批量删除成功');
+        } else {
+            return $this->apiReturn(0,[],'批量删除失败');
+        }
+    }
 
-    public function bug_detail()
+    public function bug_detail(Request $request)
     {
-        $id = getParam('id');
+        $id = $request->param('id');
         $data['base'] = FortifyModel::getInfo($id);
-        $data['project'] = Db::table('code')->where('id', $data['base']['project_id'])->find();
+        $data['project'] = Db::table('code')->where('id', $data['base']['code_id'])->find();
 
 
         $data['Primary'] = json_decode($data['base']['Primary'], true);
@@ -386,75 +560,64 @@ class Code extends Common
         $this->show('code/bug_detail', $data);
     }
 
-    public function edit_modal()
+    public function edit_modal(Request $request)
     {
-        if (request()->isPost()) {
-            $data = $_POST;
-            //$date = date('Y-m-d H:i:s', time() + 86400 * 365);
-
-            $is_private = getParam('is_private');
-            if ($is_private) {
-                $username = getParam('username');
-                $password = getParam('password');
-                $private_key = getParam('private_key');
-                $pulling_mode = getParam('pulling_mode');
-                if (strtolower($pulling_mode) == 'ssh') {
-                    if (!$private_key) {
+        $id = $request->param('id');
+        if (!$id) {
+            $this->error('参数错误');
+        }
+        if ($request->isPost()) {
+            $data['name'] = $request->param('name');
+            $data['is_private'] = $request->param('is_private');
+            $data['pulling_mode'] = $request->param('pulling_mode');
+            $data['ssh_url'] = $request->param('ssh_url');
+            $data['username'] = $request->param('username');
+            $data['password'] = $request->param('password', '', 'htmlspecialchars');
+            $data['private_key'] = $request->param('private_key');
+            $data['fortify_scan_time'] = $request->param('fortify_scan_time');
+            $data['semgrep_scan_time'] = $request->param('semgrep_scan_time');
+            $data['kunlun_scan_time'] = $request->param('kunlun_scan_time');
+            if ($data['is_private']) {
+                if (strtolower($data['pulling_mode']) == 'ssh') {
+                    if (!$data['private_key']) {
                         $this->error('私钥不能为空');
                     }
                 } else {
-                    if (!$username || !$password) {
+                    if (!$data['username'] || !$data['password']) {
                         $this->error('用户名密码不能为空');
                     }
                 }
             }
-            /*if ($data['is_fortify_scan']) {
-                $data['sonar_scan_time'] = $date;
-            }
-            if ($data['is_kunlun_scan']) {
-                $data['kunlun_scan_time'] = $date;
-            }
-            if ($data['is_semgrep_scan']) {
-                $data['semgrep_scan_time'] = $date;
-            }*/
-            /*$map = [];
-            if ($this->auth_group_id != 5 && !in_array($this->userId,config('app.ADMINISTRATOR'))) {
-                $map[] = ['user_id','=',$this->userId];
-            }*/
-            if (Db::name('code')->update($data)) {
+            if (Db::name('code')->where('id', $id)->update($data)) {
                 return redirect(url('code/index'));
             } else {
                 $this->error('修改失败');
             }
         } else {
-            $id = getParam('id');
-            if (!$id) {
-                $this->error('参数错误');
-            }
             $data['info'] = Db::name('code')->where('id', $id)->find();
             return view('code/edit_modal', $data);
         }
     }
 
 
-    public function hooks()
+    public function hooks(Request $request)
     {
-        $page = getParam('page', 1);
-        $author = getParam('author', '');
-        $project_id = getParam('project_id', '');
+        $page = $request->param('page', 1);
+        $author = $request->param('author', '');
+        $code_id = $request->param('code_id', '');
         $pageSize = 25;
 
         $where = ['author' => ['>', 1]];
         $where = !empty($author) ? array_merge($where, ['code_check.author' => $author]) : $where;
-        $where = !empty($project_id) ? array_merge($where, ['code_check.project_id' => $project_id]) : $where;
+        $where = !empty($code_id) ? array_merge($where, ['code_check.code_id' => $code_id]) : $where;
 
         //查询提交人
         $authList = Db::table('code_check')->where($where)->group('author')->field('author')->select()->toArray();
         $authList = array_column($authList, 'author');
 
         //查询项目ID
-        $projectList = Db::table('code_check')->where($where)->group('project_id')->field('project_id')->select()->toArray();
-        $projectList = array_column($projectList, 'project_id');
+        $projectList = Db::table('code_check')->where($where)->group('code_id')->field('code_id')->select()->toArray();
+        $projectList = array_column($projectList, 'code_id');
 
         //项目列表
         $projectArr = Db::table('code')->field('id,ssh_url,name')->select()->toArray();
@@ -469,8 +632,8 @@ class Code extends Common
         ];
         $data['count'] = Db::table('code_check')->count();
         $data['list'] = Db::table('code_check')
-            ->LeftJoin('fortify', 'fortify.id = code_check.project_id')
-            ->LeftJoin('gitlab_project p', 'p.id = code_check.project_id')
+            ->LeftJoin('fortify', 'fortify.id = code_check.code_id')
+            ->LeftJoin('gitlab_project p', 'p.id = code_check.code_id')
             ->where($where)
             ->order('code_check.id', 'desc')
             ->field("code_check.*,p.name,p.web_url")
@@ -494,12 +657,12 @@ class Code extends Common
         return View::fetch('hooks', $data);
     }
 
-    public function hook_detail()
+    public function hook_detail(Request $request)
     {
-        $id = intval(getParam('id'));
+        $id = intval($request->param('id'));
 
         $detail = Db::table('code_check')
-                ->LeftJoin('gitlab_project p', 'p.id = code_check.project_id')
+                ->LeftJoin('gitlab_project p', 'p.id = code_check.code_id')
                 ->where(['code_check.id' => $id])
                 ->field("code_check.*,p.name,p.web_url")
                 ->select()->toArray()[0] ?? [];
@@ -519,30 +682,32 @@ class Code extends Common
         $this->show('code_check/add', $data);
     }
 
-    public function _add_code()
+    public function _add_code(Request $request)
     {
-        $is_private = getParam('is_private');
-        if ($is_private) {
-            $username = getParam('username');
-            $password = getParam('password');
-            $private_key = getParam('private_key');
-            $pulling_mode = getParam('pulling_mode');
-            if (strtolower($pulling_mode) == 'ssh') {
-                if (!$private_key) {
+        $data['name'] = $request->param('name');
+        $data['is_private'] = $request->param('is_private');
+        $data['pulling_mode'] = $request->param('pulling_mode');
+        $data['ssh_url'] = $request->param('ssh_url');
+        $data['username'] = $request->param('username');
+        $data['password'] = $request->param('password');
+        $data['private_key'] = $request->param('private_key');
+        if ($data['is_private']) {
+            if (strtolower($data['pulling_mode']) == 'ssh') {
+                if (!$data['private_key']) {
                     $this->error('私钥不能为空');
                 }
             } else {
-                if (!$username || !$password) {
+                if (!$data['username'] || !$data['password']) {
                     $this->error('用户名密码不能为空');
                 }
             }
         }
-        CodeModel::addData($_POST);
+        CodeModel::addData($data);
 
-        $this->success('添加成功', 'code/index');
+        return redirect(url('code/index'));
     }
 
-    public function _add()
+    public function _add(Request $request)
     {
         $content = base64_decode(urldecode($_REQUEST['content']));
         $author = $_REQUEST['author'];
@@ -551,7 +716,7 @@ class Code extends Common
 
         $where = ['hash' => $project_hash];
 
-        $project_id = Db::name('gitlab_project')->where($where)->value('id');
+        $code_id = Db::name('gitlab_project')->where($where)->value('id');
         $temp = preg_match_all("/\/tmp.*?\.php/", $content, $result);
         $tempStr = implode("\n", $result[0]);
         $bugFile = preg_replace("/\/tmp\/.*-\d{2}\//", "/", $tempStr);
@@ -567,27 +732,13 @@ class Code extends Common
             'author' => $author,
             'version' => $version,
             'project_hash' => $project_hash,
-            'project_id' => $project_id,
+            'code_id' => $code_id,
             'files' => $bugFile
         ];
 
         $result = CodeCheckModel::addData($data);
         // $this->Location("index.php?s=code_check/index");
     }
-
-
-    public function add_api_url()
-    {
-        $data['app_list'] = AppModel::getListByWhere([]);
-        $this->show('code_check/add_api_url', $data);
-    }
-
-    public function _add_api_url()
-    {
-        CodeCheckModel::addData($_POST);
-        $this->Location("index.php?s=code_check/index");
-    }
-
 
     public function load_xml()
     {

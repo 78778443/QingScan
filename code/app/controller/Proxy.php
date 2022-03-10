@@ -4,25 +4,40 @@ namespace app\controller;
 
 use think\facade\Db;
 use think\facade\View;
+use think\Request;
 
 class Proxy extends Common
 {
-    public function index()
+    public function index(Request $request)
     {
+        $data['statusList'] = ['无效','有效'];
+
         $pageSize = 20;
         $where = [];
-        $list = Db::table('proxy')->where($where)->order("id", 'desc')->paginate($pageSize);
+        $search = $request->param('search');
+        if ($search) {
+            $where[] = ['name','like',"%{$search}%"];
+        }
+        $status = $request->param('status');
+        if ($status) {
+            $status = array_keys($data['statusList'],$status)[0];
+            $where[] = ['status','=',$status];
+        }
+        $list = Db::table('proxy')->where($where)->order("id", 'desc')->paginate([
+            'list_rows' => $pageSize,
+            'query' => $request->param()
+        ]);
         $data['list'] = $list->items();
         $data['page'] = $list->render();
         return View::fetch('index', $data);
     }
 
-    public function add()
+    public function add(Request $request)
     {
-        if (request()->isPost()) {
+        if ($request->isPost()) {
             ini_set('max_execution_time', 0);
-            $data['host'] = getParam('host');
-            $data['port'] = getParam('port');
+            $data['host'] = $request->param('host');
+            $data['port'] = $request->param('port');
             if (Db::name('proxy')->where('host', $data['host'])->where('port', $data['port'])->count('id')) {
                 $this->error('代理已存在');
             }
@@ -44,17 +59,17 @@ class Proxy extends Common
     }
 
 
-    public function edit()
+    public function edit(Request $request)
     {
-        $id = getParam('id');
+        $id = $request->param('id');
         $info = Db::name('proxy')->where('id', $id)->find();
         if (!$info) {
             $this->error('数据不存在');
         }
-        if (request()->isPost()) {
+        if ($request->isPost()) {
             ini_set('max_execution_time', 0);
-            $data['host'] = getParam('host');
-            $data['port'] = getParam('port');
+            $data['host'] = $request->param('host');
+            $data['port'] = $request->param('port');
             if (Db::name('proxy')->where('host', $data['host'])->where('port', $data['port'])->where('id', '<>', $id)->count('id')) {
                 $this->error('代理已存在');
             }
@@ -77,9 +92,9 @@ class Proxy extends Common
     }
 
 
-    public function del()
+    public function del(Request $request)
     {
-        $id = getParam('id');
+        $id = $request->param('id');
         if (Db::name('proxy')->where('id', $id)->delete()) {
             $this->success('代理删除成功');
         } else {
@@ -87,13 +102,27 @@ class Proxy extends Common
         }
     }
 
-    public function test_speed()
+    // 批量删除
+    public function batch_del(Request $request){
+        $ids = $request->param('ids');
+        if (!$ids) {
+            return $this->apiReturn(0,[],'请先选择要删除的数据');
+        }
+        $map[] = ['id','in',$ids];
+        if (Db::name('proxy')->where($map)->delete()) {
+            return $this->apiReturn(1,[],'批量删除成功');
+        } else {
+            return $this->apiReturn(0,[],'批量删除失败');
+        }
+    }
+
+    public function test_speed(Request $request)
     {
-        $id = getParam('id');
+        $id = $request->param('id');
         $info = Db::name('proxy')->where('id', $id)->find();
         $info['proxy'] = 'http://' . $info['host'] . ":{$info['port']}";
         if (request()->isPost()) {
-            $url = getParam('url');
+            $url = $request->param('url');
         } else {
             $url = 'http://www.baidu.com';
         }

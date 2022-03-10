@@ -18,3 +18,5 @@ code/runtime/
 code/public/install/install.lock
 /tools/
 /code/icon/
+/docker/latest/mysql/*
+!docker/latest/mysql/null

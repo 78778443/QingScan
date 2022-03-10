@@ -18,80 +18,163 @@
         ]]; ?>
     {include file='public/search' /}
 
-
     <div class="row tuchu">
-        <div class="row tuchu">
-            <div class="col-md-12 ">
-                <table class="table table-bordered table-hover table-striped">
-                    <thead>
+        <div class="col-md-12">
+            <form class="row g-3" id="frmUpload" action="<?php echo url('app/batch_import') ?>" method="post"
+                  enctype="multipart/form-data">
+                <div class="col-auto">
+                    <input type="file" class="form-control form-control" name="file" accept=".xls,.csv" required/>
+                </div>
+                <div class="col-auto">
+                    <input type="submit" class="btn btn-outline-info" value="批量添加项目">
+                </div>
+                <div class="col-auto">
+                    <a href="<?php echo url('app/downloaAppTemplate') ?>"
+                       class="btn btn-outline-success">下载模板</a>
+                </div>
+                <div class="col-auto">
+                    <a href="<?php echo url('app/suspend_scan') ?>"
+                       class="btn btn-outline-success">暂停扫描</a>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="row tuchu">
+        <div class="col-md-12 ">
+            <form class="row g-3">
+                <div class="col-auto">
+                    <a href="javascript:;" onclick="again_scan()"
+                       class="btn btn-outline-success">重新扫描</a>
+                </div>
+                <div class="col-auto">
+                    <a href="javascript:;" onclick="batch_del()"
+                       class="btn btn-outline-success">批量删除</a>
+                </div>
+            </form>
+
+            <table class="table table-bordered table-hover table-striped">
+                <thead>
+                <tr>
+                    <th>
+                        <label>
+                            <input type="checkbox" value="-1" onclick="quanxuan(this)">全选
+                        </label>
+                    </th>
+                    <th>ID</th>
+                    <th>名称</th>
+                    <th>rad</th>
+                    <th>crawlergo</th>
+                    <th>awvs</th>
+                    <th>xray</th>
+                    <th>sqlmap</th>
+                    <th>oneforall</th>
+                    <th>dirmap</th>
+                    <th>vulmap</th>
+                    <th>nmap</th>
+                    <th>主机数量</th>
+                    <th>nuclei</th>
+                    <th>hydra</th>
+                    <th>创建时间</th>
+                    <th style="width: 200px">操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                <?php foreach ($list as $value) { ?>
                     <tr>
-                        <th>ID</th>
-                        <th>名称</th>
-                        <th>CMS</th>
-                        <th>状态码</th>
-                        <th>服务组件</th>
-                        <th style="width: 70px">状态</th>
-                        <th>是否存在waf</th>
-                        <th>创建时间</th>
-                        <th>awvs</th>
-                        <th>whatweb</th>
-                        <th>subdomain</th>
-                        <th>icon图标</th>
-                        <th>截图</th>
-                        <th>xray</th>
-                        <th>dirmap</th>
-                        <th>是否内网</th>
-                        <th style="width: 200px">操作</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <?php foreach ($list as $value) { ?>
-                        <tr>
-                            <td><?php echo $value['id'] ?></td>
-                            <td class="ellipsis-type">
-                                <a href="<?php echo $value['url'] ?>" target="_blank">
-                                    <?php echo $value['name'] ?>
-                                </a>
-                            </td>
-                            <td><?php
-                                if (isset($value['cms']) && is_array(json_decode($value['cms'], true))) {
-                                    echo implode("|", json_decode($value['cms'], true));
-                                }
-                                ?></td>
-                            <td><?php echo $value['statuscode'] ?? '' ?></td>
-                            <td><?php echo $value['server'] ?? '' ?></td>
-                            <td><?php echo $statusArr[$value['status']] ?? '' ?></td>
-                            <td><?php echo $value['is_waf'] ?></td>
-                            <td><?php echo date('Y-m-d H:i', strtotime($value['create_time'])) ?></td>
-                            <td><?php echo date('m-d H:i', strtotime($value['awvs_scan_time'])) ?></td>
-                            <td><?php echo date('m-d H:i', strtotime($value['whatweb_scan_time'])) ?></td>
-                            <td><?php echo date('m-d H:i', strtotime($value['subdomain_scan_time'])) ?></td>
-                            <td>
-                                <img src="/<?php echo $value['icon'] ?>" alt="">
-                            </td>
-                            <td>
-                                <img src="/<?php echo $value['url_screenshot'] ?>" alt="">
-                            </td>
-                            <td><?php echo date('m-d H:i', strtotime($value['xray_scan_time'])) ?></td>
-                            <td><?php echo date('m-d H:i', strtotime($value['dirmap_scan_time'])) ?></td>
-                            <td><?php echo $value['is_intranet'] ?></td>
-                            <td>
+                        <td>
+                            <label>
+                                <input type="checkbox" class="ids" name="ids[]" value="<?php echo $value['id'] ?>">
+                            </label>
+                        </td>
+                        <td><?php echo $value['id'] ?></td>
+                        <td class="ellipsis-type">
+                            <a href="{$value['url']}" title="{$value['url']}" target="_blank">{$value['name']} </a>
+                        </td>
+                        <td>
+                            <a title="扫描时间:<?php echo $value['crawler_time'] ?>"
+                               href="<?php echo url('urls/index', ['app_id' => $value['id']]); ?>"><?php echo $value['urls_num'] ?? 0 ?>
+                            </a>
+                        </td>
+                        <td>
+                            <a title="扫描时间:<?php echo $value['crawlergo_scan_time'] ?>"
+                               href="<?php echo url('app_crawlergo/index', ['app_id' => $value['id']]); ?>"><?php echo $value['crawlergo_num'] ?? 0 ?>
+                            </a>
+                        </td>
+                        <td>
+                            <a title="扫描时间:<?php echo $value['awvs_scan_time'] ?>"
+                               href="<?php echo url('bug/awvs', ['app_id' => $value['id']]); ?>"><?php echo $value['awvs_num'] ?? 0 ?>
+                            </a>
+                        </td>
+                        <td>
+                            <a title="扫描时间:<?php echo $value['xray_scan_time'] ?>"
+                               href="<?php echo url('xray/index', ['app_id' => $value['id']]); ?>"><?php echo $value['xray_num'] ?? 0 ?>
+                            </a>
+                        </td>
+                        <td>
+                            <a
+                               href="<?php echo url('sqlmap/index', ['app_id' => $value['id']]); ?>"><?php echo $value['sqlmap_num'] ?? 0 ?>
+                            </a>
+                        </td>
+                        <td>
+                            <a title="扫描时间:<?php echo $value['subdomain_scan_time'] ?>"
+                               href="<?php echo url('one_for_all/index', ['app_id' => $value['id']]); ?>"><?php echo $value['oneforall_num'] ?? 0 ?>
+                            </a>
+                        </td>
+                        <td>
+                            <a title="扫描时间:<?php echo $value['dirmap_scan_time'] ?>"
+                               href="<?php echo url('dirmap/index', ['app_id' => $value['id']]); ?>"><?php echo $value['dirmap_num'] ?? 0 ?>
+                            </a>
+                        </td>
+                        <td>
+                            <a title="扫描时间:<?php echo $value['vulmap_scan_time'] ?>"
+                               href="<?php echo url('vulmap/index', ['app_id' => $value['id']]); ?>"><?php echo $value['vulmap_num'] ?? 0 ?>
+                            </a>
+                        </td>
+                        <td>
+                            <a
+                               href="<?php echo url('host_port/index', ['app_id' => $value['id']]); ?>"><?php echo $value['namp_num'] ?? 0 ?>
+                            </a>
+                        </td>
+                        <td>
+                            <a
+                               href="<?php echo url('host/index', ['app_id' => $value['id']]); ?>"><?php echo $value['host_num'] ?? 0 ?>
+                            </a>
+                        </td>
+                        <td>
+                            <a title="扫描时间:<?php echo $value['nuclei_scan_time'] ?>"
+                               href="<?php echo url('app_nuclei/index', ['app_id' => $value['id']]); ?>"><?php echo $value['nuclei_num'] ?? 0 ?>
+                            </a>
+                        </td>
+                        <td>
+                            <a
+                               href="<?php echo url('hydra/index', ['app_id' => $value['id']]); ?>"><?php echo $value['hydra_num'] ?? 0 ?>
+                            </a>
+                        </td>
+                        <td><?php echo date('Y-m-d H:i', strtotime($value['create_time'])) ?></td>
+                        <td>
+                            <?php if($value['xray_agent_port'] ?? ''){?>
+                                <a href="javascript:;" onclick="start_agent(<?php echo $value['id'] ?>)"
+                                   class="btn btn-sm btn-outline-success">关闭代理</a>
+                            <?php }else{?>
                                 <a href="javascript:;" onclick="start_agent(<?php echo $value['id'] ?>)"
                                    class="btn btn-sm btn-outline-success">启动代理</a>
-                                <a href="<?php echo url('details', ['id' => $value['id']]) ?>"
-                                   class="btn btn-sm btn-outline-primary">查看详情</a>
-                                <a href="<?php echo url('app/qingkong', ['id' => $value['id']]) ?>"
-                                   onClick="return confirm('确定要清空数据重新扫描吗?')"
-                                   class="btn btn-sm btn-outline-warning">重新扫描</a>
-                                <a href="<?php echo url('app/del', ['id' => $value['id']]) ?>"
-                                   onClick="return confirm('确定要删除吗?')"
-                                   class="btn btn-sm btn-outline-danger">删除</a>
-                            </td>
-                        </tr>
-                    <?php } ?>
-                    </tbody>
-                </table>
-            </div>
+                            <?php }?>
+                            <a href="<?php echo url('details', ['id' => $value['id']]) ?>"
+                               class="btn btn-sm btn-outline-primary">查看详情</a>
+                            <a href="<?php echo url('app/qingkong', ['id' => $value['id']]) ?>"
+                               onClick="return confirm('确定要清空数据重新扫描吗?')"
+                               class="btn btn-sm btn-outline-warning">重新扫描</a>
+                            <a href="<?php echo url('app/del', ['id' => $value['id']]) ?>"
+                               onClick="return confirm('确定要删除吗?')"
+                               class="btn btn-sm btn-outline-danger">删除</a>
+                        </td>
+                    </tr>
+                <?php } ?>
+                </tbody>
+                <?php if(empty($list)){?>
+                    <tr><td colspan="8" class="text-center">暂无目标</td></tr>
+                <?php }?>
+            </table>
         </div>
         {include file='public/fenye' /}
     </div>
@@ -115,6 +198,81 @@
                 dataType: "json",
                 success: function (data) {
                     alert(data.msg)
+                    if (data.code) {
+                        window.setTimeout(function(){
+                            location.reload();
+                        },1000);
+                    }
+                }
+            });
+        }
+
+
+        function quanxuan(obj){
+            var child = $('.table').find('input[type="checkbox"]');
+            child.each(function(index, item){
+                if (obj.checked) {
+                    item.checked = true
+                } else {
+                    item.checked = false
+                }
+            })
+        }
+
+        function batch_del(){
+            var child = $('.table').find('input[type="checkbox"]');
+            var ids = ''
+            child.each(function(index, item){
+                if (item.value != -1 && item.checked) {
+                    if (ids == '') {
+                        ids = item.value
+                    } else {
+                        ids = ids+','+item.value
+                    }
+                }
+            })
+
+            $.ajax({
+                type: "post",
+                url: "<?php echo url('app/batch_del')?>",
+                data: {ids: ids},
+                dataType: "json",
+                success: function (data) {
+                    alert(data.msg)
+                    if (data.code == 1) {
+                        window.setTimeout(function () {
+                            location.reload();
+                        }, 2000)
+                    }
+                }
+            });
+        }
+
+        function again_scan(){
+            var child = $('.table').find('input[type="checkbox"]');
+            var ids = ''
+            child.each(function(index, item){
+                if (item.value != -1 && item.checked) {
+                    if (ids == '') {
+                        ids = item.value
+                    } else {
+                        ids = ids+','+item.value
+                    }
+                }
+            })
+
+            $.ajax({
+                type: "post",
+                url: "<?php echo url('app/again_scan')?>",
+                data: {ids: ids},
+                dataType: "json",
+                success: function (data) {
+                    alert(data.msg)
+                    if (data.code == 1) {
+                        window.setTimeout(function () {
+                            location.reload();
+                        }, 2000)
+                    }
                 }
             });
         }

@@ -8,11 +8,41 @@
             <input type="hidden" name="id" class="form-control" value="<?php echo $info['id']?>">
             <div class="mb-3">
                 <label class="form-label">插件名称</label>
-                <input type="text" name="name" class="form-control" value="<?php echo $info['name']?>">
+                <input type="text" name="name" class="form-control" value="<?php echo $info['name']?>" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">命令类型</label><br>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="type" id="plugin_type1" <?php echo ($info['type'] == 1)? 'checked' : '';?> value="1">
+                    <label class="form-check-label" for="plugin_type1">工具扫描</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="type" id="plugin_type2" <?php echo ($info['type'] == 2)? 'checked' : '';?> value="2">
+                    <label class="form-check-label" for="plugin_type2">结果分析</label>
+                </div>
             </div>
             <div class="mb-3">
                 <label class="form-label">插件执行命令</label>
-                <input type="text" name="cmd" class="form-control" value="<?php echo $info['cmd']?>" placeholder="###URL###  可以替代变量URL地址">
+                <input type="text" name="cmd" class="form-control" value="<?php echo $info['cmd']?>" placeholder="_####_  代表扫描地址" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">扫描类型</label><br>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="scan_type" id="type0" <?php echo ($info['scan_type'] == 0)? 'checked' : '';?> value="0">
+                    <label class="form-check-label" for="type0">域名</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="scan_type" id="type1"<?php echo ($info['scan_type'] == 1)? 'checked' : '';?> value="1">
+                    <label class="form-check-label" for="type1">主机</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="scan_type" id="type2"<?php echo ($info['scan_type'] == 2)? 'checked' : '';?> value="2">
+                    <label class="form-check-label" for="type2">代码</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="scan_type" id="type3"<?php echo ($info['scan_type'] == 3)? 'checked' : '';?> value="3">
+                    <label class="form-check-label" for="type3">URL</label>
+                </div>
             </div>
             <div class="mb-3">
                 <label class="form-label">状态</label>
@@ -20,6 +50,10 @@
                     <option value="1" <?php echo $info['status'] == 1?'selected':''?>>启用</option>
                     <option value="0" <?php echo $info['status'] == 0?'selected':''?>>禁用</option>
                 </select>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">工具存放位置</label>
+                <input type="text" name="tool_path" class="form-control" value="<?php echo $info['tool_path']?>" placeholder="工具存放位置(选填)">
             </div>
             <div class="row" style="height: 10px"></div>
             <button type="submit" class="btn btn-outline-success">提交</button>

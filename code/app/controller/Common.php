@@ -6,6 +6,9 @@ namespace app\controller;
 
 use app\BaseController;
 use app\model\AuthRuleModel;
+use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Reader\Csv;
 use think\exception\HttpResponseException;
 use think\facade\Cookie;
 use think\facade\Db;
@@ -61,7 +64,12 @@ class Common extends BaseController
             } else {    // 获取分组
                 $where = "auth_group_id = $this->auth_group_id and status = 1";
                 $auth_group = Db::name('auth_group')->where($where)->field('rules')->find();
-                $this->userRules = rtrim($auth_group['rules'], ',');
+                if (!empty($auth_group['rules'])) {
+                    $this->userRules = rtrim($auth_group['rules'], ',');
+                }
+                if (!$this->userRules) {
+                    $this->userRules = 0;
+                }
                 $map = "is_delete = 0 and menu_status = 1 and auth_rule_id in ($this->userRules) and level <= 2";
                 $this->menudata = Db::name('auth_rule')->where($map)->field('auth_rule_id,href,title,icon_url,pid,level')->order('sort asc')->select();
             }
@@ -150,5 +158,119 @@ class Common extends BaseController
         if (!$arr)
             return 0;
         return $arr;
+    }
+
+    public function getMyAppList(){
+        $where[] = ['is_delete','=',0];
+        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
+            $where[] = ['user_id', '=', $this->userId];
+        }
+        //查询项目数据
+        $projectArr = Db::table('app')->where($where)->field('id,name')->select()->toArray();
+        $projectList = array_column($projectArr, 'name', 'id');
+        return $projectList;
+    }
+
+
+    /**
+     * 使用PHPEXECL导入
+     *
+     * @param string $file 文件地址
+     * @param int $sheet 工作表sheet(传0则获取第一个sheet)
+     * @param int $columnCnt 列数(传0则自动获取最大列)
+     * @param array $options 操作选项
+     *                          array mergeCells 合并单元格数组
+     *                          array formula    公式数组
+     *                          array format     单元格格式数组
+     * @return array
+     * @throws Exception
+     */
+    public function importExecl($file = '', $sheet = 0, $columnCnt = 0, &$options = [])
+    {
+        try {
+            /* 转码 */
+            //$file = iconv("gb2312", "utf-8", $file);
+
+            if (empty($file) OR !file_exists($file)) {
+                return  ['code'=>0,'data'=>[],'msg'=>'文件不存在!'];
+            }
+            /** @var Xlsx $objRead */
+            $objRead = IOFactory::createReader('Xls');
+
+            if (!$objRead->canRead($file)) {
+                $objRead = new Csv();
+                if (!$objRead->canRead($file)) {
+                    return  ['code'=>0,'data'=>[],'msg'=>'只支持导入Xls、Csv格式文件!'];
+                }
+            }
+
+            /* 如果不需要获取特殊操作，则只读内容，可以大幅度提升读取Excel效率 */
+            empty($options) && $objRead->setReadDataOnly(true);
+            /* 建立excel对象 */
+            $obj = $objRead->load($file);
+            /* 获取指定的sheet表 */
+            $currSheet = $obj->getSheet($sheet);
+
+            if (isset($options['mergeCells'])) {
+                /* 读取合并行列 */
+                $options['mergeCells'] = $currSheet->getMergeCells();
+            }
+
+            if (0 == $columnCnt) {
+                /* 取得最大的列号 */
+                $columnH = $currSheet->getHighestColumn();
+                /* 兼容原逻辑，循环时使用的是小于等于 */
+                $columnCnt = Coordinate::columnIndexFromString($columnH);
+            }
+
+            /* 获取总行数 */
+            $rowCnt = $currSheet->getHighestRow();
+            $data = [];
+
+            /* 读取内容 */
+            for ($_row = 0; $_row <= $rowCnt; $_row++) {
+                $isNull = true;
+                for ($_column = 1; $_column <= $columnCnt; $_column++) {
+                    $cellName = Coordinate::stringFromColumnIndex($_column);
+                    $cellId = $cellName . $_row;
+                    $cell = $currSheet->getCell($cellId);
+
+                    if (isset($options['format'])) {
+                        /* 获取格式 */
+                        $format = $cell->getStyle()->getNumberFormat()->getFormatCode();
+                        /* 记录格式 */
+                        $options['format'][$_row][$cellName] = $format;
+                    }
+
+                    if (isset($options['formula'])) {
+                        /* 获取公式，公式均为=号开头数据 */
+                        $formula = $currSheet->getCell($cellId)->getValue();
+
+                        if (0 === strpos($formula, '=')) {
+                            $options['formula'][$cellName . $_row] = $formula;
+                        }
+                    }
+
+                    if (isset($format) && 'm/d/yyyy' == $format) {
+                        /* 日期格式翻转处理 */
+                        $cell->getStyle()->getNumberFormat()->setFormatCode('yyyy/mm/dd');
+                    }
+
+                    $data[$_row][$cellName] = trim($currSheet->getCell($cellId)->getFormattedValue());
+
+                    if (!empty($data[$_row][$cellName])) {
+                        $isNull = false;
+                    }
+                }
+
+                /* 判断是否整行数据为空，是的话删除该行数据 */
+                if ($isNull) {
+                    unset($data[$_row]);
+                }
+            }
+            return  ['code'=>1,'data'=>array_values($data),'msg'=>''];
+        } catch (\Exception $e) {
+            return  ['code'=>0,'data'=>[],'msg'=>$e->getMessage()];
+        }
     }
 }

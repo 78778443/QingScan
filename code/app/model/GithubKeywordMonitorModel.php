@@ -15,6 +15,6 @@ class GithubKeywordMonitorModel extends BaseModel
 
         systemLog('cd /data/tools/reptile && python3 ./githubKeywordMonitor.py');
 
-        sleep(1200);
+        processSleep(30);
     }
 }

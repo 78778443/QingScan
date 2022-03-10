@@ -4,11 +4,12 @@ namespace app\controller;
 
 use think\facade\Db;
 use think\facade\View;
+use think\Request;
 
 class Node extends Common
 {
 
-    public function index()
+    public function index(Request $request)
     {
         /*echo '<pre>';
         $cmd = "pocsuite -r ./cms/thinkphp/thinkphp_5_0_x_remote_code_execution.py -u http://127.0.0.1:8000 --verify";
@@ -26,7 +27,10 @@ class Node extends Common
         exit;*/
         $pageSize = 20;
         $where = [];
-        $list = Db::table('node')->where($where)->order("id", 'desc')->paginate($pageSize);
+        $list = Db::table('node')->where($where)->order("id", 'desc')->paginate([
+            'list_rows' => $pageSize,
+            'query' => $request->param()
+        ]);
         $data['list'] = $list->items();
         $data['page'] = $list->render();
         return View::fetch('index', $data);

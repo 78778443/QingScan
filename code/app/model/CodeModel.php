@@ -279,16 +279,6 @@ class CodeModel extends BaseModel
 
     public static function addData(array $data)
     {
-        $datetime = date('Y-m-d H:i:s', time() + 86400 * 365);
-        if ($data['is_fortify_scan'] == false) {
-            $data['fortify_scan_time'] = $datetime;
-        }
-        if ($data['is_kunlun_scan'] == false) {
-            $data['kunlun_scan_time'] = $datetime;
-        }
-        if ($data['is_semgrep_scan'] == false) {
-            $data['semgrep_scan_time'] = $datetime;
-        }
         return self::add($data);
     }
 
@@ -297,54 +287,98 @@ class CodeModel extends BaseModel
         Db::table(self::$tableName)->insert($data);
     }
 
-    public static function getProjectComposer()
+    public static function getScanNum(array $codeIds)
     {
+
+        $codeIdStr = implode(',', $codeIds);
+        $tempArr = Db::table('fortify')->whereIn('code_id', $codeIdStr)
+            ->field('code_id,count(code_id) as num')
+            ->group('code_id')->select()->toArray();
+        $data['fortifyNum'] = array_column($tempArr, 'num', 'code_id');
+
+        $tempArr = Db::table('semgrep')->whereIn('code_id', $codeIdStr)
+            ->field('code_id,count(code_id) as num')
+            ->group('code_id')->select()->toArray();
+        $data['semgrepNum'] = array_column($tempArr, 'num', 'code_id');
+
+        $tempArr = Db::table('code_webshell')->whereIn('code_id', $codeIdStr)
+            ->field('code_id,count(code_id) as num')
+            ->group('code_id')->select()->toArray();
+        $data['hemaNum'] = array_column($tempArr, 'num', 'code_id');
+
+        $tempArr = Db::table('code_composer')->whereIn('code_id', $codeIdStr)
+            ->field('code_id,count(code_id) as num')
+            ->group('code_id')->select()->toArray();
+        $data['phpNum'] = array_column($tempArr, 'num', 'code_id');
+
+        $tempArr = Db::table('code_python')->whereIn('code_id', $codeIdStr)
+            ->field('code_id,count(code_id) as num')
+            ->group('code_id')->select()->toArray();
+        $data['pythonNum'] = array_column($tempArr, 'num', 'code_id');
+
+        $tempArr = Db::table('code_java')->whereIn('code_id', $codeIdStr)
+            ->field('code_id,count(code_id) as num')
+            ->group('code_id')->select()->toArray();
+        $data['javaNum'] = array_column($tempArr, 'num', 'code_id');
+
+        return $data;
+    }
+
+    public static function code_php()
+    {
+        ini_set('max_execution_time', 0);
         $codePath = "/data/codeCheck";
         while (true) {
-            ini_set('max_execution_time', 0);
+            processSleep(1);
             $list = Db::name('code')->whereTime('composer_scan_time', '<=', date('Y-m-d H:i:s', time() - (86400 * 15)))
                 ->where('is_delete', 0)->limit(1)->orderRand()->select()->toArray();
+
             foreach ($list as $k => $v) {
+                PluginModel::addScanLog($v['id'], __METHOD__, 0, 2);
+
                 $value = $v;
                 $prName = cleanString($value['name']);
                 $codeUrl = $value['ssh_url'];
-                downCode($codePath, $prName, $codeUrl, $value['is_private'], $value['username'], $value['password'], $value['private_key']);
                 $filepath = "/data/codeCheck/{$prName}";
-                $fileArr = getFilePath($filepath, 'composer.json');
+                if (!file_exists($filepath)) {
+                    downCode($codePath, $prName, $codeUrl, $value['is_private'], $value['username'], $value['password'], $value['private_key']);
+                }
+                $fileArr = getFilePath($filepath, 'composer.lock');
                 if (!$fileArr) {
-                    addlog("扫描composer依赖失败,composer.json依赖文件不存在:{$filepath}");
+                    PluginModel::addScanLog($v['id'], __METHOD__, 2, 2);
+                    addlog("扫描composer依赖失败,composer.lock 依赖文件不存在:{$filepath}");
                     continue;
                 }
+
+
                 foreach ($fileArr as $value) {
                     $json = file_get_contents($value['file']);
                     if (empty($json)) {
+                        PluginModel::addScanLog($v['id'], __METHOD__, 2, 2);
                         addlog("项目文件内容为空:{$value['file']}");
                         continue;
                     }
+                    $json = str_replace('"require-dev"', '"require_dev"', $json);
+                    $json = str_replace('"notification-url"', '"notification_url"', $json);
                     $arr = json_decode($json, true);
-                    $packages = array_merge($arr['packages'], $arr['packages-dev']);
+                    $packages = $arr['packages'];
+                    Db::name('code_composer')->where(['code_id' => $v['id']])->delete();
                     foreach ($packages as $val) {
-                        $data['user_id'] = $v['user_id'];
-                        $data['code_id'] = $v['id'];
-                        $data['name'] = $val['name'];
-                        $data['version'] = $val['version'];
-                        $data['source'] = json_encode($val['source']);
-                        $data['dist'] = json_encode($val['dist']);
-                        $data['require'] = json_encode($val['require']);
-                        $data['require_dev'] = json_encode($val['require_dev']);
-                        $data['type'] = $val['type'];
-                        $data['autoload'] = json_encode($val['autoload']);
-                        $data['notification_url'] = $val['notification_url'];
-                        $data['license'] = json_encode($val['license']);
-                        $data['authors'] = json_encode($val['authors']);
-                        $data['description'] = $val['description'];
-                        $data['homepage'] = $val['homepage'];
-                        $data['keywords'] = json_encode($val['keywords']);
-                        $data['time'] = $val['time'];
-                        $data['create_time'] = date('Y-m-d H:i:s', time());
-                        Db::name('code_composer')->insert($data);
+                        foreach ($val as &$temp) {
+//                            $temp = is_string($temp) ? $temp : json_encode($temp, JSON_UNESCAPED_UNICODE);
+                            $temp = is_string($temp) ? $temp : var_export($temp, true);
+                        }
+
+                        $val['user_id'] = $v['user_id'];
+                        $val['code_id'] = $v['id'];
+                        $val['create_time'] = date('Y-m-d H:i:s', time());
+
+
+                        Db::name('code_composer')->insert($val);
+                        addlog("composer依赖扫描数据写入成功,内容为:" . json_encode($val));
                     }
                 }
+                PluginModel::addScanLog($v['id'], __METHOD__, 1, 2);
                 self::scanTime('code', $v['id'], 'composer_scan_time');
             }
             sleep(10);
@@ -354,6 +388,7 @@ class CodeModel extends BaseModel
     public static function giteeProject()
     {
         while (true) {
+            processSleep(1);
             ini_set('max_execution_time', 0);
 
             systemLog('cd /data/tools/reptile && python3 ./giteeProject.py');

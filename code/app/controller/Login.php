@@ -3,25 +3,25 @@
 namespace app\controller;
 
 use app\BaseController;
+use app\model\UserLogModel;
 use app\model\UserModel;
-use think\facade\Cache;
 use think\facade\Db;
-use think\facade\Request;
 use think\facade\View;
+use think\Request;
 
 class Login extends BaseController
 {
     public function index()
     {
-        //echo ucenter_md5('' . 'ceshi_scan', config('app.UC_AUTH_KEY'));
+            //echo ucenter_md5('' . 'test_scan', config('app.UC_AUTH_KEY'));
         return View::fetch('user/login');
     }
 
     public function doLogin(Request $request)
     {
-        $username = input('username'); // 账号
-        $password =  input('password'); // 密码
-        $remember_password =  input('remember_password',0); // 记住密码
+        $username = $request->param('username'); // 账号
+        $password =  $request->param('password'); // 密码
+        $remember_password =  $request->param('remember_password',0); // 记住密码
 
         if (empty($username)){
             $this->error( '请输入用户名');
@@ -31,12 +31,16 @@ class Login extends BaseController
         }
         $result = UserModel::login($username, $password,$remember_password);
         if ($result['code'] === 0) {
+            UserLogModel::addLog($username,'用户登录',"登录成功，账号：{$username}");
+
             if ($result['url']) {
-                $this->success('登录成功',$result['url']);
+                return redirect($result['url']);
             } else {
-                $this->success('登录成功','index/index');
+                return redirect(url('index/index'));
             }
         } else {
+            UserLogModel::addLog($username,'用户登录',"登录失败，账号：{$username}");
+
             $this->error( $result['msg']);
         }
 
@@ -50,6 +54,7 @@ class Login extends BaseController
 
     public function register(){
         if ($this->request->isPost()) {
+            $this->error('注册功能待完善,暂时关闭，如需添加用户请在管理后台添加~');
             $username = input('username'); // 账号
             $password =  input('password'); // 密码
             $nickname =  input('nickname'); // 昵称
@@ -67,11 +72,11 @@ class Login extends BaseController
                 'created_at'=>time(),
                 'status'=>1
             ];
-            if (Db::name('user')->insert($data)) {
-                $this->success('注册成功，请登录',url('login/index'));
-            } else {
-                $this->error('注册失败');
-            }
+//            if (Db::name('user')->insert($data)) {
+//                $this->success('注册成功，请登录',url('login/index'));
+//            } else {
+//                $this->error('注册失败');
+//            }
         } else {
             return View::fetch('user/register');
         }

@@ -12,16 +12,28 @@ function getRabbitMq()
 
 function getGitAddr($prName, $sshUrl, $filePath, $line = "")
 {
+    // 判断类型
+    if (preg_match('/gitee\.com/', $sshUrl)) {   // 码云
+        $path = substr($sshUrl,strripos($sshUrl,':')+1,strlen($sshUrl));
+        $domain_name =  "https://gitee.com/{$path}";
+    } elseif (preg_match('/github\.com/', $sshUrl)) {    // github
+        $path = substr($sshUrl,strripos($sshUrl,'github.com/')+1,strlen($sshUrl));
+        $domain_name =  "https://github.com/{$path}";
+    }
     $zhengze = "/\/data\/codeCheck\/[a-zA-Z0-9]*\//";
+    $path = preg_replace($zhengze, "/blob/master/", $filePath);
+    $url = $domain_name.$path;
+    if ($line != "") {
+        $url .= "#L{$line}";
+    }
+    return $url;
 
-    $gitlabPath = preg_replace($zhengze, "/-/blob/master/", $filePath);
-
-    $url = str_replace(':', '/', $sshUrl);
+    /*$url = str_replace(':', '/', $sshUrl);
     $url = str_replace('git@', 'http://', $url);
     $url = str_replace('.git', $gitlabPath, $url);
     if ($line != "") {
         $url .= "#L{$line}";
-    }
+    }*/
 
     return $url;
 }
@@ -65,6 +77,7 @@ function getMysql()
 
 
 use app\model\BaseModel;
+use app\model\ConfigModel;
 use think\facade\Db;
 use think\facade\Log;
 
@@ -104,18 +117,16 @@ function getDirFileName($path): array
                         $arr = array_merge($temp, $arr);
                     }
                 }
-
             }
         }
     }
-
     return $arr;
 }
 
 function getParam($key, $default = null)
 {
 
-    $paramAll = array_merge($_GET, $_POST);
+    $paramAll = array_merge(getallheaders(), $_GET, $_POST);
     foreach ($paramAll as &$value) {
         if (is_string($value)) {
             $value = addslashes($value);
@@ -145,18 +156,18 @@ function getArrayField(array $data, array $fields)
 function addlog($content, $out = false)
 {
     $content1 = $content;
-    $content = ['app' => 'qing-scan-center', 'msg' => $content, 'time' => date('Y-m-d H:i:s')];
+    $content = ['app' => 'QingScan', 'msg' => $content, 'time' => date('Y-m-d H:i:s')];
     $data = json_encode($content, JSON_UNESCAPED_UNICODE) . PHP_EOL;
 
     $date = date('Y-m-d');
 //    file_put_contents("./logs/log{$date}.json", $data . PHP_EOL, FILE_APPEND);
     //Log::write($data . PHP_EOL);
     $dataArr = [
-        'app' => 'qing-scan-center',
+        'app' => 'QingScan',
         'content' => is_array($content1) ? var_export($content1, true) : $content1,
     ];
 
-    $dataArr['content'] = substr($dataArr['content'], 0, 512);
+    $dataArr['content'] = substr($dataArr['content'], 0, 4999);
     //echo '---'.strlen($dataArr['content']).'---';
     \think\facade\Db::name('log')->insert($dataArr);
     //删除5天前的日志
@@ -231,7 +242,10 @@ function downCode($codePath, $prName, $codeUrl, $is_private = 0, $username = '',
 
 function cleanString($string)
 {
-    $string = preg_replace("/[^a-z0-9]/i", "", $string);
+    $string = strtolower($string);
+    $string = preg_replace("/[^a-z0-9A-Z]/i", "", $string);
+
+    $string = empty($string) ? md5($string) : $string;
 
     return $string;
 }
@@ -247,7 +261,7 @@ function addlogRaw($content)
 }
 
 //执行系统命令,并记录日志
-function systemLog($shell)
+function systemLog($shell, $showRet = true)
 {
     //转换成字符串
     $remark = "即将执行命令:{$shell}";
@@ -255,7 +269,7 @@ function systemLog($shell)
     //记录日志
     exec($shell, $output);
     addlog(["命令执行结果", $shell, $output]);
-    if ($output) {
+    if ($output && $showRet) {
         echo implode("\n", $output) . PHP_EOL;
     }
 
@@ -466,7 +480,6 @@ function getIspByIp($ip)
 function getFileList($dir, $extName, &$fileList)
 {
     $dir = rtrim($dir, '/');
-
     $files = [];
     if (@$handle = opendir($dir)) {
         while (($file = readdir($handle)) !== false) {
@@ -760,6 +773,13 @@ function curl_get($url)
     //执行命令
     $data = curl_exec($curl);
 
+    if ($data === false) {
+        return json_encode([
+            'code' => 1,
+            'msg' => curl_error($curl)
+        ]);
+    }
+
     curl_close($curl);
 
     return $data;
@@ -925,6 +945,157 @@ function getFilePath($dir, $filename, $level = 1)
     return $files;
 }
 
+function getUninstallPath($name)
+{
+    $app = \think\facade\App::getAppPath();
+    // 获取sql或sh中符号的数据
+    $sqlOrsh = [];
+    $sqlOrsh_path = $app . '/plugins/';
+    foreach (scandir($sqlOrsh_path) as $value) {
+        if ($value != '.' && $value != '..') {
+            $preg = "/^{$name}(.*?)/";
+            if (preg_match($preg, $value)) {
+                $sqlOrsh[] = $sqlOrsh_path . $value;
+            }
+        }
+    }
+
+    // 获取controller中符合的数据
+    $controller = [];
+    $controller_path = $app . 'controller/';
+    foreach (scandir($controller_path) as $value) {
+        if ($value != '.' && $value != '..') {
+            $preg = "/^{$name}(.*?)Plugin\.php/";
+            if (preg_match($preg, $value)) {
+                $controller[] = $controller_path . $value;
+            }
+        }
+    }
+    // 获取model中符合的数据
+    $model = [];
+    $model_path = $app . 'model/';
+    foreach (scandir($model_path) as $value) {
+        if ($value != '.' && $value != '..') {
+            $preg = "/^{$name}(.*?)PluginModel\.php/";
+            if (preg_match($preg, $value)) {
+                $model[] = $model_path . $value;
+            }
+        }
+    }
+    $name = cc_format($name);
+
+    // 获取view中符合的数据
+    $view = [];
+    $view_path = \think\facade\App::getRootPath() . 'view/';
+    foreach (scandir($view_path) as $value) {
+        if ($value != '.' && $value != '..') {
+            $preg = "/^{$name}(.*?)_plugin/";
+            if (preg_match($preg, cc_format($value))) {
+                $view[] = $view_path . $value;
+            }
+        }
+    }
+    // 获取tools工具中符合的数据
+    $tools = [];
+    //$tools_path = '/data/tools/plugins/';
+    $tools_path = $app . '../../tools/plugins/';
+    foreach (scandir($tools_path) as $value) {
+        if ($value != '.' && $value != '..') {
+            $preg = "/^{$name}(.*?)/";
+            if (preg_match($preg, cc_format($value))) {
+                $tools[] = $tools_path . $value;
+            }
+        }
+    }
+
+    return array_merge($sqlOrsh, $controller, $model, $view, $tools);
+}
+
+function deldir($path)
+{
+    //如果是目录则继续
+    if (is_dir($path)) {
+        //扫描一个文件夹内的所有文件夹和文件并返回数组
+        $p = scandir($path);
+        //如果 $p 中有两个以上的元素则说明当前 $path 不为空
+        if (count($p) > 2) {
+            foreach ($p as $val) {
+                //排除目录中的.和..
+                if ($val != "." && $val != "..") {
+                    //如果是目录则递归子目录，继续操作
+                    if (is_dir($path . $val)) {
+                        //子目录中操作删除文件夹和文件
+                        deldir($path . $val . '/');
+                    } else {
+                        //如果是文件直接删除
+                        @unlink($path . '/' . $val);
+                    }
+                }
+            }
+        }
+    }
+    //删除目录
+    return rmdir($path);
+}
+
+
+function downloadFile($url, $save_dir = '', $filename = '', $type = 0)
+{
+    if (trim($save_dir) == '') {
+        $save_dir = './';
+    }
+    if (0 !== strrpos($save_dir, '/')) {
+        $save_dir .= '/';
+    }
+    //创建保存目录
+    if (!file_exists($save_dir) && !mkdir($save_dir, 0777, true)) {
+        return '保存目录创建失败';
+    }
+    //获取远程文件所采用的方法
+    $ch = curl_init();
+    $timeout = 5;
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
+    $content = curl_exec($ch);
+    //如果有异常，记录到日志当中
+    $curl_errno = curl_errno($ch);
+    if ($curl_errno > 0) {
+        return curl_error($ch);
+    }
+    curl_close($ch);
+    //文件大小
+    $fp2 = @fopen($save_dir . $filename, 'a');
+    fwrite($fp2, $content);
+    fclose($fp2);
+    unset($content, $url);
+    return true;
+}
+
+/*
+* $dirsrc 原目录
+* $dirto 目标目录
+*/
+function copydir($dirsrc, $dirto)
+{
+    if (!file_exists($dirto)) {
+        mkdir($dirto);
+    }
+    $dir = opendir($dirsrc);
+    while ($filename = readdir($dir)) {
+        if ($filename != "." && $filename != "..") {
+            $srcfile = $dirsrc . "/" . $filename; //原文件
+            $tofile = $dirto . "/" . $filename; //目标文件
+            if (is_dir($srcfile)) {
+                copydir($srcfile, $tofile); //递归处理所有子目录
+            } else {
+                //是文件就拷贝到目标目录
+                copy($srcfile, $tofile);
+            }
+        }
+    }
+}
+
 // 大写字母转"_"下划线
 function cc_format($name)
 {
@@ -1008,6 +1179,18 @@ function readCsv($uploadfile = '')
     return $data;
 }
 
+/**
+ * 获取code表信息
+ * @param int $id
+ * @return array|mixed|Db|\think\Model|null
+ * @throws \think\db\exception\DataNotFoundException
+ * @throws \think\db\exception\DbException
+ * @throws \think\db\exception\ModelNotFoundException
+ */
+function getCodeInfo(int $id)
+{
+    return Db::table("code")->where(['id' => $id])->find();
+}
 
 //转码
 function iconv_gbk_to_uft8($string)
@@ -1017,4 +1200,106 @@ function iconv_gbk_to_uft8($string)
     }
     $encode = mb_detect_encoding($string, array("ASCII", "GB2312", "GBK", 'BIG5', 'UTF-8'));
     return iconv($encode, "UTF-8", $string);
+}
+
+function getScanStatus($appId, $pluginName, $scanType = 0)
+{
+    $where = ['app_id' => $appId, 'plugin_name' => $pluginName, 'scan_type' => $scanType];
+    $result = Db::table('plugin_scan_log')->where($where)->order('log_type', 'asc')->select()->toArray();
+    if (empty($result)) {
+        return "扫描未开始,请检查插件是否开启以及日志排队状态~";
+    } elseif (count($result) == 1) {
+        return "$pluginName 任务已在{$result[0]['create_time']}启动，请等待扫描结果~";
+    } elseif (count($result) == 2 && $result[1]['log_type'] == 2) {
+        return "$pluginName 任务在{$result[1]['create_time']}扫描失败:{$result[1]['content']}";
+    } elseif (count($result) == 2 && $result[1]['log_type'] == 1) {
+        return "$pluginName 任务在{$result[1]['create_time']}扫描成功，但无有效结果:{$result[1]['content']}";
+    } else {
+//        var_dump($result);exit;
+
+    }
+}
+
+function getProcessNum()
+{
+    //获取PHP进程ID
+    $cmd = "ps -ef | grep 'php think' | grep -v 'grep --color=auto' | awk {'print $2'}";
+    exec($cmd, $phpProcess);
+    //获取排除PHP的进程PID
+    $cmd = "ps -ef | grep -v 'php think'  | grep 'sh -c' | grep -v '0.0.0.0:8000' | awk {'print  $3'}";
+    exec($cmd, $subProcess);
+
+    //判断这些PID时候在PHP进程ID里面
+    $result = [];
+    foreach ($subProcess as $process) {
+        if (in_array($process, $phpProcess)) {
+            $result[] = $process;
+        }
+    }
+    //返回数量
+    return count($result);
+}
+
+function processSleep($time)
+{
+
+    $array = debug_backtrace();
+
+    $list = [];
+    foreach ($array as $arrInfo) {
+        if (isset($arrInfo['class'])) {
+            $list[] = $arrInfo['function'];
+        }
+    }
+
+    sleep(rand(1, 10));
+    //获取最大的同时运行进程数
+    $num = ConfigModel::value('maxProcesses');
+    $num = empty($num) ? 4 : $num;
+
+    if (getProcessNum() < $num) {
+        return true;
+    } else {
+        addlog("{$list[0]} 进程数量已到最大值 {$num},将休息30秒后运行");
+        echo "{$list[0]} 进程数量已到最大值: {$num},将休息30秒后运行";
+        processSleep(60);
+    }
+}
+
+function download($filepath, $filename)
+{
+    //以只读和二进制模式打开文件
+    $file = fopen($filepath . $filename, "rb");
+    //告诉浏览器这是一个文件流格式的文件
+    Header("Content-type: application/octet-stream");
+    //请求范围的度量单位
+    Header("Accept-Ranges: bytes");
+    //Content-Length是指定包含于请求或响应中数据的字节长度
+    Header("Accept-Length: " . filesize($filepath . $filename));
+    //用来告诉浏览器，文件是可以当做附件被下载，下载后的文件名称为$file_name该变量的值。
+    Header("Content-Disposition: attachment; filename=" . $filename);
+    ob_end_clean();
+    //读取文件内容并直接输出到浏览器
+    echo fread($file, filesize($filepath . $filename));
+    fclose($file);
+}
+
+function ByteSize($file_size)
+{
+    $file_size = $file_size - 1;
+
+    if ($file_size >= 1099511627776) $show_filesize = number_format(($file_size / 1099511627776), 2) . " TB";
+
+    elseif ($file_size >= 1073741824) $show_filesize = number_format(($file_size / 1073741824), 2) . " GB";
+
+    elseif ($file_size >= 1048576) $show_filesize = number_format(($file_size / 1048576), 2) . " MB";
+
+    elseif ($file_size >= 1024) $show_filesize = number_format(($file_size / 1024), 2) . " KB";
+
+    elseif ($file_size > 0) $show_filesize = $file_size . " b";
+
+    elseif ($file_size == 0 || $file_size == -1) $show_filesize = "0 b";
+
+    return $show_filesize;
+
 }

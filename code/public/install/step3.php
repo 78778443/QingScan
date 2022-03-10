@@ -81,13 +81,26 @@ function addOldData()
 {
     $str = $_POST['password'] . $_POST['username'];
     $password = '' === $str ? '' : md5(md5(sha1($str) . 'xt1l3a21uo0tu2oxtds3wWte23dsxix2d3in7yuhui32yuapatmdsnnzdazh1612ongxxin2z') . '###xt');;
+
     //导入最新的数据格式
-    $sql = "UPDATE  user SET username=?,password=? ORDER BY id ASC LIMIT 1";
+    $sql = "UPDATE  user SET username=?,password=? where id = 1";
 
     $result = Db::execute($sql,[$_POST['username'],$password]);
     if ($result) {
         echo " <a class=\"btn btn-lg btn-outline-success\" href='/' >导入数据成功!,进入首页</a>";
         file_put_contents('install.lock', '');
+
+        // 更新版本号
+        $sqlPath = '/root/qingscan/docker/data';
+        $fileNameList = getDirFileName($sqlPath);
+        unset($fileNameList[count($fileNameList) - 1]);
+        unset($fileNameList[count($fileNameList) - 1]);
+        if (!empty($fileNameList)) {
+            $filepath = $fileNameList[0];
+            $filename = substr($filepath,strripos($filepath,'/')+1,strlen($filepath));
+            $newVersion = substr($filename,0,strripos($filename,'.'));
+            file_put_contents($sqlPath.'/update.lock',$newVersion);
+        }
     }
 }
 
@@ -115,22 +128,30 @@ function writingConf()
 {
     $link = mysqli_connect($_POST['DB_HOST'], $_POST['DB_USER'], $_POST['DB_PASS'],$_POST['DB_NAME'],$_POST['DB_PORT']);
     if (!$link) {
+        $error = mysqli_connect_errno();
         echo "<script>";
-        echo "alert('数据库信息有误');";
+        echo "alert('数据库信息有误，错误信息：{$error}');";
         echo "window.history.back();";
         echo "</script>";
     }
     $config = require('../../config/database.php');
     $config['connections']['mysql']['hostname'] = $_POST['DB_HOST'];
+    $config['connections']['mysql']['hostport'] = $_POST['DB_PORT'];
     $config['connections']['mysql']['username'] = $_POST['DB_USER'];
     $config['connections']['mysql']['password'] = $_POST['DB_PASS'];
     $config['connections']['mysql']['database'] = $_POST['DB_NAME'];
     $config['connections']['mysql']['charset'] = $_POST['DB_CHARSET'];
 
+    $config['connections']['kunlun']['hostname'] = $_POST['DB_HOST'];
+    $config['connections']['kunlun']['hostport'] = $_POST['DB_PORT'];
+    $config['connections']['kunlun']['username'] = $_POST['DB_USER'];
+    $config['connections']['kunlun']['password'] = $_POST['DB_PASS'];
+    $config['connections']['kunlun']['database'] = 'kunlun';
+    $config['connections']['kunlun']['charset'] = $_POST['DB_CHARSET'];
+
     $database = "<?php \n";
     $database .= 'return ' . var_export($config, true) . ';';
     $database .= "\n?>";
-
 
     if (!file_put_contents('../../config/database.php', $database)) {
         die("写入配置文件失败!");

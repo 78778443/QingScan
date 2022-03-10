@@ -247,16 +247,16 @@ class FortifyModel extends BaseModel
     public static function addDataAll(int $id, array $data, $user_id = 0)
     {
         foreach ($data as $key => $value) {
-            $value['project_id'] = $id;
+            $value['code_id'] = $id;
             $value['user_id'] = $user_id;
-            $value['hash'] = md5($value['project_id'] . $value['Category'] . $value['Abstract'] . $value['Primary']);
+            $value['hash'] = md5($value['code_id'] . $value['Category'] . $value['Abstract'] . $value['Primary']);
             self::add($value);
         }
     }
 
     public static function getProjectCount($projectId)
     {
-        $where = ['project_id' => $projectId];
+        $where = ['code_id' => $projectId];
 
         $data = DB::table(self::tableName)->where($where)->count();
 
@@ -288,6 +288,8 @@ class FortifyModel extends BaseModel
             $cmd = $base . "./sourceanalyzer -b {$buildId} -scan -format fpr    -f {$outPath}.fpr -machine-output ";
 //        $cmd .= " -no-default-rules  -rules  {$fortifyPath}/Core/config/rules/core_php.bin";
             systemLog($cmd);
+        }else{
+            systemLog(["fortify扫描异常,文件{$outPath}.fpr不存在"]);
         }
         if (file_exists("{$outPath}.xml") == false) {
             $cmd = $base . "./ReportGenerator  -format xml -f {$outPath}.xml -source {$outPath}.fpr -template DeveloperWorkbook.xml";

@@ -72,8 +72,7 @@ class UserModel extends BaseModel
                 $item['created_at'] = date("Y-m-d H:i:s", $item['created_at']);
                 $item['auth_group_name'] = Db::name('auth_group')->where('auth_group_id',$item['auth_group_id'])->value('title');
                 return $item;
-            })
-            ->toArray();
+            });
     }
 
     public static function getUserInfo($map)

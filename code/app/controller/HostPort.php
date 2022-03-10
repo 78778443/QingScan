@@ -10,26 +10,28 @@ use app\model\UrlsModel;
 use phpseclib3\File\ASN1\Maps\DSAPrivateKey;
 use think\facade\Db;
 use think\facade\View;
+use think\Request;
 
 
 class HostPort extends Common
 {
-    public function index()
+    public function index(Request $request)
     {
+        $pageSize = 10;
         $where[] = ['is_delete','=',0];
-        $search = getParam('search','');    // 项目名称
+        $search = $request->param('search');    // 项目名称
         if (!empty($search)) {
             $where[] = ['port|host','like',"%{$search}%"];
         }
-        $host = getParam('host'); // 主机名称
-        $port = getParam('port');   // 端口名称
-        $service = getParam('service');   // 组件类型
-        $check_status = getParam('check_status');   // 审核状态
+        $host = $request->param('host'); // 主机名称
+        $port = $request->param('port');   // 端口名称
+        $service = $request->param('service');   // 组件类型
+        $check_status = $request->param('check_status');   // 审核状态
         if (!empty($host)) {
             $where[] = ['host','=',$host];
         }
         if (!empty($port)) {
-            $where[] = ['check_id','=',$port];
+            $where[] = ['port','=',$port];
         }
         if (!empty($service)) {
             $where[] = ['service','=',$service];
@@ -37,17 +39,22 @@ class HostPort extends Common
         if ($check_status !== null && in_array($check_status,[0,1,2])) {
             $where[] = ['check_status','=',$check_status];
         }
-
-        $list = Db::table(HostPortModel::$tableName)->where($where)->paginate(10);
-
+        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
+            $where[] = ['user_id', '=', $this->userId];
+        }
+        $app_id = $request->param('app_id');
+        if (!empty($app_id)) {
+            $where[] = ['app_id','=',$app_id];
+        }
+        $list = Db::table(HostPortModel::$tableName)->where($where)->paginate([
+            'list_rows' => $pageSize,
+            'query' => $request->param()
+        ]);
         $data = [];
-        $data['list'] = $list->toArray()['data'];
+        $data['list'] = $list->items();
+        $data['page'] = $list->render();
         $data['classify'] = HostPortModel::getClassify($where);
         $data['appArr'] = AppModel::getAppName();
-        // 获取分页显示
-        $data['page'] = $list->render();
-
-
         $projectArr = Db::table('code')->select()->toArray();
         $projectArr = array_column($projectArr, null, 'id');
         $data['projectArr'] = $projectArr;
@@ -146,7 +153,7 @@ class HostPort extends Common
 
 
         $id = getParam('id');
-        if (Db::name('host_port')->where('id',$id)->update(['is_delete'=>1])) {
+        if (Db::name('host_port')->where('id',$id)->delete()) {
             return redirect($_SERVER['HTTP_REFERER']);
         } else {
             $this->error('删除失败');

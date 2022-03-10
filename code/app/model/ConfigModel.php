@@ -192,6 +192,7 @@ class ConfigModel extends BaseModel
     public static function backup()
     {
         while (true) {
+            processSleep(1);
             $backup = config('app.backup');
             if (!file_exists($backup['path'])) {
                 mkdir($backup['path'], 0777, true);
@@ -226,5 +227,9 @@ class ConfigModel extends BaseModel
 
     public static function value($key){
         return Db::name('system_config')->where('key',$key)->value('value');
+    }
+
+    public static function set_value($key,$val){
+        return Db::name('system_config')->where('key',$key)->update(['value'=>$val]);
     }
 }

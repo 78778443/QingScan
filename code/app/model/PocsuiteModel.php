@@ -84,7 +84,6 @@ class PocsuiteModel extends BaseModel
             $info = self::getCompanyInfo($value['CompanyName']);
             if (intval($info['status']) != 0) {
                 addlog( "{$value['CompanyName']} 没有获取到公司信息" );
-                var_dump($info);
                 continue;
             }
 

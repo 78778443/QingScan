@@ -33,7 +33,7 @@ return [
     // 显示错误信息
     'show_error_msg' => true,
     'UC_AUTH_KEY' => 'xt1l3a21uo0tu2oxtds3wWte23dsxix2d3in7yuhui32yuapatmdsnnzdazh1612ongxxin2z',
-    'ADMINISTRATOR' => [1, 2],
+    'ADMINISTRATOR' => [1],
     'not_del' => [],
     'NOT_AUTH_ACTION' => ['index/index','auth/user_info','auth/user_password'],
     'backup' => [
@@ -41,5 +41,8 @@ return [
         'part' => 20971520,//数据库备份卷大小
         'compress' => 0,//数据库备份文件是否启用压缩 0不压缩 1 压缩
         'level' => 9 //数据库备份文件压缩级别 1普通 4 一般  9最高
+    ],
+    'plugin_store'=>[
+        'domain_name'=>'http://store.qingscan.songboy.site:48080/'
     ]
 ];

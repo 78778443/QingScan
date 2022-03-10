@@ -27,11 +27,11 @@
                     </tr>
                     <tr>
                         <td>项目ID</td>
-                        <td><?php echo $base['project_id'] ?></td>
+                        <td><?php echo $base['code_id'] ?></td>
                     </tr>
                     <tr>
                         <td>漏洞描述</td>
-                        <td><?php echo $base['Abstract'] ?></td>
+                        <td><?php echo isset($base['Abstract'])?$base['Abstract']:'' ?></td>
                     </tr>
                 </table>
             </div>
@@ -54,7 +54,7 @@
                         </tr>
                         <tr>
                             <td>行号</td>
-                            <td><?php echo $Source['LineStart'] ?></td>
+                            <td><?php echo isset($Source['LineStart'])?$Source['LineStart']:'' ?></td>
                         </tr>
                         <tr>
                             <td>漏洞位置</td>
@@ -66,7 +66,7 @@
                         </tr>
                         <tr>
                             <td>目标函数</td>
-                            <td><?php echo $Source['TargetFunction'] ?></td>
+                            <td><?php echo isset($Source['TargetFunction'])?$Source['TargetFunction']:'' ?></td>
                         </tr>
                         <tr>
                             <td>源码内容</td>
@@ -112,7 +112,7 @@
                     </tr>
                     <tr>
                         <td>目标函数</td>
-                        <td><?php echo $Primary['TargetFunction'] ?></td>
+                        <td><?php echo isset($Primary['TargetFunction'])?$Primary['TargetFunction']:'' ?></td>
                     </tr>
                     <tr>
                         <td>源码内容</td>
@@ -131,7 +131,7 @@
         <div class="col-md-3 ">
             <div class=" row tuchu">
                 <a class="btn btn-outline-primary"
-                   href="/index.php?s=code_check/bug_list&project_id=<?php echo $base['project_id'] ?>">返回列表</a>
+                   href="/index.php?s=code_check/bug_list&=<?php echo $base['code_id'] ?>">返回列表</a>
                 <a class="btn btn-outline-success" href="/index.php?s=code_check/bug_detail&id=<?php echo $base['id'] + 1 ?>">下一个</a>
                 <a class="btn btn-outline-info" href="/index.php?s=code_check/bug_detail&id=<?php echo $base['id'] - 1 ?>">上一个</a>
             </div>

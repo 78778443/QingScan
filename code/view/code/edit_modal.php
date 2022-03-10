@@ -21,9 +21,9 @@
                     <div class="mb-3">
                         <label class="form-label">是否私有仓库</label>
                         <select name="is_private" class="form-select">
-                            <option value="1" <?php if ($info['is_private'] == 1) echo 'selected' ?>>私有仓库
-                            </option>
                             <option value="0" <?php if ($info['is_private'] == 0) echo 'selected' ?>>公共仓库
+                            </option>
+                            <option value="1" <?php if ($info['is_private'] == 1) echo 'selected' ?>>私有仓库
                             </option>
                         </select>
                     </div>
@@ -53,24 +53,10 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label">私钥</label>
-                        <textarea name="private_key" id="" cols="100" rows="15"><?php echo $info['private_key'] ?></textarea>
+                        <textarea name="private_key" id="" cols="100"
+                                  rows="15"><?php echo $info['private_key'] ?></textarea>
                         <!--<input type="text" name="private_key" class="form-control" placeholder="私钥"
-                               value="<?php /*echo $info['private_key'] */?>">-->
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">下次fortify扫描时间</label>
-                        <input type="text" class="form-control" name="fortify_scan_time"
-                               value="<?php echo $info['scan_time'] ?>"/>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">下次fortify扫描时间</label>
-                        <input type="text" class="form-control" name="semgrep_scan_time"
-                               value="<?php echo $info['semgrep_scan_time'] ?>"/>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">下次kunlun扫描时间</label>
-                        <input type="text" class="form-control" name="kunlun_scan_time"
-                               value="<?php echo $info['kunlun_scan_time'] ?>"/>
+                               value="<?php /*echo $info['private_key'] */ ?>">-->
                     </div>
                 </div>
                 <div class="modal-footer">

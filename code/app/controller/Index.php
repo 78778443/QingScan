@@ -9,21 +9,112 @@ use think\facade\View;
 class Index extends Common
 {
 
-    /**
-     * @return int
-     * @Route("Index/app")
-     */
-    public function app()
+
+    public function index()
     {
-        return 123;
+//        $where = ['is_delete' => 0];
+        $where = [];
+//        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
+//            $where = array_merge($where, ['user_id' => $this->userId]);
+//        }
+        //黑盒项目数量
+        $appCount = Db::table('app')->where($where)->count();
+        //黑盒rad数量
+        $urlsCount = Db::table('urls')->where($where)->count();
+        //黑盒xray数量
+        $xrayCount = Db::table('xray')->where($where)->count();
+        //黑盒sqlmap数量
+        $sqlmapCount = Db::table('urls_sqlmap')->where($where)->count();
+        //黑盒awvs数量
+        $awvsCount = Db::table('awvs_app')->where($where)->count();
+        //黑盒vulmap数量
+        $vulmapCount = Db::table('app_vulmap')->where($where)->count();
+        //黑盒nuclei数量
+        $nucleiCount = Db::table('app_nuclei')->where($where)->count();
+        //黑盒dirmap数量
+        $dirmapCount = Db::table('app_dirmap')->where($where)->count();
+        //黑盒whatweb数量
+        $whatwebCount = Db::table('app_whatweb')->where($where)->count();
+        //黑盒one_for_all数量
+        $oneforallCount = Db::table('one_for_all')->where($where)->count();
+
+
+        ##########
+        //资产探测
+        $hostCount = Db::table('host')->count();
+        //端口数量
+        $portCount = Db::table('host_port')->count();
+        //服务数量
+        $serviceCount = Db::table('host_port')->group("service")->count();
+
+
+        ####### 白盒统计
+        //资产探测
+        $codeCount = Db::table('code')->count();
+        $semgrepCount = Db::table('semgrep')->count();
+        $fortifyCount = Db::table('fortify')->count();
+        $phpCount = Db::table('code_composer')->count();
+        $pythonCount = Db::table('code_python')->count();
+        $javaCount = Db::table('code_java')->count();
+        $hemaCount = Db::table('code_webshell')->count();
+
+
+        #######漏洞信息库
+        $pocsuite3Count = Db::table('pocsuite3')->count();
+        $vulnerableCount = Db::table('vulnerable')->count();
+        $pocsCount = Db::table('pocs_file')->count();
+        $targetCount = Db::table('vul_target')->count();
+
+
+        $data = [
+            [
+                "name" => "黑盒信息",
+                "value" => $appCount,
+                "subInfo" => [
+                    ["name" => "rad", "value" => $urlsCount, "href" => url('urls/index')],
+                    ["name" => "xray", "value" => $xrayCount, "href" => url('xray/index')],
+                    ["name" => "sqlmap", "value" => $sqlmapCount, "href" => url('sqlmap/index')],
+                    ["name" => "awvs", "value" => $awvsCount, "href" => url('bug/awvs')],
+                    ["name" => "vulmap", "value" => $vulmapCount, "href" => url('vulmap/index')],
+                    ["name" => "nuclei", "value" => $nucleiCount, "href" => url('app/index')],
+                    ["name" => "dirmap", "value" => $dirmapCount, "href" => url('dirmap/index')],
+                    ["name" => "whatweb", "value" => $whatwebCount, "href" => url('whatweb/index')],
+                    ["name" => "oneforall", "value" => $oneforallCount, "href" => url('one_for_all/index')],
+                ]
+            ],
+            [
+                "name" => "资产探测",
+                "value" => $hostCount,
+                "subInfo" => [
+                    ["name" => "port", "value" => $portCount, "href" => url('host_port/index')],
+                    ["name" => "组件", "value" => $serviceCount, "href" => url('host_port/index')],
+                ]
+            ],
+            [
+                "name" => "白盒审计",
+                "value" => $codeCount,
+                "subInfo" => [
+                    ["name" => "fortify", "value" => $fortifyCount, "href" => url('code/bug_list')],
+                    ["name" => "semgrep", "value" => $semgrepCount, "href" => url('code/semgrep_list')],
+                    ["name" => "webshell", "value" => $hemaCount, "href" => url('code_webshell/index')],
+                    ["name" => "php", "value" => $phpCount, "href" => url('code_composer/index')],
+                    ["name" => "python", "value" => $pythonCount, "href" => url('code_python/index')],
+                    ["name" => "java", "value" => $javaCount, "href" => url('code_java/index')],
+                ]
+            ]
+            , [
+                "name" => "漏洞站点",
+                "value" => $pocsuite3Count,
+                "subInfo" => [
+                    ["name" => "漏洞情报", "value" => $vulnerableCount, "href" => url('vulnerable/index')],
+                    ["name" => "Poc脚本", "value" => $pocsCount, "href" => url('pocs_file/index')],
+                    ["name" => "可疑目标", "value" => $targetCount, "href" => url('vul_target/index')],
+                ]
+            ]
+        ];
+
+        return View::fetch('index', ['data' => $data]);
     }
-
-
-    public function hello($name = 'ThinkPHP6')
-    {
-        return 'hello,' . $name;
-    }
-
 
     /**
      * @return string
@@ -31,7 +122,7 @@ class Index extends Common
      * @throws \think\db\exception\DbException
      * @throws \think\db\exception\ModelNotFoundException
      */
-    public function index()
+    public function tongji()
     {
         //漏洞类型分布
         $folderCount = Db::table('fortify')->field('Folder as name,count(Folder) as value')->group('Folder')->select()->toArray();
@@ -62,6 +153,8 @@ class Index extends Common
         array_multisort(array_column($serviceCount, 'value'), SORT_DESC, $serviceCount);
         $serviceCount = array_slice($serviceCount, 0, 10);
 
+        //赞助信息
+        $zanzhu = Db::table('system_zanzhu')->order('time', 'desc')->limit(15)->select()->toArray();
 
         $data = [
             ['key' => 'folderCount', 'data' => $folderCount, 'title' => "危害等级"],
@@ -73,7 +166,7 @@ class Index extends Common
         ];
 
         // 不带任何参数 自动定位当前操作的模板文件
-        return View::fetch('index', ['list' => $data]);
+        return View::fetch('index', ['list' => $data, 'zanzhu' => $zanzhu]);
 //        $this->show('index/index', ['list' => $data]);
     }
 

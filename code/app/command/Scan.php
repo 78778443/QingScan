@@ -42,19 +42,20 @@ class Scan extends Command
         $this->setName('scan')
             ->addArgument("func", Argument::OPTIONAL, "扫描的内容")
             ->addArgument("custom", Argument::OPTIONAL, "自定义工具名")
+            ->addArgument("scan_type", Argument::OPTIONAL, "自定义工具扫描类型")
+            ->addArgument("custom_store", Argument::OPTIONAL, "自定义工具结果分析")
             ->setDescription('the scan command');
     }
 
     protected function execute(Input $input, Output $output)
     {
-
         $func = trim($input->getArgument('func'));
         if ($func == "safe") {
             ProcessSafeModel::safe();
         } elseif ($func == "xray") {
             WebScanModel::xray();
         } elseif ($func == "awvs") {
-            AwvsModel::scan();
+            AwvsModel::awvsScan();
         } elseif ($func == "rad") {
             WebScanModel::rad();
         } elseif ($func == "host") {
@@ -64,17 +65,17 @@ class Scan extends Command
         } elseif ($func == "nmap") {
             HostPortModel::NmapPortScan();
         } elseif ($func == "fortify") {
-            CodeCheckModel::scan();
+            CodeCheckModel::fortifyScan();
         } elseif ($func == "kunlun") {
             CodeCheckModel::kunLunScan();
         } elseif ($func == "semgrep") {
             CodeCheckModel::semgrep();
         } elseif ($func == "subdomain") {
-            AppModel::subdomain();
+            AppModel::fofaSubdomain();
         } elseif ($func == "temp") {
             XrayModel::temp();
         } elseif ($func == "cve") {
-            CveModel::scan();
+            CveModel::cveScan();
         } elseif ($func == 'google') {
             GoogleModel::getBaseInfo();
         } elseif ($func == 'jietu') {
@@ -98,7 +99,7 @@ class Scan extends Command
         } elseif ($func == 'reptile') {
             UrlsModel::reptile();
         } elseif ($func == 'getProjectComposer') {
-            CodeModel::getProjectComposer();
+            CodeModel::code_php();
         } elseif ($func == 'code_python') {
             PythonLibraryModel::code_python();
         } elseif ($func == 'code_java') {
@@ -133,7 +134,13 @@ class Scan extends Command
             PluginModel::safe();
         } elseif ($func == 'custom') {
             $custom = trim($input->getArgument('custom'));
-            PluginModel::custom_event($custom);
+            $scanType = $input->getArgument('scan_type');
+            $scanType = array_search($scanType, ['app', 'host', 'code', 'url']);
+            PluginModel::custom_event($custom, $scanType);
+        } elseif($func == 'custom_store'){
+            $className = 'app\model\\'.trim($input->getArgument('custom')).'PluginsModel';
+            $funcName = $input->getArgument('scan_type');
+            $className::$funcName();
         }
 
         // 指令输出

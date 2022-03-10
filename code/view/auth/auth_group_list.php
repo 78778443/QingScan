@@ -11,7 +11,7 @@ $searchArr = [
     ],
     'btnArr' => [
         ['text' => '添加用户组', 'ext' => [
-            "href" => url('auth/userAdd'),
+            "href" => url('auth/authGroupAdd'),
             "class" => "btn btn-outline-success"
         ]
         ]

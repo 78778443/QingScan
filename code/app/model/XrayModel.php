@@ -159,7 +159,6 @@ class XrayModel extends BaseModel
      */
     public static function addXray(array $data)
     {
-
         self::add($data);
     }
 

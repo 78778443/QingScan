@@ -4,23 +4,34 @@ namespace app\controller;
 
 use think\facade\Db;
 use think\facade\View;
+use think\Request;
 
 class GithubKeywordMonitor extends Common
 {
-    public function index()
+    public function index(Request $request)
     {
         $pageSize = 20;
         $where = [];
-        $list = Db::table('github_keyword_monitor')->where($where)->order("id", 'desc')->paginate($pageSize);
+        $search = $request->param('search');
+        if (!empty($search)) {
+            $where[] = ['title', 'like', "%{$search}%"];
+        }
+        if ($this->auth_group_id != 5 && !in_array($this->userId,config('app.ADMINISTRATOR'))) {
+            $where[] = ['user_id','=',$this->userId];
+        }
+        $list = Db::table('github_keyword_monitor')->where($where)->order("id", 'desc')->paginate([
+            'list_rows' => $pageSize,
+            'query' => $request->param()
+        ]);
         $data['list'] = $list->items();
         $data['page'] = $list->render();
         return View::fetch('index', $data);
     }
 
-    public function add()
+    public function add(Request $request)
     {
-        if (request()->isPost()) {
-            $data['title'] = getParam('title');
+        if ($request->isPost()) {
+            $data['title'] = $request->param('title');
             $data['user_id'] = $this->userId;
             $data['create_time'] = date('Y-m-d h:i:s', time());
             if (Db::name('github_keyword_monitor')->insert($data)) {
@@ -34,16 +45,16 @@ class GithubKeywordMonitor extends Common
     }
 
 
-    public function edit()
+    public function edit(Request $request)
     {
-        $id = getParam('id');
+        $id = $request->param('id',0,'intval');
         $info = Db::name('github_keyword_monitor')->where('id', $id)->where('user_id',$this->userId)->find();
         if (!$info) {
             $this->error('数据不存在');
         }
-        if (request()->isPost()) {
+        if ($request->isPost()) {
             ini_set('max_execution_time', 0);
-            $data['title'] = getParam('title');
+            $data['title'] = $request->param('title');
             $data['update_time'] = date('Y-m-d h:i:s', time());
             if (Db::name('github_keyword_monitor')->where('id', $id)->update($data)) {
                 $this->success('数据编辑成功');
@@ -57,10 +68,14 @@ class GithubKeywordMonitor extends Common
     }
 
 
-    public function del()
+    public function del(Request $request)
     {
-        $id = getParam('id');
-        if (Db::name('github_keyword_monitor')->where('id', $id)->where('user_id',$this->userId)->delete()) {
+        $id = $request->param('id',0,'intval');
+        $map[] = ['id','=',$id];
+        if ($this->auth_group_id != 5 && !in_array($this->userId,config('app.ADMINISTRATOR'))) {
+            $map[] = ['user_id','=',$this->userId];
+        }
+        if (Db::name('github_keyword_monitor')->where($map)->delete()) {
             $this->success('数据删除成功');
         } else {
             $this->error('数据删除失败');

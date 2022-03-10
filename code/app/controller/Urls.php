@@ -7,28 +7,33 @@ use app\model\AppModel;
 use app\model\UrlsModel;
 use think\facade\Db;
 use think\facade\View;
+use think\Request;
 
 
 class Urls extends Common
 {
 
-    public function index()
+    public function index(Request $request)
     {
-        $pageSize = 20;
-        $app_id = getParam('app_id');
+        $pageSize = 15;
+        $search = $request->param('search');
         $where = [];
+        if (!empty($search)) {
+            $where[] = ['url', 'like', "%{$search}%"];
+        }
         $where = !empty($app_id) ? array_merge($where, ['app_id' => $app_id]) : $where;
 
-        if ($this->auth_group_id != 5 && !in_array($this->userId,config('app.ADMINISTRATOR'))) {
-            $where = array_merge($where, ['user_id' => $this->userId]);
+        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
+            $where[] = ['user_id', '=', $this->userId];
         }
 
-        $list = Db::table('urls')->where($where)->where('is_delete', 0)->order("id", 'desc')->paginate($pageSize);
-
-        $data['list'] = $list->toArray()['data'];
+        $list = Db::table('urls')->where($where)->where('is_delete', 0)->order("id", 'desc')->paginate([
+            'list_rows' => $pageSize,//每页数量
+            'query' => $request->param(),
+        ]);
+        $data['list'] = $list->items();
 
         $appList = Db::table('app')->select()->toArray();
-
         $data['appArr'] = array_column($appList, 'name', 'id');
 
         // 获取分页显示
@@ -47,14 +52,15 @@ class Urls extends Common
         return View::fetch('add', $data);
     }
 
-    public function _add()
+    public function _add(Request $request)
     {
-        if ($this->auth_group_id != 5 && !in_array($this->userId,config('app.ADMINISTRATOR'))) {
-            $_POST['user_id'] = $this->userId;
+        $data = $request->post();
+        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
+            $data['user_id'] = $this->userId;
         }
-        UrlsModel::addData($_POST);
+        UrlsModel::addData($data);
 
-        $this->success('添加成功','index');
+        $this->success('添加成功', 'index');
     }
 
     public function add_api_url()
@@ -63,13 +69,14 @@ class Urls extends Common
         $this->show('urls/add_api_url', $data);
     }
 
-    public function _add_api_url()
+    public function _add_api_url(Request $request)
     {
-        if ($this->auth_group_id != 5 && !in_array($this->userId,config('app.ADMINISTRATOR'))) {
-            $_POST['user_id'] = $this->userId;
+        $data = $request->post();
+        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
+            $data['user_id'] = $this->userId;
         }
-        UrlsModel::addData($_POST);
-        $this->success('添加成功','index');
+        UrlsModel::addData($data);
+        $this->success('添加成功', 'index');
     }
 
     public function getHeader()
@@ -123,18 +130,36 @@ class Urls extends Common
 
     }
 
-    public function del()
+    public function del(Request $request)
     {
-        $id = getParam('id');
-        $map[] = ['id','=',$id];
-        if ($this->auth_group_id != 5 && !in_array($this->userId,config('app.ADMINISTRATOR'))) {
-            $map[] = ['user_id','=',$this->userId];
+        $id = $request->param('id', '', 'intval');
+        $map[] = ['id', '=', $id];
+        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
+            $map[] = ['user_id', '=', $this->userId];
         }
 
         if (Db::name('urls')->where($map)->update(['is_delete' => 1])) {
             return redirect($_SERVER['HTTP_REFERER']);
         } else {
             $this->error('删除失败');
+        }
+    }
+
+
+    // 批量删除
+    public function batch_del(Request $request){
+        $ids = $request->param('ids');
+        if (!$ids) {
+            return $this->apiReturn(0,[],'请先选择要删除的数据');
+        }
+        $map[] = ['id','in',$ids];
+        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
+            $map[] = ['user_id', '=', $this->userId];
+        }
+        if (Db::name('urls')->where($map)->update(['is_delete' => 1])) {
+            return $this->apiReturn(1,[],'批量删除成功');
+        } else {
+            return $this->apiReturn(0,[],'批量删除失败');
         }
     }
 }

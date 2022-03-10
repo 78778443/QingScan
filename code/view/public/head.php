@@ -5,57 +5,8 @@
     <script src="/static/js/jquery.min.js"></script>
     <!--    <script src="/static/js/bootstrap.min.js"></script>-->
     <link href="/static/bootstrap-5.1.3/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/css/qingscan.css" rel="stylesheet">
     <script src="/static/bootstrap-5.1.3/js/bootstrap.min.js"></script>
-    <style type="text/css">
-        .AutoNewline
-        {
-            Word-break: break-all;/*必须*/
-        }
-        header a:hover {
-            text-decoration: none;
-        }
-
-        .qiantuchu {
-            background-color: #eee;
-            padding: 20px;
-            margin-top: 10px;
-            margin-bottom: 10px;
-            margin-left: 5px;
-            margin-right: 5px;
-        }
-
-
-        .tuchu {
-            background-color: #ffffff;
-            padding: 20px;
-            margin-top: 10px;
-            margin-bottom: 10px;
-            margin-left: 5px;
-            margin-right: 5px;
-        }
-
-        .fenye {
-            background-color: #ffffff;
-            padding: 20px;
-            margin-top: 10px;
-            margin-left: 5px;
-            margin-right: 5px;
-            margin-bottom: 80px;
-        }
-
-        .footer {
-            background-color: #ffffff;
-            padding: 10px;
-        }
-
-        .ellipsis-type {
-            max-width: 360px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            cursor: pointer;
-        }
-    </style>
 </head>
 <body style="background-color: #eeeeee; min-height: 1080px">
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark" aria-label="Tenth navbar example">
@@ -78,7 +29,7 @@
                                href="<?php echo url($v['href']) ?>"><?php echo $v['title'] ?></a>
                         <?php } ?>
                         <?php if (isset($v['children'])) { ?>
-                            <ul class="dropdown-menu" aria-labelledby="dropdown08">
+                            <ul class="dropdown-menu" aria-labelledby="dropdown08" style="z-index: 999999;">
                                 <?php foreach ($v['children'] as $key => $val) { ?>
                                     <li>
                                         <a class="dropdown-item" href="<?php echo url($val['href']) ?>" style="<?php echo $href == $val['href']?'color:red':''?>">

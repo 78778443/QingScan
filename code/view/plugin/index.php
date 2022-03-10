@@ -28,18 +28,26 @@ $dengjiArr = ['Low', 'Medium', 'High', 'Critical'];
                 <thead>
                 <tr>
                     <th>ID</th>
+                    <th>插件类型</th>
                     <th>插件名称</th>
-                    <th>插件执行命令</th>
+                    <th>扫描类型</th>
+                    <th>执行命令</th>
+                    <th>工具位置</th>
                     <th>状态</th>
                     <th>添加时间</th>
                     <th>操作</th>
                 </tr>
                 </thead>
-                <?php foreach ($list as $value) { ?>
+                <?php
+                $typeArr = ['APP','HOST','CODE','URL'];
+                foreach ($list as $value) { ?>
                     <tr>
                         <td><?php echo $value['id'] ?></td>
+                        <td><?php echo $value['type']==1?'插件扫描':'结果分析' ?></td>
                         <td><?php echo $value['name'] ?></td>
+                        <td><?php echo $typeArr[$value['scan_type']] ?? '' ?></td>
                         <td><?php echo $value['cmd'] ?></td>
+                        <td><?php echo $value['tool_path'] ?></td>
                         <td><?php echo $value['status']==1?'启用':'禁用' ?></td>
                         <td><?php echo $value['create_time'] ?></td>
                         <td>

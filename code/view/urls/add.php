@@ -27,7 +27,7 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label">自定义header</label>
-                        <textarea class="form-control" rows="3" placeholder="填写header消息"></textarea>
+                        <textarea class="form-control" rows="3" placeholder="填写header消息" name="header"></textarea>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">自定义Cookie</label>

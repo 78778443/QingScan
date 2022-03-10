@@ -9,7 +9,7 @@ $searchArr = [
     'method' => 'get',
     'inputs' => [
         ['type' => 'text', 'name' => 'search', 'placeholder' => "搜索的内容"],
-        ['type' => 'select', 'name' => 'level', 'options' => $vul_level, 'frist_option' => '危险等级'],
+        ['type' => 'select', 'name' => 'vul_level', 'options' => $vul_level, 'frist_option' => '危险等级'],
         ['type' => 'select', 'name' => 'product_field', 'options' => $product_field, 'frist_option' => '行业'],
         ['type' => 'select', 'name' => 'product_type', 'options' => $product_type, 'frist_option' => '项目类型'],
         ['type' => 'select', 'name' => 'product_cate', 'options' => $product_cate, 'frist_option' => '平台分类'],
@@ -17,18 +17,34 @@ $searchArr = [
     ],
     'btnArr' => [
         ['text' => '添加', 'ext' => [
-            "href" => url('add'),
+            "href" => url('vulnerable/add'),
             "class" => "btn btn-outline-success"
         ]]
     ]]; ?>
 {include file='public/search' /}
 
+<div class="row tuchu">
+    <div class="col-md-12">
+        <form class="row g-3" id="frmUpload" action="" method="post"
+              enctype="multipart/form-data">
+            <div class="col-auto">
+                <a href="javascript:;" onclick="batch_del()"
+                   class="btn btn-outline-success">批量删除</a>
+            </div>
+        </form>
+    </div>
+</div>
 
 <div class="row tuchu">
     <div class="col-md-12 ">
         <table class="table table-bordered table-hover table-striped">
             <thead>
             <tr>
+                <th>
+                    <label>
+                        <input type="checkbox" value="-1" onclick="quanxuan(this)">全选
+                    </label>
+                </th>
                 <th>ID</th>
                 <th>名称</th>
                 <th>CVE编号</th>
@@ -43,6 +59,11 @@ $searchArr = [
             </thead>
             <?php foreach ($list as $value) { ?>
                 <tr>
+                    <td>
+                        <label>
+                            <input type="checkbox" class="ids" name="ids[]" value="<?php echo $value['id'] ?>">
+                        </label>
+                    </td>
                     <td><?php echo $value['id'] ?></td>
                     <td><?php echo $value['name'] ?></td>
                     <td><?php echo $value['cve_num'] ?></td>
@@ -68,3 +89,45 @@ $searchArr = [
 </div>
 {include file='public/fenye' /}
 {include file='public/footer' /}
+
+<script>
+    function quanxuan(obj){
+        var child = $('.table').find('.ids');
+        child.each(function(index, item){
+            if (obj.checked) {
+                item.checked = true
+            } else {
+                item.checked = false
+            }
+        })
+    }
+
+    function batch_del(){
+        var child = $('.table').find('.ids');
+        var ids = ''
+        child.each(function(index, item){
+            if (item.value != -1 && item.checked) {
+                if (ids == '') {
+                    ids = item.value
+                } else {
+                    ids = ids+','+item.value
+                }
+            }
+        })
+
+        $.ajax({
+            type: "post",
+            url: "<?php echo url('vulnerable_batch_del')?>",
+            data: {ids: ids},
+            dataType: "json",
+            success: function (data) {
+                alert(data.msg)
+                if (data.code == 1) {
+                    window.setTimeout(function () {
+                        location.reload();
+                    }, 2000)
+                }
+            }
+        });
+    }
+</script>

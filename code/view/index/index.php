@@ -1,49 +1,33 @@
 {include file='public/head' /}
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
-<div class="row">
-    <?php foreach ($list as $key => $value) { ?>
-        <div class="col-4">
-            <div id="<?php echo $value['key'] ?>" class="tuchu" style="width:100%;height:400px"></div>
-            <script type="text/javascript">
-                var dom = document.getElementById("<?php echo $value['key']?>");
-                var myChart = echarts.init(dom);
-                var app = {};
-                var option;
-                option = {
-                    title: {
-                        text: '<?php echo $value['title']?>',
-                        x: 'center'
-                    },
-                    tooltip: {
-                        trigger: 'item'
-                    },
-                    series: [
-                        {
-                            name: '<?php echo $value['title']?>',
-                            type: 'pie',
-                            radius: ['40%', '70%'],
-                            avoidLabelOverlap: false,
-                            itemStyle: {
-                                borderRadius: 10,
-                                borderColor: '#fff',
-                                borderWidth: 2
-                            },
-                            emphasis: {
-                                label: {
-                                    show: true,
-                                    fontSize: '16',
-                                    fontWeight: 'bold'
-                                }
-                            },
-                            data: <?php echo json_encode($value['data']);?>
-                        }
-                    ]
-                };
+<script type="text/javascript" src="/static/js/echarts.min.js"></script>
+<style>
+    #divContainer {
+        overflow: auto;
+        height: 360px;
+        width: 260px;
+    }
 
-                if (option && typeof option === 'object') {
-                    myChart.setOption(option);
-                }
-            </script>
+    #divContainer::-webkit-scrollbar {
+        border-width: 1px;
+    }
+</style>
+<div class="row">
+    <?php foreach ($data as $key => $value) { ?>
+        <div class="col-md-6">
+            <div class="row tuchu " style="min-height:300px;">
+
+                <h3>{$value['name']}:<span class="badge bg-primary">{$value['value']}</span></h3>
+
+                <?php foreach ($value['subInfo'] as $subVaule) { ?>
+                    <div class="col-md-4">
+                        <h5>
+                            <span style="width:80px;" class="badge  text-dark text-right">{$subVaule['name']}</span>:
+                            <a style="width:70px;" class="badge bg-info text-right" href="{$subVaule['href']}">{$subVaule['value']}</a>
+                        </h5>
+                    </div>
+                <?php } ?>
+
+            </div>
         </div>
     <?php } ?>
 </div>

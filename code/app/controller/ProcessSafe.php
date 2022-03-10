@@ -5,18 +5,29 @@ namespace app\controller;
 
 use think\facade\Db;
 use think\facade\View;
+use think\Request;
 
 class ProcessSafe extends Common
 {
-    public function index()
+    public $typeArr = ['黑盒扫描','白盒审计','专项利用','其他','信息收集'];
+
+    public function index(Request $request)
     {
         $pageSize = 20;
         $where = [];
-        $search = getParam('search');
+        $search = $request->param('search');
         if ($search) {
             $where[] = ['key|value|note', 'like', "%{$search}%"];
         }
-        $list = Db::table('process_safe')->where($where)->order("id", 'desc')->paginate($pageSize);
+        $type = $request->param('type','');
+        if ($type !== '') {
+            $type = array_search($type,$this->typeArr);
+            $where[] = ['type','=',$type];
+        }
+        $list = Db::table('process_safe')->where($where)->order("id", 'desc')->paginate([
+            'list_rows'=> $pageSize,//每页数量
+            'query' => $request->param(),
+        ]);
         $data['list'] = $list->items();
         $data['page'] = $list->render();
         return View::fetch('index', $data);
@@ -75,7 +86,7 @@ class ProcessSafe extends Common
 
     public function showProcess()
     {
-        $cmd = "ps -ef |grep php | grep -v def | grep -v grep";
+        $cmd = "ps -ef | grep -v def  | grep -v 'ps -ef' | grep -v 'UID'";
 
         exec($cmd,$info);
         $data['info'] = $info;
@@ -90,5 +101,24 @@ class ProcessSafe extends Common
         exec($cmd);
 
         return redirect($_SERVER['HTTP_REFERER']);
+    }
+
+    public function update_status(Request $request){
+        $ids = $request->param('ids');
+        $map[] = ['id','in',$ids];
+        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
+            $map[] = ['user_id', '=', $this->userId];
+        }
+        $type = $request->param('type',1);
+        if ($type == 1) {
+            $status = 1;
+        } else {
+            $status = 0;
+        }
+        if (Db::name('process_safe')->where($map)->update(['status'=>$status,'update_time'=>date('Y-m-d h:i:s',time())])) {
+            return $this->apiReturn(1,[],'操作成功');
+        } else {
+            return $this->apiReturn(0,[],'操作失败');
+        }
     }
 }

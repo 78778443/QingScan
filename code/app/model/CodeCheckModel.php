@@ -212,7 +212,7 @@ class CodeCheckModel extends BaseModel
         Db::table(self::$tableName)->insert($data);
     }
 
-    public static function scan()
+    public static function fortifyScan()
     {
         $codePath = "/data/codeCheck";
         $fortifyRetDir = "/data/fortify_result";
@@ -224,22 +224,28 @@ class CodeCheckModel extends BaseModel
             mkdir($fortifyRetDir, 0777, true);
         }
         while (true) {
+            processSleep(1);
             $endTime = date('Y-m-d', time() - 86400 * 15);
             $list = Db::table('code')->where(['is_delete' => 0])->whereTime('scan_time', '<=', $endTime)->orderRand()->limit(1)->select()->toArray();
             $count = count($list);
 
             foreach ($list as $value) {
+                PluginModel::addScanLog($value['id'], __METHOD__, 0,2);
                 $prName = cleanString($value['name']);
                 $codeUrl = $value['ssh_url'];
                 addlog("开始执行扫描代码任务:{$prName}..." . PHP_EOL);
-                //1. 拉取代码
-                downCode($codePath, $prName, $codeUrl,$value['is_private'],$value['username'],$value['password'],$value['private_key']);
+                $filepath = "{$codePath}/{$prName}";
+                if (!file_exists($filepath)) {
+                    //1. 拉取代码
+                    downCode($codePath, $prName, $codeUrl,$value['is_private'],$value['username'],$value['password'],$value['private_key']);
+                }
 
                 //2. 扫描代码
-                FortifyModel::startScan("{$codePath}/{$prName}", "{$fortifyRetDir}/{$prName}");
+                FortifyModel::startScan($filepath, "{$fortifyRetDir}/{$prName}");
 
                 $xmlFile = "{$fortifyRetDir}/{$prName}.xml";
                 if (file_exists($xmlFile) === false) {
+                    PluginModel::addScanLog($value['id'], __METHOD__, 2,2);
                     addlog(["fortify的XML文件不存在:{$xmlFile}", $value]);
                     continue;
                 }
@@ -250,9 +256,9 @@ class CodeCheckModel extends BaseModel
 
                 //5. 更新
                 if (file_exists("{$fortifyRetDir}/{$prName}.xml")) {
-                    $value['scan_time'] = date('Y-m-d H:i:s');
-                    Db::table('code')->update($value);
+                    self::scanTime('code',$value['id'],'scan_time');
                 }
+                PluginModel::addScanLog($value['id'], __METHOD__, 1,2);
             }
 
             addlog("fortify 完成本次扫描任务，休息10秒");
@@ -267,26 +273,26 @@ class CodeCheckModel extends BaseModel
         if (!file_exists($codePath)) {
             mkdir($codePath, 0777, true);
         }
-
         while (true) {
+            processSleep(1);
             $endTime = date('Y-m-d', time() - 86400 * 15);
             $list = Db::table('code')->whereTime('kunlun_scan_time', '<=', $endTime)->orderRand()->limit(1)->select()->toArray();
-
             foreach ($list as $value) {
+                PluginModel::addScanLog($value['id'], __METHOD__, 0,2);
                 $prName = cleanString($value['name']);
-
                 $codeUrl = $value['ssh_url'];
-                //1. 拉取代码
-                downCode($codePath, $prName, $codeUrl,$value['is_private'],$value['username'],$value['password'],$value['private_key']);
-
-                //扫描代码
-                $result = KunlunModel::startScan("{$codePath}/{$prName}");
-                if ($result) {
-                    $value['kunlun_scan_time'] = date('Y-m-d H:i:s');
-                    Db::table('code')->update($value);
+                $filepath = "{$codePath}/{$prName}";
+                if (!file_exists($filepath)) {
+                    //1. 拉取代码
+                    downCode($codePath, $prName, $codeUrl,$value['is_private'],$value['username'],$value['password'],$value['private_key']);
                 }
+                //扫描代码
+                $result = KunlunModel::startScan($filepath);
+                if ($result) {
+                    self::scanTime('code',$value['id'],'kunlun_scan_time');
+                }
+                PluginModel::addScanLog($value['id'], __METHOD__, 1,2);
             }
-
             print_r("跑完一圈,休息10秒..." . PHP_EOL);
             sleep(10);
         }
@@ -298,28 +304,33 @@ class CodeCheckModel extends BaseModel
         $fortifyRetDir = "/data/semgrep_result";
 
         while (true) {
+            processSleep(1);
             $endTime = date('Y-m-d', time() - 86400 * 15);
             $list = Db::table('code')->whereTime('semgrep_scan_time', '<=', $endTime)->orderRand()->limit(1)->select()->toArray();
             $count = count($list);
             print("开始执行semgrep扫描代码任务,{$count} 个项目等待扫描..." . PHP_EOL);
             foreach ($list as $value) {
+                PluginModel::addScanLog($value['id'], __METHOD__, 0,2);
                 $prName = cleanString($value['name']);
                 $codeUrl = $value['ssh_url'];
-                //1. 拉取代码
-                downCode($codePath, $prName, $codeUrl,$value['is_private'],$value['username'],$value['password'],$value['private_key']);
+                $filepath = "{$codePath}/{$prName}";
+                if (!file_exists($filepath)) {
+                    //1. 拉取代码
+                    downCode($codePath, $prName, $codeUrl,$value['is_private'],$value['username'],$value['password'],$value['private_key']);
+                }
 
                 //2. 扫描代码
                 $outJson = "{$fortifyRetDir}/{$prName}.json";
-                SemgrepModel::startScan("{$codePath}/{$prName}", $outJson);
+                SemgrepModel::startScan($filepath, $outJson);
 
                 //4. 存储结果
                 SemgrepModel::addDataAll($value['id'], $outJson, $value['user_id']);
 
                 //5. 更新
                 if (file_exists($outJson)) {
-                    $value['semgrep_scan_time'] = date('Y-m-d H:i:s');
-                    Db::table('code')->update($value);
+                    self::scanTime('code',$value['id'],'semgrep_scan_time');
                 }
+                PluginModel::addScanLog($value['id'], __METHOD__, 1,2);
             }
 
             sleep(10);

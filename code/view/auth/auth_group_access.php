@@ -1,18 +1,20 @@
 {include file='public/head' /}
 
 <link rel="stylesheet" href="/static/plugins/zTree/css/zTreeStyle.css" type="text/css">
-<div class="col-md-12">
-    <legend>配置权限</legend>
-    <div class="col-md-9">
-        <form class="">
-            <ul id="treeDemo" class="ztree">
+<div class="row tuchu">
+    <div class="col-md-12">
+        <legend>配置权限</legend>
+        <div class="col-md-9">
+            <form class="">
+                <ul id="treeDemo" class="ztree">
 
-            </ul>
-            <div class="layui-form-item text-center">
-                <button type="button" class="btn btn-outline-success" id="submit">提交</button>
-                <button class="btn btn-outline-primary" type="button" onclick="window.history.back()">返回</button>
-            </div>
-        </form>
+                </ul>
+                <div class="layui-form-item text-center">
+                    <button type="button" class="btn btn-outline-success" id="submit">提交</button>
+                    <button class="btn btn-outline-primary" type="button" onclick="window.history.back()">返回</button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 <script type="text/javascript" src="/static/plugins/zTree/js/jquery.ztree.core.min.js"></script>
