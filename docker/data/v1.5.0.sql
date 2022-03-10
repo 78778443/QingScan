@@ -10,3 +10,5 @@ CREATE TABLE `zhiwen` (
                           `title` varchar(255) DEFAULT NULL,
                           PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
+
+update auth_rule set menu_status=0 where title='插件中心';
