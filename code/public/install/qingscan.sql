@@ -1536,4 +1536,22 @@ CREATE TABLE `xray`  (
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = Compact;
 
+
+-- ----------------------------
+-- Table structure for zhiwen
+-- ----------------------------
+DROP TABLE IF EXISTS `zhiwen`;
+CREATE TABLE `zhiwen` (
+                          `id` int(10) NOT NULL AUTO_INCREMENT,
+                          `add_by` varchar(255) DEFAULT NULL,
+                          `add_time` varchar(255) DEFAULT NULL,
+                          `filters` varchar(255) DEFAULT NULL,
+                          `keyword` varchar(255) DEFAULT NULL,
+                          `md5` varchar(255) DEFAULT NULL,
+                          `supplier` varchar(255) DEFAULT NULL,
+                          `tags` varchar(255) DEFAULT NULL,
+                          `title` varchar(255) DEFAULT NULL,
+                          PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
+
 SET FOREIGN_KEY_CHECKS = 1;
