@@ -103,6 +103,8 @@ class Config extends Common
             unset($fileNameList[count($fileNameList) - 1]);
             unset($fileNameList[count($fileNameList) - 1]);
             if (!empty($fileNameList)) {
+                sort($fileNameList);
+
                 $lock = $sqlPath.'/update.lock';
                 // 获取当前版本号
                 $version = file_get_contents($lock);
