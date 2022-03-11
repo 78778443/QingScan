@@ -91,7 +91,7 @@ function addOldData()
         file_put_contents('install.lock', '');
 
         // 更新版本号
-        $sqlPath = '/root/qingscan/docker/data';
+        /*$sqlPath = '/root/qingscan/docker/data';
         $fileNameList = getDirFileName($sqlPath);
         unset($fileNameList[count($fileNameList) - 1]);
         unset($fileNameList[count($fileNameList) - 1]);
@@ -100,7 +100,7 @@ function addOldData()
             $filename = substr($filepath,strripos($filepath,'/')+1,strlen($filepath));
             $newVersion = substr($filename,0,strripos($filename,'.'));
             file_put_contents($sqlPath.'/update.lock',$newVersion);
-        }
+        }*/
     }
 }
 
