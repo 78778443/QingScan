@@ -115,6 +115,7 @@ class Config extends Common
                         $content = file_get_contents($sqlPath.'/'.$filename);
                         $sqlArr = explode(';',$content);
                         foreach ($sqlArr as $sql) {
+                            $sql = trim($sql);
                             if ($sql) {
                                 Db::execute($sql.';');
                             }
