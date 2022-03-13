@@ -129,8 +129,10 @@ class PluginModel extends BaseModel
                     addlog(["自定义工具扫描结果文件内容为空", $info, $v]);
                 }
                 $content = implode("\n", $content);
-
-                $data = ['app_id' => $v['id'], 'user_id' => $v['user_id'] ?? 0, 'content' => $content,
+                $data = [
+                    'app_id' => $v['id'],
+                    'user_id' => $v['user_id'] ?? 0,
+                    'content' => $content,
                     'scan_type' => $info['scan_type'],
                     'plugin_id' => $info['id'],
                     'plugin_name' => $info['name'],
@@ -139,7 +141,6 @@ class PluginModel extends BaseModel
 
                 Db::table("plugin_scan_log")->extra('IGNORE')->insert($data);
             }
-
             sleep(10);
         }
     }
