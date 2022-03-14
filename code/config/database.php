@@ -27,10 +27,10 @@ return [
             'hostname' => '127.0.0.1',
             'hostport'=>3306,
             // 用户名
-            'username' => 'qingscan',
-            'password' => '123',
+            'username' => 'root',
+            'password' => '123456',
             // 数据库名
-            'database' => 'QingScan',
+            'database' => 'qingscan',
             // 数据库编码默认采用utf8
             'charset' => 'utf8',
             // 数据库表前缀
