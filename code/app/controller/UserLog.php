@@ -24,4 +24,10 @@ class UserLog extends Common
         $data['page'] = $list->render();
         return View::fetch('index', $data);
     }
+
+    public function clear_all(){
+        Db::execute('truncate table `user_log`');
+        $this->addUserLog('日志管理','清空数据表[user_log]成功');
+        $this->success('日志表清空成功');
+    }
 }

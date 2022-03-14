@@ -74,12 +74,14 @@ class ProcessSafe extends Common
         }
     }
 
-    public function del()
+    public function del(Request $request)
     {
-        $id = getParam('id');
+        $id = $request->param('id');
         if (Db::name('process_safe')->where('id', $id)->delete()) {
+            $this->addUserLog('守护进程',"删除数据[$id]成功");
             return redirect($_SERVER['HTTP_REFERER']);
         } else {
+            $this->addUserLog('守护进程',"删除数据[$id]失败");
             $this->error('删除失败');
         }
     }
@@ -116,8 +118,10 @@ class ProcessSafe extends Common
             $status = 0;
         }
         if (Db::name('process_safe')->where($map)->update(['status'=>$status,'update_time'=>date('Y-m-d h:i:s',time())])) {
+            $this->addUserLog('守护进程',"修改守护进程管理状态[{$ids}]成功");
             return $this->apiReturn(1,[],'操作成功');
         } else {
+            $this->addUserLog('守护进程',"修改守护进程管理状态[{$ids}]失败");
             return $this->apiReturn(0,[],'操作失败');
         }
     }

@@ -124,9 +124,12 @@ class Config extends Common
                     }
                 }
             }
-            $msg = '系统更新成功，当前版本号：'.str_replace(".sql","",$version);
+            $version = str_replace(".sql","",$version);
+            $msg = '系统更新成功，当前版本号：'.$version;
+            $this->addUserLog('系统更新',"系统更新成功,当前版本号[{$version}]");
         } catch (\Exception $e) {
             $msg = '系统更新失败：'.$e->getMessage();
+            $this->addUserLog('系统更新',$msg);
         }
         $data['info'] = $msg;
         return view('config/update', $data);

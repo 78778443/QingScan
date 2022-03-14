@@ -6,6 +6,7 @@ namespace app\controller;
 
 use app\BaseController;
 use app\model\AuthRuleModel;
+use app\model\UserLogModel;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Reader\Csv;
@@ -289,5 +290,9 @@ class Common extends BaseController
         } else {
             return $this->apiReturn(0,[],'批量删除失败');
         }
+    }
+
+    public function addUserLog($type,$content){
+        UserLogModel::addLog($this->userInfo['username'],$type,$content);
     }
 }
