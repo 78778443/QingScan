@@ -105,7 +105,6 @@ class PluginStore extends Common
                         }
                     }
 
-
                     foreach (scandir($temp_plugin_path.'sqlOrsh') as $value){
                         if($value != '.' && $value != '..'){
                             $preg = "/(.*?)\.sql/";
@@ -113,6 +112,7 @@ class PluginStore extends Common
                                 $content = file_get_contents($temp_plugin_path.'sqlOrsh'.'/'.$value);
                                 $sqlArr = explode(';',$content);
                                 foreach ($sqlArr as $sql) {
+                                    $sql = trim($sql);  // 去除两边空白造成的报错
                                     if ($sql) {
                                         Db::execute($sql.';');
                                     }
@@ -120,6 +120,7 @@ class PluginStore extends Common
                             }
                         }
                     }
+
                     // 移动相应的文件
                     if (!file_exists($app.'plugins/')) {
                         mkdir($app.'plugins/', 0777, true);

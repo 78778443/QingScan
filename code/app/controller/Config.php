@@ -104,7 +104,6 @@ class Config extends Common
             unset($fileNameList[count($fileNameList) - 1]);
             if (!empty($fileNameList)) {
                 sort($fileNameList);
-
                 $lock = $sqlPath.'/update.lock';
                 // 获取当前版本号
                 $version = file_get_contents($lock);
@@ -115,7 +114,7 @@ class Config extends Common
                         $content = file_get_contents($sqlPath.'/'.$filename);
                         $sqlArr = explode(';',$content);
                         foreach ($sqlArr as $sql) {
-                            $sql = trim($sql);
+                            $sql = trim($sql);  // 去除两边空白造成的报错
                             if ($sql) {
                                 Db::execute($sql.';');
                             }

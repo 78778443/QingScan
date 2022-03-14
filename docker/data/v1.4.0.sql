@@ -17,6 +17,6 @@ INSERT INTO `auth_rule`( `href`, `title`, `is_delete`, `is_open_auth`, `pid`, `s
 
 
 
-INSERT INTO `QingScan`.`system_config` (`name`, `key`, `value`, `is_delete`) VALUES ('暂停扫描', 'maxProcesses', '1', 0);
+INSERT INTO `system_config` (`name`, `key`, `value`, `is_delete`) VALUES ('暂停扫描', 'maxProcesses', '1', 0);
 
-INSERT INTO `auth_rule` (`href`, `title`, `is_delete`, `is_open_auth`, `pid`, `sort`, `created_at`, `menu_status`, `update_time`, `level`, `delete_time`, `icon_url`) VALUES ('', '插件中心', 0, 1, 0, 8, 1642257783, 1, 0, 1, 0, '');
+INSERT INTO `auth_rule` (`id`,`href`, `title`, `is_delete`, `is_open_auth`, `pid`, `sort`, `created_at`, `menu_status`, `update_time`, `level`, `delete_time`, `icon_url`) VALUES (116,'', '插件中心', 0, 1, 0, 8, 1642257783, 1, 0, 1, 0, '');
