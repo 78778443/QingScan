@@ -33,10 +33,6 @@ $searchArr = [
                 <a href="<?php echo url('pocs_file/downloaAppTemplate') ?>"
                    class="btn btn-outline-success">下载模板</a>
             </div>
-            <div class="col-auto">
-                <a href="javascript:;" onclick="batch_del()"
-                   class="btn btn-outline-success">批量删除</a>
-            </div>
         </form>
     </div>
 </div>
@@ -45,6 +41,13 @@ $searchArr = [
     <div class="row tuchu">
         <!--            <div class="col-md-1"></div>-->
         <div class="col-md-12 ">
+            <form class="row g-3">
+                <div class="col-auto">
+                    <a href="javascript:;" onclick="batch_del()"
+                       class="btn btn-outline-success">批量删除</a>
+                </div>
+            </form>
+
             <table class="table table-bordered table-hover table-striped">
                 <thead>
                 <tr>

@@ -35,13 +35,13 @@ class ProcessSafe extends Common
 
 
     // 添加管理员
-    public function add()
+    public function add(Request $request)
     {
-        if (request()->isPost()) {
-            $data['key'] = getParam('key');
-            $data['value'] = getParam('value');
-            $data['status'] = getParam('status');
-            $data['note'] = getParam('note');
+        if ($request->isPost()) {
+            $data['key'] = $request->param('key');
+            $data['value'] = $request->param('value');
+            $data['status'] = $request->param('status');
+            $data['note'] = $request->param('note');
             //添加
             if (Db::name('process_safe')->insert($data)) {
                 $this->success('添加成功', 'index');
@@ -54,14 +54,14 @@ class ProcessSafe extends Common
         }
     }
 
-    public function edit()
+    public function edit(Request $request)
     {
-        $id = getParam('id');
+        $id = $request->param('id');
         if (request()->isPost()) {
-            $data['key'] = getParam('key');
-            $data['value'] = getParam('value');
-            $data['status'] = getParam('status');
-            $data['note'] = getParam('note');
+            $data['key'] = $request->param('key');
+            $data['value'] = $request->param('value');
+            $data['status'] = $request->param('status');
+            $data['note'] = $request->param('note');
             if (Db::name('process_safe')->where('id', $id)->update($data)) {
                 return redirect(url('index'));
             } else {
@@ -95,8 +95,8 @@ class ProcessSafe extends Common
         return View::fetch('show_process', $data);
     }
 
-    public function kill(){
-        $pid = getParam('pid','intval');
+    public function kill(Request $request){
+        $pid = $request->param('pid','intval');
 
         $cmd = "kill -9 {$pid}";
 
