@@ -154,6 +154,8 @@ class Auth extends Common
     {
         $id = $this->userId;
         if ($request->isPost()) {
+            $username = $this->userInfo['username'];
+            $this->addUserLog('用户管理',"修改用户密码[{$username}]");
             $password = $request->param('password');
             $news_password = $request->param('news_password');
             $news_password1 = $request->param('news_password1');
@@ -168,6 +170,7 @@ class Auth extends Common
             $data['password'] = ucenter_md5($news_password . $user['username'], config('app.UC_AUTH_KEY'));
             $data['update_time'] = time();
             if (Db::name('user')->where('id', $id)->update($data)) {
+                $this->addUserLog('用户管理',"修改用户密码[{$username}]成功");
                 UserModel::logout();
                 $this->success('密码修改成功,请重新登录', url('login/index'));
             } else {
@@ -182,11 +185,14 @@ class Auth extends Common
     public function userDel(Request $request)
     {
         $id = $request->param('id');
+        $this->addUserLog('用户管理',"删除用户[$id]");
         if (in_array($id, config('ADMINISTRATOR')))
             $this->error('该用户不允许删除');
         if (Db::name('user')->where('id', $id)->update(['is_delete' => -1, 'update_time' => time()])) {
+            $this->addUserLog('用户管理',"删除用户[$id]成功");
             return redirect($_SERVER['HTTP_REFERER']);
         } else {
+            $this->addUserLog('用户管理',"删除用户[$id]失败");
             $this->error('删除失败');
         }
     }
