@@ -170,6 +170,7 @@ class Vulnerable extends Common
 
     public function edit(Request $request){
         $id = $request->param('id');
+        $this->addUserLog('缺陷列表',"修改缺陷列表数据[{$id}]");
         if (!$id) {
             $this->error('参数错误');
         }
@@ -246,6 +247,10 @@ class Vulnerable extends Common
     public function vulnerable_del(Request $request)
     {
         $id = $request->param('id');
+        if (!$id) {
+            $this->error('参数不存在');
+        }
+        $this->addUserLog('缺陷列表',"删除缺陷列表数据[{$id}]");
         $where[] = ['id','=',$id];
         if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
             $where[] = ['user_id', '=', $this->userId];
@@ -265,6 +270,10 @@ class Vulnerable extends Common
     public function pocsuite_del(Request $request)
     {
         $id = $request->param('id');
+        if (!$id) {
+            $this->error('参数不存在');
+        }
+        $this->addUserLog('漏洞实例',"删除漏洞实例数据[{$id}]");
         $where[] = ['id','=',$id];
         if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
             $where[] = ['user_id', '=', $this->userId];

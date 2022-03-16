@@ -59,10 +59,13 @@ class VulTarget extends Common
     }
 
 
-
     public function del(Request $request)
     {
         $id = $request->param('id');
+        if (!$id) {
+            $this->error('参数不存在');
+        }
+        $this->addUserLog('收集目标',"删除收集目标数据[{$id}]");
         if (Db::name('vul_target')->where('id',$id)->delete()) {
             return redirect($_SERVER['HTTP_REFERER']);
         } else {

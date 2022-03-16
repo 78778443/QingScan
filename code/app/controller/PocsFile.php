@@ -93,6 +93,10 @@ class PocsFile extends Common
     public function del(Request $request)
     {
         $id = $request->param('id');
+        if (!$id) {
+            $this->error('参数不能为空');
+        }
+        $this->addUserLog('POC脚本',"删除POC脚本数据[{$id}]");
         if (Db::name('pocs_file')->where('id',$id)->delete()) {
             return redirect($_SERVER['HTTP_REFERER']);
         } else {

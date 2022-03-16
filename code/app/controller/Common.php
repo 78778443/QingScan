@@ -278,6 +278,7 @@ class Common extends BaseController
     // 批量删除
     public function batch_del_that($request,$table){
         $ids = $request->param('ids');
+        $this->addUserLog($table,"批量删除数据[$ids]");
         if (!$ids) {
             return $this->apiReturn(0,[],'请先选择要删除的数据');
         }
