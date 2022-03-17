@@ -275,6 +275,10 @@ class Common extends BaseController
         }
     }
 
+    public function del_that(){
+
+    }
+
     // 批量删除
     public function batch_del_that($request,$table){
         $ids = $request->param('ids');

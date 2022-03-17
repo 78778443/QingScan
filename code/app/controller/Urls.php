@@ -45,10 +45,7 @@ class Urls extends Common
 
     public function add()
     {
-
-//        $data['app_list'] = AppModel::getListByWhere([]);
         $data['app_list'] = Db::table('app')->select()->toArray();
-
         return View::fetch('add', $data);
     }
 
@@ -59,14 +56,7 @@ class Urls extends Common
             $data['user_id'] = $this->userId;
         }
         UrlsModel::addData($data);
-
         $this->success('添加成功', 'index');
-    }
-
-    public function add_api_url()
-    {
-        $data['app_list'] = AppModel::getListByWhere([]);
-        $this->show('urls/add_api_url', $data);
     }
 
     public function _add_api_url(Request $request)
@@ -81,7 +71,6 @@ class Urls extends Common
 
     public function getHeader()
     {
-
         $urlList = true;
         while ($urlList) {
             $urlList = Db::table('urls')->where(['response_header' => null])->limit(100)->field('id,url')->select()->toArray();
@@ -133,11 +122,13 @@ class Urls extends Common
     public function del(Request $request)
     {
         $id = $request->param('id', '', 'intval');
+        if (!$id) {
+            $this->error('参数不能为空');
+        }
         $map[] = ['id', '=', $id];
         if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
             $map[] = ['user_id', '=', $this->userId];
         }
-
         if (Db::name('urls')->where($map)->update(['is_delete' => 1])) {
             return redirect($_SERVER['HTTP_REFERER']);
         } else {
