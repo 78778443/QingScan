@@ -293,6 +293,7 @@ class Common extends BaseController
         }
     }
 
+    // 添加用户操作日志
     public function addUserLog($type,$content){
         UserLogModel::addLog($this->userInfo['username'],$type,$content);
     }

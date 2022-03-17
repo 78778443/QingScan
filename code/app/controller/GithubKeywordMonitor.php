@@ -71,6 +71,10 @@ class GithubKeywordMonitor extends Common
     public function del(Request $request)
     {
         $id = $request->param('id',0,'intval');
+        if (!$id) {
+            $this->error('参数不能为空');
+        }
+        $this->addUserLog('github',"删除github关键词[{$id}]");
         $map[] = ['id','=',$id];
         if ($this->auth_group_id != 5 && !in_array($this->userId,config('app.ADMINISTRATOR'))) {
             $map[] = ['user_id','=',$this->userId];
