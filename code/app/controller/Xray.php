@@ -177,6 +177,9 @@ class Xray extends Common
     public function del(Request $request)
     {
         $id = $request->param('id');
+        if (!$id) {
+            $this->error('参数不能为空');
+        }
         $map[] = ['id','=',$id];
         if ($this->auth_group_id != 5 && !in_array($this->userId,config('app.ADMINISTRATOR'))) {
             $map[] = ['user_id','=',$this->userId];

@@ -449,6 +449,7 @@ class App extends Common
         }
         Db::table('plugin_scan_log')->where(['app_id' => $id, 'scan_type' => 0, 'plugin_name' => $tools_name])->delete();
         if (!empty($data)) {
+            $this->addUserLog('目标管理',"重新扫描数据[{$id}],工具[{$tools_name}]操作成功");
             Db::table('app')->where(['id' => $id])->update($data);
         }
         return redirect($_SERVER['HTTP_REFERER'] ?? '/');
@@ -517,7 +518,7 @@ class App extends Common
         Db::table('urls_sqlmap')->where($map)->delete();
         Db::table('xray')->where($map)->delete();
         Db::table('plugin_scan_log')->where($map)->delete();
-
+        $this->addUserLog('目标管理',"重新扫描[{$ids}]操作成功");
         return $this->apiReturn(1,[],'操作成功');
     }
 
@@ -561,8 +562,10 @@ class App extends Common
         Db::table('github_keyword_monitor_notice')->where($map)->delete();
 
         if (Db::name('app')->where('id','in',$ids)->delete()) {
+            $this->addUserLog('目标管理',"批量删除数据[{$ids}]成功");
             return $this->apiReturn(1,[],'批量删除成功');
         } else {
+            $this->addUserLog('目标管理',"批量删除数据[{$ids}]失败");
             return $this->apiReturn(0,[],'批量删除失败');
         }
     }

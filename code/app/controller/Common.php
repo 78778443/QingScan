@@ -6,6 +6,7 @@ namespace app\controller;
 
 use app\BaseController;
 use app\model\AuthRuleModel;
+use app\model\UserLogModel;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Reader\Csv;
@@ -274,9 +275,14 @@ class Common extends BaseController
         }
     }
 
+    public function del_that(){
+
+    }
+
     // 批量删除
     public function batch_del_that($request,$table){
         $ids = $request->param('ids');
+        $this->addUserLog($table,"批量删除数据[$ids]");
         if (!$ids) {
             return $this->apiReturn(0,[],'请先选择要删除的数据');
         }
@@ -289,5 +295,10 @@ class Common extends BaseController
         } else {
             return $this->apiReturn(0,[],'批量删除失败');
         }
+    }
+
+    // 添加用户操作日志
+    public function addUserLog($type,$content){
+        UserLogModel::addLog($this->userInfo['username'],$type,$content);
     }
 }

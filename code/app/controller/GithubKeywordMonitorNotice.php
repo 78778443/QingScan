@@ -30,6 +30,6 @@ class GithubKeywordMonitorNotice extends Common
 
     // 批量删除
     public function batch_del(Request $request){
-        return $this->batch_del_that($request,''github_keyword_monitor_notice');
+        return $this->batch_del_that($request,'github_keyword_monitor_notice');
     }
 }
