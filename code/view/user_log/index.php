@@ -5,6 +5,14 @@ $searchArr = [
     'method' => 'get',
     'inputs' => [
         ['type' => 'text', 'name' => 'search', 'placeholder' => "搜索的内容"],
+    ],
+    'btnArr' => [
+        ['text' => '清空日志',
+            'ext' => [
+                "href" => url('user_log/clear_all'),
+                "class" => "btn btn-outline-success"
+            ]
+        ]
     ]];
 ?>
 {include file='public/search' /}

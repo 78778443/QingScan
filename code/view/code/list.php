@@ -108,6 +108,9 @@ $searchArr = [
                                 </td>
                             </tr>
                         <?php } ?>
+                        <?php if(empty($list)){?>
+                            <tr><td colspan="12" class="text-center">暂无目标</td></tr>
+                        <?php }?>
                     </table>
                 </div>
             </div>
