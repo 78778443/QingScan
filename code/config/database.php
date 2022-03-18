@@ -27,7 +27,7 @@ return [
             'hostname' => '127.0.0.1',
             'hostport'=>3306,
             // 用户名
-            'username' => 'qingscan',
+            'username' => 'root',
             'password' => '123',
             // 数据库名
             'database' => 'QingScan',

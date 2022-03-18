@@ -7,9 +7,9 @@ QingScan 是一款聚合扫描器，本身不生产安全扫描功能，但会�
 
 - GitHub：https://github.com/78778443/QingScan
 - 码云地址：https://gitee.com/songboy/QingScan
-- 详细文档：http://wiki.qingscan.songboy.site
+- 详细文档：http://wiki.qingscan.site
 - 哔哩哔哩：https://space.bilibili.com/437273065
-- 官网地址：http://qingscan.songboy.site/
+- 官网地址：http://qingscan.site/
 
 
 ## 在线演示
@@ -21,8 +21,7 @@ QingScan 是一款聚合扫描器，本身不生产安全扫描功能，但会�
 
 1. 需要安装docker、docker-compose 安装方法 http://get.daocloud.io/
 2. 下载代码后,启动容器`cd QingScan/docker/latest  && docker-compose up -d `
-2. <b>首次</b>启动需要更新容器内代码`docker exec  qingscan sh -c 'cd /root/qingscan && git fetch && git reset --hard origin/main && rm code/public/install/install.lock' `
-3. 依次执行命令创建MySQL数据库`docker exec -it  mysqlser bash`,进入数据库交互`mysql -uroot -p123` ,执行创建数据库 `CREATE DATABASE IF NOT EXISTS QingScan;`
+3. <b>首次</b>启动需要更新容器内代码`docker exec  qingscan sh -c 'cd /root/qingscan && git fetch && git reset --hard origin/main && rm code/public/install/install.lock' `
 4. 浏览器访问  http://127.0.0.1:8000/ 自动进入安装界面
 5. 安装中出现任何问题，请查看视频安装教程:https://www.bilibili.com/video/BV1rF411i7Gx
 
@@ -49,7 +48,7 @@ QingScan尽最大能力保障各位安装的顺畅，但QingScan人力有限，�
 ## 迭代计划
 
 > 目前QingScan第一任务是将版本稳定，如果你在使用中遇到BUG可以通过我们的禅道进行反馈，我们会有专人跟进,如果你需要提需求同样可以在禅道进行~
-1. 地址：http://txy8g.songboy.site:1200/
+1. 地址：http://txy8g.site:1200/
 2. 用户名：`qingscan`
 3. 密码：`QingScan123`
 
@@ -57,8 +56,7 @@ QingScan尽最大能力保障各位安装的顺畅，但QingScan人力有限，�
 ## 联系我
 
 在使用过程中有任何问题，可以通过公众号、微信、微信群联系
-
-![联系我们](https://user-images.githubusercontent.com/8509054/150087919-fd22cc2f-9876-49b9-ab98-6157196c1052.png)
+![联系我们0303](https://user-images.githubusercontent.com/8509054/156399735-92445a32-e318-4a48-9e47-2c91fa58515b.png)
 
 
 ## 功能展示
