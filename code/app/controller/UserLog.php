@@ -14,7 +14,7 @@ class UserLog extends Common
         $where = [];
         $search = $request->param('search');
         if (!empty($search)) {
-            $where[] = ['username','like',"%{$search}%"];
+            $where[] = ['username', 'like', "%{$search}%"];
         }
         $list = Db::table('user_log')->where($where)->order("id", 'desc')->paginate([
             'list_rows' => $pageSize,
@@ -24,21 +24,11 @@ class UserLog extends Common
         $data['page'] = $list->render();
         return View::fetch('index', $data);
     }
-<<<<<<< HEAD
-<<<<<<< HEAD
-}
-=======
-=======
->>>>>>> develop
 
-    public function clear_all(){
+    public function clear_all()
+    {
         Db::execute('truncate table `user_log`');
-        $this->addUserLog('日志管理','清空数据表[user_log]成功');
+        $this->addUserLog('日志管理', '清空数据表[user_log]成功');
         $this->success('日志表清空成功');
     }
-<<<<<<< HEAD
 }
->>>>>>> develop
-=======
-}
->>>>>>> develop
