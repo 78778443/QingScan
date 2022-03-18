@@ -30,7 +30,7 @@ return [
             'username' => 'root',
             'password' => '123',
             // 数据库名
-            'database' => 'qingscan',
+            'database' => 'QingScan',
             // 数据库编码默认采用utf8
             'charset' => 'utf8',
             // 数据库表前缀
