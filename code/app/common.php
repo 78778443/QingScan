@@ -792,8 +792,23 @@ function curl_get($url)
  */
 function get_ip_lookup($ip)
 {
-    $result = file_get_contents("https://ip.taobao.com/outGetIpInfo?ip={$ip}&accessKey=alibaba-inc");
-    return json_decode($result, true);
+    //$result = file_get_contents("https://ip.taobao.com/outGetIpInfo?ip={$ip}&accessKey=alibaba-inc");
+    $result = file_get_contents("https://www.ip138.com/iplookup.asp?ip={$ip}&action=2");
+    if (!$result) {
+        return false;
+    }
+    $result = iconv("gb2312", "utf-8//IGNORE",$result);
+    $preg = '/ip_result = {(.+?)};/';
+    preg_match($preg,$result,$content);
+    $arr = json_decode('{'.$content[1].'}',true);
+    $data['data'] =  [
+        'isp'=>$arr['ip_c_list'][0]['yunyin'],
+        'country'=>$arr['ip_c_list'][0]['ct'],
+        'region'=>$arr['ip_c_list'][0]['prov'],
+        'city'=>$arr['ip_c_list'][0]['city'],
+        'area'=>$arr['ip_c_list'][0]['area'],
+    ];
+    return $data;
 }
 
 function assoc_getcsv($csv_path)
