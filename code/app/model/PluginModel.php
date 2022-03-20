@@ -134,6 +134,7 @@ class PluginModel extends BaseModel
                         addlog(["自定义工具扫描结果文件内容为空", $info, $v]);
                     }
                 } elseif(strpos($cmd, '.txt')){
+                    $result_path = '';
                     $file = fopen($result_path, "r");
                     //检测指正是否到达文件的未端
                     $data = [];
