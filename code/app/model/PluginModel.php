@@ -124,11 +124,34 @@ class PluginModel extends BaseModel
                 $pathCmd = empty($info['tool_path']) ? '' : "cd {$info['tool_path']} &&";
                 $cmd = "{$pathCmd}  {$cmd} ";
 
-                $content = systemLog($cmd, false);
-                if (empty($content)) {
-                    addlog(["自定义工具扫描结果文件内容为空", $info, $v]);
+                if (strpos($cmd, '.json')) {
+                    $result_path = '';
+                    if (!file_exists($result_path)) {
+                        addlog(["自定义工具扫描失败", $info, $v]);
+                    }
+                    $content = file_get_contents($result_path);
+                    if (!$content) {
+                        addlog(["自定义工具扫描结果文件内容为空", $info, $v]);
+                    }
+                } elseif(strpos($cmd, '.txt')){
+                    $file = fopen($result_path, "r");
+                    //检测指正是否到达文件的未端
+                    $data = [];
+                    while (!feof($file)) {
+                        $result = fgets($file);
+                        if ($result) {
+                            $data[] = $result;
+                        }
+                    }
+                    fclose($file);
+                    $content = implode("\n", $data);
+                } else {
+                    $content = systemLog($cmd, false);
+                    if (empty($content)) {
+                        addlog(["自定义工具扫描结果文件内容为空", $info, $v]);
+                    }
+                    $content = implode("\n", $content);
                 }
-                $content = implode("\n", $content);
                 $data = [
                     'app_id' => $v['id'],
                     'user_id' => $v['user_id'] ?? 0,
