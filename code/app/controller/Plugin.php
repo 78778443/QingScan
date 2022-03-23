@@ -53,6 +53,7 @@ class Plugin extends Common
                 $data['user_id'] = $this->userId;
             }
             $data['cmd'] = $request->param('cmd');
+            $data['tool_path'] = $request->param('tool_path');
             $data['result_file'] = $request->param('result_file');
             $data['status'] = $request->param('status');
             $data['result_type'] = $request->param('result_type');
