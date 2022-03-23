@@ -54,6 +54,10 @@
                 <label class="form-label">工具存放位置</label>
                 <input type="text" name="tool_path" class="form-control" placeholder="工具存放位置(选填)">
             </div>
+            <div class="mb-3">
+                <label class="form-label">扫描结果存放位置</label>
+                <input type="text" name="result_file" class="form-control" placeholder="扫描结果存放位置(选填)">
+            </div>
             <div class="row" style="height: 10px"></div>
             <button type="submit" class="btn btn-outline-success">提交</button>
             <a href="<?php echo url('index') ?>" class="btn btn-outline-info">返回</a>

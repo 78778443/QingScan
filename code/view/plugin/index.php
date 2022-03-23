@@ -33,6 +33,7 @@ $dengjiArr = ['Low', 'Medium', 'High', 'Critical'];
                     <th>扫描类型</th>
                     <th>执行命令</th>
                     <th>工具位置</th>
+                    <th>扫描结果位置</th>
                     <th>状态</th>
                     <th>添加时间</th>
                     <th>操作</th>
@@ -48,6 +49,7 @@ $dengjiArr = ['Low', 'Medium', 'High', 'Critical'];
                         <td><?php echo $typeArr[$value['scan_type']] ?? '' ?></td>
                         <td><?php echo $value['cmd'] ?></td>
                         <td><?php echo $value['tool_path'] ?></td>
+                        <td><?php echo $value['result_file'] ?></td>
                         <td><?php echo $value['status']==1?'启用':'禁用' ?></td>
                         <td><?php echo $value['create_time'] ?></td>
                         <td>
