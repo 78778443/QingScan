@@ -124,7 +124,7 @@ class PluginModel extends BaseModel
                 $pathCmd = empty($info['tool_path']) ? '' : "cd {$info['tool_path']} &&";
                 $cmd = "{$pathCmd}  {$cmd} ";
 
-                if (strpos($cmd, '.json')) {
+                if (strpos($info['result_type'], '.json')) {
                     $result_path = '';
                     if (!file_exists($result_path)) {
                         addlog(["自定义工具扫描失败", $info, $v]);
@@ -133,19 +133,8 @@ class PluginModel extends BaseModel
                     if (!$content) {
                         addlog(["自定义工具扫描结果文件内容为空", $info, $v]);
                     }
-                } elseif(strpos($cmd, '.txt')){
-                    $result_path = '';
-                    $file = fopen($result_path, "r");
-                    //检测指正是否到达文件的未端
-                    $data = [];
-                    while (!feof($file)) {
-                        $result = fgets($file);
-                        if ($result) {
-                            $data[] = $result;
-                        }
-                    }
-                    fclose($file);
-                    $content = implode("\n", $data);
+                } elseif(strpos($info['result_type'], 'csv')){
+                    
                 } else {
                     $content = systemLog($cmd, false);
                     if (empty($content)) {
