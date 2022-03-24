@@ -55,6 +55,21 @@
                 <input type="text" name="tool_path" class="form-control" placeholder="工具存放位置(选填)">
             </div>
             <div class="mb-3">
+                <label class="form-label">扫描结果类型</label><br>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="result_type" id="result_type0" checked value="json">
+                    <label class="form-check-label" for="result_type0">json</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="result_type" id="result_type1" value="csv">
+                    <label class="form-check-label" for="result_type1">csv</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="result_type" id="result_type2" value="txt">
+                    <label class="form-check-label" for="result_type2">txt</label>
+                </div>
+            </div>
+            <div class="mb-3">
                 <label class="form-label">扫描结果存放位置</label>
                 <input type="text" name="result_file" class="form-control" placeholder="扫描结果存放位置(选填)">
             </div>
