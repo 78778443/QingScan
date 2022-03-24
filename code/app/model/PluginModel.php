@@ -155,6 +155,8 @@ class PluginModel extends BaseModel
                     'plugin_id' => $info['id'],
                     'plugin_name' => $info['name'],
                     'log_type' => 1,
+                    'check_status' => 0,
+                    'create_time'=>date('Y-m-d H:i:s',time())
                 ];
 
                 Db::table("plugin_scan_log")->extra('IGNORE')->insert($data);
