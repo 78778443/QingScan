@@ -18,7 +18,7 @@ class Host extends Common
     {
         $pageSize = 20;
         $where[] = ['is_delete','=',0];
-        $domain = getParam('domain');
+        $domain = $request->param('domain');
         if ($domain) {
             $where[] = ['domain','=',$domain];
         }
@@ -68,5 +68,4 @@ class Host extends Common
         }
         UrlsModel::addData($_POST);
     }
-
 }

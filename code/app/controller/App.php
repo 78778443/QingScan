@@ -17,12 +17,6 @@ class App extends Common
 {
     public $statusArr = ["未启用", "已启用", "已删除"];
 
-    public function a()
-    {
-
-        processSleep(1);
-    }
-
     public function index(Request $request)
     {
         $pageSize = 15;

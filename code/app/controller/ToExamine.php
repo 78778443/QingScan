@@ -5,13 +5,14 @@ namespace app\controller;
 
 
 use think\facade\Db;
+use think\Request;
 
 class ToExamine extends Common
 {
-    public function fortify()
+    public function fortify(Request $request)
     {
-        $id = getParam('id');
-        $check_status = intval(getParam('check_status'));
+        $id = $request->param('id');
+        $check_status = intval($request->param('check_status'));
         if (!$id) {
             return $this->apiReturn(0, [], '缺少参数');
         }
@@ -34,10 +35,10 @@ class ToExamine extends Common
         }
     }
 
-    public function process_safe()
+    public function process_safe(Request $request)
     {
-        $id = getParam('id');
-        $check_status = intval(getParam('check_status'));
+        $id = $request->param('id');
+        $check_status = intval($request->param('check_status'));
         if (!$id) {
             return $this->apiReturn(0, [], '缺少参数');
         }
@@ -56,10 +57,10 @@ class ToExamine extends Common
         }
     }
 
-    public function kunlun()
+    public function kunlun(Request $request)
     {
-        $id = getParam('id');
-        $check_status = intval(getParam('check_status'));
+        $id = $request->param('id');
+        $check_status = intval($request->param('check_status'));
         if (!$id) {
             return $this->apiReturn(0, [], '缺少参数');
         }
@@ -82,10 +83,10 @@ class ToExamine extends Common
         }
     }
 
-    public function semgrep()
+    public function semgrep(Request $request)
     {
-        $id = getParam('id');
-        $check_status = intval(getParam('check_status'));
+        $id = $request->param('id');
+        $check_status = intval($request->param('check_status'));
         if (!$id) {
             return $this->apiReturn(0, [], '缺少参数');
         }
@@ -108,10 +109,10 @@ class ToExamine extends Common
         }
     }
 
-    public function xray()
+    public function xray(Request $request)
     {
-        $id = getParam('id');
-        $check_status = intval(getParam('check_status'));
+        $id = $request->param('id');
+        $check_status = intval($request->param('check_status'));
         if (!$id) {
             return $this->apiReturn(0, [], '缺少参数');
         }
@@ -134,10 +135,10 @@ class ToExamine extends Common
         }
     }
 
-    public function awvs()
+    public function awvs(Request $request)
     {
-        $id = getParam('id');
-        $check_status = intval(getParam('check_status'));
+        $id = $request->param('id');
+        $check_status = intval($request->param('check_status'));
         if (!$id) {
             return $this->apiReturn(0, [], '缺少参数');
         }
@@ -156,10 +157,10 @@ class ToExamine extends Common
         }
     }
 
-    public function node()
+    public function node(Request $request)
     {
-        $id = getParam('id');
-        $check_status = intval(getParam('check_status'));
+        $id = $request->param('id');
+        $check_status = intval($request->param('check_status'));
         if (!$id) {
             return $this->apiReturn(0, [], '缺少参数');
         }
@@ -178,10 +179,10 @@ class ToExamine extends Common
         }
     }
 
-    public function auth_rule_auth()
+    public function auth_rule_auth(Request $request)
     {
-        $auth_rule_id = getParam('id');
-        $check_status = intval(getParam('check_status'));
+        $auth_rule_id = $request->param('id');
+        $check_status = intval($request->param('check_status'));
         if (!$auth_rule_id) {
             return $this->apiReturn(0, [], '缺少参数');
         }
@@ -200,10 +201,10 @@ class ToExamine extends Common
         }
     }
 
-    public function auth_rule_status()
+    public function auth_rule_status(Request $request)
     {
-        $auth_rule_id = getParam('id');
-        $check_status = intval(getParam('check_status'));
+        $auth_rule_id = $request->param('id');
+        $check_status = intval($request->param('check_status'));
         if (!$auth_rule_id) {
             return $this->apiReturn(0, [], '缺少参数');
         }
@@ -222,10 +223,10 @@ class ToExamine extends Common
         }
     }
 
-    public function code_webshell()
+    public function code_webshell(Request $request)
     {
-        $id = getParam('id');
-        $check_status = intval(getParam('check_status'));
+        $id = $request->param('id');
+        $check_status = intval($request->param('check_status'));
         if (!$id) {
             return $this->apiReturn(0, [], '缺少参数');
         }
@@ -244,10 +245,10 @@ class ToExamine extends Common
         }
     }
 
-    public function plugin_result()
+    public function plugin_result(Request $request)
     {
-        $id = getParam('id');
-        $check_status = intval(getParam('check_status'));
+        $id = $request->param('id');
+        $check_status = intval($request->param('check_status'));
         if (!$id) {
             return $this->apiReturn(0, [], '缺少参数');
         }
