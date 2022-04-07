@@ -17,8 +17,8 @@ class DeskIndex extends BaseController
 
     public function initialize()
     {
-        $token = getParam('token');
-        $token = '1ca4725c34758183af3fd1f723f07a31';
+        $token = \Request()->param('token');
+        //$token = '1ca4725c34758183af3fd1f723f07a31';
         $token = request()->header('token');
         $this->userId = Db::name('user')->where('token', $token)->value('id');
         $this->auth_group_id = Db::name('user')->where('token', $token)->value('auth_group_id');

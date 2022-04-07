@@ -8,6 +8,7 @@ use app\model\UrlsModel;
 use app\model\TaskModel;
 use app\model\XrayModel;
 use app\model\GroupModel;
+use think\Request;
 
 class Targets extends Common
 {
@@ -58,10 +59,10 @@ class Targets extends Common
     }
 
 
-    public function getTargetByGroup()
+    public function getTargetByGroup(Request $request)
     {
-        $l = getParam('l', 10);
-        $groupId = getParam('group_id');
+        $l = $request->param('l', 10);
+        $groupId = $request->param('group_id');
 
         $targetList = AppModel::getListByGroup($groupId, $l);
 
@@ -95,10 +96,10 @@ class Targets extends Common
     }
 
 
-    public function vulnerabilities()
+    public function vulnerabilities(Request $request)
     {
 
-        $group_id = getParam('group_id');
+        $group_id = $request->param('group_id');
 
         $where['group_id'] = $group_id;
         $appList = AppModel::getListByWhere($where, 20);
@@ -121,9 +122,9 @@ class Targets extends Common
         echo json_encode($bugList);
     }
 
-    public function getBugInfo()
+    public function getBugInfo(Request $request)
     {
-        $id = getParam('vuln_id');
+        $id = $request->param('vuln_id');
 
         $vulnInfo = XrayModel::getInfo($id);
         foreach ($this->vulnField as $k => $v) {
@@ -142,9 +143,9 @@ class Targets extends Common
         echo json_encode($vulnInfo);
     }
 
-    public function http_response()
+    public function http_response(Request $request)
     {
-        $vulnId = getParam('vuln_id');
+        $vulnId = $request->param('vuln_id');
 
         echo 'HTTP/1.1 200 OK
 Date: Fri, 26 Feb 2021 10:03:20 GMT
@@ -166,10 +167,10 @@ Array
     }
 
 
-    public function get_target_groups()
+    public function get_target_groups(Request $request)
     {
-        $size = getParam('l');
-        $q = addslashes(getParam('q'));
+        $size = $request->param('l');
+        $q = addslashes($request->param('q'));
 
 
         $where = [];

@@ -7,15 +7,16 @@ use app\model\AppModel;
 use app\model\UrlsModel;
 use app\model\TaskModel;
 use app\model\XrayModel;
+use think\Request;
 
 class Task extends Common
 {
 
     public $statusArr = ["队列中", "已完成", "已失败"];
 
-    public function scan_list()
+    public function scan_list(Request $request)
     {
-        $page = getParam('page', 1);
+        $page = $request->param('page', 1);
         $data = UrlsModel::getListByWherePage([], $page);
         $data['statusArr'] = $this->statusArr;
         $data['appArr'] = AppModel::getAppName();
@@ -24,9 +25,9 @@ class Task extends Common
     }
 
 
-    public function bug_list()
+    public function bug_list(Request $request)
     {
-        $page = getParam('page', 1);
+        $page = $request->param('page', 1);
         $taskId = $_GET['task_id'] ?? 0;
         $where = [];
 
@@ -72,13 +73,13 @@ class Task extends Common
         }
     }
 
-    public function _start_scan()
+    public function _start_scan(Request $request)
     {
 
         addlog(['开始进行扫描', $_POST]);
 
         //接收参数
-        $urlId = getParam('url_id');
+        $urlId = $request->param('url_id');
 
         //查询URL地址
         $urlInfo = UrlsModel::getInfo($urlId);

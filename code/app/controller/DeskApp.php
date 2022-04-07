@@ -17,7 +17,7 @@ class DeskApp extends BaseController
 
     public function initialize()
     {
-        $token = getParam('token');
+        $token = \Request()->param('token');
         $this->userId = Db::name('user')->where('token', $token)->value('id');
         $this->auth_group_id = Db::name('user')->where('token', $token)->value('auth_group_id');
 
