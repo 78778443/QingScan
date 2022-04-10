@@ -51,30 +51,34 @@ class PluginModel extends BaseModel
     public static function deleteDir()
     {
         $codeCheck = "/data/codeCheck";
-        //1. 获取目录下的文件列表
-        $resource = opendir($codeCheck);
-        while ($file = readdir($resource)) {
-            $dirName = "{$codeCheck}/{$file}";
-            //2. 获取文件的创建时间
-            $ctime = filectime($dirName);
+        while (true) {
+            //1. 获取目录下的文件列表
+            $resource = opendir($codeCheck);
+            while ($file = readdir($resource)) {
+                $dirName = "{$codeCheck}/{$file}";
+                //2. 获取文件的创建时间
+                $ctime = filectime($dirName);
 
-            //获取磁盘空间,根据剩余空间，决定代码保存时间
-            $cmd = "df -h | grep 'G' | head -n 1 | awk '{print $4}'";
-            $size = intval(exec($cmd));
-            //如果空间大于200G,那么保留72小时,否则48小时
-            $hour = ($size > 200) ? 72 : 48;
-            //如果空间小于60G,那么保留24小时
-            $hour = ($size < 60) ? 24 : $hour;
-            //如果空间小于20G,那么保留2小时
-            $hour = ($size < 20) ? 2 : $hour;
+                //获取磁盘空间,根据剩余空间，决定代码保存时间
+                $cmd = "df -h | grep 'G' | head -n 1 | awk '{print $4}'";
+                $size = intval(exec($cmd));
+                //如果空间大于200G,那么保留72小时,否则48小时
+                $hour = ($size > 200) ? 72 : 48;
+                //如果空间小于60G,那么保留24小时
+                $hour = ($size < 60) ? 24 : $hour;
+                //如果空间小于20G,那么保留2小时
+                $hour = ($size < 20) ? 2 : $hour;
 
-            echo "空间剩余 {$size} G 保留时间为 {$hour} 小时" . PHP_EOL;
-
-            //3. 如果时间超过24小时
-            if ($ctime < (time() - $hour * 3600)) {
-                //4. 删除此文件
-                unlink($dirName);
+//                echo "空间剩余 {$size} G 保留时间为 {$hour} 小时" . PHP_EOL;
+                //3. 如果时间超过24小时
+                if ($ctime < (time() - $hour * 3600)) {
+                    //4. 删除此文件
+                    echo "正在删除过期的代码文件夹 {$dirName}";
+                    $cmd = "rm -rf $dirName";
+                    systemLog($cmd);
+                }
             }
+            sleep(60);
         }
     }
 
