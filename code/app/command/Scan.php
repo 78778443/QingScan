@@ -132,13 +132,15 @@ class Scan extends Command
             WebScanModel::dismapScan();
         } elseif ($func == 'plugin_safe') {
             PluginModel::safe();
+        } elseif ($func == 'deleteDir') {
+            PluginModel::deleteDir();
         } elseif ($func == 'custom') {
             $custom = trim($input->getArgument('custom'));
             $scanType = $input->getArgument('scan_type');
             $scanType = array_search($scanType, ['app', 'host', 'code', 'url']);
             PluginModel::custom_event($custom, $scanType);
-        } elseif($func == 'custom_store'){
-            $className = 'app\model\\'.trim($input->getArgument('custom')).'PluginsModel';
+        } elseif ($func == 'custom_store') {
+            $className = 'app\model\\' . trim($input->getArgument('custom')) . 'PluginsModel';
             $funcName = $input->getArgument('scan_type');
             $className::$funcName();
         }
