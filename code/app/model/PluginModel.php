@@ -48,13 +48,16 @@ class PluginModel extends BaseModel
         }
     }
 
-    public static function deleteDir()
+    public static function deleteCodeDir()
     {
         $codeCheck = "/data/codeCheck";
         while (true) {
             //1. 获取目录下的文件列表
             $resource = opendir($codeCheck);
             while ($file = readdir($resource)) {
+                if ($file == '.' || $file == '..') {
+                    continue;
+                }
                 $dirName = "{$codeCheck}/{$file}";
                 //2. 获取文件的创建时间
                 $ctime = filectime($dirName);
@@ -195,7 +198,7 @@ class PluginModel extends BaseModel
                     'plugin_name' => $info['name'],
                     'log_type' => 1,
                     'check_status' => 0,
-                    'create_time'=>date('Y-m-d H:i:s',time())
+                    'create_time' => date('Y-m-d H:i:s', time())
                 ];
 
                 Db::table("plugin_scan_log")->extra('IGNORE')->insert($data);

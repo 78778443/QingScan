@@ -133,7 +133,7 @@ class Scan extends Command
         } elseif ($func == 'plugin_safe') {
             PluginModel::safe();
         } elseif ($func == 'deleteDir') {
-            PluginModel::deleteDir();
+            PluginModel::deleteCodeDir();
         } elseif ($func == 'custom') {
             $custom = trim($input->getArgument('custom'));
             $scanType = $input->getArgument('scan_type');
