@@ -10,19 +10,30 @@ function getRabbitMq()
     return $rabitMq;
 }
 
+function getFileType(array $fileList)
+{
+    $typeList = [];
+    foreach ($fileList as $val) {
+        $fileInfo = pathinfo($val);
+        $typeList[$fileInfo['extension']] = $fileInfo['extension'];
+    }
+
+    return $typeList;
+}
+
 function getGitAddr($prName, $sshUrl, $filePath, $line = "")
 {
     // 判断类型
     if (preg_match('/gitee\.com/', $sshUrl)) {   // 码云
-        $path = substr($sshUrl,strripos($sshUrl,':')+1,strlen($sshUrl));
-        $domain_name =  "https://gitee.com/{$path}";
+        $path = substr($sshUrl, strripos($sshUrl, ':') + 1, strlen($sshUrl));
+        $domain_name = "https://gitee.com/{$path}";
     } elseif (preg_match('/github\.com/', $sshUrl)) {    // github
-        $path = substr($sshUrl,strripos($sshUrl,'github.com/')+1,strlen($sshUrl));
-        $domain_name =  "https://github.com/{$path}";
+        $path = substr($sshUrl, strripos($sshUrl, 'github.com/') + 1, strlen($sshUrl));
+        $domain_name = "https://github.com/{$path}";
     }
     $zhengze = "/\/data\/codeCheck\/[a-zA-Z0-9]*\//";
     $path = preg_replace($zhengze, "/blob/master/", $filePath);
-    $url = $domain_name.$path;
+    $url = $domain_name . $path;
     if ($line != "") {
         $url .= "#L{$line}";
     }
@@ -797,16 +808,16 @@ function get_ip_lookup($ip)
     if (!$result) {
         return false;
     }
-    $result = iconv("gb2312", "utf-8//IGNORE",$result);
+    $result = iconv("gb2312", "utf-8//IGNORE", $result);
     $preg = '/ip_result = {(.+?)};/';
-    preg_match($preg,$result,$content);
-    $arr = json_decode('{'.$content[1].'}',true);
-    $data['data'] =  [
-        'isp'=>$arr['ip_c_list'][0]['yunyin'],
-        'country'=>$arr['ip_c_list'][0]['ct'],
-        'region'=>$arr['ip_c_list'][0]['prov'],
-        'city'=>$arr['ip_c_list'][0]['city'],
-        'area'=>$arr['ip_c_list'][0]['area'],
+    preg_match($preg, $result, $content);
+    $arr = json_decode('{' . $content[1] . '}', true);
+    $data['data'] = [
+        'isp' => $arr['ip_c_list'][0]['yunyin'],
+        'country' => $arr['ip_c_list'][0]['ct'],
+        'region' => $arr['ip_c_list'][0]['prov'],
+        'city' => $arr['ip_c_list'][0]['city'],
+        'area' => $arr['ip_c_list'][0]['area'],
     ];
     return $data;
 }
@@ -1038,11 +1049,11 @@ function deldir($path)
                 //排除目录中的.和..
                 if ($val != "." && $val != "..") {
                     //如果是目录则递归子目录，继续操作
-                    if (is_dir($path .'/'. $val)) {
+                    if (is_dir($path . '/' . $val)) {
                         //子目录中操作删除文件夹和文件
-                        deldir($path .'/'. $val . '/');
-                    } elseif($val == '.git'){
-                        deldir($path .'/'. $val . '/');
+                        deldir($path . '/' . $val . '/');
+                    } elseif ($val == '.git') {
+                        deldir($path . '/' . $val . '/');
                     } else {
                         //如果是文件直接删除
                         @unlink($path . '/' . $val);

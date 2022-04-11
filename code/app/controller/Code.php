@@ -29,7 +29,7 @@ class Code extends Common
             $where[] = ['name', 'like', "%{$search}%"];
         }
         $list = Db::table('code')->where($where)->order('scan_time', 'desc')->paginate([
-            'list_rows'=> $pageSize,//每页数量
+            'list_rows' => $pageSize,//每页数量
             'query' => $request->param(),
         ]);
 
@@ -126,13 +126,14 @@ class Code extends Common
     }
 
     // 批量删除
-    public function batch_del(Request $request){
+    public function batch_del(Request $request)
+    {
         $ids = $request->param('ids');
         if (!$ids) {
-            return $this->apiReturn(0,[],'请先选择要删除的数据');
+            return $this->apiReturn(0, [], '请先选择要删除的数据');
         }
-        $map[] = ['code_id','in',$ids];
-        $where[] = ['id','in',$ids];
+        $map[] = ['code_id', 'in', $ids];
+        $where[] = ['id', 'in', $ids];
         if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
             $where[] = ['user_id', '=', $this->userId];
         }
@@ -143,21 +144,22 @@ class Code extends Common
             Db::table('code_composer')->where($map)->delete();
             Db::table('code_python')->where($map)->delete();
             Db::table('code_java')->where($map)->delete();
-            Db::table('plugin_scan_log')->whereIn('app_id',$ids)->where('scan_type',2)->delete();
+            Db::table('plugin_scan_log')->whereIn('app_id', $ids)->where('scan_type', 2)->delete();
 
-            return $this->apiReturn(1,[],'批量删除成功');
+            return $this->apiReturn(1, [], '批量删除成功');
         } else {
-            return $this->apiReturn(0,[],'批量删除失败');
+            return $this->apiReturn(0, [], '批量删除失败');
         }
     }
 
-    public function again_scan(Request $request){
+    public function again_scan(Request $request)
+    {
         $ids = $request->param('ids');
         if (!$ids) {
-            return $this->apiReturn(0,[],'请先选择要重新扫描的数据');
+            return $this->apiReturn(0, [], '请先选择要重新扫描的数据');
         }
-        $map[] = ['code_id','in',$ids];
-        $where[] = ['id','in',$ids];
+        $map[] = ['code_id', 'in', $ids];
+        $where[] = ['id', 'in', $ids];
         if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
             $where[] = ['user_id', '=', $this->userId];
             $map[] = ['user_id', '=', $this->userId];
@@ -179,9 +181,9 @@ class Code extends Common
         Db::table('code_composer')->where($map)->delete();
         Db::table('code_python')->where($map)->delete();
         Db::table('code_java')->where($map)->delete();
-        Db::table('plugin_scan_log')->whereIn('app_id',$ids)->where(['scan_type' => 2])->delete();
+        Db::table('plugin_scan_log')->whereIn('app_id', $ids)->where(['scan_type' => 2])->delete();
 
-        return $this->apiReturn(1,[],'操作成功');
+        return $this->apiReturn(1, [], '操作成功');
     }
 
     public function bug_list(Request $request)
@@ -193,6 +195,7 @@ class Code extends Common
         $pid = $request->param('code_id');
         $Folder = $request->param('Folder');
         $Category = $request->param('Category');
+        $filetype = $request->param('filetype');
         $Primary_filename = $request->param('Primary_filename');
         $check_status = $request->param('check_status', '-2');
 
@@ -206,6 +209,7 @@ class Code extends Common
         if (!empty($search)) {
             $where[] = ['Primary', 'like', "%{$search}%"];
         }
+
         if (in_array($check_status, [0, 1, 2])) {
             $where = array_merge($where, ['check_status' => $check_status]);
         }
@@ -217,6 +221,9 @@ class Code extends Common
 
         $fortifyApi = Db::table('fortify')->where($where)->order('id', 'desc');;
         $fortifyApi = $fortifyApi->where("Folder != 'Low'");
+        if (!empty($filetype)) {
+            $fortifyApi= $fortifyApi->where('Primary_filename', 'like', "%.$filetype");
+        }
         $fortifyCountApi = Db::table('fortify')->where($where)->where("Folder != 'Low'");
         //获取分类分组
         $categoryList = Db::table('fortify')->where($map)->where("Folder != 'Low'")->group('Category')->field('Category')->select()->toArray();
@@ -244,14 +251,14 @@ class Code extends Common
         // 获取分页显示
         //$pageRaw = $fortifyApi->paginate($pageSize)->render();
 
-        foreach ($projectArr as $k=>$v) {
+        foreach ($projectArr as $k => $v) {
             // 判断类型
             if (preg_match('/gitee\.com/', $v['ssh_url'])) {   // 码云
-                $path = substr($v['ssh_url'],strripos($v['ssh_url'],':')+1,strlen($v['ssh_url']));
-                $projectArr[$k]['domain_name'] =  "https://gitee.com/{$path}/blob/main";
+                $path = substr($v['ssh_url'], strripos($v['ssh_url'], ':') + 1, strlen($v['ssh_url']));
+                $projectArr[$k]['domain_name'] = "https://gitee.com/{$path}/blob/main";
             } elseif (preg_match('/github\.com/', $v['ssh_url'])) {    // github
-                $path = substr($v['ssh_url'],strripos($v['ssh_url'],'github.com/')+1,strlen($v['ssh_url']));
-                $projectArr[$k]['domain_name'] =  "https://github.com/{$path}/blob/main";
+                $path = substr($v['ssh_url'], strripos($v['ssh_url'], 'github.com/') + 1, strlen($v['ssh_url']));
+                $projectArr[$k]['domain_name'] = "https://github.com/{$path}/blob/main";
             }
         }
         //分配数据
@@ -320,19 +327,20 @@ class Code extends Common
     }
 
     // 批量删除
-    public function bug_batch_del(Request $request){
+    public function bug_batch_del(Request $request)
+    {
         $ids = $request->param('ids');
         if (!$ids) {
-            return $this->apiReturn(0,[],'请先选择要删除的数据');
+            return $this->apiReturn(0, [], '请先选择要删除的数据');
         }
-        $map[] = ['id','in',$ids];
+        $map[] = ['id', 'in', $ids];
         if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
             $map[] = ['user_id', '=', $this->userId];
         }
         if (Db::name('fortify')->where($map)->update(['is_delete' => 1])) {
-            return $this->apiReturn(1,[],'批量删除成功');
+            return $this->apiReturn(1, [], '批量删除成功');
         } else {
-            return $this->apiReturn(0,[],'批量删除失败');
+            return $this->apiReturn(0, [], '批量删除失败');
         }
     }
 
@@ -472,6 +480,7 @@ class Code extends Common
         $level = $request->param('level'); // 等级
         $Category = $request->param('Category');   // 分类
         $filename = $request->param('filename');   // 文件名
+        $filetype = $request->param('filetype');   // 文件名
         $check_status = $request->param('check_status');   // 审核状态
         if (!empty($project_id)) {
             $where[] = ['code_id', '=', $project_id];
@@ -480,10 +489,13 @@ class Code extends Common
             $where[] = ['extra_severity', '=', $level];
         }
         if (!empty($Category)) {
-            $where[] = ['check_id', '=', $Category];
+            $where[] = ['check_id', '=', "data.tools.semgrep.$Category"];
         }
         if (!empty($filename)) {
-            $where[] = ['path', '=', $filename];
+            $where[] = ['path', '=', "/data/codeCheck/$filename"];
+        }
+        if (!empty($filetype)) {
+            $where[] = ['path', 'like', "%.$filetype"];
         }
         if ($check_status !== null && in_array($check_status, [0, 1, 2])) {
             $where[] = ['check_status', '=', $check_status];
@@ -527,20 +539,22 @@ class Code extends Common
             $this->error('删除失败');
         }
     }
+
     // 批量删除
-    public function semgrep_batch_del(Request $request){
+    public function semgrep_batch_del(Request $request)
+    {
         $ids = $request->param('ids');
         if (!$ids) {
-            return $this->apiReturn(0,[],'请先选择要删除的数据');
+            return $this->apiReturn(0, [], '请先选择要删除的数据');
         }
-        $map[] = ['id','in',$ids];
+        $map[] = ['id', 'in', $ids];
         if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
             $map[] = ['user_id', '=', $this->userId];
         }
         if (Db::name('semgrep')->where($map)->update(['is_delete' => 1])) {
-            return $this->apiReturn(1,[],'批量删除成功');
+            return $this->apiReturn(1, [], '批量删除成功');
         } else {
-            return $this->apiReturn(0,[],'批量删除失败');
+            return $this->apiReturn(0, [], '批量删除失败');
         }
     }
 
