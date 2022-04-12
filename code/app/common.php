@@ -15,6 +15,9 @@ function getFileType(array $fileList)
     $typeList = [];
     foreach ($fileList as $val) {
         $fileInfo = pathinfo($val);
+        if(!isset($fileInfo['extension'])){
+            continue;
+        }
         $typeList[$fileInfo['extension']] = $fileInfo['extension'];
     }
 

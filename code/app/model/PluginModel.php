@@ -59,6 +59,10 @@ class PluginModel extends BaseModel
                     continue;
                 }
                 $dirName = "{$codeCheck}/{$file}";
+                //如果目录是fortify正在扫描的目录，先不管它了
+                if ($dirName == self::getFortifyScanDir()) {
+                    continue;
+                }
                 //2. 获取文件的创建时间
                 $ctime = filectime($dirName);
 
@@ -83,6 +87,13 @@ class PluginModel extends BaseModel
             }
             sleep(60);
         }
+    }
+
+    public static function getFortifyScanDir()
+    {
+        $cmd = "ps -ef | grep -v def  | awk '{print $22}' | grep '/data/codeCheck'";
+        $str = exec($cmd);
+        return $str;
     }
 
     public static function safe()

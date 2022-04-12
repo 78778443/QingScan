@@ -42,7 +42,7 @@ $searchArr = [
                     <td><?php echo $value['id'] ?></td>
                     <td><?php echo $value['name'] ?></td>
                     <td><?php echo $value['type'] ?></td>
-                    <td><?php echo $value['filename'] ?></td>
+                    <td><?php echo str_replace('/data/codeCheck/','',$value['filename']) ?></td>
                     <td><?php echo $value['create_time']; ?></td>
                     <td><select class="changCheckStatus form-select" data-id="<?php echo $value['id'] ?>">
                             <option value="0" <?php echo $value['check_status'] == 0 ? 'selected' : ''; ?> >未审核

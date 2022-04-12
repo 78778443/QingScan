@@ -63,7 +63,7 @@ $searchArr = [
                             <?php echo $value['Source']['FileName'] ?? '' ?>
                         </a>
                     </td>
-                    <td title="<?php echo htmlentities($value['Primary']['Snippet']) ?>">
+                    <td title="<?php echo htmlentities($value['Primary']['Snippet'] ?? '') ?>">
                         <a href="<?php echo isset($projectArr[$value['code_id']]) ? $projectArr[$value['code_id']]['domain_name'] : '' ?>/<?php echo $value['Primary']['FilePath'].'#L'.$value['Primary']['LineStart'] ?>"
                            target="_blank">
                             <?php echo $value['Primary']['FileName'] ?>

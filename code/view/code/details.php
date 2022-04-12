@@ -98,7 +98,7 @@ $dengjiArrColor = ['Low' => 'secondary', 'Medium' => 'primary', 'High' => 'warni
                             <?php echo $value['Source']['FileName'] ?? '' ?>
                         </a>
                     </td>
-                    <td title="<?php echo htmlentities($value['Primary']['Snippet']) ?>">
+                    <td title="<?php echo htmlentities($value['Primary']['Snippet'] ?? '') ?>">
                         <a href="<?php echo isset($projectArr[$value['code_id']]) ? $projectArr[$value['code_id']]['ssh_url'] : '' ?>/-/blob/master/<?php echo $value['Primary']['FilePath'] ?>"
                            target="_blank">
                             <?php echo $value['Primary']['FileName'] ?>
