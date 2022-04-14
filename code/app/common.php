@@ -96,24 +96,6 @@ use think\facade\Db;
 use think\facade\Log;
 
 
-//spl_autoload_register('my_autoloader');
-//function my_autoloader($className)
-//{
-//    $className = str_replace('\\', '/', $className);
-//    require_once "./$className.php";
-//}
-
-
-function ActionIsExists($action)
-{
-
-    if (file_exists(__APP__ . "/action/{$action}Action.php")) {
-        return true;
-    }
-
-    return false;
-}
-
 function getDirFileName($path): array
 {
     $arr = array();
@@ -336,18 +318,6 @@ function ajaxReturn($data = null, $code = 200, $msg = '操作成功')
 }
 
 
-//统一过滤
-function I($name, $default = '')
-{
-    $value = $default;
-    if (isset($_REQUEST[$name])) {
-        $value = is_array($_REQUEST[$name]) ? $_REQUEST[$name] : addslashes($_REQUEST[$name]);
-    }
-
-    return $value;
-}
-
-
 function getClientIp()
 {
     //strcasecmp 比较两个字符，不区分大小写。返回0，>0，<0。
@@ -362,7 +332,6 @@ function getClientIp()
     } else {
         $ip = '8.8.8.8';
     }
-
 
     //正则校验IP地址
     $ip = preg_match('/[\d\.]{7,15}/', $ip, $matches) ? $matches [0] : '';
@@ -854,22 +823,6 @@ function xmlToArray($url)
     $xml = file_get_contents($url);
     $xmlstring = simplexml_load_string($xml, 'SimpleXMLElement', LIBXML_NOCDATA);
     return json_decode(json_encode($xmlstring), true);
-}
-
-function getPrimaryDomainName($url)
-{
-    $arr = parse_url($url);
-    if (isset($arr['path'])) {
-        $url = $arr['path'];
-    } else {
-        $url = $arr['host'];
-    }
-    $path = \think\facade\App::getRootPath() . 'vendor/jeremykendall/php-domain-parser/test_data/public_suffix_list.dat';
-    $publicSuffixList = Rules::fromPath($path);
-    $domain = Domain::fromIDNA2008($url);
-
-    $result = $publicSuffixList->resolve($domain);
-    return $result->registrableDomain()->toString();
 }
 
 function array_is_map($arr)
