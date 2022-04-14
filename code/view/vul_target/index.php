@@ -42,7 +42,6 @@ $searchArr = [
     <div class="col-md-12 ">
         {include file='public/batch_del' /}
 
-        <?php if (!empty($list)) { ?>
             <table class="table table-bordered table-hover table-striped">
                 <thead>
                 <tr>
@@ -87,9 +86,6 @@ $searchArr = [
                     </tr>
                 <?php } ?>
             </table>
-        <?php } else {
-            echo "<h3 class='text-center'>列表没有数据</h3>";
-        } ?>
     </div>
 </div>
 {include file='public/fenye' /}

@@ -28,9 +28,9 @@ return [
             'hostport'=>3306,
             // 用户名
             'username' => 'root',
-            'password' => '123',
+            'password' => '123456',
             // 数据库名
-            'database' => 'QingScan',
+            'database' => 'qingscan1',
             // 数据库编码默认采用utf8
             'charset' => 'utf8',
             // 数据库表前缀

@@ -51,7 +51,5 @@ $searchArr = [
             </table>
         </div>
     </div>
-
-    {include file='public/fenye' /}
 </div>
 {include file='public/footer' /}

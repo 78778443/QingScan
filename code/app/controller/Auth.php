@@ -209,16 +209,15 @@ class Auth extends Common
      */
     public function auth_group_list()
     {
-        $list = Db::name('auth_group')->where('is_delete', '=', 0)->order('auth_group_id', 'desc')->paginate(25)->toArray();
-        $data['list'] = $list['data'];
-        foreach ($data['list'] as &$val) {
+        $list = Db::name('auth_group')->where('is_delete', '=', 0)->order('auth_group_id', 'desc')->select()->toArray();
+        foreach ($list as &$val) {
             if ($val['status'] == 1) {
                 $val['show_status'] = '正常';
             } else {
                 $val['show_status'] = '禁用';
             }
         }
-        $data['page'] = $list['current_page'];
+        $data['list'] = $list;
         return View::fetch('auth/auth_group_list', $data);
     }
 
