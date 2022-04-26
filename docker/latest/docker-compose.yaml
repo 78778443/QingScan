@@ -13,7 +13,7 @@ services:
 #        source: "./mysql"
 #        target: "/var/lib/mysql"
     ports:
-      - "33306:3306"
+      - "127.0.0.1:33306:3306"
   qingscan:
     image: registry.cn-beijing.aliyuncs.com/daxia/qingscan:20211231_01
     container_name: qingscan
