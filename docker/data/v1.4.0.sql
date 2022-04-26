@@ -13,10 +13,7 @@ INSERT INTO `auth_rule`( `href`, `title`, `is_delete`, `is_open_auth`, `pid`, `s
 INSERT INTO `auth_rule`( `href`, `title`, `is_delete`, `is_open_auth`, `pid`, `sort`, `created_at`, `menu_status`, `update_time`, `level`, `delete_time`, `icon_url`) VALUES ( 'user_log/index', '登录日志', 0, 1, 23, 9, 1643018839, 1, 0, 2, 0, '');
 INSERT INTO `auth_rule`( `href`, `title`, `is_delete`, `is_open_auth`, `pid`, `sort`, `created_at`, `menu_status`, `update_time`, `level`, `delete_time`, `icon_url`) VALUES ( 'backup/index', '数据备份', 0, 1, 23, 8, 1642854435, 1, 0, 2, 0, '');
 INSERT INTO `auth_rule`( `href`, `title`, `is_delete`, `is_open_auth`, `pid`, `sort`, `created_at`, `menu_status`, `update_time`, `level`, `delete_time`, `icon_url`) VALUES ( 'github_keyword_monitor_notice/index', 'github关键词监控结果', 0, 1, 35, 8, 1642852575, 1, 0, 2, 0, '');
-
-
+INSERT INTO `auth_rule` (`auth_rule_id`,`href`, `title`, `is_delete`, `is_open_auth`, `pid`, `sort`, `created_at`, `menu_status`, `update_time`, `level`, `delete_time`, `icon_url`) VALUES (333,'', '插件中心', 0, 1, 0, 8, 1642257783, 1, 0, 1, 0, '');
 
 
 INSERT INTO `system_config` (`name`, `key`, `value`, `is_delete`) VALUES ('暂停扫描', 'maxProcesses', '1', 0);
-
-INSERT INTO `auth_rule` (`auth_rule_id`,`href`, `title`, `is_delete`, `is_open_auth`, `pid`, `sort`, `created_at`, `menu_status`, `update_time`, `level`, `delete_time`, `icon_url`) VALUES (333,'', '插件中心', 0, 1, 0, 8, 1642257783, 1, 0, 1, 0, '');
