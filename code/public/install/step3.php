@@ -116,8 +116,10 @@ function getSqlArr()
     //匹配插入语句
     $zhengze = "/INSERT.*;/Us";
     preg_match_all($zhengze, $str, $charu);
-
-    $arr = array_merge($shanbiao[0], $jianbiao[0], $charu[0]);
+    //匹配添加字段语句
+    $zhengze = "/ALTER TABLE.*;/Us";
+    preg_match_all($zhengze, $str, $filed);
+    $arr = array_merge($shanbiao[0], $jianbiao[0], $charu[0],$filed[0]);
     array_unshift($arr, "SET FOREIGN_KEY_CHECKS = 0;");
     array_push($arr, "SET FOREIGN_KEY_CHECKS = 1;");
 
