@@ -26,8 +26,8 @@ $searchArr = [
                         </label>
                     </th>
                     <th>ID</th>
-                    <th>urls</th>
-                    <th>type</th>
+                    <th>漏洞地址</th>
+                    <th>漏洞类型</th>
                     <th>title</th>
                     <th>payload</th>
                     <th>dbms</th>
