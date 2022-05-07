@@ -49,7 +49,7 @@ class Code extends Common
         return View::fetch('list', $data);
     }
 
-    public function rescan(Request $request)
+    public function qingkong(Request $request)
     {
         $id = $request->param('id');
         $map[] = ['id', '=', $id];
@@ -57,7 +57,9 @@ class Code extends Common
         if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
             $map[] = ['user_id', '=', $this->userId];
         }
-
+        if (!Db::name('code')->where($map)->count()) {
+            $this->error('数据不存在');
+        }
         $array = [
             'scan_time' => '2000-01-01 00:00:00',
             'sonar_scan_time' => '2000-01-01 00:00:00',
@@ -990,5 +992,48 @@ class Code extends Common
                 }
             }
         }
+    }
+
+    public function rescan(Request $request){
+        $id = $request->param('id');
+        $map[] = ['id', '=', $id];
+        $tools_name = $request->param('tools_name');
+        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
+            $map[] = ['user_id', '=', $this->userId];
+        }
+        if (!Db::name('code')->where($map)->count()) {
+            $this->error('数据不存在');
+        }
+        switch ($tools_name) {
+            case 'fortify':
+                $data['scan_time']  ='2000-01-01 00:00:00';
+                Db::table('fortify')->where(['code_id' => $id])->delete();
+                break;
+            case 'semgrep':
+                $data['semgrep_scan_time']  ='2000-01-01 00:00:00';
+                Db::table('semgrep')->where(['code_id' => $id])->delete();
+                break;
+            case 'webshell':
+                $data['webshell_scan_time']  ='2000-01-01 00:00:00';
+                Db::table('code_webshell')->where(['code_id' => $id])->delete();
+                break;
+            case 'java':
+                $data['java_scan_time']  ='2000-01-01 00:00:00';
+                Db::table('code_java')->where(['code_id' => $id])->delete();
+                break;
+            case 'python':
+                $data['python_scan_time']  ='2000-01-01 00:00:00';
+                Db::table('code_python')->where(['code_id' => $id])->delete();
+                break;
+            case 'php':
+                $data['composer_scan_time']  ='2000-01-01 00:00:00';
+                Db::table('code_composer')->where(['code_id' => $id])->delete();
+                break;
+            default:
+                break;
+        }
+        Db::table('code')->where(['id' => $id])->save($data);
+        Db::table('plugin_scan_log')->where(['app_id' => $id, 'scan_type' => 2])->delete();
+        return redirect($_SERVER['HTTP_REFERER']);
     }
 }

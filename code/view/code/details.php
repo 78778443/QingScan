@@ -68,6 +68,9 @@ $dengjiArrColor = ['Low' => 'secondary', 'Medium' => 'primary', 'High' => 'warni
     <div class="col-auto  tuchu_col">
         <h4 class="text-center">
             Fortify
+            <a href="<?php echo url('code/rescan', ['id'=>$info['id'],'tools_name' => 'fortify']) ?>"
+               onClick="return confirm('确定要清空该工具数据重新扫描吗?')"
+               class="btn btn-sm btn-outline-warning">重新扫描</a>
         </h4>
         <table class="table table-bordered table-hover table-striped">
             <thead>
@@ -92,14 +95,31 @@ $dengjiArrColor = ['Low' => 'secondary', 'Medium' => 'primary', 'High' => 'warni
                     <td>
                         <span class="badge rounded-pill bg-<?php echo $dengjiArrColor[$value['Friority']] ?>"><?php echo $value['Friority'] ?></span>
                     </td>
+                    <?php
+                        if ($projectArr[$value['code_id']]['is_online'] == 1) {
+                            $url = isset($projectArr[$value['code_id']]) ? $projectArr[$value['code_id']]['ssh_url'] : '';
+                            $url .= '/-/blob/master/';
+                            $url .= $value['Source']['FilePath'] ?? '';
+                        } else {
+                            $url = url('get_code',['id'=>$value['id'],'type'=>1]);
+                        }
+                    ?>
                     <td title="<?php echo htmlentities($value['Source']['Snippet'] ?? '') ?>">
-                        <a href="<?php echo isset($projectArr[$value['code_id']]) ? $projectArr[$value['code_id']]['ssh_url'] : '' ?>/-/blob/master/<?php echo $value['Source']['FilePath'] ?? '' ?>"
+                        <a href="<?php echo $url; ?>"
                            target="_blank">
                             <?php echo $value['Source']['FileName'] ?? '' ?>
                         </a>
                     </td>
+                    <?php
+                        if ($projectArr[$value['code_id']]['is_online'] == 1) {
+                            $url = isset($projectArr[$value['code_id']]) ? $projectArr[$value['code_id']]['ssh_url'] : '';
+                            $url .= '/-/blob/master/'.$value['Primary']['FilePath'];
+                        } else {
+                            $url = url('get_code',['id'=>$value['id'],'type'=>1]);
+                        }
+                    ?>
                     <td title="<?php echo htmlentities($value['Primary']['Snippet'] ?? '') ?>">
-                        <a href="<?php echo isset($projectArr[$value['code_id']]) ? $projectArr[$value['code_id']]['ssh_url'] : '' ?>/-/blob/master/<?php echo $value['Primary']['FilePath'] ?>"
+                        <a href="<?php echo $url; ?>"
                            target="_blank">
                             <?php echo $value['Primary']['FileName'] ?>
                         </a>
@@ -127,6 +147,9 @@ $dengjiArrColor = ['Low' => 'secondary', 'Medium' => 'primary', 'High' => 'warni
     <div class="col-auto  tuchu_col">
         <h4 class="text-center">
             SemGrep
+            <a href="<?php echo url('code/rescan', ['id'=>$info['id'],'tools_name' => 'semgrep']) ?>"
+               onClick="return confirm('确定要清空该工具数据重新扫描吗?')"
+               class="btn btn-sm btn-outline-warning">重新扫描</a>
         </h4>
         <table class="table table-bordered table-hover table-striped">
             <thead>
@@ -151,7 +174,11 @@ $dengjiArrColor = ['Low' => 'secondary', 'Medium' => 'primary', 'High' => 'warni
                     <td>
                         <?php
                         $path = preg_replace("/\/data\/codeCheck\/[a-zA-Z0-9]*\//", "", $value['path']);
-                        $url = getGitAddr($project['name'], $project['ssh_url'], $value['path'], $value['end_line']);
+                        if ($projectArr[$value['code_id']]['is_online'] == 1) {
+                            $url = getGitAddr($project['name'], $project['ssh_url'], $value['path'], $value['end_line']);
+                        } else {
+                            $url = url('get_code',['id'=>$value['id'],'type'=>2]);
+                        }
                         ?>
                         <a title="<?php echo htmlentities($value['extra_lines']) ?>" href="<?php echo $url ?>"
                            target="_blank"><?php echo $path ?>
@@ -182,6 +209,9 @@ $dengjiArrColor = ['Low' => 'secondary', 'Medium' => 'primary', 'High' => 'warni
     <div class="col-auto  tuchu_col">
         <h4 class="text-center">
             河马(WebShell)
+            <a href="<?php echo url('code/rescan', ['id'=>$info['id'],'tools_name' => 'webshell']) ?>"
+               onClick="return confirm('确定要清空该工具数据重新扫描吗?')"
+               class="btn btn-sm btn-outline-warning">重新扫描</a>
         </h4>
         <table class="table table-bordered table-hover table-striped">
             <thead>
@@ -222,6 +252,9 @@ $dengjiArrColor = ['Low' => 'secondary', 'Medium' => 'primary', 'High' => 'warni
     <div class="col-auto  tuchu_col">
         <h4 class="text-center">
             JAVA
+            <a href="<?php echo url('code/rescan', ['id'=>$info['id'],'tools_name' => 'java']) ?>"
+               onClick="return confirm('确定要清空该工具数据重新扫描吗?')"
+               class="btn btn-sm btn-outline-warning">重新扫描</a>
         </h4>
         <table class="table table-bordered table-hover table-striped">
             <thead>
@@ -258,6 +291,9 @@ $dengjiArrColor = ['Low' => 'secondary', 'Medium' => 'primary', 'High' => 'warni
     <div class="col-auto  tuchu_col">
         <h4 class="text-center">
             python依赖
+            <a href="<?php echo url('code/rescan', ['id'=>$info['id'],'tools_name' => 'python']) ?>"
+               onClick="return confirm('确定要清空该工具数据重新扫描吗?')"
+               class="btn btn-sm btn-outline-warning">重新扫描</a>
         </h4>
         <table class="table table-bordered table-hover table-striped">
             <thead>
@@ -287,6 +323,9 @@ $dengjiArrColor = ['Low' => 'secondary', 'Medium' => 'primary', 'High' => 'warni
     <div class="col-auto  tuchu_col">
         <h4 class="text-center">
             PHP依赖(Composer)
+            <a href="<?php echo url('code/rescan', ['id'=>$info['id'],'tools_name' => 'php']) ?>"
+               onClick="return confirm('确定要清空该工具数据重新扫描吗?')"
+               class="btn btn-sm btn-outline-warning">重新扫描</a>
         </h4>
         <table class="table table-bordered table-hover table-striped">
             <thead>

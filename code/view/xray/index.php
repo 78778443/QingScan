@@ -8,7 +8,7 @@ $searchArr = [
     'method' => 'get',
     'inputs' => [
         ['type' => 'text', 'name' => 'search', 'placeholder' => 'search'],
-        ['type' => 'select', 'name' => 'level', 'options' => $dengjiArr, 'frist_option' => '危险等级'],
+        //['type' => 'select', 'name' => 'level', 'options' => $dengjiArr, 'frist_option' => '危险等级'],
         ['type' => 'select', 'name' => 'Category', 'options' => $CategoryList, 'frist_option' => '类别'],
         ['type' => 'select', 'name' => 'code_id', 'options' => $projectList, 'frist_option' => '项目列表'],
         ['type' => 'select', 'name' => 'check_status', 'options' => $check_status_list, 'frist_option' => '审计状态', 'frist_option_value' => -1],
@@ -40,7 +40,7 @@ $searchArr = [
                     <th>ID</th>
                     <th>APP</th>
                     <th>漏洞类型</th>
-                    <th>危险等级</th>
+                    <!--<th>危险等级</th>-->
                     <th>URL地址</th>
                     <th>创建时间</th>
                     <th>状态</th>
@@ -57,7 +57,7 @@ $searchArr = [
                         <td><?php echo $value['id'] ?></td>
                         <td><?php echo $value['app_name'] ?></td>
                         <td><?php echo $value['plugin'] ?></td>
-                        <td><?php echo $dengjiArr[$value['hazard_level']] ?></td>
+                        <!--<td><?php /*echo $dengjiArr[$value['hazard_level']] */?></td>-->
                         <td><?php echo json_decode($value['target'], true)['url'] ?></td>
                         <td><?php echo date('Y-m-d H:i:s', substr($value['create_time'], 0, 10)) ?></td>
                         <td><select class="changCheckStatus form-select" data-id="<?php echo $value['id'] ?>">

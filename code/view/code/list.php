@@ -108,7 +108,7 @@ $searchArr = [
                                     ?>
                                     <a href="<?php echo url('code/edit_modal', ['id' => $value['id']]) ?>" class="btn btn-sm btn-outline-success">编辑</a>
                                     <?php }?>
-                                    <a href="<?php echo url('code/rescan', ['id' => $value['id']]) ?>"
+                                    <a href="<?php echo url('code/qingkong', ['id' => $value['id']]) ?>"
                                        class="btn btn-sm btn-outline-warning">重新扫描</a>
                                     <a href="<?php echo url('code/code_del', ['id' => $value['id']]) ?>"
                                        class="btn btn-sm btn-outline-danger">删除</a>
