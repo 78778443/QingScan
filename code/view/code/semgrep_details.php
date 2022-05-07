@@ -20,9 +20,14 @@
                             <dt>所属文件：</dt>
                             <dd>
                                 <?php
-                                $path = preg_replace("/\/data\/codeCheck\/[a-zA-Z0-9]*\//", "", $info['path']);
+                                    $path = preg_replace("/\/data\/codeCheck\/[a-zA-Z0-9]*\//", "", $info['path']);
+                                    if ($project['is_online'] == 1) {
+                                        $url = getGitAddr($project['name'], $project['ssh_url'], $info['path'], $info['end_line']);
+                                    } else {
+                                        $url = url('get_code',['id'=>$info['id'],'type'=>2]);
+                                    }
                                 ?>
-                                <a href="<?php echo getGitAddr($project['name'], $project['ssh_url'], $info['path'], $info['end_line']) ?>"
+                                <a href="<?php echo $url; ?>"
                                    target="_blank"><?php echo $path ?>
                                 </a>
                             </dd>

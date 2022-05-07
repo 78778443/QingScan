@@ -29,3 +29,8 @@ services:
     stdin_open: true
     tty: true
     command: /bin/bash -c "php /root/qingscan/safe.php"
+  awvs:
+    image: secfa/docker-awvs
+    container_name: awvs1
+    ports:
+      - "13443:3443"

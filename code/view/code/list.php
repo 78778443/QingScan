@@ -8,6 +8,10 @@ $searchArr = [
         ['type' => 'text', 'name' => 'search', 'placeholder' => "搜索"],
     ],
     'btnArr' => [
+        ['text' => '上传项目', 'ext' => [
+            "href" => url('code/add_file'),
+            "class" => "btn btn-outline-success"
+        ]],
         ['text' => '添加', 'ext' => [
             "class" => "btn btn-outline-success",
             "data-bs-toggle" => "modal",
@@ -67,33 +71,33 @@ $searchArr = [
                                 <td><?php echo $value['pulling_mode'] ?></td>
                                 <td>
                                     <a title="扫描时间:<?php echo $value['scan_time'] ?>"
-                                       href="<?php echo url('code/bug_list', ['id' => $value['id']]); ?>">
+                                       href="<?php echo url('code/bug_list', ['code_id' => $value['id']]); ?>">
                                         <?php echo $fortifyNum[$value['id']] ?? 0 ?>
                                     </a>
                                 </td>
                                 <td>
                                     <a title="扫描时间:<?php echo $value['semgrep_scan_time'] ?>"
-                                       href="<?php echo url('code/semgrep_list', ['id' => $value['id']]); ?>"><?php echo $semgrepNum[$value['id']] ?? 0 ?>
+                                       href="<?php echo url('code/semgrep_list', ['code_id' => $value['id']]); ?>"><?php echo $semgrepNum[$value['id']] ?? 0 ?>
                                     </a>
                                 </td>
                                 <td>
                                     <a title="扫描时间:<?php echo $value['webshell_scan_time'] ?>"
-                                       href="<?php echo url('code_webshell/index', ['id' => $value['id']]); ?>"><?php echo $hemaNum[$value['id']] ?? 0 ?>
+                                       href="<?php echo url('code_webshell/index', ['code_id' => $value['id']]); ?>"><?php echo $hemaNum[$value['id']] ?? 0 ?>
                                     </a>
                                 </td>
                                 <td>
                                     <a title="扫描时间:<?php echo $value['composer_scan_time'] ?>"
-                                       href="<?php echo url('code_composer/index', ['id' => $value['id']]); ?>"><?php echo $phpNum[$value['id']] ?? 0 ?>
+                                       href="<?php echo url('code_composer/index', ['code_id' => $value['id']]); ?>"><?php echo $phpNum[$value['id']] ?? 0 ?>
                                     </a>
                                 </td>
                                 <td>
                                     <a title="扫描时间:<?php echo $value['python_scan_time'] ?>"
-                                       href="<?php echo url('code_python/index', ['id' => $value['id']]); ?>"><?php echo $pythonNum[$value['id']] ?? 0 ?>
+                                       href="<?php echo url('code_python/index', ['code_id' => $value['id']]); ?>"><?php echo $pythonNum[$value['id']] ?? 0 ?>
                                     </a>
                                 </td>
                                 <td>
                                     <a title="扫描时间:<?php echo $value['java_scan_time'] ?>"
-                                       href="<?php echo url('code_java/index', ['id' => $value['id']]); ?>"><?php echo $javaNum[$value['id']] ?? 0 ?>
+                                       href="<?php echo url('code_java/index', ['code_id' => $value['id']]); ?>"><?php echo $javaNum[$value['id']] ?? 0 ?>
                                     </a>
                                 </td>
                                 <td>

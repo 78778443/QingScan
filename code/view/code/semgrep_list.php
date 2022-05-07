@@ -15,7 +15,7 @@ $searchArr = [
         ['type' => 'text', 'name' => 'search', 'placeholder' => "搜索的内容"],
         ['type' => 'select', 'name' => 'level', 'options' => $dengjiArr, 'frist_option' => '危险等级'],
         ['type' => 'select', 'name' => 'Category', 'options' => $CategoryList, 'frist_option' => '漏洞类别'],
-        ['type' => 'select', 'name' => 'project_id', 'options' => $projectList, 'frist_option' => '项目列表'],
+        ['type' => 'select', 'name' => 'code_id', 'options' => $projectList, 'frist_option' => '项目列表'],
         ['type' => 'select', 'name' => 'filename', 'options' => $fileList, 'frist_option' => '文件筛选'],
         ['type' => 'select', 'name' => 'filetype', 'options' => $fileTypeList, 'frist_option' => '文件后缀'],
         ['type' => 'select', 'name' => 'check_status', 'options' => $check_status_list, 'frist_option' => '审计状态', 'frist_option_value' => -1],
@@ -58,8 +58,12 @@ $searchArr = [
                     <td><?php echo $value['extra_severity'] ?></td>
                     <td>
                         <?php
-                        $path = preg_replace("/\/data\/codeCheck\/[a-zA-Z0-9]*\//", "", $value['path']);
-                        $url = getGitAddr($project['name'], $project['ssh_url'], $value['path'], $value['end_line']);
+                            $path = preg_replace("/\/data\/codeCheck\/[a-zA-Z0-9]*\//", "", $value['path']);
+                            if ($projectArr[$value['code_id']]['is_online'] == 1) {
+                                $url = getGitAddr($projectArr[$value['code_id']]['name'], $projectArr[$value['code_id']]['ssh_url'], $value['path'], $value['end_line']);
+                            } else {
+                                $url = url('get_code',['id'=>$value['id'],'type'=>2]);
+                            }
                         ?>
                         <a title="<?php echo htmlentities($value['extra_lines']) ?>" href="<?php echo $url ?>"
                            target="_blank"><?php echo $path ?>:{$value['end_line']}

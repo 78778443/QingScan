@@ -33,3 +33,17 @@
 </div>
 
 {include file='public/footer' /}
+<script>
+    $.ajax({
+        type: "get",
+        url: "<?php echo url('index/upgradeTips')?>",
+        dataType: "json",
+        success: function (res) {
+            if (res.code == 1) {
+                if(confirm(res.msg)){
+                    window.location.href = "<?php echo url('config/system_update')?>"
+                }
+            }
+        }
+    });
+</script>

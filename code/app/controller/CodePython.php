@@ -20,6 +20,10 @@ class CodePython extends Common
         if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
             $where[] = ['user_id', '=', $this->userId];
         }
+        $code_id = $request->param('code_id');
+        if ($code_id) {
+            $where[] = ['code_id','=',$code_id];
+        }
         $list = Db::table('code_python')->where($where)->order("id", 'desc')->paginate([
             'list_rows'=> $pageSize,//每页数量
             'query' => $request->param(),

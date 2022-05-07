@@ -24,7 +24,7 @@ return [
             // 数据库类型
             'type' => 'mysql',
             // 主机地址
-            'hostname' => '127.0.0.1',
+            'hostname' => 'mysql_addr',
             'hostport'=>3306,
             // 用户名
             'username' => 'root',
@@ -60,7 +60,7 @@ return [
             // 数据库类型
             'type' => 'mysql',
             // 主机地址
-            'hostname' => '127.0.0.1',
+            'hostname' => 'mysql_addr',
             'hostport'=>3306,
             // 用户名
             'username' => 'QingScan',

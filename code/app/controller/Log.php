@@ -30,6 +30,6 @@ class Log extends Common
     public function clear_all(){
         Db::execute('truncate table `log`');
         $this->addUserLog('日志管理','清空数据表[log]成功');
-        $this->success('日志表清空成功');
+        $this->success('日志表清空成功','index');
     }
 }

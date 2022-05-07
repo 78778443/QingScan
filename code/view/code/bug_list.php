@@ -57,14 +57,31 @@ $searchArr = [
                     <td>
                         <span class="badge rounded-pill bg-<?php echo $dengjiArrColor[$value['Friority']] ?>"><?php echo $value['Friority'] ?></span>
                     </td>
+                    <?php
+                        if ($projectArr[$value['code_id']]['is_online'] == 1) {
+                            $url = isset($projectArr[$value['code_id']]) ? $projectArr[$value['code_id']]['domain_name'] : '';
+                            $url .= '/';
+                            $url .= isset($value['Source']['FilePath']) ? $value['Source']['FilePath'].'#L'.$value['Source']['LineStart'] :'';
+                        } else {
+                            $url = url('get_code',['id'=>$value['id'],'type'=>1]);
+                        }
+                    ?>
                     <td title="<?php echo htmlentities($value['Source']['Snippet'] ?? '') ?>">
-                        <a href="<?php echo isset($projectArr[$value['code_id']]) ? $projectArr[$value['code_id']]['domain_name'] : '' ?>/<?php echo isset($value['Source']['FilePath']) ? $value['Source']['FilePath'].'#L'.$value['Source']['LineStart'] :'' ?>"
+                        <a href="<?php echo $url; ?>"
                            target="_blank">
-                            <?php echo $value['Source']['FileName'] ?? '' ?>
+                            <?php echo $value['Source']['FileName'] ?? '' ?>321
                         </a>
                     </td>
+                    <?php
+                        if ($projectArr[$value['code_id']]['is_online'] == 1) {
+                            $url = isset($projectArr[$value['code_id']]) ? $projectArr[$value['code_id']]['domain_name'] : '';
+                            $url .= '/'.$value['Primary']['FilePath'].'#L'.$value['Primary']['LineStart'];
+                        } else {
+                            $url = url('get_code',['id'=>$value['id'],'type'=>1]);
+                        }
+                    ?>
                     <td title="<?php echo htmlentities($value['Primary']['Snippet'] ?? '') ?>">
-                        <a href="<?php echo isset($projectArr[$value['code_id']]) ? $projectArr[$value['code_id']]['domain_name'] : '' ?>/<?php echo $value['Primary']['FilePath'].'#L'.$value['Primary']['LineStart'] ?>"
+                        <a href="<?php echo $url; ?>"
                            target="_blank">
                             <?php echo $value['Primary']['FileName'] ?>
                         </a>

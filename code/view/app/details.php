@@ -13,7 +13,7 @@ $typeArr = [
         <div class="col-md-4">
             <h5 style="align-content: center"><span style="color:#888">id:</span> <?php echo $info['id'] ?></h5></div>
         <div class="col-md-4">
-            <h5><span style="color:#888">状态:</span> <?php echo $info['status'] ?></h5></div>
+            <h5><span style="color:#888">状态:</span> <?php echo $info['status']==1?'正常':'禁用' ?></h5></div>
         <div class="col-md-4">
             <h5><span style="color:#888">名称: </span><?php echo $info['name'] ?></h5></div>
         <div class="col-md-4">

@@ -34,7 +34,12 @@ class Code extends Common
         ]);
 
         $data['list'] = $list->items();
-
+        foreach ($data['list'] as &$v) {
+            if ($v['is_online'] == 2) { // 本地
+                $v['ssh_url'] = '本地';
+                $v['pulling_mode'] = '本地';
+            }
+        }
         //查询数量
         $codeIds = array_column($data['list'], 'id');
         $data = array_merge($data, CodeModel::getScanNum($codeIds));
@@ -110,7 +115,7 @@ class Code extends Common
         if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
             $map[] = ['user_id', '=', $this->userId];
         }
-        if (Db::name('code')->where($map)->update(['is_delete' => 1])) {
+        if (Db::name('code')->where($map)->delete()) {
             Db::table('fortify')->where(['code_id' => $id])->delete();
             Db::table('semgrep')->where(['code_id' => $id])->delete();
             Db::table('code_webshell')->where(['code_id' => $id])->delete();
@@ -137,7 +142,7 @@ class Code extends Common
         if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
             $where[] = ['user_id', '=', $this->userId];
         }
-        if (Db::name('code')->where($where)->update(['is_delete' => 1])) {
+        if (Db::name('code')->where($where)->delete()) {
             Db::table('fortify')->where($map)->delete();
             Db::table('semgrep')->where($map)->delete();
             Db::table('code_webshell')->where($map)->delete();
@@ -476,14 +481,14 @@ class Code extends Common
         $pageSize = 25;
         $where[] = ['is_delete', '=', 0];
         $map[] = ['is_delete', '=', 0];
-        $project_id = $request->param('project_id');
+        $code_id = $request->param('code_id');
         $level = $request->param('level'); // 等级
         $Category = $request->param('Category');   // 分类
         $filename = $request->param('filename');   // 文件名
         $filetype = $request->param('filetype');   // 文件名
         $check_status = $request->param('check_status');   // 审核状态
-        if (!empty($project_id)) {
-            $where[] = ['code_id', '=', $project_id];
+        if (!empty($code_id)) {
+            $where[] = ['code_id', '=', $code_id];
         }
         if (!empty($level)) {
             $where[] = ['extra_severity', '=', $level];
@@ -752,6 +757,84 @@ class Code extends Common
 
         $result = CodeCheckModel::addData($data);
         // $this->Location("index.php?s=code_check/index");
+    }
+
+    public function add_file(Request $request){
+        if ($request->isPost()) {
+            $name = $request->param('name');
+            $file = $request->file('file');
+            if (!$name || !$file) {
+                $this->error('字段数据不能为空');
+            }
+            $fileSize = 1024*1024*100;
+            if (Db::name('code')->where('name',$name)->count()) {
+                $this->error('项目名称已存在');
+            }
+            try {
+                validate(['file'=>'fileSize:'.$fileSize.'|fileExt:zip'])->check(['file'=>$file]);
+                $savename = \think\facade\Filesystem::putFile( 'code', $file,'uniqid');
+                if (!$savename) {
+                    $this->error('文件上传失败');
+                }
+                $runtime = \think\facade\App::getRuntimePath().'storage/';
+                // 解压目录
+                $zip = new \ZipArchive();
+                $save_dir = '/data/codeCheck/'.$name;
+                if ($zip->open($runtime.$savename) === TRUE) {//中文文件名要使用ANSI编码的文件格式
+                    $zip->extractTo($save_dir);//提取全部文件
+                    $zip->close();
+                    @unlink($runtime.$savename);
+                    $data['name'] = $name;
+                    $data['is_online'] = 2;
+                    Db::name('code')->insert($data);
+                    $this->success('白盒项目添加成功','index');
+                } else {
+                    $this->error('白盒项目添加失败');
+                }
+            } catch (\think\exception\ValidateException $e) {
+                $this->error($e->getMessage());
+            }
+        } else {
+            $data = [];
+            return View::fetch('add_file', $data);
+        }
+    }
+
+    public function get_code(Request $request){
+        $type = $request->param('type');
+        $id = $request->param('id');
+
+        switch ($type) {
+            case 1:
+                $info = Db::name('fortify')->where('id',$id)->find();
+                if (!$info) {
+                    $this->error('数据不存在');
+                }
+                $code = Db::name('code')->where('id',$info['code_id'])->find();
+                if (!$info) {
+                    $this->error('项目不存在');
+                }
+                $content = htmlentities(file_get_contents('/data/codeCheck/'.$code['name']."/{$info['Primary_filename']}"));
+                echo '<pre>';
+                exit($content);
+                break;
+            case 2:
+                $info = Db::name('semgrep')->where('id',$id)->find();
+                if (!$info) {
+                    $this->error('数据不存在');
+                }
+                $code = Db::name('code')->where('id',$info['code_id'])->find();
+                if (!$info) {
+                    $this->error('项目不存在');
+                }
+                $content = htmlentities(file_get_contents($info['path']));
+                echo '<pre>';
+                exit($content);
+                break;
+            default:
+                $this->error('数据不存在');
+                break;
+        }
     }
 
     public function load_xml()
