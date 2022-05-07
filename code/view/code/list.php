@@ -103,8 +103,11 @@ $searchArr = [
                                 <td>
                                     <a href="<?php echo url('code/details', ['id' => $value['id']]) ?>"
                                        class="btn btn-sm btn-outline-primary">查看</a>
-                                    <a href="<?php echo url('code/edit_modal', ['id' => $value['id']]) ?>"
-                                       class="btn btn-sm btn-outline-success">编辑</a>
+                                    <?php
+                                        if ($value['is_online'] == 1) {
+                                    ?>
+                                    <a href="<?php echo url('code/edit_modal', ['id' => $value['id']]) ?>" class="btn btn-sm btn-outline-success">编辑</a>
+                                    <?php }?>
                                     <a href="<?php echo url('code/rescan', ['id' => $value['id']]) ?>"
                                        class="btn btn-sm btn-outline-warning">重新扫描</a>
                                     <a href="<?php echo url('code/code_del', ['id' => $value['id']]) ?>"
