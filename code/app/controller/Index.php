@@ -182,6 +182,8 @@ class Index extends Common
         $news_version = $result['data']['news_version'];
         if ($version < $news_version) {
             return $this->apiReturn(1,[],"当前系统最新版本为：{$news_version},是否升级");
+        } else {
+            return $this->apiReturn(0,[],"update.lock文件不存在");
         }
     }
 }
