@@ -2,8 +2,6 @@
 
 namespace app\controller;
 
-use app\BaseController;
-use app\model\AppModel;
 use app\model\UrlsModel;
 use think\facade\Db;
 use think\facade\View;
@@ -26,18 +24,19 @@ class Urls extends Common
         if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
             $where[] = ['user_id', '=', $this->userId];
         }
-
+        $app_id = $request->param('app_id');
+        if (!empty($app_id)) {
+            $where[] = ['app_id','=',$app_id];
+        }
         $list = Db::table('urls')->where($where)->where('is_delete', 0)->order("id", 'desc')->paginate([
             'list_rows' => $pageSize,//每页数量
             'query' => $request->param(),
         ]);
         $data['list'] = $list->items();
-
-        $appList = Db::table('app')->select()->toArray();
-        $data['appArr'] = array_column($appList, 'name', 'id');
-
         // 获取分页显示
         $data['page'] = $list->render();
+
+        $data['projectList'] = $this->getMyAppList();
 
         return View::fetch('index', $data);
     }

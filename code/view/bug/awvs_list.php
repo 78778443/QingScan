@@ -13,6 +13,7 @@ $searchArr = [
         ['type' => 'select', 'name' => 'Folder', 'options' => $dengjiArr, 'frist_option' => '危险等级'],
         ['type' => 'select', 'name' => 'Category', 'options' => $CategoryList, 'frist_option' => '漏洞类别'],
         ['type' => 'select', 'name' => 'Primary_filename', 'options' => $fileList, 'frist_option' => 'url筛选'],
+        ['type' => 'select', 'name' => 'app_id', 'options' => $projectList, 'frist_option' => '项目列表'],
         ['type' => 'select', 'name' => 'check_status', 'options' => $check_status_list, 'frist_option' => '审计状态','frist_option_velue'=>-1],
     ]];
 ?>
@@ -30,6 +31,7 @@ $searchArr = [
                     </label>
                 </th>
                 <th>ID</th>
+                <th>所属项目</th>
                 <th>severity</th>
                 <th>URL</th>
                 <th>发现时间</th>
@@ -45,6 +47,7 @@ $searchArr = [
                         </label>
                     </td>
                     <td><?php echo $value['id'] ?></td>
+                    <td><?php echo isset($projectList[$value['app_id']]) ? $projectList[$value['app_id']] : '' ?></td>
                     <td><?php echo $value['vt_name'] ?></td>
                     <td><?php echo $value['affects_url'] ?></td>
                     <td><?php echo $value['create_time'] ?></td>

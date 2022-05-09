@@ -21,6 +21,10 @@ class Whatweb extends Common
         if ($this->auth_group_id != 5 && !in_array($this->userId,config('app.ADMINISTRATOR'))) {
             $where[] = ['user_id','=',$this->userId];
         }
+        $app_id = $request->param('app_id');
+        if (!empty($app_id)) {
+            $where[] = ['app_id', '=', $app_id];
+        }
         $list = Db::table('app_whatweb')->where($where)->order("id", 'desc')->paginate([
             'list_rows' => $pageSize,
             'query' => $request->param()
@@ -30,6 +34,7 @@ class Whatweb extends Common
             $v['app_name'] = Db::name('app')->where('id', $v['app_id'])->value('name');
         }
         $data['page'] = $list->render();
+        $data['projectList'] = $this->getMyAppList();
         return View::fetch('index', $data);
     }
 

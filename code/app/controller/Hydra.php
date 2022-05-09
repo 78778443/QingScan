@@ -34,8 +34,7 @@ class Hydra extends Common
         }
         $data['page'] = $list->render();
         //查询项目数据
-        $projectArr = Db::table('app')->where('is_delete',0)->select()->toArray();
-        $data['projectList'] = array_column($projectArr, 'name', 'id');
+        $data['projectList'] = $this->getMyAppList();
         return View::fetch('index', $data);
     }
     public function del(Request $request)

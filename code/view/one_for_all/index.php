@@ -23,7 +23,7 @@ $searchArr = [
                     </label>
                 </th>
                 <th>ID</th>
-                <th>APP</th>
+                <th>所属项目</th>
                 <th>域名</th>
                 <th>端口</th>
                 <th>ip</th>

@@ -8,6 +8,7 @@
         'method' => 'get',
         'inputs' => [
             ['type' => 'text', 'name' => 'search', 'placeholder' => '请输入要搜索的关键字'],
+            ['type' => 'select', 'name' => 'app_id', 'options' => $projectList, 'frist_option' => '项目列表'],
         ],
         'btnArr' => [
             ['text' => '添加URL', 'ext' => [
@@ -30,8 +31,8 @@
                         </label>
                     </th>
                     <th>ID</th>
+                    <th>所属项目</th>
                     <th>URL</th>
-                    <th>APP</th>
                     <th>ICP</th>
                     <th>邮箱</th>
                     <th>身份证号码</th>
@@ -51,11 +52,11 @@
                             </label>
                         </td>
                         <td><?php echo $value['id'] ?></td>
+                        <td>
+                            <a href="<?php echo url('app/index', ['id' => $value['app_id']]) ?>"><?php echo isset($projectList[$value['app_id']]) ? $projectList[$value['app_id']] : '' ?></a>
+                        </td>
                         <td class="ellipsis-type"><a href="<?php echo $value['url'] ?>"
                                                      target="_blank"><?php echo $value['url'] ?></a></td>
-                        <td>
-                            <a href="<?php echo U('urls/index', ['app_id' => $value['app_id']]) ?>"><?php echo isset($appArr[$value['app_id']]) ? $appArr[$value['app_id']] : '' ?></a>
-                        </td>
                         <td><?php echo $value['icp'] ?></td>
                         <td><?php echo $value['email'] ?></td>
                         <td><?php echo $value['id_card'] ?></td>

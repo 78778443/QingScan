@@ -2,9 +2,6 @@
 
 namespace app\controller;
 
-use app\BaseController;
-use app\model\AppModel;
-use app\model\HostModel;
 use app\model\UrlsModel;
 use app\Request;
 use think\facade\Db;
@@ -35,9 +32,7 @@ class Host extends Common
         ]);
         $data['list'] = $list->items();
         $data['page'] = $list->render();
-
-        $data['appArr'] = AppModel::getAppName();
-
+        $data['projectList'] = $this->getMyAppList();
         return View::fetch('index', $data);
     }
 

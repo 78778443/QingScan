@@ -8,7 +8,8 @@ $searchArr = [
     'action' => $_SERVER['REQUEST_URI'],
     'method' => 'get',
     'inputs' => [
-        ['type' => 'text', 'name' => 'search', 'placeholder' => "search"],
+        ['type' => 'text', 'name' => 'search', 'placeholder' => "搜索关键字"],
+        ['type' => 'select', 'name' => 'app_id', 'options' => $projectList, 'frist_option' => '项目列表'],
     ]];
 ?>
 {include file='public/search' /}
@@ -26,6 +27,7 @@ $searchArr = [
                         </label>
                     </th>
                     <th>ID</th>
+                    <th>所属项目</th>
                     <th>漏洞地址</th>
                     <th>漏洞类型</th>
                     <th>title</th>
@@ -44,6 +46,7 @@ $searchArr = [
                             </label>
                         </td>
                         <td><?php echo $value['id'] ?></td>
+                        <td><?php echo isset($projectList[$value['app_id']]) ? $projectList[$value['app_id']] : '' ?></td>
                         <td><?php echo $value['urls_id'] ?></td>
                         <td><?php echo $value['type'] ?></td>
                         <td><?php echo $value['title'] ?></td>

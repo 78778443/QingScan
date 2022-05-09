@@ -54,7 +54,7 @@ class HostPort extends Common
         $data['list'] = $list->items();
         $data['page'] = $list->render();
         $data['classify'] = HostPortModel::getClassify($where);
-        $data['appArr'] = AppModel::getAppName();
+        $data['appArr'] = $this->getMyAppList();
         $projectArr = Db::table('code')->select()->toArray();
         $projectArr = array_column($projectArr, null, 'id');
         $data['projectArr'] = $projectArr;

@@ -51,9 +51,7 @@ class Bug extends Common
         ]);
         $data['list'] = $list->items();
         $data['page'] = $list->render();
-        $projectArr = Db::table('app')->select()->toArray();
-        $projectArr = array_column($projectArr, null, 'id');
-        $data['projectArr'] = $projectArr;
+        $data['projectList'] = $this->getMyAppList();
         $data['CategoryList'] = Db::table('awvs_vuln')->where($where)->group('vt_name')->column('vt_name');
         //$data['projectList'] = Db::table('awvs_vuln')->where($where)->group('severity')->column('severity');
         $data['fileList'] = Db::table('awvs_vuln')->where($where)->group('affects_url')->column('affects_url');

@@ -7,10 +7,10 @@ $searchArr = [
     'action' => $_SERVER['REQUEST_URI'],
     'method' => 'get',
     'inputs' => [
-        ['type' => 'text', 'name' => 'search', 'placeholder' => 'search'],
+        ['type' => 'text', 'name' => 'search', 'placeholder' => '搜索关键字'],
         //['type' => 'select', 'name' => 'level', 'options' => $dengjiArr, 'frist_option' => '危险等级'],
         ['type' => 'select', 'name' => 'Category', 'options' => $CategoryList, 'frist_option' => '类别'],
-        ['type' => 'select', 'name' => 'code_id', 'options' => $projectList, 'frist_option' => '项目列表'],
+        ['type' => 'select', 'name' => 'app_id', 'options' => $projectList, 'frist_option' => '项目列表'],
         ['type' => 'select', 'name' => 'check_status', 'options' => $check_status_list, 'frist_option' => '审计状态', 'frist_option_value' => -1],
     ],
     'btnArr' => [
@@ -38,7 +38,7 @@ $searchArr = [
                         </label>
                     </th>
                     <th>ID</th>
-                    <th>APP</th>
+                    <th>所属项目</th>
                     <th>漏洞类型</th>
                     <!--<th>危险等级</th>-->
                     <th>URL地址</th>
@@ -55,7 +55,7 @@ $searchArr = [
                             </label>
                         </td>
                         <td><?php echo $value['id'] ?></td>
-                        <td><?php echo $value['app_name'] ?></td>
+                        <td><?php echo isset($projectList[$value['app_id']]) ? $projectList[$value['app_id']] : '' ?></td>
                         <td><?php echo $value['plugin'] ?></td>
                         <!--<td><?php /*echo $dengjiArr[$value['hazard_level']] */?></td>-->
                         <td><?php echo json_decode($value['target'], true)['url'] ?></td>

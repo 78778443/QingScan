@@ -8,8 +8,9 @@ $dengjiArr = ['Low', 'Medium', 'High', 'Critical'];
         'action' => $_SERVER['REQUEST_URI'],
         'method' => 'get',
         'inputs' => [
-            ['type' => 'text', 'name' => 'search', 'placeholder' => 'search']
-        ]]; ?>
+            ['type' => 'text', 'name' => 'search', 'placeholder' => 'search'],
+            ['type' => 'select', 'name' => 'app_id', 'options' => $projectList, 'frist_option' => '项目列表']
+    ]]; ?>
     {include file='public/search' /}
 
     <div class="row tuchu">
@@ -25,7 +26,7 @@ $dengjiArr = ['Low', 'Medium', 'High', 'Critical'];
                         </label>
                     </th>
                     <th>ID</th>
-                    <th>APP</th>
+                    <th>所属项目</th>
                     <th>target</th>
                     <th>http_status</th>
                     <th>plugins</th>

@@ -386,20 +386,14 @@ class AppModel extends BaseModel
         }
     }
 
-
+    //获取项目列表
     public static function getAppName()
     {
-        $appList = Db::table(self::$tableName)->select()->toArray();
-
+        $appList = Db::table(self::$tableName)->field('id,name')->select()->toArray();
         $appList = array_column($appList, 'name', 'id');
         return $appList;
     }
 
-    public static function deleteByWhere($where)
-    {
-        $data = getArrayField($where, self::field());
-
-    }
 
     public static function updateScanTime($id,$filed)
     {

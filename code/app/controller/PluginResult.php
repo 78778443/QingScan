@@ -45,8 +45,7 @@ class PluginResult extends Common
         }
         $data['page'] = $list->render();
         //查询项目数据
-        $projectArr = Db::table('app')->where($map)->select()->toArray();
-        $data['projectList'] = array_column($projectArr, 'name', 'id');
+        $data['projectList'] = $this->getMyAppList();
         //插件列表数据
         $projectArr = Db::table('plugin')->where($map)->select()->toArray();
         $data['pluginList'] = array_column($projectArr, 'name', 'id');

@@ -23,6 +23,7 @@ $searchArr = [
                     </label>
                 </th>
                 <th>ID</th>
+                <th>所属项目</th>
                 <th>host</th>
                 <th>type</th>
                 <th>username</th>
@@ -38,6 +39,7 @@ $searchArr = [
                         </label>
                     </td>
                     <td><?php echo $value['id'] ?></td>
+                    <td><?php echo $projectList[$value['app_id']]['name'] ?></td>
                     <td><?php echo $value['host'] ?></td>
                     <td><?php echo $value['type'] ?></td>
                     <td><?php echo $value['username'] ?></td>

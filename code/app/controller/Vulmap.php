@@ -15,7 +15,6 @@ class Vulmap extends Common
         if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
             $where[] = ['user_id', '=', $this->userId];
         }
-
         $search = $request->param('search');
         if (!empty($search)) {
             $where[] = ['author|host|port','like',"%{$search}%"];
@@ -34,8 +33,7 @@ class Vulmap extends Common
         }
         $data['page'] = $list->render();
         //查询项目数据
-        $projectArr = Db::table('app')->where($where)->where('is_delete',0)->select()->toArray();
-        $data['projectList'] = array_column($projectArr, 'name', 'id');
+        $data['projectList'] = $this->getMyAppList();
         return View::fetch('index', $data);
     }
 
