@@ -25,7 +25,7 @@ $searchArr = [
                         </label>
                     </th>
                     <th>ID</th>
-                    <th>项目名称</th>
+                    <th>所属项目</th>
                     <th>name</th>
                     <th>version</th>
                     <th>source</th>

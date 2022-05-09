@@ -69,7 +69,10 @@ $searchArr = [
                            target="_blank"><?php echo $path ?>:{$value['end_line']}
                         </a>
                     </td>
-                    <td><?php echo isset($projectArr[$value['code_id']]) ? $projectArr[$value['code_id']]['name'] : '' ?></td>
+                    <td>
+                        <a href="<?php echo url('code/index', ['id' => $value['code_id']]) ?>">
+                            <?php echo isset($projectArr[$value['code_id']]) ? $projectArr[$value['code_id']]['name'] : '' ?></a>
+                    </td>
                     <td><?php echo $value['create_time'] ?></td>
                     <td>
                         <select class="changCheckStatus form-select" data-id="<?php echo $value['id'] ?>">

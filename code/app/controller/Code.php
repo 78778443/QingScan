@@ -28,6 +28,10 @@ class Code extends Common
         if (!empty($search)) {
             $where[] = ['name', 'like', "%{$search}%"];
         }
+        $id = $request->param('id');
+        if (!empty($id)) {
+            $where[] = ['id', '=', $id];
+        }
         $list = Db::table('code')->where($where)->order('scan_time', 'desc')->paginate([
             'list_rows' => $pageSize,//每页数量
             'query' => $request->param(),

@@ -25,7 +25,7 @@ $searchArr = [
                         </label>
                     </th>
                     <th>ID</th>
-                    <th>项目名称</th>
+                    <th>所属项目</th>
                     <th>依赖库</th>
                     <th>时间</th>
                     <th style="width: 200px">操作</th>

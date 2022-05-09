@@ -27,7 +27,7 @@ $searchArr = [
                         </label>
                     </th>
                     <th>ID</th>
-                    <th>项目名称</th>
+                    <th>所属项目</th>
                     <th>modelVersion</th>
                     <th>groupId</th>
                     <th>artifactId</th>
