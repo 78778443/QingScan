@@ -45,7 +45,7 @@ $dengjiArrColor = ['Low' => 'secondary', 'Medium' => 'primary', 'High' => 'warni
             <h5><span style="color:#888">mobsfscan_scan_time:</span> <?php echo $info['mobsfscan_scan_time'] ?></h5>
         </div>
         <div class="col-md-4">
-            <h5><span style="color:#888">SonarQube:</span> <?php echo $info['semgrep_scan_time'] ?></h5>
+            <h5><span style="color:#888">semgrep:</span> <?php echo $info['semgrep_scan_time'] ?></h5>
         </div>
         <div class="col-md-4">
             <h5><span style="color:#888">composer组件:</span> <?php echo $info['composer_scan_time'] ?></h5>
@@ -254,7 +254,7 @@ $dengjiArrColor = ['Low' => 'secondary', 'Medium' => 'primary', 'High' => 'warni
                     </td>
                 </tr>
             <?php } ?>
-            <?php if (empty($semgrep)) { ?>
+            <?php if (empty($mobsfscan)) { ?>
                 <tr>
                     <td colspan="12" class="text-center"><?php echo getScanStatus($info['id'], 'crawlergoScan'); ?></td>
                 </tr>

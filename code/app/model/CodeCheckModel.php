@@ -307,7 +307,7 @@ class CodeCheckModel extends BaseModel
             processSleep(1);
             $endTime = date('Y-m-d', time() - 86400 * 15);
             $list = Db::table('code')->whereTime('semgrep_scan_time', '<=', $endTime)->orderRand()->limit(1)->select()->toArray();
-            $count = count($list);
+            $count = Db::table('code')->whereTime('semgrep_scan_time', '<=', $endTime)->count('id');
             print("开始执行semgrep扫描代码任务,{$count} 个项目等待扫描..." . PHP_EOL);
             foreach ($list as $value) {
                 PluginModel::addScanLog($value['id'], __METHOD__, 0,2);

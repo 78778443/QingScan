@@ -238,8 +238,8 @@ function downCode($codePath, $prName, $codeUrl, $is_private = 0, $username = '',
 
 function cleanString($string)
 {
-    $string = strtolower($string);
-    $string = preg_replace("/[^a-z0-9A-Z]/i", "", $string);
+    //$string = strtolower($string);
+    $string = preg_replace("/[^a-z0-9A-Z-_]/i", "", $string);
 
     $string = empty($string) ? md5($string) : $string;
 
@@ -260,7 +260,7 @@ function addlogRaw($content)
 function systemLog($shell, $showRet = true)
 {
     //转换成字符串
-    $remark = "即将执行命令:{$shell}";
+    $remark = "即将执行命令：{$shell}";
     addlog($remark);
     //记录日志
     exec($shell, $output);

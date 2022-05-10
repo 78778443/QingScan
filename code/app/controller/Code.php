@@ -32,7 +32,7 @@ class Code extends Common
         if (!empty($id)) {
             $where[] = ['id', '=', $id];
         }
-        $list = Db::table('code')->where($where)->order('scan_time', 'desc')->paginate([
+        $list = Db::table('code')->where($where)->order('id', 'desc')->paginate([
             'list_rows' => $pageSize,//每页数量
             'query' => $request->param(),
         ]);
@@ -183,6 +183,7 @@ class Code extends Common
             'sonar_scan_time' => '2000-01-01 00:00:00',
             'kunlun_scan_time' => '2000-01-01 00:00:00',
             'semgrep_scan_time' => '2000-01-01 00:00:00',
+            'mobsfscan_scan_time' => '2000-01-01 00:00:00',
             'composer_scan_time' => '2000-01-01 00:00:00',
             'java_scan_time' => '2000-01-01 00:00:00',
             'python_scan_time' => '2000-01-01 00:00:00',
@@ -191,6 +192,7 @@ class Code extends Common
         Db::table('code')->where($where)->save($array);
         Db::table('fortify')->where($map)->delete();
         Db::table('semgrep')->where($map)->delete();
+        Db::table('mobsfscan')->where($map)->delete();
         Db::table('code_webshell')->where($map)->delete();
         Db::table('code_composer')->where($map)->delete();
         Db::table('code_python')->where($map)->delete();
@@ -1019,6 +1021,10 @@ class Code extends Common
             case 'semgrep':
                 $data['semgrep_scan_time']  ='2000-01-01 00:00:00';
                 Db::table('semgrep')->where(['code_id' => $id])->delete();
+                break;
+            case 'mobsfscan':
+                $data['mobsfscan_scan_time']  ='2000-01-01 00:00:00';
+                Db::table('mobsfscan')->where(['code_id' => $id])->delete();
                 break;
             case 'webshell':
                 $data['webshell_scan_time']  ='2000-01-01 00:00:00';
