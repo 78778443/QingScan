@@ -15,7 +15,17 @@
                 <input type="text" name="value" class="form-control" value="<?php echo $info['value'] ?>">
             </div>
             <div class="mb-3">
-                <label class="form-label">note</label>
+                <label class="form-label">工具类型</label>
+                <select name="type" class="form-select">
+                    <option value="0" <?php echo $info['type'] == 0 ? 'selected' : ''; ?>>黑盒扫描</option>
+                    <option value="1" <?php echo $info['type'] == 1 ? 'selected' : ''; ?>>白盒审计</option>
+                    <option value="2" <?php echo $info['type'] == 2 ? 'selected' : ''; ?>>专项利用</option>
+                    <option value="3" <?php echo $info['type'] == 3 ? 'selected' : ''; ?>>其他</option>
+                    <option value="4" <?php echo $info['type'] == 4 ? 'selected' : ''; ?>>信息收集</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">备注</label>
                 <input type="text" name="note" class="form-control" value="<?php echo $info['note'] ?>">
             </div>
             <div class="mb-3">

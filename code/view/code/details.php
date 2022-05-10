@@ -21,11 +21,7 @@ $dengjiArrColor = ['Low' => 'secondary', 'Medium' => 'primary', 'High' => 'warni
         <div class="col-md-4">
             <h5><span style="color:#888">创建时间: </span><?php echo $info['create_time'] ?></h5></div>
         <div class="col-md-4">
-            <h5><span style="color:#888">是否删除:</span> <?php echo $info['is_delete'] ?></h5></div>
-        <div class="col-md-4">
             <h5><span style="color:#888">拉取方式:</span> <?php echo $info['pulling_mode'] ?></h5></div>
-        <div class="col-md-4">
-            <h5><span style="color:#888">所属用户:</span> <?php echo $info['user_id'] ?></h5></div>
         <div class="col-md-4">
             <h5><span style="color:#888">star:</span> <?php echo $info['star'] ?></h5></div>
         <div class="col-md-4">
@@ -42,8 +38,11 @@ $dengjiArrColor = ['Low' => 'secondary', 'Medium' => 'primary', 'High' => 'warni
         <div class="col-md-4">
             <h5><span style="color:#888">SonarQube:</span> <?php echo $info['sonar_scan_time'] ?></h5>
         </div>
+        <!--<div class="col-md-4">
+            <h5><span style="color:#888">kunlun_scan_time:</span> <?php /*echo $info['kunlun_scan_time'] */?></h5>
+        </div>-->
         <div class="col-md-4">
-            <h5><span style="color:#888">kunlun_scan_time:</span> <?php echo $info['kunlun_scan_time'] ?></h5>
+            <h5><span style="color:#888">mobsfscan_scan_time:</span> <?php echo $info['mobsfscan_scan_time'] ?></h5>
         </div>
         <div class="col-md-4">
             <h5><span style="color:#888">SonarQube:</span> <?php echo $info['semgrep_scan_time'] ?></h5>
@@ -202,6 +201,62 @@ $dengjiArrColor = ['Low' => 'secondary', 'Medium' => 'primary', 'High' => 'warni
             <?php if (empty($semgrep)) { ?>
                 <tr>
                     <td colspan="8" class="text-center"><?php echo getScanStatus($info['id'], 'crawlergoScan'); ?></td>
+                </tr>
+            <?php } ?>
+        </table>
+    </div>
+    <div class="col-auto  tuchu_col">
+        <h4 class="text-center">
+            mobsfscan
+            <a href="<?php echo url('code/rescan', ['id'=>$info['id'],'tools_name' => 'mobsfscan']) ?>"
+               onClick="return confirm('确定要清空该工具数据重新扫描吗?')"
+               class="btn btn-sm btn-outline-warning">重新扫描</a>
+        </h4>
+        <table class="table table-bordered table-hover table-striped">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>漏洞类型</th>
+                <th>cwe</th>
+                <th>漏洞描述</th>
+                <th>input_case</th>
+                <th>masvs</th>
+                <th>owasp_mobile</th>
+                <th>参考地址</th>
+                <th>危险等级</th>
+                <th>扫描时间</th>
+                <th>状态</th>
+            </tr>
+            </thead>
+            <?php foreach ($mobsfscan as $value) {
+                $project = getCodeInfo($value['code_id']);
+                ?>
+                <tr>
+                    <td><?php echo $value['id'] ?></td>
+                    <td><?php echo $value['type']; ?></td>
+                    <td><?php echo $value['cwe']; ?></td>
+                    <td><?php echo $value['description']; ?></td>
+                    <td><?php echo $value['input_case']; ?></td>
+                    <td><?php echo $value['masvs']; ?></td>
+                    <td><?php echo $value['owasp_mobile']; ?></td>
+                    <td><?php echo $value['reference']; ?></td>
+                    <td><?php echo $value['severity']; ?></td>
+                    <td><?php echo $value['create_time'] ?></td>
+                    <td>
+                        <select class="changCheckStatus form-select" data-id="<?php echo $value['id'] ?>">
+                            <option value="0" <?php echo $value['check_status'] == 0 ? 'selected' : ''; ?> >未审核
+                            </option>
+                            <option value="1" <?php echo $value['check_status'] == 1 ? 'selected' : ''; ?> >有效漏洞
+                            </option>
+                            <option value="2" <?php echo $value['check_status'] == 2 ? 'selected' : ''; ?> >无效漏洞
+                            </option>
+                        </select>
+                    </td>
+                </tr>
+            <?php } ?>
+            <?php if (empty($semgrep)) { ?>
+                <tr>
+                    <td colspan="12" class="text-center"><?php echo getScanStatus($info['id'], 'crawlergoScan'); ?></td>
                 </tr>
             <?php } ?>
         </table>

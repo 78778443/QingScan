@@ -1554,8 +1554,24 @@ CREATE TABLE `zhiwen` (
                           PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
-
-
+DROP TABLE IF EXISTS `mobsfscan`;
+CREATE TABLE `mobsfscan` (
+                             `id` int(10) NOT NULL AUTO_INCREMENT,
+                             `code_id` int(10) NOT NULL DEFAULT '0',
+                             `user_id` int(10) NOT NULL DEFAULT '0',
+                             `type` varchar(255) NOT NULL DEFAULT '',
+                             `files` text,
+                             `cwe` varchar(255) NOT NULL DEFAULT '',
+                             `description` varchar(500) NOT NULL DEFAULT '',
+                             `input_case` varchar(255) NOT NULL DEFAULT '',
+                             `masvs` varchar(255) NOT NULL DEFAULT '',
+                             `owasp_mobile` varchar(255) NOT NULL DEFAULT '',
+                             `reference` varchar(500) NOT NULL DEFAULT '',
+                             `severity` varchar(255) NOT NULL DEFAULT '',
+                             `create_time` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+                             `check_status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '0未审核  1有效漏洞  2无效漏洞',
+                             PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 ALTER TABLE `github_keyword_monitor` ADD COLUMN `app_id` int(11) NOT NULL DEFAULT 0 AFTER `scan_time`;
 ALTER TABLE `github_keyword_monitor_notice` ADD COLUMN `app_id` int(10) NOT NULL DEFAULT 0 AFTER `create_time`;
@@ -1563,16 +1579,16 @@ ALTER TABLE `plugin` ADD COLUMN `type` int(2) NOT NULL DEFAULT 1 COMMENT '1执�
 ALTER TABLE `plugin_scan_log` ADD COLUMN `file_content` varchar(5000) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL AFTER `log_type`;
 ALTER TABLE `plugin_scan_log` ADD COLUMN `is_read` tinyint(1) NOT NULL DEFAULT 1 COMMENT '结果是否已读取   1未读  2已读取' AFTER `file_content`;
 ALTER TABLE `plugin_scan_log` MODIFY COLUMN `plugin_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '插件名称' AFTER `check_status`;
-
 INSERT INTO `auth_rule`( `href`, `title`, `is_delete`, `is_open_auth`, `pid`, `sort`, `created_at`, `menu_status`, `update_time`, `level`, `delete_time`, `icon_url`) VALUES ( 'zhiwen/index', '指纹列表', 0, 1, 35, 11, 1643338608, 1, 0, 2, 0, '');
 INSERT INTO `auth_rule`( `href`, `title`, `is_delete`, `is_open_auth`, `pid`, `sort`, `created_at`, `menu_status`, `update_time`, `level`, `delete_time`, `icon_url`) VALUES ( 'backup/backup', '未知', 0, 1, 43, 0, 1643091277, 1, 0, 3, 0, '');
 INSERT INTO `auth_rule`( `href`, `title`, `is_delete`, `is_open_auth`, `pid`, `sort`, `created_at`, `menu_status`, `update_time`, `level`, `delete_time`, `icon_url`) VALUES ( 'user_log/index', '登录日志', 0, 1, 23, 9, 1643018839, 1, 0, 2, 0, '');
 INSERT INTO `auth_rule`( `href`, `title`, `is_delete`, `is_open_auth`, `pid`, `sort`, `created_at`, `menu_status`, `update_time`, `level`, `delete_time`, `icon_url`) VALUES ( 'backup/index', '数据备份', 0, 1, 23, 8, 1642854435, 1, 0, 2, 0, '');
 INSERT INTO `auth_rule`( `href`, `title`, `is_delete`, `is_open_auth`, `pid`, `sort`, `created_at`, `menu_status`, `update_time`, `level`, `delete_time`, `icon_url`) VALUES ( 'github_keyword_monitor_notice/index', 'github关键词监控结果', 0, 1, 35, 8, 1642852575, 1, 0, 2, 0, '');
 INSERT INTO `auth_rule` (`auth_rule_id`,`href`, `title`, `is_delete`, `is_open_auth`, `pid`, `sort`, `created_at`, `menu_status`, `update_time`, `level`, `delete_time`, `icon_url`) VALUES (333,'', '插件中心', 0, 1, 0, 8, 1642257783, 0, 0, 1, 0, '');
-
 INSERT INTO `system_config` (`name`, `key`, `value`, `is_delete`) VALUES ('暂停扫描', 'maxProcesses', '1', 0);
-
 ALTER TABLE `code` ADD COLUMN `is_online` int(10) NOT NULL DEFAULT 1 COMMENT '1线上   2本地';
+ALTER TABLE `code` ADD COLUMN `mobsfscan_scan_time` datetime(0) NOT NULL DEFAULT '2000-01-01 00:00:00';
+INSERT INTO `auth_rule` (`href`, `title`, `is_delete`, `is_open_auth`, `pid`, `sort`, `created_at`, `menu_status`, `update_time`, `level`, `delete_time`, `icon_url`) VALUES ('mobsfscan/index', 'mobsfscan列表', 0, 1, 14, 4, 1652079904, 0, 1652079930, 2, 0, '');
+INSERT INTO `process_safe` (`key`, `value`, `status`, `note`, `update_time`, `type`) VALUES ('scan mobsfscan', 'cd /root/qingscan/code  &&  php think scan mobsfscan>> /tmp/mobsfscan.txt & ', 0, 'mobsfscan代码审计(app)', '2022-05-10 11:09:24', 1);
 
 SET FOREIGN_KEY_CHECKS = 1;

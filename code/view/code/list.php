@@ -51,6 +51,7 @@ $searchArr = [
                             <th>clone方式</th>
                             <th>Fortify</th>
                             <th>Semgrep</th>
+                            <th>mobsfscan</th>
                             <th>webshell</th>
                             <th>PHP依赖</th>
                             <th>Python依赖</th>
@@ -78,6 +79,11 @@ $searchArr = [
                                 <td>
                                     <a title="扫描时间:<?php echo $value['semgrep_scan_time'] ?>"
                                        href="<?php echo url('code/semgrep_list', ['code_id' => $value['id']]); ?>"><?php echo $semgrepNum[$value['id']] ?? 0 ?>
+                                    </a>
+                                </td>
+                                <td>
+                                    <a title="扫描时间:<?php echo $value['mobsfscan_scan_time'] ?>"
+                                       href="<?php echo url('mobsfscan/index', ['code_id' => $value['id']]); ?>"><?php echo $value['mobsfscan']; ?>
                                     </a>
                                 </td>
                                 <td>
@@ -116,7 +122,7 @@ $searchArr = [
                             </tr>
                         <?php } ?>
                         <?php if(empty($list)){?>
-                            <tr><td colspan="12" class="text-center">暂无目标</td></tr>
+                            <tr><td colspan="13" class="text-center">暂无目标</td></tr>
                         <?php }?>
                     </table>
                 </div>

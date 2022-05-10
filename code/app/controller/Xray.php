@@ -62,11 +62,8 @@ class Xray extends Common
         foreach ($data['CategoryList'] as &$v) {
             $v = json_decode($v,true);
         }
-
         $data['projectList'] = $this->getMyAppList();
-
         $data['check_status_list'] = ['未审计','有效漏洞','无效漏洞'];
-
         return View::fetch('index', $data);
     }
 

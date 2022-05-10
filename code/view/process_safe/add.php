@@ -14,7 +14,17 @@
                         <input type="text" name="value" class="form-control" placeholder="">
                     </div>
                     <div class="mb-3">
-                        <label>note</label>
+                        <label class="form-label">工具类型</label>
+                        <select name="type" class="form-select">
+                            <option value="0">黑盒扫描</option>
+                            <option value="1">白盒审计</option>
+                            <option value="2">专项利用</option>
+                            <option value="3">其他</option>
+                            <option value="4">信息收集</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label>备注</label>
                         <input type="text" name="note" class="form-control" placeholder="详情">
                     </div>
                     <div class="mb-3">

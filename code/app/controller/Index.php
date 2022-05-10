@@ -76,7 +76,7 @@ class Index extends Common
                     ["name" => "sqlmap", "value" => $sqlmapCount, "href" => url('sqlmap/index')],
                     ["name" => "awvs", "value" => $awvsCount, "href" => url('bug/awvs')],
                     ["name" => "vulmap", "value" => $vulmapCount, "href" => url('vulmap/index')],
-                    ["name" => "nuclei", "value" => $nucleiCount, "href" => url('app/index')],
+                    ["name" => "nuclei", "value" => $nucleiCount, "href" => url('app_nuclei/index')],
                     ["name" => "dirmap", "value" => $dirmapCount, "href" => url('dirmap/index')],
                     ["name" => "whatweb", "value" => $whatwebCount, "href" => url('whatweb/index')],
                     ["name" => "oneforall", "value" => $oneforallCount, "href" => url('one_for_all/index')],

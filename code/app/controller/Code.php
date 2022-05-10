@@ -43,6 +43,7 @@ class Code extends Common
                 $v['ssh_url'] = '本地';
                 $v['pulling_mode'] = '本地';
             }
+            $v['mobsfscan'] = Db::name('mobsfscan')->where('code_id',$v['id'])->count('id');
         }
         //查询数量
         $codeIds = array_column($data['list'], 'id');
@@ -94,20 +95,22 @@ class Code extends Common
         $where[] = ['code_id', '=', $codeId];
         $map[] = ['id', '=', $codeId];
 
-        $where1 = [];
-//        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
-//            //$where[] = ['user_id','=',$this->userId];
-//            $map[] = ['user_id', '=', $this->userId];
-//            $where1[] = ['user_id', '=', $this->userId];
-//        }
+        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
+            $map[] = ['user_id', '=', $this->userId];
+            $where[] = ['user_id', '=', $this->userId];
+        }
         $data['info'] = Db::name('code')->where($map)->find();
-
-        $data['fortify'] = Db::table('fortify')->where($where)->where($where1)->order("id", 'desc')->limit(0, 10)->select()->toArray();
-        $data['semgrep'] = Db::table('semgrep')->where($where)->where($where1)->order("id", 'desc')->limit(0, 10)->select()->toArray();
-        $data['hema'] = Db::table('code_webshell')->where($where)->where($where1)->order("id", 'desc')->limit(0, 10)->select()->toArray();
-        $data['java'] = Db::table('code_java')->where($where)->where($where1)->order("id", 'desc')->limit(0, 10)->select()->toArray();
-        $data['python'] = Db::table('code_python')->where($where)->where($where1)->order("id", 'desc')->limit(0, 10)->select()->toArray();
-        $data['php'] = Db::table('code_composer')->where($where)->where($where1)->order("id", 'desc')->limit(0, 10)->select()->toArray();
+        if ($data['info']['is_online'] == 2) { // 本地
+            $data['info']['ssh_url'] = '本地';
+            $data['info']['pulling_mode'] = '本地';
+        }
+        $data['fortify'] = Db::table('fortify')->where($where)->order("id", 'desc')->limit(0, 10)->select()->toArray();
+        $data['semgrep'] = Db::table('semgrep')->where($where)->order("id", 'desc')->limit(0, 10)->select()->toArray();
+        $data['mobsfscan'] = Db::table('mobsfscan')->where($where)->order("id", 'desc')->limit(0, 10)->select()->toArray();
+        $data['hema'] = Db::table('code_webshell')->where($where)->order("id", 'desc')->limit(0, 10)->select()->toArray();
+        $data['java'] = Db::table('code_java')->where($where)->order("id", 'desc')->limit(0, 10)->select()->toArray();
+        $data['python'] = Db::table('code_python')->where($where)->order("id", 'desc')->limit(0, 10)->select()->toArray();
+        $data['php'] = Db::table('code_composer')->where($where)->order("id", 'desc')->limit(0, 10)->select()->toArray();
         $projectArr = Db::table('code')->where($map)->select()->toArray();
         $data['projectArr'] = array_column($projectArr, null, 'id');
 

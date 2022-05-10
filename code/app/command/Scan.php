@@ -20,6 +20,7 @@ use app\model\HostModel;
 use app\model\HostPortModel;
 use app\model\HydraModel;
 use app\model\KafkaModel;
+use app\model\MobsfscanModel;
 use app\model\OneForAllModel;
 use app\model\PluginModel;
 use app\model\ProcessSafeModel;
@@ -134,6 +135,8 @@ class Scan extends Command
             PluginModel::safe();
         } elseif ($func == 'deleteDir') {
             PluginModel::deleteCodeDir();
+        } elseif ($func == 'mobsfscan') {
+            MobsfscanModel::mobsfscan();
         } elseif ($func == 'custom') {
             $custom = trim($input->getArgument('custom'));
             $scanType = $input->getArgument('scan_type');

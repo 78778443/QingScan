@@ -41,6 +41,7 @@ class ProcessSafe extends Common
             $data['key'] = $request->param('key');
             $data['value'] = $request->param('value');
             $data['status'] = $request->param('status');
+            $data['type'] = $request->param('type');
             $data['note'] = $request->param('note');
             //添加
             if (Db::name('process_safe')->insert($data)) {
@@ -61,6 +62,7 @@ class ProcessSafe extends Common
             $data['key'] = $request->param('key');
             $data['value'] = $request->param('value');
             $data['status'] = $request->param('status');
+            $data['type'] = $request->param('type');
             $data['note'] = $request->param('note');
             if (Db::name('process_safe')->where('id', $id)->update($data)) {
                 return redirect(url('index'));

@@ -65,6 +65,6 @@ class BaseModel
     public static function scanTime($table,$id,$filed)
     {
         $data = [$filed => date('Y-m-d H:i:s', time())];
-        Db::name($table)->where('id', $id)->update($data);
+        return Db::name($table)->where('id', $id)->update($data);
     }
 }
