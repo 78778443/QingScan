@@ -31,6 +31,6 @@ services:
     command: /bin/bash -c "php /root/qingscan/safe.php"
   awvs:
     image: secfa/docker-awvs
-    container_name: awvs1
+    container_name: awvs
     ports:
       - "13443:3443"
