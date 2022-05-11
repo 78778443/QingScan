@@ -1,7 +1,6 @@
 version: "3.2"
 services:
   mysqlserver:
-    #image: registry.cn-beijing.aliyuncs.com/daxia/qingscan:mysql5.6
     image: mysql:5.7
     container_name: mysqlser
     environment:
@@ -15,7 +14,7 @@ services:
     ports:
       - "33306:3306"
   qingscan:
-    image: registry.cn-beijing.aliyuncs.com/daxia/qingscan:20211231_01
+    image: registry.cn-beijing.aliyuncs.com/xtian/qingscan:20220511
     container_name: qingscan
 #    network_mode: "host"
     links:
