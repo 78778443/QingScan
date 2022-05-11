@@ -27,4 +27,4 @@ ALTER TABLE `code` ADD COLUMN `is_online` int(10) NOT NULL DEFAULT 1 COMMENT '1�
 ALTER TABLE `code` ADD COLUMN `mobsfscan_scan_time` datetime(0) NOT NULL DEFAULT '2000-01-01 00:00:00';
 ALTER TABLE `code` ADD COLUMN `project_type` tinyint(1) NOT NULL DEFAULT 0 COMMENT '1php 2java 3python 4go 5app 6其他';
 INSERT INTO `auth_rule` (`href`, `title`, `is_delete`, `is_open_auth`, `pid`, `sort`, `created_at`, `menu_status`, `update_time`, `level`, `delete_time`, `icon_url`) VALUES ('mobsfscan/index', 'mobsfscan列表', 0, 1, 14, 4, 1652079904, 0, 1652079930, 2, 0, '');
-INSERT INTO `process_safe` (`key`, `value`, `status`, `note`, `update_time`, `type`) VALUES ('scan mobsfscan', 'cd /root/qingscan/code  &&  php think scan mobsfscan>> /tmp/mobsfscan.txt & ', 0, 'mobsfscan代码审计(app)', '2022-05-10 11:09:24', 1);
+INSERT INTO `process_safe` (`id`,`key`, `value`, `status`, `note`, `update_time`, `type`) VALUES (42,'scan mobsfscan', 'cd /root/qingscan/code  &&  php think scan mobsfscan>> /tmp/mobsfscan.txt & ', 0, 'mobsfscan代码审计(app)', '2022-05-10 11:09:24', 1);
