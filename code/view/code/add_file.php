@@ -10,6 +10,16 @@
                         <input type="text" name="name" class="form-control" placeholder="请输入项目名称" required>
                     </div>
                     <div class="mb-3">
+                        <label class="form-label">项目类型</label>
+                        <select name="project_type" class="form-select" aria-label="Default select example" required>
+                            <option value="0">PHP项目</option>
+                            <option value="1">JAVA项目</option>
+                            <option value="2">Python项目</option>
+                            <option value="3">APP项目</option>
+                            <option value="4">其他</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
                         <label class="form-label">项目文件压缩包zip格式(小于100M)</label>
                         <input type="file" class="form-control form-control" name="file" accept=".zip" required/>
                     </div>

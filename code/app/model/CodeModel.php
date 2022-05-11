@@ -330,11 +330,14 @@ class CodeModel extends BaseModel
         $codePath = "/data/codeCheck";
         while (true) {
             processSleep(1);
-            $list = Db::name('code')->whereTime('composer_scan_time', '<=', date('Y-m-d H:i:s', time() - (86400 * 15)))
-                ->where('is_delete', 0)->limit(1)->orderRand()->select()->toArray();
+            $endTime = date('Y-m-d', time() - 86400 * 15);
+            $where[] = ['is_delete','=',0];
+            $where[] = ['project_type','in',[1,6]];
+            $list = Db::name('code')->whereTime('composer_scan_time', '<=', $endTime)->where($where)->limit(1)->orderRand()->select()->toArray();
 
             foreach ($list as $k => $v) {
                 PluginModel::addScanLog($v['id'], __METHOD__, 0, 2);
+                self::scanTime('code', $v['id'], 'composer_scan_time');
 
                 $value = $v;
                 $prName = cleanString($value['name']);
@@ -350,7 +353,6 @@ class CodeModel extends BaseModel
                     continue;
                 }
 
-
                 foreach ($fileArr as $value) {
                     $json = file_get_contents($value['file']);
                     if (empty($json)) {
@@ -365,7 +367,6 @@ class CodeModel extends BaseModel
                     Db::name('code_composer')->where(['code_id' => $v['id']])->delete();
                     foreach ($packages as $val) {
                         foreach ($val as &$temp) {
-//                            $temp = is_string($temp) ? $temp : json_encode($temp, JSON_UNESCAPED_UNICODE);
                             $temp = is_string($temp) ? $temp : var_export($temp, true);
                         }
 
@@ -373,13 +374,11 @@ class CodeModel extends BaseModel
                         $val['code_id'] = $v['id'];
                         $val['create_time'] = date('Y-m-d H:i:s', time());
 
-
                         Db::name('code_composer')->insert($val);
                         addlog("composer依赖扫描数据写入成功,内容为:" . json_encode($val));
                     }
                 }
                 PluginModel::addScanLog($v['id'], __METHOD__, 1, 2);
-                self::scanTime('code', $v['id'], 'composer_scan_time');
             }
             sleep(10);
         }

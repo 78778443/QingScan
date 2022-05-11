@@ -19,6 +19,23 @@
                                value="<?php echo $info['name'] ?>">
                     </div>
                     <div class="mb-3">
+                        <label class="form-label">项目类型</label>
+                        <select name="project_type" class="form-select">
+                            <option value="1" <?php if ($info['project_type'] == 1) echo 'selected' ?>>PHP项目
+                            </option>
+                            <option value="2" <?php if ($info['project_type'] == 2) echo 'selected' ?>>JAVA项目
+                            </option>
+                            <option value="3" <?php if ($info['project_type'] == 3) echo 'selected' ?>>Python项目
+                            </option>
+                            <option value="4" <?php if ($info['project_type'] == 4) echo 'selected' ?>>Golang项目
+                            </option>
+                            <option value="5" <?php if ($info['project_type'] == 5) echo 'selected' ?>>APP项目
+                            </option>
+                            <option value="6" <?php if ($info['project_type'] == 6) echo 'selected' ?>>其他
+                            </option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
                         <label class="form-label">是否私有仓库</label>
                         <select name="is_private" class="form-select">
                             <option value="0" <?php if ($info['is_private'] == 0) echo 'selected' ?>>公共仓库

@@ -11,11 +11,13 @@ class CodeJavaModel extends BaseModel
     public static function code_java()
     {
         $codePath = "/data/codeCheck";
+        ini_set('max_execution_time', 0);
         while (true) {
             processSleep(1);
-            ini_set('max_execution_time', 0);
-            $list = Db::name('code')->whereTime('java_scan_time', '<=', date('Y-m-d H:i:s', time() - (86400 * 15)))
-                ->where('is_delete', 0)->limit(1)->orderRand()->select()->toArray();
+            $endTime = date('Y-m-d', time() - 86400 * 15);
+            $where[] = ['is_delete','=',0];
+            $where[] = ['project_type','in',[2,6]];
+            $list = Db::name('code')->whereTime('java_scan_time', '<=', $endTime)->where($where)->limit(1)->orderRand()->select()->toArray();
             foreach ($list as $k => $v) {
                 PluginModel::addScanLog($v['id'], __METHOD__, 0, 2);
                 self::scanTime('code', $v['id'], 'java_scan_time');

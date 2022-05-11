@@ -16,14 +16,17 @@ class MobsfscanModel extends BaseModel
         while (true) {
             processSleep(1);
             $endTime = date('Y-m-d', time() - 86400 * 15);
-            $list = Db::table('code')->whereTime('mobsfscan_scan_time', '<=', $endTime)->where('is_delete', 0)->limit(1)->orderRand()->select()->toArray();
-            $count = Db::table('code')->whereTime('mobsfscan_scan_time', '<=', $endTime)->count('id');
+            $where[] = ['is_delete','=',0];
+            $where[] = ['project_type','in',[5,6]];
+            $list = Db::table('code')->whereTime('mobsfscan_scan_time', '<=', $endTime)->where($where)->limit(1)->orderRand()->select()->toArray();
+            $count = Db::table('code')->whereTime('mobsfscan_scan_time', '<=', $endTime)->where($where)->count('id');
             print("开始执行mobsfscan扫描代码任务,{$count} 个项目等待扫描..." . PHP_EOL);
             foreach ($list as $k=>$v) {
                 $v['name'] = cleanString($v['name']);
+                PluginModel::addScanLog($v['id'], __METHOD__, 0,2);
+                self::scanTime('code', $v['id'], 'mobsfscan_scan_time');
 
                 $filename .= $v['name'].'.json';
-                PluginModel::addScanLog($v['id'], __METHOD__, 0,2);
 
                 $codePath = "/data/codeCheck/".$v['name'];
                 $cmd = "mobsfscan {$codePath} --json -o {$filename}";
@@ -36,7 +39,7 @@ class MobsfscanModel extends BaseModel
                 $results = json_decode(file_get_contents($filename), true)['results'];
                 if (!$results) {
                     addlog(["mobsfscan扫描成功，未找到漏洞；项目名称：{$v['name']}"]);
-                    self::scanTime('code', $v['id'], 'mobsfscan_scan_time');
+                    //self::scanTime('code', $v['id'], 'mobsfscan_scan_time');
                     continue;
                 }
                 $num = 0;

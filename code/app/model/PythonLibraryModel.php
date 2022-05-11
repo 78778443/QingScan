@@ -10,15 +10,18 @@ class PythonLibraryModel extends BaseModel
 {
     public static function code_python()
     {
+        ini_set('max_execution_time', 0);
         $codePath = "/data/codeCheck";
         while (true) {
             processSleep(1);
-            ini_set('max_execution_time', 0);
-            $list = Db::name('code')->whereTime('python_scan_time', '<=', date('Y-m-d H:i:s', time() - (86400 * 15)))
-                ->where('is_delete', 0)->limit(1)->orderRand()->select()->toArray();
-            //$list = Db::name('code')->where('id',20)->where('is_delete', 0)->field('id,name,user_id')->select()->toArray();
+            $endTime = date('Y-m-d', time() - 86400 * 15);
+            $where[] = ['is_delete','=',0];
+            $where[] = ['project_type','in',[3,6]];
+            $list = Db::name('code')->whereTime('python_scan_time', '<=', $endTime)->where($where)->limit(1)->orderRand()->select()->toArray();
             foreach ($list as $k => $v) {
                 PluginModel::addScanLog($v['id'], __METHOD__, 0,2);
+                self::scanTime('code', $v['id'], 'python_scan_time');
+
                 $value = $v;
                 $prName = cleanString($value['name']);
                 $codeUrl = $value['ssh_url'];
@@ -53,7 +56,6 @@ class PythonLibraryModel extends BaseModel
                 if ($data) {
                     Db::name('code_python')->insertAll($data);
                 }
-                self::scanTime('code', $v['id'], 'python_scan_time');
                 PluginModel::addScanLog($v['id'], __METHOD__, 1, 2);
             }
             sleep(10);

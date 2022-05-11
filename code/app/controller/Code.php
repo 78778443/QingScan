@@ -16,6 +16,13 @@ class Code extends Common
 
     public function index(Request $request)
     {
+        /*echo '<pre>';
+        //$endTime = date('Y-m-d', time() - 86400 * 15);
+        $where[] = ['is_delete','=',0];
+        $where[] = ['project_type','in',[4,5]];
+        $list = Db::table('code')->where($where)->limit(1)->orderRand()->select()->toArray();
+        var_dump($list);
+        exit;*/
         $pageSize = 25;
 
         $where[] = ['is_delete', '=', 0];
@@ -598,6 +605,7 @@ class Code extends Common
         }
         if ($request->isPost()) {
             $data['name'] = $request->param('name');
+            $data['project_type'] = $request->param('project_type');
             $data['is_private'] = $request->param('is_private');
             $data['pulling_mode'] = $request->param('pulling_mode');
             $data['ssh_url'] = $request->param('ssh_url');
@@ -715,6 +723,7 @@ class Code extends Common
     public function _add_code(Request $request)
     {
         $data['name'] = $request->param('name');
+        $data['project_type'] = $request->param('project_type');
         $data['is_private'] = $request->param('is_private');
         $data['pulling_mode'] = $request->param('pulling_mode');
         $data['ssh_url'] = $request->param('ssh_url');
@@ -773,8 +782,9 @@ class Code extends Common
     public function add_file(Request $request){
         if ($request->isPost()) {
             $name = $request->param('name');
+            $project_type = $request->param('project_type');
             $file = $request->file('file');
-            if (!$name || !$file) {
+            if (!$name || !$project_type || !$file) {
                 $this->error('字段数据不能为空');
             }
             $fileSize = 1024*1024*100;
@@ -1003,6 +1013,7 @@ class Code extends Common
         }
     }
 
+    // 单个工具重新扫描
     public function rescan(Request $request){
         $id = $request->param('id');
         $map[] = ['id', '=', $id];
