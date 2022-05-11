@@ -809,7 +809,7 @@ class Code extends Common
                     @unlink($runtime.$savename);
                     $data['name'] = $name;
                     $data['is_online'] = 2;
-                    $data['project_type'] = 2;
+                    $data['project_type'] = $project_type;
                     Db::name('code')->insert($data);
                     $this->success('白盒项目添加成功','index');
                 } else {
