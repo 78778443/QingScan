@@ -134,6 +134,7 @@ class Code extends Common
         if (Db::name('code')->where($map)->delete()) {
             Db::table('fortify')->where(['code_id' => $id])->delete();
             Db::table('semgrep')->where(['code_id' => $id])->delete();
+            Db::table('mobsfscan')->where(['code_id' => $id])->delete();
             Db::table('code_webshell')->where(['code_id' => $id])->delete();
             Db::table('code_composer')->where(['code_id' => $id])->delete();
             Db::table('code_python')->where(['code_id' => $id])->delete();
@@ -161,6 +162,7 @@ class Code extends Common
         if (Db::name('code')->where($where)->delete()) {
             Db::table('fortify')->where($map)->delete();
             Db::table('semgrep')->where($map)->delete();
+            Db::table('mobsfscan')->where($map)->delete();
             Db::table('code_webshell')->where($map)->delete();
             Db::table('code_composer')->where($map)->delete();
             Db::table('code_python')->where($map)->delete();

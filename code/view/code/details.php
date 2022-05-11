@@ -70,6 +70,8 @@ $dengjiArrColor = ['Low' => 'secondary', 'Medium' => 'primary', 'High' => 'warni
             <a href="<?php echo url('code/rescan', ['id'=>$info['id'],'tools_name' => 'fortify']) ?>"
                onClick="return confirm('确定要清空该工具数据重新扫描吗?')"
                class="btn btn-sm btn-outline-warning">重新扫描</a>
+            <a href="<?php echo url('code/bug_list', ['code_id' => $info['id']]) ?>"
+               class="btn btn-sm btn-outline-primary" style="float: right">查看更多</a>
         </h4>
         <table class="table table-bordered table-hover table-striped">
             <thead>
@@ -149,6 +151,8 @@ $dengjiArrColor = ['Low' => 'secondary', 'Medium' => 'primary', 'High' => 'warni
             <a href="<?php echo url('code/rescan', ['id'=>$info['id'],'tools_name' => 'semgrep']) ?>"
                onClick="return confirm('确定要清空该工具数据重新扫描吗?')"
                class="btn btn-sm btn-outline-warning">重新扫描</a>
+            <a href="<?php echo url('code/semgrep_list', ['code_id' => $info['id']]) ?>"
+               class="btn btn-sm btn-outline-primary" style="float: right">查看更多</a>
         </h4>
         <table class="table table-bordered table-hover table-striped">
             <thead>
@@ -211,6 +215,8 @@ $dengjiArrColor = ['Low' => 'secondary', 'Medium' => 'primary', 'High' => 'warni
             <a href="<?php echo url('code/rescan', ['id'=>$info['id'],'tools_name' => 'mobsfscan']) ?>"
                onClick="return confirm('确定要清空该工具数据重新扫描吗?')"
                class="btn btn-sm btn-outline-warning">重新扫描</a>
+            <a href="<?php echo url('mobsfscan/index', ['code_id' => $info['id']]) ?>"
+               class="btn btn-sm btn-outline-primary" style="float: right">查看更多</a>
         </h4>
         <table class="table table-bordered table-hover table-striped">
             <thead>
@@ -267,6 +273,8 @@ $dengjiArrColor = ['Low' => 'secondary', 'Medium' => 'primary', 'High' => 'warni
             <a href="<?php echo url('code/rescan', ['id'=>$info['id'],'tools_name' => 'webshell']) ?>"
                onClick="return confirm('确定要清空该工具数据重新扫描吗?')"
                class="btn btn-sm btn-outline-warning">重新扫描</a>
+            <a href="<?php echo url('code_webshell/index', ['code_id' => $info['id']]) ?>"
+               class="btn btn-sm btn-outline-primary" style="float: right">查看更多</a>
         </h4>
         <table class="table table-bordered table-hover table-striped">
             <thead>
@@ -310,6 +318,8 @@ $dengjiArrColor = ['Low' => 'secondary', 'Medium' => 'primary', 'High' => 'warni
             <a href="<?php echo url('code/rescan', ['id'=>$info['id'],'tools_name' => 'java']) ?>"
                onClick="return confirm('确定要清空该工具数据重新扫描吗?')"
                class="btn btn-sm btn-outline-warning">重新扫描</a>
+            <a href="<?php echo url('code_java/index', ['code_id' => $info['id']]) ?>"
+               class="btn btn-sm btn-outline-primary" style="float: right">查看更多</a>
         </h4>
         <table class="table table-bordered table-hover table-striped">
             <thead>
@@ -349,6 +359,8 @@ $dengjiArrColor = ['Low' => 'secondary', 'Medium' => 'primary', 'High' => 'warni
             <a href="<?php echo url('code/rescan', ['id'=>$info['id'],'tools_name' => 'python']) ?>"
                onClick="return confirm('确定要清空该工具数据重新扫描吗?')"
                class="btn btn-sm btn-outline-warning">重新扫描</a>
+            <a href="<?php echo url('code_python/index', ['code_id' => $info['id']]) ?>"
+               class="btn btn-sm btn-outline-primary" style="float: right">查看更多</a>
         </h4>
         <table class="table table-bordered table-hover table-striped">
             <thead>
@@ -381,6 +393,8 @@ $dengjiArrColor = ['Low' => 'secondary', 'Medium' => 'primary', 'High' => 'warni
             <a href="<?php echo url('code/rescan', ['id'=>$info['id'],'tools_name' => 'php']) ?>"
                onClick="return confirm('确定要清空该工具数据重新扫描吗?')"
                class="btn btn-sm btn-outline-warning">重新扫描</a>
+            <a href="<?php echo url('code_composer/index', ['code_id' => $info['id']]) ?>"
+               class="btn btn-sm btn-outline-primary" style="float: right">查看更多</a>
         </h4>
         <table class="table table-bordered table-hover table-striped">
             <thead>
