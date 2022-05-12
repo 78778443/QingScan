@@ -5,10 +5,10 @@
             <div class="col-md-6 tuchu">
                 <h1>添加白盒项目</h1>
                 <form method="post" action="<?php echo url('code/add_file')?>" enctype="multipart/form-data">
-                    <div class="mb-3">
+                    <!--<div class="mb-3">
                         <label class="form-label">项目名称(项目名称和压缩包目录名称必须一致)</label>
                         <input type="text" name="name" class="form-control" placeholder="请输入项目名称" required>
-                    </div>
+                    </div>-->
                     <div class="mb-3">
                         <label class="form-label">项目类型</label>
                         <select name="project_type" class="form-select" aria-label="Default select example" required>

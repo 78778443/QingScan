@@ -783,15 +783,20 @@ class Code extends Common
 
     public function add_file(Request $request){
         if ($request->isPost()) {
-            $name = $request->param('name');
+            //$name = $request->param('name');
             $project_type = $request->param('project_type');
             $file = $request->file('file');
-            if (!$name || !$project_type || !$file) {
-                $this->error('字段数据不能为空');
+            if (!$file) {
+                $this->error('请先上传项目压缩包');
+            }
+            $name = $file->getOriginalName();
+            $name = substr($name,0,strrpos($name,'.'));
+            if (!$name) {
+                $this->error('项目压缩包命名错误');
             }
             $fileSize = 1024*1024*100;
             if (Db::name('code')->where('name',$name)->count()) {
-                $this->error('项目名称已存在');
+                $this->error('项目已存在');
             }
             try {
                 validate(['file'=>'fileSize:'.$fileSize.'|fileExt:zip'])->check(['file'=>$file]);
