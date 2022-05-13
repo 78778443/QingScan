@@ -19,7 +19,7 @@ class PythonLibraryModel extends BaseModel
             $where[] = ['project_type','in',[3,6]];
             $list = Db::name('code')->whereTime('python_scan_time', '<=', $endTime)->where($where)->limit(1)->orderRand()->select()->toArray();
             foreach ($list as $k => $v) {
-                PluginModel::addScanLog($v['id'], __METHOD__, 0,2);
+                PluginModel::addScanLog($v['id'], __METHOD__, 2);
                 self::scanTime('code', $v['id'], 'python_scan_time');
 
                 $value = $v;

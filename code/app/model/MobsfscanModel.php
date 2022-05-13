@@ -23,7 +23,7 @@ class MobsfscanModel extends BaseModel
             print("开始执行mobsfscan扫描代码任务,{$count} 个项目等待扫描..." . PHP_EOL);
             foreach ($list as $k=>$v) {
                 $v['name'] = cleanString($v['name']);
-                PluginModel::addScanLog($v['id'], __METHOD__, 0,2);
+                PluginModel::addScanLog($v['id'], __METHOD__, 2);
                 self::scanTime('code', $v['id'], 'mobsfscan_scan_time');
 
                 $filename .= $v['name'].'.json';
@@ -38,8 +38,8 @@ class MobsfscanModel extends BaseModel
                 }
                 $results = json_decode(file_get_contents($filename), true)['results'];
                 if (!$results) {
+                    PluginModel::addScanLog($v['id'], __METHOD__, 2,1);
                     addlog(["mobsfscan扫描成功，未找到漏洞；项目名称：{$v['name']}"]);
-                    //self::scanTime('code', $v['id'], 'mobsfscan_scan_time');
                     continue;
                 }
                 $num = 0;
@@ -62,9 +62,8 @@ class MobsfscanModel extends BaseModel
                     $num++;
                 }
                 Db::name('mobsfscan')->insertAll($data);
-                PluginModel::addScanLog($v['id'], __METHOD__, 1,2);
+                PluginModel::addScanLog($v['id'], __METHOD__, 2,1);
                 addlog(["mobsfscan扫描数据写入成功:" . json_encode($data)]);
-                self::scanTime('code', $v['id'], 'mobsfscan_scan_time');
                 @unlink($filename);
             }
             sleep(10);

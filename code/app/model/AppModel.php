@@ -75,12 +75,12 @@ class AppModel extends BaseModel
                         $url = "http://" . $url;
                     }
                     $subDomain = ['name' => $appInfo['name'], 'url' => $url];
-                    var_dump($subDomain);
+                    //var_dump($subDomain);
                     Db::table(self::$tableName)->extra("IGNORE")->insert($subDomain);
                 }
                 $appInfo['subdomain_time'] = date('Y-m-d H:i:s');
                 Db::table(self::$tableName)->save($appInfo);
-                PluginModel::addScanLog($appInfo['id'], __METHOD__, 1);
+                PluginModel::addScanLog($appInfo['id'], __METHOD__, 0,1);
             }
 
             print_r("休息10秒..." . PHP_EOL);
@@ -299,7 +299,7 @@ class AppModel extends BaseModel
                 $cmd = "whatweb {$v['url']} --log-json $filename";
                 systemLog($cmd);
                 if (file_exists($filename) == false) {
-                    PluginModel::addScanLog($v['id'], __METHOD__, 2);
+                    PluginModel::addScanLog($v['id'], __METHOD__, 0,2);
                     addlog(["whatweb扫描结果文件不存在:{$filename}"]);
                     self::updateScanTime($v['id'],'whatweb_scan_time');
                     continue;
@@ -333,12 +333,12 @@ class AppModel extends BaseModel
                         Db::name('app_whatweb')->insert($data);
                     }
                 } else {
-                    PluginModel::addScanLog($v['id'], __METHOD__, 2);
+                    PluginModel::addScanLog($v['id'], __METHOD__, 0,2);
                     addlog(["whatweb扫描结果文件内容格式错误:{$filename}"]);
                     self::updateScanTime($v['id'],'whatweb_scan_time');
                 }
                 @unlink($filename);
-                PluginModel::addScanLog($v['id'], __METHOD__, 1);
+                PluginModel::addScanLog($v['id'], __METHOD__,0, 1);
             }
             sleep(10);
         }

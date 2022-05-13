@@ -336,7 +336,7 @@ class CodeModel extends BaseModel
             $list = Db::name('code')->whereTime('composer_scan_time', '<=', $endTime)->where($where)->limit(1)->orderRand()->select()->toArray();
 
             foreach ($list as $k => $v) {
-                PluginModel::addScanLog($v['id'], __METHOD__, 0, 2);
+                PluginModel::addScanLog($v['id'], __METHOD__, 2);
                 self::scanTime('code', $v['id'], 'composer_scan_time');
 
                 $value = $v;
@@ -378,7 +378,7 @@ class CodeModel extends BaseModel
                         addlog("composer依赖扫描数据写入成功,内容为:" . json_encode($val));
                     }
                 }
-                PluginModel::addScanLog($v['id'], __METHOD__, 1, 2);
+                PluginModel::addScanLog($v['id'], __METHOD__, 2, 1);
             }
             sleep(10);
         }

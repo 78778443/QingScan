@@ -53,6 +53,8 @@ class Scan extends Command
         $func = trim($input->getArgument('func'));
         if ($func == "safe") {
             ProcessSafeModel::safe();
+        } elseif ($func == 'plugin_safe') {
+            PluginModel::safe();
         } elseif ($func == "xray") {
             WebScanModel::xray();
         } elseif ($func == "awvs") {
@@ -131,8 +133,6 @@ class Scan extends Command
             WebScanModel::crawlergoScan();
         } elseif ($func == 'dismapScan') {
             WebScanModel::dismapScan();
-        } elseif ($func == 'plugin_safe') {
-            PluginModel::safe();
         } elseif ($func == 'deleteDir') {
             PluginModel::deleteCodeDir();
         } elseif ($func == 'mobsfscan') {

@@ -47,7 +47,7 @@ $searchArr = [
                         </td>
                         <td><?php echo $value['id'] ?></td>
                         <td><?php echo isset($projectList[$value['app_id']]) ? $projectList[$value['app_id']] : '' ?></td>
-                        <td><?php echo $value['urls_id'] ?></td>
+                        <td><?php echo $value['url'] ?></td>
                         <td><?php echo $value['type'] ?></td>
                         <td><?php echo $value['title'] ?></td>
                         <td  class="AutoNewline"><?php echo $value['payload'] ?></td>

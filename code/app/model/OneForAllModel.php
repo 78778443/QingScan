@@ -21,7 +21,7 @@ class OneForAllModel extends BaseModel
                 PluginModel::addScanLog($v['id'], __METHOD__, 0);
                 $host = parse_url($v['url'])['host'];
                 if (filter_var($host, FILTER_VALIDATE_IP)) {
-                    PluginModel::addScanLog($v['id'], __METHOD__, 2,0,["content"=>"项目不是域名:{$v['url']}"]);
+                    PluginModel::addScanLog($v['id'], __METHOD__, 0,2,1,["content"=>"项目不是域名:{$v['url']}"]);
                     addlog(["此地址不是域名:{$v['url']}"]);
                     AppModel::updateScanTime($v['id'],'subdomain_scan_time');
                     continue;
@@ -34,7 +34,7 @@ class OneForAllModel extends BaseModel
                 systemLog($cmd);
                 $filename = $file_path.$domain.'.csv';
                 if (!file_exists($filename)) {
-                    PluginModel::addScanLog($v['id'], __METHOD__, 2);
+                    PluginModel::addScanLog($v['id'], __METHOD__,0, 2);
                     addlog(["OneForAll子域名扫描结果，文件不存在:{$filename}"]);
                     AppModel::updateScanTime($v['id'],'subdomain_scan_time');
                     continue;
@@ -58,7 +58,7 @@ class OneForAllModel extends BaseModel
                 } else {
                     addlog(["OneForAll子域名扫描,内容获取失败:{$filename}"]);
                 }
-                PluginModel::addScanLog($v['id'], __METHOD__, 1);
+                PluginModel::addScanLog($v['id'], __METHOD__, 0,1);
             }
             sleep(10);
         }

@@ -22,14 +22,14 @@ class AwvsModel extends BaseModel
                 if (empty($awvs_url) || empty($awvs_token)) {
                     self::scanTime('app', $id, 'awvs_scan_time');
                     $errMsg = ["执行AWVS扫描任务失败,未找到有效得配置信息", $awvs_url, $awvs_token, $id, $url];
-                    PluginModel::addScanLog($val['id'], __METHOD__, 2, 0, ["content" => $errMsg]);
+                    PluginModel::addScanLog($val['id'], __METHOD__, 0, 2,1, ["content" => $errMsg]);
                     addlog($errMsg);
                     continue;
                 }
 
                 if (filter_var($url, FILTER_VALIDATE_URL) === false) {
                     self::scanTime('app', $id, 'awvs_scan_time');
-                    PluginModel::addScanLog($val['id'], __METHOD__, 2, 0, ["content" => ["URL地址不正确", $id, $url]]);
+                    PluginModel::addScanLog($val['id'], __METHOD__, 0, 2,1, ["content" => ["URL地址不正确", $id, $url]]);
                     addlog(["URL地址不正确", $id, $url]);
                     continue;
                 }
@@ -42,7 +42,7 @@ class AwvsModel extends BaseModel
                 if (!$targetId) {
                     self::scanTime('app', $id, 'awvs_scan_time');
                     $errMsg = ["任务发送到AWVS失败,请检查QingScan是否能访问到AWVS服务，以及token有效性~", $id, $url];
-                    PluginModel::addScanLog($val['id'], __METHOD__, 2, 0, ["content" => $errMsg]);
+                    PluginModel::addScanLog($val['id'], __METHOD__, 0, 2,1, ["content" => $errMsg]);
                     addlog($errMsg);
                     continue;
                 }
@@ -59,17 +59,16 @@ class AwvsModel extends BaseModel
                     self::scanTime('app', $id, 'awvs_scan_time');
                     $errMsg = ["AWVS未授权,请参照wiki配置地址和token...", $id, $url];
                     addlog($errMsg);
-                    PluginModel::addScanLog($val['id'], __METHOD__, 2, 0, ["content" => $errMsg]);
+                    PluginModel::addScanLog($val['id'], __METHOD__, 0, 2,1, ["content" => $errMsg]);
                     continue;
                 }
                 //判断目标扫描状态
                 if (isset($retArr['last_scan_session_status']) && $retArr['last_scan_session_status'] == 'completed') {
                     self::scanTime('app', $id, 'awvs_scan_time');
                     self::addVulnList($retArr['last_scan_id'], $retArr['last_scan_session_id'], $awvs_url, $awvs_token, $val['user_id'], $val['id']);
-                    PluginModel::addScanLog($val['id'], __METHOD__, 1);
+                    PluginModel::addScanLog($val['id'], __METHOD__, 0,1);
                 }
             }
-            //addlog("AWVS累了，休息30秒钟...");
             sleep(30);
         }
     }

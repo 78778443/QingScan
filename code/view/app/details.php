@@ -684,14 +684,14 @@ $typeArr = [
             <thead>
             <tr>
                 <th>ID</th>
-                <th>所属项目</th>
                 <th>插件名称</th>
+                <th>内容</th>
             </tr>
             </thead>
             <?php foreach ($pluginScanLog as $value) { ?>
                 <tr>
                     <td><?php echo $value['id'] ?></td>
-                    <td><?php echo $value['plugin_id'] ?></td>
+                    <td><?php echo $value['plugin_name'] ?></td>
                     <td><?php echo htmlspecialchars($value['content']) ?>/td>
                 </tr>
             <?php } ?>
@@ -734,7 +734,7 @@ $typeArr = [
             <?php } ?>
             <?php if (empty($app_dismap)) { ?>
                 <tr>
-                    <td colspan="3" class="text-center">暂无数据</td>
+                    <td colspan="6" class="text-center">暂无数据</td>
                 </tr>
             <?php } ?>
         </table>

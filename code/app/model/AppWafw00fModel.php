@@ -21,13 +21,13 @@ class AppWafw00fModel extends BaseModel
                 $cmd = "cd {$tools} && python3 main.py {$v['url']} -o result.json";
                 systemLog($cmd);
                 if (!file_exists($result_path)) {
-                    PluginModel::addScanLog($v['id'], __METHOD__, 2);
+                    PluginModel::addScanLog($v['id'], __METHOD__,0, 2);
                     addlog(["wafw00f扫描结果文件不存在:{$result_path}", $v]);
                     continue;
                 }
                 $result = json_decode(file_get_contents($result_path), true);
                 if (!$result) {
-                    PluginModel::addScanLog($v['id'], __METHOD__, 2);
+                    PluginModel::addScanLog($v['id'], __METHOD__,0, 2);
                     addlog(["wafw00f扫描结果文件内容不存在:{$result_path}"]);
                     continue;
                 }
@@ -46,7 +46,7 @@ class AppWafw00fModel extends BaseModel
                     addlog(["wafw00f扫描结果数据写入失败：".json_encode($data)]);
                 }
                 @unlink($result_path);
-                PluginModel::addScanLog($v['id'], __METHOD__, 1);
+                PluginModel::addScanLog($v['id'], __METHOD__, 0,1);
             }
             sleep(20);
         }

@@ -273,7 +273,7 @@ class HostPortModel extends BaseModel
             processSleep(1);
             $taskList = Db::table('host_port')->where(['service' => null])->orderRand()->limit(10)->select()->toArray();
             foreach ($taskList as $value) {
-                PluginModel::addScanLog($value['id'], __METHOD__, 0,1);
+                PluginModel::addScanLog($value['id'], __METHOD__, 1,1);
                 $result = [];
                 $cmd = "nmap -sS -Pn -T4  -p {$value['port']} {$value['host']} | grep open | grep -v Discovered |grep -v grep";
                 echo $cmd . PHP_EOL;
@@ -334,7 +334,7 @@ class HostPortModel extends BaseModel
             $endTime = date('Y-m-d', time() - 86400 * 15);
             $hostLit = Db::table('host')->whereTime('port_scan_time', '<=', $endTime)->limit(5)->orderRand()->select()->toArray();
             foreach ($hostLit as $val) {
-                PluginModel::addScanLog($val['id'], __METHOD__, 0,1);
+                PluginModel::addScanLog($val['id'], __METHOD__, 1,0);
                 $host = gethostbyname($val['host']);
 
                 $cmd = "masscan --ports {$portStr} {$host}  --max-rate 2000 |grep Discovered";
@@ -369,10 +369,10 @@ class HostPortModel extends BaseModel
             $list = $obj->where('is_delete', 0)->limit(10)->orderRand()->select()->toArray();
 
             foreach ($list as $v) {
-                PluginModel::addScanLog($v['id'], __METHOD__, 0,1);
+                PluginModel::addScanLog($v['id'], __METHOD__, 1,0);
                 $result = get_ip_lookup($v['host']);
                 if (!isset($result['data'])) {
-                    PluginModel::addScanLog($v['id'], __METHOD__, 2,1);
+                    PluginModel::addScanLog($v['id'], __METHOD__, 1,2);
                     addlog(["未获取此IP{$v['host']}信息"]);
                     self::updateScanTime($v['id']);
                     continue;

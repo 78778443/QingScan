@@ -19,7 +19,7 @@ class CodeJavaModel extends BaseModel
             $where[] = ['project_type','in',[2,6]];
             $list = Db::name('code')->whereTime('java_scan_time', '<=', $endTime)->where($where)->limit(1)->orderRand()->select()->toArray();
             foreach ($list as $k => $v) {
-                PluginModel::addScanLog($v['id'], __METHOD__, 0, 2);
+                PluginModel::addScanLog($v['id'], __METHOD__, 2);
                 self::scanTime('code', $v['id'], 'java_scan_time');
 
                 $value = $v;
@@ -61,7 +61,7 @@ class CodeJavaModel extends BaseModel
                         addlog("JAVA依赖扫描失败,项目文件内容为空:{$val['file']}");
                     }
                 }
-                PluginModel::addScanLog($v['id'], __METHOD__, 1,2);
+                PluginModel::addScanLog($v['id'], __METHOD__, 2,1);
             }
             sleep(10);
         }

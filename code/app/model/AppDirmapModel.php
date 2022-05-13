@@ -27,7 +27,7 @@ class AppDirmapModel extends BaseModel
                 $port = $port ? "_{$port}" : "";
                 $filename = $file_path . "output/{$host}{$port}.txt";
                 if (!file_exists($filename)) {
-                    PluginModel::addScanLog($v['id'], __METHOD__, 2);
+                    PluginModel::addScanLog($v['id'], __METHOD__, 0,2);
                     addlog(["dirmap扫描结果文件不存在:{$filename}", $v]);
                     continue;
                 }
@@ -38,7 +38,7 @@ class AppDirmapModel extends BaseModel
                 while (!feof($file)) {
                     $result = fgets($file);
                     if (empty($result)) {
-                        PluginModel::addScanLog($v['id'], __METHOD__, 2);
+                        PluginModel::addScanLog($v['id'], __METHOD__, 0,2);
                         addlog(["dirmap 扫描目标结果为空", $v['url']]);
                         continue;
                     }
@@ -61,7 +61,7 @@ class AppDirmapModel extends BaseModel
                     Db::name('app_dirmap')->insertAll($data);
                 }
                 @unlink($filename);
-                PluginModel::addScanLog($v['id'], __METHOD__, 1);
+                PluginModel::addScanLog($v['id'], __METHOD__, 0,1);
             }
             sleep(10);
         }

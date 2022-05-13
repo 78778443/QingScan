@@ -32,7 +32,6 @@ class ProcessSafeModel extends BaseModel
             $keyList = array_merge($keyList, $keyList2);
 
             $keyList = array_column($keyList, null, 'key');
-//            $keyList = (file_exists('/root/qingscan/root/.env') && Env::get('TASK_SCAN') == false) ? [] : $keyList;
 
             // 遍历需要监控的关键词和对应的脚本
             foreach ($keyList as $key => $info) {
@@ -47,11 +46,24 @@ class ProcessSafeModel extends BaseModel
                     systemLog($value);
                     print_r("{$key} 进程已结束，正在重启此进程...");
                     print_r($value);
-
                 } elseif ((($info['status'] == 0) or in_array($key, $keyArr)) && (count($result) > 0)) {
                     $cmd = "kill -9 $(ps -ef |  grep '{$key}'  | grep -v grep | awk '{print \$2}')";
                     systemLog($cmd);
-                    addlog("已强制终止任务:{$value}");
+                    addlog("已强制终止任务1:{$value}");
+                }
+            }
+            // 删除未启动的工具进程
+            $list = Db::table(self::$tableName)->where('status',0)->select()->toArray();
+            foreach ($list as $v) {
+                // 执行命令查看任务是否已经执行
+                $cmd = "ps -ef | grep '{$v['key']}' | grep -v ' grep'";
+                $result = [];
+                exec($cmd, $result);
+                if (count($result) > 0) {
+                    $cmd = "kill -9 $(ps -ef |  grep '{$v['key']}'  | grep -v grep | awk '{print \$2}')";
+                    systemLog($cmd);
+                    addlog("已强制终止任务2:{$info['value']}");
+                    echo 1;
                 }
             }
             // 处理垃圾进程问题

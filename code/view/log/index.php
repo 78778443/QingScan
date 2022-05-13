@@ -28,7 +28,7 @@ $searchArr = [
                 <thead>
                 <tr>
                     <th>ID</th>
-                    <th>app</th>
+                    <th>项目名称</th>
                     <th>内容</th>
                     <th>记录时间</th>
                 </tr>

@@ -224,7 +224,7 @@ class HostModel extends BaseModel
                 $host = gethostbyname($domain);
                 if (!filter_var($host, FILTER_VALIDATE_IP)) {
                     addlog(["此域名{$domain}不能解析成IP"]);
-                    PluginModel::addScanLog($app['id'], __METHOD__, 2,0,['content'=>"此域名{$domain}不能解析成IP"]);
+                    PluginModel::addScanLog($app['id'], __METHOD__, 1,0,1,['content'=>"此域名{$domain}不能解析成IP"]);
                     continue;
                 }
 
@@ -251,7 +251,7 @@ class HostModel extends BaseModel
                     ];
                     Db::table(self::$tableName)->extra("IGNORE")->insert($data);
                 }
-                PluginModel::addScanLog($app['id'], __METHOD__, 1);
+                PluginModel::addScanLog($app['id'], __METHOD__, 1,2);
             }
             addlog("自动添加主机记录完成,即将休息300秒...");
             sleep(300);

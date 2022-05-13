@@ -30,7 +30,7 @@ class Sqlmap extends Common
         ]);
         $data['list'] = $list->items();
         foreach ($data['list'] as &$val) {
-            $val['uels'] = Db::name('urls')->where('id',$val['urls_id'])->value('url');
+            $val['url'] = Db::name('urls')->where('id',$val['urls_id'])->value('url');
         }
         $data['page'] = $list->render();
 

@@ -105,8 +105,8 @@ class GithubNoticeModel extends BaseModel
                         'hash' => $hash,
                         'create_time' => date('Y-m-d H:i:s', time()),
                     ];
-                    var_dump($data);exit;
-                    //Db::name('github_notice')->insert($data);
+                    //var_dump($data);exit;
+                    Db::name('github_notice')->insert($data);
                 }
                 $i++;
                 sleep(3);
