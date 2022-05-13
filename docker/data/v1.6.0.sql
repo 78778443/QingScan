@@ -23,6 +23,7 @@ ALTER TABLE `code_composer` MODIFY COLUMN `funding` text;
 ALTER TABLE `code_composer` MODIFY COLUMN `require_dev` text;
 ALTER TABLE `code_composer` MODIFY COLUMN `keywords` text;
 ALTER TABLE `code_composer` MODIFY COLUMN `require` text;
+ALTER TABLE `plugin_scan_log` ADD COLUMN `is_custom` tinyint(10) NOT NULL DEFAULT 1 COMMENT '是否为自定义插件 1否  2是';
 ALTER TABLE `code` ADD COLUMN `is_online` int(10) NOT NULL DEFAULT 1 COMMENT '1线上   2本地';
 ALTER TABLE `code` ADD COLUMN `mobsfscan_scan_time` datetime(0) NOT NULL DEFAULT '2000-01-01 00:00:00';
 ALTER TABLE `code` ADD COLUMN `project_type` tinyint(1) NOT NULL DEFAULT 0 COMMENT '1php 2java 3python 4go 5app 6其他';

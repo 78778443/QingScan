@@ -270,17 +270,15 @@ class App extends Common
         $data['nuclei'] = Db::table('app_nuclei')->where($where)->order("app_id", 'desc')->limit(0, 15)->select()->toArray();
         $data['crawlergo'] = Db::table('app_crawlergo')->where($where)->order("app_id", 'desc')->limit(0, 15)->select()->toArray();
         $data['awvs'] = Db::table('awvs_vuln')->where($where)->order("app_id", 'desc')->limit(0, 15)->select()->toArray();
-        /*Db::table('plugin_scan_log')->alias('a')
+        $data['pluginScanLog'] = Db::table('plugin_scan_log')->alias('a')
             ->leftJoin('plugin b','b.id=a.plugin_id')
             ->where($where)
+            ->where('is_custom',2)
             ->field('a.*,b.name,b.result_file')
             ->order("a.id", 'desc')
-            ->paginate([
-                'list_rows'=> $pageSize,//每页数量
-                'query' => $request->param(),
-            ]);*/
-
-        $data['pluginScanLog'] = Db::table('plugin_scan_log')->where($where)->where(['log_type' => 1])->order("app_id", 'desc')->limit(0, 15)->select()->toArray();
+            ->limit(0, 15)
+            ->select()
+            ->toArray();
         //获取此域名对应主机的端口信息
         //$urlInfo = parse_url($data['info']['url']);
         //$ip = gethostbyname($urlInfo['host']);

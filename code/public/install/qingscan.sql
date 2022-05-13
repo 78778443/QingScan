@@ -45,7 +45,7 @@ CREATE TABLE `app`  (
                         `agent_start_up` int(1) NOT NULL DEFAULT 0 COMMENT 'xray代理是否已启动',
                         PRIMARY KEY (`id`) USING BTREE,
                         UNIQUE INDEX `un_url`(`url`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2084 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = Compact;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = Compact;
 
 -- ----------------------------
 -- Records of app
@@ -71,7 +71,7 @@ CREATE TABLE `app_crawlergo`  (
                                   `source` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '',
                                   `create_time` datetime(0) NOT NULL DEFAULT '2000-01-01 00:00:00',
                                   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1372 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin COMMENT = 'url收集' ROW_FORMAT = Compact;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin COMMENT = 'url收集' ROW_FORMAT = Compact;
 
 
 -- ----------------------------
@@ -266,7 +266,7 @@ CREATE TABLE `app_xray_agent_port`  (
   `start_up` int(1) NOT NULL DEFAULT 0 COMMENT '是否已启动',
   `is_get_result` int(1) NOT NULL DEFAULT 0 COMMENT '是否已获取结果',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin COMMENT = '本地代理' ROW_FORMAT = Compact;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin COMMENT = '本地代理' ROW_FORMAT = Compact;
 
 
 -- ----------------------------
@@ -764,6 +764,7 @@ CREATE TABLE `fortify`  (
 DROP TABLE IF EXISTS `github_keyword_monitor`;
 CREATE TABLE `github_keyword_monitor`  (
   `id` int(10) NOT NULL AUTO_INCREMENT,
+  `app_id` int(10) NOT NULL DEFAULT 0,
   `user_id` int(10) NOT NULL DEFAULT 0,
   `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '' COMMENT '关键字',
   `create_time` datetime(0) NULL DEFAULT '2000-01-01 00:00:00',
@@ -783,6 +784,7 @@ DROP TABLE IF EXISTS `github_keyword_monitor_notice`;
 CREATE TABLE `github_keyword_monitor_notice`  (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `parent_id` int(10) NOT NULL DEFAULT 0 COMMENT '关键字表id',
+  `app_id` int(10) NOT NULL DEFAULT 0,
   `user_id` int(10) NOT NULL DEFAULT 0,
   `keyword` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '',
   `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '',
@@ -1008,6 +1010,7 @@ CREATE TABLE `plugin`  (
   `update_time` datetime(0) NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP(0),
   `tool_path` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '工具存放位置',
   `scan_type` int(4) NULL DEFAULT 0 COMMENT '0 app 1 host 2 code  3 url',
+  `type` tinyint(1) NOT NULL DEFAULT '1' COMMENT '1执行插件扫描   2结果分析',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `un_name`(`name`, `scan_type`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin COMMENT = '自定义插件' ROW_FORMAT = Compact;
@@ -1017,21 +1020,23 @@ CREATE TABLE `plugin`  (
 -- Table structure for plugin_scan_log
 -- ----------------------------
 DROP TABLE IF EXISTS `plugin_scan_log`;
-CREATE TABLE `plugin_scan_log`  (
-  `id` int(10) NOT NULL AUTO_INCREMENT,
-  `app_id` int(10) NOT NULL,
-  `plugin_id` int(10) NOT NULL,
-  `user_id` int(10) NOT NULL DEFAULT 0,
-  `content` varchar(5000) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '扫描结果内容',
-  `create_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
-  `check_status` tinyint(1) NOT NULL COMMENT '审核状态',
-  `plugin_name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '插件名称',
-  `scan_type` int(255) NULL DEFAULT NULL COMMENT '0 app 1 host 2 code  3 url',
-  `log_type` int(11) NULL DEFAULT 0 COMMENT '进度  0 开始扫描   1 完成   2 失败',
-  PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE INDEX `un_id`(`app_id`, `plugin_name`, `log_type`, `scan_type`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 21 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin COMMENT = '自定义插件扫描结果' ROW_FORMAT = Compact;
-
+CREATE TABLE `plugin_scan_log` (
+   `id` int(10) NOT NULL AUTO_INCREMENT,
+   `app_id` int(10) NOT NULL,
+   `plugin_id` int(10) NOT NULL,
+   `user_id` int(10) NOT NULL DEFAULT '0',
+   `content` varchar(5000) COLLATE utf8mb4_bin DEFAULT NULL COMMENT '扫描结果内容',
+   `create_time` datetime DEFAULT CURRENT_TIMESTAMP,
+   `check_status` tinyint(1) NOT NULL COMMENT '审核状态',
+   `plugin_name` varchar(50) COLLATE utf8mb4_bin DEFAULT NULL COMMENT '插件名称',
+   `scan_type` int(255) DEFAULT NULL COMMENT '0 app 1 host 2 code  3 url',
+   `log_type` int(11) DEFAULT '0' COMMENT '进度  0 开始扫描   1 完成   2 失败',
+   `file_content` varchar(5000) COLLATE utf8mb4_bin DEFAULT NULL,
+   `is_read` tinyint(1) NOT NULL DEFAULT '1' COMMENT '结果是否已读取   1未读  2已读取',
+   `is_custom` int(10) NOT NULL DEFAULT '1' COMMENT '是否为自定义插件 1否  2是',
+   PRIMARY KEY (`id`) USING BTREE,
+   UNIQUE KEY `un_id` (`app_id`,`plugin_name`,`log_type`,`scan_type`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin ROW_FORMAT=COMPACT COMMENT='自定义插件扫描结果';
 
 -- ----------------------------
 -- Table structure for plugin_store
@@ -1068,7 +1073,7 @@ CREATE TABLE `pocs_file`  (
   `vul_id` int(11) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `cve_poc`(`cve_num`, `name`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Compact;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Compact;
 
 -- ----------------------------
 -- Records of pocs_file
@@ -1168,7 +1173,7 @@ CREATE TABLE `proxy`  (
   `status` int(4) NOT NULL DEFAULT 1 COMMENT '1 有效  0 无效',
   `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 40 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin COMMENT = '代理表' ROW_FORMAT = Compact;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin COMMENT = '代理表' ROW_FORMAT = Compact;
 
 -- ----------------------------
 -- Records of proxy
@@ -1233,7 +1238,7 @@ CREATE TABLE `system_config`  (
   `value` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
   `is_delete` tinyint(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = Compact;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = Compact;
 
 -- ----------------------------
 -- Records of system_config
@@ -1256,7 +1261,7 @@ CREATE TABLE `system_zanzhu`  (
   `time` date NULL DEFAULT NULL,
   `message` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = Compact;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = Compact;
 
 -- ----------------------------
 -- Records of system_zanzhu
@@ -1359,7 +1364,7 @@ CREATE TABLE `urls`  (
   UNIQUE INDEX `un_url`(`hash`) USING BTREE,
   INDEX `appid`(`app_id`) USING BTREE,
   CONSTRAINT `appid` FOREIGN KEY (`app_id`) REFERENCES `app` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 232 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = Compact;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = Compact;
 
 -- ----------------------------
 -- Records of urls
@@ -1412,7 +1417,7 @@ CREATE TABLE `user`  (
   `token` char(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '',
   `url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '' COMMENT '主页url',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 13 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = Compact;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = Compact;
 
 -- ----------------------------
 -- Records of user
@@ -1431,7 +1436,7 @@ CREATE TABLE `user_log`  (
   `type` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '操作类型',
   `ip` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 10 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Compact;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Compact;
 
 -- ----------------------------
 -- Table structure for vul_target
@@ -1515,7 +1520,7 @@ CREATE TABLE `vulnerable`  (
   `is_delete` tinyint(1) NOT NULL DEFAULT 0,
   `target_scan_time` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2070 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Compact;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Compact;
 
 
 -- ----------------------------
@@ -1574,12 +1579,6 @@ CREATE TABLE `mobsfscan` (
                              PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
-ALTER TABLE `github_keyword_monitor` ADD COLUMN `app_id` int(11) NOT NULL DEFAULT 0 AFTER `scan_time`;
-ALTER TABLE `github_keyword_monitor_notice` ADD COLUMN `app_id` int(10) NOT NULL DEFAULT 0 AFTER `create_time`;
-ALTER TABLE `plugin` ADD COLUMN `type` int(2) NOT NULL DEFAULT 1 COMMENT '1执行插件扫描   2结果分析' AFTER `scan_type`;
-ALTER TABLE `plugin_scan_log` ADD COLUMN `file_content` varchar(5000) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL AFTER `log_type`;
-ALTER TABLE `plugin_scan_log` ADD COLUMN `is_read` tinyint(1) NOT NULL DEFAULT 1 COMMENT '结果是否已读取   1未读  2已读取' AFTER `file_content`;
-ALTER TABLE `plugin_scan_log` MODIFY COLUMN `plugin_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '插件名称' AFTER `check_status`;
 INSERT INTO `auth_rule`( `href`, `title`, `is_delete`, `is_open_auth`, `pid`, `sort`, `created_at`, `menu_status`, `update_time`, `level`, `delete_time`, `icon_url`) VALUES ( 'zhiwen/index', '指纹列表', 0, 1, 35, 11, 1643338608, 1, 0, 2, 0, '');
 INSERT INTO `auth_rule`( `href`, `title`, `is_delete`, `is_open_auth`, `pid`, `sort`, `created_at`, `menu_status`, `update_time`, `level`, `delete_time`, `icon_url`) VALUES ( 'backup/backup', '未知', 0, 1, 43, 0, 1643091277, 1, 0, 3, 0, '');
 INSERT INTO `auth_rule`( `href`, `title`, `is_delete`, `is_open_auth`, `pid`, `sort`, `created_at`, `menu_status`, `update_time`, `level`, `delete_time`, `icon_url`) VALUES ( 'user_log/index', '登录日志', 0, 1, 23, 9, 1643018839, 1, 0, 2, 0, '');

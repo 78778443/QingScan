@@ -208,6 +208,7 @@ class PluginModel extends BaseModel
                     'plugin_id' => $info['id'],
                     'plugin_name' => $info['name'],
                     'log_type' => 1,
+                    'is_custom' => 2,
                     'check_status' => 0,
                     'create_time' => date('Y-m-d H:i:s', time())
                 ];
