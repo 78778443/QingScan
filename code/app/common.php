@@ -1246,6 +1246,7 @@ function processSleep($time)
     } else {
         addlog("{$list[0]} 进程数量已到最大值 {$num},将休息30秒后运行");
         echo "{$list[0]} 进程数量已到最大值: {$num},将休息30秒后运行";
+        sleep($time);
         processSleep(60);
     }
 }

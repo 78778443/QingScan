@@ -298,7 +298,7 @@ class CodeCheckModel extends BaseModel
         }
     }
 
-    public static function semgrep()
+    public static function  semgrep()
     {
         $codePath = "/data/codeCheck";
         $fortifyRetDir = "/data/semgrep_result";

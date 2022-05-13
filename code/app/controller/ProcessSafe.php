@@ -99,11 +99,8 @@ class ProcessSafe extends Common
 
     public function kill(Request $request){
         $pid = $request->param('pid','intval');
-
         $cmd = "kill -9 {$pid}";
-
         exec($cmd);
-
         return redirect($_SERVER['HTTP_REFERER']);
     }
 
