@@ -67,8 +67,8 @@
                         <td><?php echo $value['create_time'] ?></td>
                         <!--<td><?php /*echo date('m-d H:i', strtotime($value['sqlmap_scan_time'])) */?></td>-->
                         <td>
-                            <a href="<?php echo url('xray/details', ['id' => $value['id']]) ?>"
-                               class="btn btn-sm btn-outline-primary">查看漏洞</a>
+                            <!--<a href="<?php /*echo url('xray/details', ['id' => $value['id']]) */?>"
+                               class="btn btn-sm btn-outline-primary">查看漏洞</a>-->
                             <a href="<?php echo url('urls/del', ['id' => $value['id']]) ?>"
                                class="btn btn-sm btn-outline-danger">删除</a>
                         </td>
