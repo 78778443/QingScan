@@ -33,7 +33,7 @@ $searchArr = [
             <?php foreach ($list as $value) { ?>
                 <tr>
                     <td><?php echo $value['id'] ?></td>
-                    <td><?php echo $value['app_name'] ?></td>
+                    <td><?php echo $projectList[value['app_id']]['name'] ?></td>
                     <td><?php echo $value['domain'] ?></td>
                     <td><?php echo $value['host'] ?></td>
                     <td><?php echo $value['country'] ?></td>

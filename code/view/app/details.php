@@ -22,8 +22,6 @@ $typeArr = [
             <h5><span style="color:#888">创建: </span><?php echo $info['create_time'] ?></h5></div>
 
         <div class="col-md-4">
-            <h5><span style="color:#888">是否删除:</span> <?php echo $info['is_delete'] ?></h5></div>
-        <div class="col-md-4">
             <h5><span style="color:#888">用户名称:</span> <?php echo $info['username'] ?></h5></div>
         <div class="col-md-4">
             <h5><span style="color:#888">密码:</span> <?php echo $info['password'] ?></h5></div>
@@ -725,7 +723,7 @@ $typeArr = [
             <?php foreach ($monitor_notice as $value) { ?>
                 <tr>
                     <td><?php echo $value['id'] ?></td>
-                    <td><?php echo $value['title'] ?></td>
+                    <td><?php echo $value['keyword'] ?></td>
                     <td><?php echo $value['name'] ?></td>
                     <td><?php echo $value['path'] ?></td>
                     <td><?php echo $value['html_url'] ?></td>
