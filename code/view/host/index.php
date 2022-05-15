@@ -33,7 +33,7 @@ $searchArr = [
             <?php foreach ($list as $value) { ?>
                 <tr>
                     <td><?php echo $value['id'] ?></td>
-                    <td><?php echo $projectList[value['app_id']]['name'] ?></td>
+                    <td><?php echo $projectList[$value['app_id']] ?></td>
                     <td><?php echo $value['domain'] ?></td>
                     <td><?php echo $value['host'] ?></td>
                     <td><?php echo $value['country'] ?></td>
@@ -43,8 +43,8 @@ $searchArr = [
                     <td><?php echo $value['create_time'] ?></td>
                     <!--                        <td>--><? //= $statusArr[$value['scan_status']] ?><!--</td>-->
                     <td>
-                        <a href="<?php echo url('code/bug_list',['id'=>$value['id']])?>"
-                           class="btn btn-sm btn-outline-primary">查看详情</a>
+                        <!--<a href="<?php /*echo url('code/bug_list',['id'=>$value['id']])*/?>"
+                           class="btn btn-sm btn-outline-primary">查看详情</a>-->
                         <a href="#" class="btn btn-sm btn-outline-danger">删除</a>
                     </td>
                 </tr>
