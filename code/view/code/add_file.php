@@ -24,6 +24,23 @@
                         <label class="form-label">项目文件压缩包zip格式(小于100M)</label>
                         <input type="file" class="form-control form-control" name="file" accept=".zip" required/>
                     </div>
+                    <!--<div class="mb-3">
+                        <label class="form-label">需要调用的工具</label>
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox">semgrep
+                            </label>
+                            <label>
+                                <input type="checkbox">kunlun
+                            </label>
+                            <label>
+                                <input type="checkbox">fortify
+                            </label>
+                            <label>
+                                <input type="checkbox">河马webshell检测
+                            </label>
+                        </div>
+                    </div>-->
                     <div class="row" style="height: 10px"></div>
                     <a href="<?php echo url('code/index')?>" class="btn btn-outline-info">返回</a>
                     <button type="submit" class="btn btn-outline-success">提交</button>

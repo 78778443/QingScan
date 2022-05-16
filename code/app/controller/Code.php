@@ -859,7 +859,12 @@ class Code extends Common
                 $this->error($e->getMessage());
             }
         } else {
-            $data = [];
+            /*$data['tools_list'] = [
+                'semgrep'=>'kunlun',
+                'kunlun'=>'kunlun',
+                'fortify'=>'fortify',
+                'webshell'=>'webshell',
+            ];*/
             return View::fetch('add_file', $data);
         }
     }

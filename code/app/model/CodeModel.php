@@ -330,6 +330,7 @@ class CodeModel extends BaseModel
         $codePath = "/data/codeCheck";
         while (true) {
             processSleep(1);
+            $where[] = ['project_type','in',[1,6]];
             $list = self::getCodeStayScanList('composer_scan_time',$where);
             foreach ($list as $k => $v) {
                 PluginModel::addScanLog($v['id'], __METHOD__, 2);
