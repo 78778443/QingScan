@@ -268,7 +268,6 @@ function systemLog($shell, $showRet = true)
     if ($output && $showRet) {
         echo implode("\n", $output) . PHP_EOL;
     }
-
     return $output;
 }
 
@@ -1226,16 +1225,13 @@ function getProcessNum()
 
 function processSleep($time)
 {
-
     $array = debug_backtrace();
-
     $list = [];
     foreach ($array as $arrInfo) {
         if (isset($arrInfo['class'])) {
             $list[] = $arrInfo['function'];
         }
     }
-
     sleep(rand(1, 10));
     //获取最大的同时运行进程数
     $num = ConfigModel::value('maxProcesses');
@@ -1247,7 +1243,7 @@ function processSleep($time)
         addlog("{$list[0]} 进程数量已到最大值 {$num},将休息30秒后运行");
         echo "{$list[0]} 进程数量已到最大值: {$num},将休息30秒后运行";
         sleep($time);
-        processSleep(60);
+        processSleep(30);
     }
 }
 

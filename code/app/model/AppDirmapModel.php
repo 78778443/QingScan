@@ -12,11 +12,11 @@ class AppDirmapModel extends BaseModel
     public static function dirmapScan()
     {
         ini_set('max_execution_time', 0);
+        $file_path = '/data/tools/dirmap/';
         while (true) {
             processSleep(1);
-            $list = Db::name('app')->whereTime('dirmap_scan_time', '<=', date('Y-m-d H:i:s', time() - (86400 * 15)))->where('is_delete', 0)->orderRand()->limit(1)->field('id,url,user_id')->select();
-            $file_path = '/data/tools/dirmap/';
-            foreach ($list as $k => $v) {
+            $list = self::getAppStayScanList('dirmap_scan_time');
+            foreach ($list as $v) {
                 PluginModel::addScanLog($v['id'], __METHOD__, 0);
                 self::scanTime('app', $v['id'], 'dirmap_scan_time');
 
@@ -38,7 +38,7 @@ class AppDirmapModel extends BaseModel
                 while (!feof($file)) {
                     $result = fgets($file);
                     if (empty($result)) {
-                        PluginModel::addScanLog($v['id'], __METHOD__, 0,2);
+                        PluginModel::addScanLog($v['id'], __METHOD__, 0,1);
                         addlog(["dirmap 扫描目标结果为空", $v['url']]);
                         continue;
                     }

@@ -10,8 +10,8 @@ class WebScanModel extends BaseModel
 {
     public static function rad()
     {
+        ini_set('max_execution_time', 0);
         $path = "cd /data/tools/rad/ && ";
-
         //判断rad运行环境是否安装
         if (file_exists("/usr/bin/google-chrome") == false) {
             addlog("RAD 运行依赖环境不存在，请安装chrome环境~");
@@ -19,7 +19,12 @@ class WebScanModel extends BaseModel
         }
         while (true) {
             processSleep(1);
-            $list = Db::table('app')->whereTime('crawler_time', '<=', date('Y-m-d H:i:s', time() - (86400 * 15)))->limit(1)->orderRand()->select()->toArray();
+            $endTime = date('Y-m-d', time() - 86400 * 15);
+            $where[] = ['is_delete','=',0];
+            $where[] = ['status','=',1];
+            $list = self::getAppStayScanList('crawler_time');
+            $count = Db::table('app')->whereTime('crawler_time', '<=', $endTime)->where($where)->count('id');
+            print("开始执行rad扫描任务,{$count} 个项目等待扫描..." . PHP_EOL);
             foreach ($list as $value) {
                 PluginModel::addScanLog($value['id'], __METHOD__, 0);
                 self::scanTime('app', $value['id'], 'crawler_time');
@@ -112,14 +117,20 @@ class WebScanModel extends BaseModel
 
     }
 
-
     public static function xray()
     {
         while (true) {
             processSleep(1);
-            $list = Db::table('app')->whereTime('xray_scan_time', '<=', date('Y-m-d H:i:s', time() - (86400 * 15)))->where('is_delete', 0)->limit(1)->orderRand()->select()->toArray();
+            $endTime = date('Y-m-d', time() - 86400 * 15);
+            $where[] = ['is_delete','=',0];
+            $where[] = ['status','=',1];
+            $list = self::getAppStayScanList('xray_scan_time');
+            $count = Db::table('app')->whereTime('xray_scan_time', '<=', $endTime)->where($where)->count('id');
+            print("开始执行xray漏洞扫描任务,{$count} 个项目等待扫描..." . PHP_EOL);
             foreach ($list as $val) {
                 PluginModel::addScanLog($val['id'], __METHOD__, 0);
+                self::scanTime('app', $val['id'], 'xray_scan_time');
+
                 $url = $val['url'];
                 $id = $val['id'];
                 $user_id = $val['user_id'];
@@ -176,6 +187,7 @@ class WebScanModel extends BaseModel
                     $result = file_put_contents($pathArr['cmd_result'], $result);
                     if ($result == false) {
                         addlog(["xray写入执行结果失败", base64_encode($pathArr['cmd_result'])]);
+                        PluginModel::addScanLog($val['id'], __METHOD__, 0,2);
                         continue;
                     }
                 } else {
@@ -208,8 +220,6 @@ class WebScanModel extends BaseModel
                     XrayModel::addXray($newData);
                 }
                 addlog(["xray扫描数据写入成功:" . json_encode($addr,JSON_UNESCAPED_UNICODE)]);
-                self::scanTime('app', $id, 'xray_scan_time');
-
                 PluginModel::addScanLog($val['id'], __METHOD__, 0,1);
             }
             sleep(10);
@@ -316,14 +326,14 @@ class WebScanModel extends BaseModel
     {
         ini_set('max_execution_time', 0);
         $agent = "/data/tools/nuclei/";
+        $filename = '/tmp/nuclei.json';
         while (true) {
             processSleep(1);
-            $list = Db::name('app')->whereTime('nuclei_scan_time', '<=', date('Y-m-d H:i:s', time() - (86400 * 15)))->where('is_delete', 0)->limit(1)->orderRand()->select()->toArray();
+            $list = self::getAppStayScanList('nuclei_scan_time');
             foreach ($list as $v) {
                 PluginModel::addScanLog($v['id'], __METHOD__, 0);
                 self::scanTime('app', $v['id'], 'nuclei_scan_time');
 
-                $filename = '/tmp/nuclei.json';
                 @unlink($filename);
                 $cmd = "cd $agent && ./nuclei -u {$v['url']} -json -o {$filename}";
                 systemLog($cmd);
@@ -387,7 +397,7 @@ class WebScanModel extends BaseModel
         $agent = "/data/tools/vulmap/";
         while (true) {
             processSleep(1);
-            $list = Db::name('app')->whereTime('vulmap_scan_time', '<=', date('Y-m-d H:i:s', time() - (86400 * 15)))->where('is_delete', 0)->limit(1)->orderRand()->select()->toArray();
+            $list = self::getAppStayScanList('vulmap_scan_time');
             foreach ($list as $v) {
                 PluginModel::addScanLog($v['id'], __METHOD__, 0);
                 self::scanTime('app', $v['id'], 'vulmap_scan_time');
@@ -444,7 +454,7 @@ class WebScanModel extends BaseModel
         $tools = "/data/tools/crawlergo/";
         while (true) {
             processSleep(1);
-            $list = Db::name('app')->whereTime('crawlergo_scan_time', '<=', date('Y-m-d H:i:s', time() - (86400 * 15)))->where('is_delete', 0)->limit(1)->orderRand()->select()->toArray();
+            $list = self::getAppStayScanList('crawlergo_scan_time');
             foreach ($list as $val) {
                 PluginModel::addScanLog($val['id'], __METHOD__, 0);
                 self::scanTime('app', $val['id'], 'crawlergo_scan_time');
@@ -491,14 +501,14 @@ class WebScanModel extends BaseModel
     {
         ini_set('max_execution_time', 0);
         $tools = "/data/tools/dismap/";
+        $filename = $tools . 'dismap.txt';
         while (true) {
             processSleep(1);
-            $list = Db::name('app')->whereTime('dismap_scan_time', '<=', date('Y-m-d H:i:s', time() - (86400 * 15)))->where('is_delete', 0)->limit(10)->orderRand()->select()->toArray();
+            $list = self::getAppStayScanList('dismap_scan_time');
             foreach ($list as $v) {
                 PluginModel::addScanLog($v['id'], __METHOD__, 0);
                 self::scanTime('app', $v['id'], 'dismap_scan_time');
 
-                $filename = $tools . 'dismap.txt';
                 @unlink($filename);
                 $cmd = "cd $tools && ./dismap -url {$v['url']} -output dismap.txt";
                 systemLog($cmd);

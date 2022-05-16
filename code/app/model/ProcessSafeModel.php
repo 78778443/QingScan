@@ -21,7 +21,6 @@ class ProcessSafeModel extends BaseModel
     {
         // 死循环不断监听任务是不是挂了
         $timeSleep = 5;
-        $i = true;
         while (true) {
             $key = Env::get('TASK_SCAN_BLACKLIST_KEY');
             $keyArr = explode(',', $key);
@@ -47,7 +46,8 @@ class ProcessSafeModel extends BaseModel
                     print_r("{$key} 进程已结束，正在重启此进程...");
                     print_r($value);
                 } elseif ((($info['status'] == 0) or in_array($key, $keyArr)) && (count($result) > 0)) {
-                    $cmd = "kill -9 $(ps -ef |  grep '{$key}'  | grep -v grep | awk '{print \$2}')";
+                    //$cmd = "kill -9 $(ps -ef |  grep '{$key}'  | grep -v grep | awk '{print \$2}')";
+                    $cmd = "kill -s 9 `ps -aux | grep '{$key}' | awk '{print $2}'`";
                     systemLog($cmd);
                     addlog("已强制终止任务1:{$value}");
                 }
@@ -60,10 +60,10 @@ class ProcessSafeModel extends BaseModel
                 $result = [];
                 exec($cmd, $result);
                 if (count($result) > 0) {
-                    $cmd = "kill -9 $(ps -ef |  grep '{$v['key']}'  | grep -v grep | awk '{print \$2}')";
+                    //$cmd = "kill -9 $(ps -ef |  grep '{$v['key']}'  | grep -v grep | awk '{print \$2}')";
+                    $cmd = "kill -s 9 `ps -aux | grep '{$v['key']}' | awk '{print $2}'`";
                     systemLog($cmd);
                     addlog("已强制终止任务2:{$info['value']}");
-                    echo 1;
                 }
             }
             // 处理垃圾进程问题

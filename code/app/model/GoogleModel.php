@@ -12,11 +12,10 @@ class GoogleModel extends BaseModel
     // 谷歌截图
     public static function jietu()
     {
+        $file_path = App::getRootPath() . 'public/screenshot/';
         while (true) {
             processSleep(1);
-            $list = Db::name('app')->whereTime('screenshot_time', '<=', date('Y-m-d H:i:s', time() - (86400 * 15)))->where('is_delete', 0)->orderRand()->limit(5)->field('id,url')->select();
-            //$list = Db::name('app')->where('is_delete', 0)->orderRand()->limit(5)->field('id,url')->select();
-            $file_path = App::getRootPath() . 'public/screenshot/';
+            $list = self::getAppStayScanList('screenshot_time',5);
             foreach ($list as $v) {
                 self::scanTime('app', $v['id'], 'screenshot_time');
                 PluginModel::addScanLog($v['id'], __METHOD__, 0);
@@ -27,16 +26,13 @@ class GoogleModel extends BaseModel
                 exec($cmd);
                 $data['jietu_path'] = $filename;
 
-
                 if (Db::name('app_info')->where(['app_id' => $v['id']])->find()) {
                     Db::name('app_info')->where(['app_id' => $v['id']])->update($data);
                 } else {
                     $data['app_id'] = $v['id'];
                     Db::name('app_info')->insert($data);
                 }
-
                 PluginModel::addScanLog($v['id'], __METHOD__, 0,1);
-
             }
             echo "Google浏览器获取基础信息完成，休息5秒" . PHP_EOL;
             sleep(5);
@@ -49,8 +45,7 @@ class GoogleModel extends BaseModel
     {
         while (true) {
             processSleep(1);
-            $api = Db::name('app')->whereTime('screenshot_time', '<=', date('Y-m-d H:i:s', time() - (86400 * 15)));
-            $list = $api->where('is_delete', 0)->orderRand()->limit(3)->field('id,url')->select()->toArray();
+            $list = self::getAppStayScanList('screenshot_time');
             foreach ($list as $v) {
                 //更新扫描时间
                 self::scanTime('app', $v['id'], 'screenshot_time');

@@ -19,11 +19,12 @@ class HydraModel extends BaseModel
             $filename = "{$file_path}hydra.txt";
             foreach ($app_list as $k => $v) {
                 PluginModel::addScanLog($v['id'], __METHOD__, 0,1);
+                self::scanTime('host',$v['id'],'hydra_scan_time');
+
                 systemLog("hydra -l root -P {$hydra['password']} -b json -o {$file_path}hydra.txt -e ns {$v['host']} ssh -V");
                 if (file_exists($filename)) {
                     $result = json_decode(file_get_contents($filename),true);
                     if ($result['results']) {
-                        Db::name('host')->where('id',$v['id'])->update(['hydra_scan_time'=>date('Y-m-d H:i:s',time())]);
                         $dataAll = [];
                         foreach ($result['results'] as $kk=>$vv) {
                             $data['username'] = $vv['login'];
@@ -38,13 +39,11 @@ class HydraModel extends BaseModel
                     } else {
                         PluginModel::addScanLog($v['id'], __METHOD__, 0,1);
                         addlog(["hydra文件内容格式错误：{$filename}"]);
-                        self::scanTime('host',$v['id'],'hydra_scan_time');
                     }
                     @unlink($filename);
                 } else {
                     PluginModel::addScanLog($v['id'], __METHOD__, 0,1);
                     addlog(["hydra文件内容获取失败：{$filename}"]);
-                    self::scanTime('host',$v['id'],'hydra_scan_time');
                 }
                 PluginModel::addScanLog($v['id'], __METHOD__, 1,1);
             }

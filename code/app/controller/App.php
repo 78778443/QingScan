@@ -59,9 +59,9 @@ class App extends Common
                 $v['is_intranet'] = '否';
             }
             if ($v['status'] == 1) {
-                $v['status'] = '正常';
+                $v['status'] = '启用';
             } else {
-                $v['status'] = '禁用';
+                $v['status'] = '暂停';
             }
 
             // 数据统计
@@ -117,129 +117,6 @@ class App extends Common
         return redirect(url('app/index'));
     }
 
-    //开始抓取
-    public function _start_crawler(Request $request)
-    {
-        $id = $request->param('id');
-        $appInfo = AppModel::getInfo($id);
-        $user_id = $appInfo['user_id'];
-        $url = $appInfo['url'];
-        TaskModel::startTask($id, $url, $user_id);
-        $this->Location("/index.php?s=app/index");
-    }
-
-    //开始扫描
-    public function _start_scan(Request $request)
-    {
-        $id = $request->param('id');
-        $appInfo = AppModel::getInfo($id);
-        $user_id = $appInfo['user_id'];
-        $url = $appInfo['url'];
-        TaskModel::startTask($id, $url, $user_id);
-        $this->Location("/index.php?s=app/index");
-    }
-
-    public function _start_scan_app()
-    {
-
-        addlog(['开始进行扫描', $_POST]);
-
-        //接收参数
-        $appId = getParam('app_id');
-
-        //查询URL地址
-        $urlList = UrlsModel::getCrawlerList($appId);
-
-        //扫描URL地址
-        foreach ($urlList as $urlInfo) {
-            //插入到xray队列
-            XrayModel::sendTask($urlInfo['id'], $urlInfo['url']);
-        }
-
-        $this->Location("/index.php?s=app/index");
-    }
-
-    public function del(Request $request)
-    {
-        $id = $request->param('id','0','intval');
-        $map[] = ['id', '=', $id];
-
-        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
-            $map[] = ['user_id', '=', $this->userId];
-        }
-        $data['info'] = Db::name('app')->where(['id' => $id])->find();
-        if (!empty($data)) {
-            $urlInfo = parse_url($data['info']['url']);
-            $ip = gethostbyname($urlInfo['host'] ?? '127.0.0.1');
-            Db::table('app_info')->where(['app_id' => $id])->delete();
-            Db::table('host')->where(['host' => $ip])->delete();
-            Db::table('host_port')->where(['host' => $ip])->delete();
-        }
-        Db::table('app_crawlergo')->where(['app_id' => $id])->delete();
-        Db::table('app_dirmap')->where(['app_id' => $id])->delete();
-        Db::table('app_nuclei')->where(['app_id' => $id])->delete();
-        Db::table('app_vulmap')->where(['app_id' => $id])->delete();
-        Db::table('app_wafw00f')->where(['app_id' => $id])->delete();
-        Db::table('app_whatweb')->where(['app_id' => $id])->delete();
-        Db::table('app_whatweb_poc')->where(['app_id' => $id])->delete();
-        Db::table('app_xray_agent_port')->where(['app_id' => $id])->delete();
-        Db::table('awvs_app')->where(['app_id' => $id])->delete();
-        Db::table('awvs_vuln')->where(['app_id' => $id])->delete();
-        Db::table('host_hydra_scan_details')->where(['app_id' => $id])->delete();
-        Db::table('one_for_all')->where(['app_id' => $id])->delete();
-        Db::table('plugin_scan_log')->where(['app_id' => $id])->delete();
-        Db::table('urls')->where(['app_id' => $id])->delete();
-        Db::table('urls_sqlmap')->where(['app_id' => $id])->delete();
-        Db::table('xray')->where(['app_id' => $id])->delete();
-        Db::table('plugin_scan_log')->where(['app_id' => $id])->delete();
-        Db::table('github_keyword_monitor')->where(['app_id' => $id])->delete();
-        Db::table('github_keyword_monitor_notice')->where(['app_id' => $id])->delete();
-
-        if (Db::name('app')->where($map)->delete()) {
-            return redirect($_SERVER['HTTP_REFERER']);
-        } else {
-            $this->error('删除失败');
-        }
-    }
-
-    public function load_host()
-    {
-        //查询host
-        $hostList = Db::table('host_port')->field('id,service,host,port')->whereIn('service', ['http'])->select()->toArray();
-
-        foreach ($hostList as $key => $value) {
-            $url = "{$value['service']}://{$value['host']}:{$value['port']}/";
-
-            //添加数据到app
-            if (Db::table("app")->where(['url' => $url])->find() != null) {
-                print_r("数据已存在{$url}" . PHP_EOL);
-                continue;
-            }
-
-            $headerInfo = curl_get_header($url);
-            if (empty($headerInfo)) {
-                print_r("地址请求为空{$url}" . PHP_EOL);
-                unset($hostList[$key]);
-                continue;
-            }
-
-            //处理数据
-            $data = [
-                'status' => 1,
-                'name' => $value['host'],
-                'url' => $url,
-                'rad' => 1,
-                'xray' => 1,
-                'contact' => "汤青松",
-                'phone' => "17600001122",
-                'department' => "信息安全",
-                'code_path' => "",
-                'code_scan_last' => date('Y-m-d H:i:s', strtotime('2018-06-01')),
-            ];
-            Db::table("app")->insert($data);
-        }
-    }
-
 
     public function details(Request $request)
     {
@@ -291,6 +168,7 @@ class App extends Common
         return View::fetch('details', $data);
     }
 
+    // 重新扫描
     public function qingkong(Request $request)
     {
         $id = $request->param('id','','intval');
@@ -343,7 +221,39 @@ class App extends Common
         return redirect($_SERVER['HTTP_REFERER'] ?? '/');
     }
 
+    // 启用-暂停扫描
+    public function suspend_scan(Request $request){
+        $ids = $request->param('ids');
+        $status = $request->param('status');
+        if (!$ids) {
+            return $this->apiReturn(0,[],'请选择要重新扫描的数据');
+        }
+        $where[] = ['id','in',$ids];
+        $map[] = ['app_id','in',$ids];
+        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
+            $where[] = ['user_id', '=', $this->userId];
+        }
+        $data['info'] = Db::name('app')->where($where)->find();
+        if (!$data['info']) {
+            return $this->apiReturn(0,[],'黑盒数据不存在');
+        }
+        if ($status == 1) { // 启用
+            Db::name('app')->where($where)->where('status',2)->update(['status'=>1]);
+            $this->success('扫描已启用');
+        } elseif($status == 2){ // 暂停
+            Db::name('app')->where($where)->where('status',1)->update(['status'=>2]);
+            $this->success('扫描已暂停');
+        }
+        /*$num = ConfigModel::value('maxProcesses');
+        if ($num != -1) {
+            ConfigModel::set_value('maxProcesses',-1);
+        } else {
+            //ConfigModel::set_value('maxProcesses',0);
+            //$this->success('扫描已启动');
+        }*/
+    }
 
+    // 单个工具重新扫描
     public function rescan(Request $request)
     {
         $id = $request->param('id','','intval');
@@ -458,18 +368,7 @@ class App extends Common
         return redirect($_SERVER['HTTP_REFERER'] ?? '/');
     }
 
-    // 暂停扫描
-    public function suspend_scan(){
-        $num = ConfigModel::value('maxProcesses');
-        if ($num != -1) {
-            ConfigModel::set_value('maxProcesses',-1);
-        } else {
-            //ConfigModel::set_value('maxProcesses',0);
-            //$this->success('扫描已启动');
-        }
-        $this->success('扫描已暂停');
-    }
-
+    // 批量重新扫描
     public function again_scan(Request $request){
         $array = array(
             'crawler_time' => '2000-01-01 00:00:00',
@@ -525,6 +424,49 @@ class App extends Common
         return $this->apiReturn(1,[],'操作成功');
     }
 
+    // 删除
+    public function del(Request $request)
+    {
+        $id = $request->param('id','0','intval');
+        $map[] = ['id', '=', $id];
+
+        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
+            $map[] = ['user_id', '=', $this->userId];
+        }
+        $data['info'] = Db::name('app')->where(['id' => $id])->find();
+        if (!empty($data)) {
+            $urlInfo = parse_url($data['info']['url']);
+            $ip = gethostbyname($urlInfo['host'] ?? '127.0.0.1');
+            Db::table('app_info')->where(['app_id' => $id])->delete();
+            Db::table('host')->where(['host' => $ip])->delete();
+            Db::table('host_port')->where(['host' => $ip])->delete();
+        }
+        Db::table('app_crawlergo')->where(['app_id' => $id])->delete();
+        Db::table('app_dirmap')->where(['app_id' => $id])->delete();
+        Db::table('app_nuclei')->where(['app_id' => $id])->delete();
+        Db::table('app_vulmap')->where(['app_id' => $id])->delete();
+        Db::table('app_wafw00f')->where(['app_id' => $id])->delete();
+        Db::table('app_whatweb')->where(['app_id' => $id])->delete();
+        Db::table('app_whatweb_poc')->where(['app_id' => $id])->delete();
+        Db::table('app_xray_agent_port')->where(['app_id' => $id])->delete();
+        Db::table('awvs_app')->where(['app_id' => $id])->delete();
+        Db::table('awvs_vuln')->where(['app_id' => $id])->delete();
+        Db::table('host_hydra_scan_details')->where(['app_id' => $id])->delete();
+        Db::table('one_for_all')->where(['app_id' => $id])->delete();
+        Db::table('plugin_scan_log')->where(['app_id' => $id])->delete();
+        Db::table('urls')->where(['app_id' => $id])->delete();
+        Db::table('urls_sqlmap')->where(['app_id' => $id])->delete();
+        Db::table('xray')->where(['app_id' => $id])->delete();
+        Db::table('plugin_scan_log')->where(['app_id' => $id])->delete();
+        Db::table('github_keyword_monitor')->where(['app_id' => $id])->delete();
+        Db::table('github_keyword_monitor_notice')->where(['app_id' => $id])->delete();
+
+        if (Db::name('app')->where($map)->delete()) {
+            return redirect($_SERVER['HTTP_REFERER']);
+        } else {
+            $this->error('删除失败');
+        }
+    }
 
     // 批量删除
     public function batch_del(Request $request){
@@ -573,7 +515,7 @@ class App extends Common
         }
     }
 
-
+    // 启动代理
     public function start_agent(Request $request)
     {
         $id = $request->param('id', '', 'intval');
@@ -703,6 +645,7 @@ class App extends Common
         }
     }
 
+    // 下载批量导入模版
     public function downloaAppTemplate()
     {
         $file_dir = \think\facade\App::getRootPath() . 'public/static/';

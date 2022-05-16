@@ -208,11 +208,15 @@ class UrlsModel extends BaseModel
     public static function sqlmapScan()
     {
         ini_set('max_execution_time', 0);
+        $tools = '/data/tools/sqlmap/';
+        $file_path = $tools.'result/';
         while (true) {
             processSleep(1);
-            $api = Db::name('urls')->whereTime('sqlmap_scan_time', '<=', date('Y-m-d H:i:s', time() - (86400 * 15)));
-            $list = $api->where('is_delete', 0)->field('id,url,app_id,user_id')->limit(5)->orderRand()->select()->toArray();
-            $tools = '/data/tools/sqlmap/';
+            $endTime = date('Y-m-d', time() - 86400 * 15);
+            $where[] = ['is_delete','=',0];
+            $list = Db::name('urls')->whereTime('sqlmap_scan_time', '<=', $endTime)->where($where)->field('id,url,app_id,user_id')->limit(5)->orderRand()->select()->toArray();
+            //$count = Db::table('urls')->whereTime('sqlmap_scan_time', '<=', $endTime)->where($where)->count('id');
+            //print("开始执行sqlmap扫描任务,{$count} 个项目等待扫描..." . PHP_EOL);
             foreach ($list as $k => $v) {
                 PluginModel::addScanLog($v['id'], __METHOD__, 3);
                 self::scanTime('urls',$v['id'],'sqlmap_scan_time');
@@ -225,7 +229,6 @@ class UrlsModel extends BaseModel
                     addlog(["URL地址不存在可以注入的参数", $v['url']]);
                     continue;
                 }
-                $file_path = $tools.'result/';
                 $cmd = "cd {$tools}  && python3 ./sqlmap.py -u '{$v['url']}' --batch  --random-agent --output-dir={$file_path}";
                 systemLog($cmd);
                 $host = $arr['host'];
@@ -234,7 +237,7 @@ class UrlsModel extends BaseModel
 
                 //sqlmap输出异常
                 if (!is_dir($outdir) or !file_exists($outfilename) or !filesize($outfilename)) {
-                    PluginModel::addScanLog($v['id'], __METHOD__, 3,2);
+                    PluginModel::addScanLog($v['id'], __METHOD__, 3,1);
                     addlog(["sqlmap没有找到注入点", $v['url']]);
                     continue;
                 }
@@ -278,7 +281,7 @@ class UrlsModel extends BaseModel
         while (true) {
             processSleep(1);
             $list = Db::name('urls')->where('is_delete', 0)->field('id,url')->limit(5)->orderRand()->select()->toArray();
-            foreach ($list as $k => $v) {
+            foreach ($list as $v) {
                 PluginModel::addScanLog($v['id'], __METHOD__, 0);
                 $arr = parse_url($v['url']);
                 if (in_array_strpos($arr['path'], ['.js', '.css', '.json', '.png', '.jpg', '.jpeg', '.gif', '.mp3', '.mp4'])) {

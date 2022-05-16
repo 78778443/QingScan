@@ -11,8 +11,8 @@ class CodeWebshellModel extends BaseModel
         $tools = '/data/tools/hm-linux-amd64/';
         while (true) {
             processSleep(1);
-            $list = Db::name('code')->whereTime('webshell_scan_time', '<=', date('Y-m-d H:i:s', time() - (86400)))
-                ->where('is_delete', 0)->limit(10)->orderRand()->select()->toArray();
+            $list = self::getCodeStayScanList('webshell_scan_time');
+
             foreach ($list as $v) {
                 self::scanTime('code',$v['id'],'webshell_scan_time');
                 PluginModel::addScanLog($v['id'], __METHOD__, 2);

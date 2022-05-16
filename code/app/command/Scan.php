@@ -67,12 +67,6 @@ class Scan extends Command
             HostPortModel::scanHostPort();
         } elseif ($func == "nmap") {
             HostPortModel::NmapPortScan();
-        } elseif ($func == "fortify") {
-            CodeCheckModel::fortifyScan();
-        } elseif ($func == "kunlun") {
-            CodeCheckModel::kunLunScan();
-        } elseif ($func == "semgrep") {
-            CodeCheckModel::semgrep();
         } elseif ($func == "subdomain") {
             AppModel::fofaSubdomain();
         } elseif ($func == "temp") {
@@ -101,12 +95,6 @@ class Scan extends Command
             GithubNoticeModel::getNotice();
         } elseif ($func == 'reptile') {
             UrlsModel::reptile();
-        } elseif ($func == 'getProjectComposer') {
-            CodeModel::code_php();
-        } elseif ($func == 'code_python') {
-            PythonLibraryModel::code_python();
-        } elseif ($func == 'code_java') {
-            CodeJavaModel::code_java();
         } elseif ($func == 'backup') {
             ConfigModel::backup();
         } elseif ($func == 'giteeProject') {
@@ -121,8 +109,6 @@ class Scan extends Command
             WebScanModel::xrayAgentResult();
         } elseif ($func == 'startXrayAgent') {
             WebScanModel::startXrayAgent();
-        } elseif ($func == 'code_webshell_scan') {
-            CodeWebshellModel::code_webshell_scan();
         } elseif ($func == 'wafw00fScan') {
             AppWafw00fModel::wafw00fScan();
         } elseif ($func == 'nucleiScan') {
@@ -133,10 +119,24 @@ class Scan extends Command
             WebScanModel::crawlergoScan();
         } elseif ($func == 'dismapScan') {
             WebScanModel::dismapScan();
-        } elseif ($func == 'deleteDir') {
-            PluginModel::deleteCodeDir();
+        } elseif ($func == "fortify") {
+            CodeCheckModel::fortifyScan();
+        } elseif ($func == "kunlun") {
+            CodeCheckModel::kunLunScan();
+        } elseif ($func == "semgrep") {
+            CodeCheckModel::semgrep();
+        } elseif ($func == 'getProjectComposer') {
+            CodeModel::code_php();
+        } elseif ($func == 'code_python') {
+            PythonLibraryModel::code_python();
+        } elseif ($func == 'code_java') {
+            CodeJavaModel::code_java();
+        } elseif ($func == 'code_webshell_scan') {
+            CodeWebshellModel::code_webshell_scan();
         } elseif ($func == 'mobsfscan') {
             MobsfscanModel::mobsfscan();
+        } elseif ($func == 'deleteDir') {
+            PluginModel::deleteCodeDir();
         } elseif ($func == 'custom') {
             $custom = trim($input->getArgument('custom'));
             $scanType = $input->getArgument('scan_type');

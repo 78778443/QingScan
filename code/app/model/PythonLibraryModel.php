@@ -14,10 +14,8 @@ class PythonLibraryModel extends BaseModel
         $codePath = "/data/codeCheck";
         while (true) {
             processSleep(1);
-            $endTime = date('Y-m-d', time() - 86400 * 15);
-            $where[] = ['is_delete','=',0];
             $where[] = ['project_type','in',[3,6]];
-            $list = Db::name('code')->whereTime('python_scan_time', '<=', $endTime)->where($where)->limit(1)->orderRand()->select()->toArray();
+            $list = self::getCodeStayScanList('python_scan_time',$where);
             foreach ($list as $k => $v) {
                 PluginModel::addScanLog($v['id'], __METHOD__, 2);
                 self::scanTime('code', $v['id'], 'python_scan_time');

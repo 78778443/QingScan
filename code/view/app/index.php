@@ -32,16 +32,20 @@
                     <a href="<?php echo url('app/downloaAppTemplate') ?>"
                        class="btn btn-outline-success">下载模板</a>
                 </div>
-                <div class="col-auto">
-                    <a href="<?php echo url('app/suspend_scan') ?>"
-                       class="btn btn-outline-success">暂停扫描</a>
-                </div>
             </form>
         </div>
     </div>
     <div class="row tuchu">
         <div class="col-md-12 ">
             <form class="row g-3">
+                <div class="col-auto">
+                    <a href="javascript:;>" onclick="suspend_scan(1)"
+                       class="btn btn-outline-success">启用扫描</a>
+                </div>
+                <div class="col-auto">
+                    <a href="javascript:;>" onclick="suspend_scan(2)"
+                       class="btn btn-outline-success">暂停扫描</a>
+                </div>
                 <div class="col-auto">
                     <a href="javascript:;" onclick="again_scan()"
                        class="btn btn-outline-success">重新扫描</a>
@@ -63,7 +67,6 @@
                     <th>ID</th>
                     <th>名称</th>
                     <th>rad</th>
-                    <th>crawlergo</th>
                     <th>awvs</th>
                     <th>xray</th>
                     <th>sqlmap</th>
@@ -74,7 +77,9 @@
                     <th>主机数量</th>
                     <th>nuclei</th>
                     <th>hydra</th>
+                    <th>crawlergo</th>
                     <th>创建时间</th>
+                    <th>扫描状态</th>
                     <th style="width: 200px">操作</th>
                 </tr>
                 </thead>
@@ -93,11 +98,6 @@
                         <td>
                             <a title="扫描时间:<?php echo $value['crawler_time'] ?>"
                                href="<?php echo url('urls/index', ['app_id' => $value['id']]); ?>"><?php echo $value['urls_num'] ?? 0 ?>
-                            </a>
-                        </td>
-                        <td>
-                            <a title="扫描时间:<?php echo $value['crawlergo_scan_time'] ?>"
-                               href="<?php echo url('app_crawlergo/index', ['app_id' => $value['id']]); ?>"><?php echo $value['crawlergo_num'] ?? 0 ?>
                             </a>
                         </td>
                         <td>
@@ -150,7 +150,13 @@
                                href="<?php echo url('hydra/index', ['app_id' => $value['id']]); ?>"><?php echo $value['hydra_num'] ?? 0 ?>
                             </a>
                         </td>
+                        <td>
+                            <a title="扫描时间:<?php echo $value['crawlergo_scan_time'] ?>"
+                               href="<?php echo url('app_crawlergo/index', ['app_id' => $value['id']]); ?>"><?php echo $value['crawlergo_num'] ?? 0 ?>
+                            </a>
+                        </td>
                         <td><?php echo date('Y-m-d H:i', strtotime($value['create_time'])) ?></td>
+                        <td><?php echo $value['status']; ?></td>
                         <td>
                             <?php if($value['xray_agent_port'] ?? ''){?>
                                 <a href="javascript:;" onclick="start_agent(<?php echo $value['id'] ?>)"
@@ -217,6 +223,35 @@
                     item.checked = false
                 }
             })
+        }
+
+        function suspend_scan(status){
+            var child = $('.table').find('input[type="checkbox"]');
+            var ids = ''
+            child.each(function(index, item){
+                if (item.value != -1 && item.checked) {
+                    if (ids == '') {
+                        ids = item.value
+                    } else {
+                        ids = ids+','+item.value
+                    }
+                }
+            })
+
+            $.ajax({
+                type: "post",
+                url: "<?php echo url('app/suspend_scan')?>",
+                data: {ids: ids,status:status},
+                dataType: "json",
+                success: function (data) {
+                    alert(data.msg)
+                    if (data.code == 1) {
+                        window.setTimeout(function () {
+                            location.reload();
+                        }, 2000)
+                    }
+                }
+            });
         }
 
         function batch_del(){

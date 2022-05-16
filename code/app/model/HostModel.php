@@ -215,6 +215,7 @@ class HostModel extends BaseModel
 
     public static function autoAddHost()
     {
+        ini_set('max_execution_time', 0);
         while (true) {
             processSleep(1);
             $appList = Db::table('app')->where(['status' => 1])->limit(100)->order('id','desc')->select()->toArray();

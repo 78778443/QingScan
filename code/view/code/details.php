@@ -15,6 +15,8 @@ $dengjiArrColor = ['Low' => 'secondary', 'Medium' => 'primary', 'High' => 'warni
         <div class="col-md-4">
             <h5><span style="color:#888">名称: </span><?php echo $info['name'] ?></h5></div>
         <div class="col-md-4">
+            <h5><span style="color:#888">扫描状态: </span><?php echo $info['status'] ?></h5></div>
+        <div class="col-md-4">
             <h5><span style="color:#888">项目描述: </span><?php echo $info['desc'] ?></h5></div>
         <div class="col-md-4">
             <h5><span style="color:#888">ssh_url: </span><?php echo $info['ssh_url'] ?></h5></div>

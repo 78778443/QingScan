@@ -14,10 +14,11 @@ class AppWafw00fModel extends BaseModel
         $result_path = $tools . '/result.json';
         while (true) {
             processSleep(1);
-            $list = Db::name('app')->whereTime('wafw00f_scan_time', '<=', date('Y-m-d H:i:s', time() - (86400 * 15)))->where('is_delete', 0)->orderRand()->limit(1)->field('id,url,user_id')->select();
+            $list = self::getAppStayScanList('wafw00f_scan_time');
             foreach ($list as $v) {
-                self::scanTime('app', $v['id'], 'wafw00f_scan_time');
                 PluginModel::addScanLog($v['id'], __METHOD__, 0);
+                self::scanTime('app', $v['id'], 'wafw00f_scan_time');
+
                 $cmd = "cd {$tools} && python3 main.py {$v['url']} -o result.json";
                 systemLog($cmd);
                 if (!file_exists($result_path)) {

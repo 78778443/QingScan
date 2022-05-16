@@ -90,8 +90,18 @@ class ProcessSafe extends Common
 
     public function showProcess()
     {
+        /*$list = Db::table('process_safe')->where('status',0)->select()->toArray();
+        var_dump($list);exit;*/
+        /*$cmd = "ps -ef | grep -v 'UID'";
+        exec($cmd,$info);
+        foreach ($info as $val) {
+            $arr = array_values(array_filter(explode('  ', $val)));
+            if (isset($arr[4]) && in_array_strpos($arr[4],['[php]','[sh]','[cat]','[chrome]'])) {
+                $cmd = "kill -9 {$arr['1']}";
+                exec($cmd);
+            }
+        }*/
         $cmd = "ps -ef | grep -v def  | grep -v 'ps -ef' | grep -v 'UID'";
-
         exec($cmd,$info);
         $data['info'] = $info;
         return View::fetch('show_process', $data);

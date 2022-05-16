@@ -67,4 +67,22 @@ class BaseModel
         $data = [$filed => date('Y-m-d H:i:s', time())];
         return Db::name($table)->where('id', $id)->update($data);
     }
+
+    // 获取app待扫描列表
+    public static function getAppStayScanList($filed,$num=1){
+        $endTime = date('Y-m-d', time() - 86400 * 15);
+        $where[] = [$filed,'<=',$endTime];
+        $where[] = ['is_delete','=',0];
+        $where[] = ['status','=',1];
+        return Db::name('app')->where($where)->field('id,name,url,username,password,user_id,is_intranet')->limit($num)->orderRand()->select()->toArray();
+    }
+
+    // 获取app待扫描列表
+    public static function getCodeStayScanList($filed,$where = [],$num=1){
+        $endTime = date('Y-m-d', time() - 86400*15);
+        $where[] = [$filed,'<=',$endTime];
+        $where[] = ['is_delete','=',0];
+        $where[] = ['status','=',1];
+        return Db::name('code')->where($where)->limit($num)->orderRand()->select()->toArray();
+    }
 }

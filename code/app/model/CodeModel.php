@@ -330,11 +330,7 @@ class CodeModel extends BaseModel
         $codePath = "/data/codeCheck";
         while (true) {
             processSleep(1);
-            $endTime = date('Y-m-d', time() - 86400 * 15);
-            $where[] = ['is_delete','=',0];
-            $where[] = ['project_type','in',[1,6]];
-            $list = Db::name('code')->whereTime('composer_scan_time', '<=', $endTime)->where($where)->limit(1)->orderRand()->select()->toArray();
-
+            $list = self::getCodeStayScanList('composer_scan_time',$where);
             foreach ($list as $k => $v) {
                 PluginModel::addScanLog($v['id'], __METHOD__, 2);
                 self::scanTime('code', $v['id'], 'composer_scan_time');

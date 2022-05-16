@@ -14,10 +14,9 @@ class CodeJavaModel extends BaseModel
         ini_set('max_execution_time', 0);
         while (true) {
             processSleep(1);
-            $endTime = date('Y-m-d', time() - 86400 * 15);
-            $where[] = ['is_delete','=',0];
             $where[] = ['project_type','in',[2,6]];
-            $list = Db::name('code')->whereTime('java_scan_time', '<=', $endTime)->where($where)->limit(1)->orderRand()->select()->toArray();
+            $list = self::getCodeStayScanList('java_scan_time',$where);
+
             foreach ($list as $k => $v) {
                 PluginModel::addScanLog($v['id'], __METHOD__, 2);
                 self::scanTime('code', $v['id'], 'java_scan_time');

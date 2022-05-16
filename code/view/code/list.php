@@ -29,6 +29,14 @@ $searchArr = [
                     <form class="row g-3" id="frmUpload" action="<?php echo url('app/batch_import') ?>" method="post"
                           enctype="multipart/form-data">
                         <div class="col-auto">
+                            <a href="javascript:;>" onclick="suspend_scan(1)"
+                               class="btn btn-outline-success">启用扫描</a>
+                        </div>
+                        <div class="col-auto">
+                            <a href="javascript:;>" onclick="suspend_scan(2)"
+                               class="btn btn-outline-success">暂停扫描</a>
+                        </div>
+                        <div class="col-auto">
                             <a href="javascript:;" onclick="again_scan()"
                                class="btn btn-outline-success">重新扫描</a>
                         </div>
@@ -56,6 +64,7 @@ $searchArr = [
                             <th>PHP依赖</th>
                             <th>Python依赖</th>
                             <th>java依赖</th>
+                            <th>扫描状态</th>
                             <th style="width: 200px">操作</th>
                         </tr>
                         </thead>
@@ -106,6 +115,7 @@ $searchArr = [
                                        href="<?php echo url('code_java/index', ['code_id' => $value['id']]); ?>"><?php echo $javaNum[$value['id']] ?? 0 ?>
                                     </a>
                                 </td>
+                                <td><?php echo $value['status'];?></td>
                                 <td>
                                     <a href="<?php echo url('code/details', ['id' => $value['id']]) ?>"
                                        class="btn btn-sm btn-outline-primary">查看</a>
@@ -122,7 +132,7 @@ $searchArr = [
                             </tr>
                         <?php } ?>
                         <?php if(empty($list)){?>
-                            <tr><td colspan="13" class="text-center">暂无目标</td></tr>
+                            <tr><td colspan="14" class="text-center">暂无目标</td></tr>
                         <?php }?>
                     </table>
                 </div>
@@ -144,6 +154,35 @@ $searchArr = [
                 item.checked = false
             }
         })
+    }
+
+    function suspend_scan(status){
+        var child = $('.table').find('input[type="checkbox"]');
+        var ids = ''
+        child.each(function(index, item){
+            if (item.value != -1 && item.checked) {
+                if (ids == '') {
+                    ids = item.value
+                } else {
+                    ids = ids+','+item.value
+                }
+            }
+        })
+
+        $.ajax({
+            type: "post",
+            url: "<?php echo url('code/suspend_scan')?>",
+            data: {ids: ids,status:status},
+            dataType: "json",
+            success: function (data) {
+                alert(data.msg)
+                if (data.code == 1) {
+                    window.setTimeout(function () {
+                        location.reload();
+                    }, 2000)
+                }
+            }
+        });
     }
 
     function batch_del(){

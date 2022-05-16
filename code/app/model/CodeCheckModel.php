@@ -225,12 +225,10 @@ class CodeCheckModel extends BaseModel
         }
         while (true) {
             processSleep(1);
-            $endTime = date('Y-m-d', time() - 86400 * 15);
-            $list = Db::table('code')->where(['is_delete' => 0])->whereTime('scan_time', '<=', $endTime)->orderRand()->limit(1)->select()->toArray();
-            $count = count($list);
-
+            $list = self::getCodeStayScanList('scan_time');
             foreach ($list as $value) {
                 PluginModel::addScanLog($value['id'], __METHOD__, 2,0);
+
                 $prName = cleanString($value['name']);
                 $codeUrl = $value['ssh_url'];
                 addlog("开始执行扫描代码任务:{$prName}..." . PHP_EOL);
@@ -275,8 +273,7 @@ class CodeCheckModel extends BaseModel
         }
         while (true) {
             processSleep(1);
-            $endTime = date('Y-m-d', time() - 86400 * 15);
-            $list = Db::table('code')->whereTime('kunlun_scan_time', '<=', $endTime)->orderRand()->limit(1)->select()->toArray();
+            $list = self::getCodeStayScanList('kunlun_scan_time');
             foreach ($list as $value) {
                 PluginModel::addScanLog($value['id'], __METHOD__, 2,0);
                 $prName = cleanString($value['name']);
@@ -305,10 +302,7 @@ class CodeCheckModel extends BaseModel
 
         while (true) {
             processSleep(1);
-            $endTime = date('Y-m-d', time() - 86400 * 15);
-            $list = Db::table('code')->whereTime('semgrep_scan_time', '<=', $endTime)->orderRand()->limit(1)->select()->toArray();
-            $count = Db::table('code')->whereTime('semgrep_scan_time', '<=', $endTime)->count('id');
-            print("开始执行semgrep扫描代码任务,{$count} 个项目等待扫描..." . PHP_EOL);
+            $list = self::getCodeStayScanList('semgrep_scan_time');
             foreach ($list as $value) {
                 PluginModel::addScanLog($value['id'], __METHOD__, 2,0);
                 $prName = cleanString($value['name']);

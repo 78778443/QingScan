@@ -51,6 +51,11 @@ class Code extends Common
                 $v['pulling_mode'] = '本地';
             }
             $v['mobsfscan'] = Db::name('mobsfscan')->where('code_id',$v['id'])->count('id');
+            if ($v['status'] == 1) {
+                $v['status'] = '启用';
+            } else {
+                $v['status'] = '禁用';
+            }
         }
         //查询数量
         $codeIds = array_column($data['list'], 'id');
@@ -59,6 +64,31 @@ class Code extends Common
         $data['page'] = $list->render();
 
         return View::fetch('list', $data);
+    }
+
+    // 启用-暂停扫描
+    public function suspend_scan(Request $request){
+        $ids = $request->param('ids');
+        $status = $request->param('status');
+        if (!$ids) {
+            return $this->apiReturn(0,[],'请选择要重新扫描的数据');
+        }
+        $where[] = ['id','in',$ids];
+        $map[] = ['app_id','in',$ids];
+        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
+            $where[] = ['user_id', '=', $this->userId];
+        }
+        $data['info'] = Db::name('code')->where($where)->find();
+        if (!$data['info']) {
+            return $this->apiReturn(0,[],'白盒审计项目不存在');
+        }
+        if ($status == 1) { // 启用
+            Db::name('code')->where($where)->where('status',2)->update(['status'=>1]);
+            $this->success('扫描已启用');
+        } elseif($status == 2){ // 暂停
+            Db::name('code')->where($where)->where('status',1)->update(['status'=>2]);
+            $this->success('扫描已暂停');
+        }
     }
 
     public function qingkong(Request $request)
@@ -110,6 +140,11 @@ class Code extends Common
         if ($data['info']['is_online'] == 2) { // 本地
             $data['info']['ssh_url'] = '本地';
             $data['info']['pulling_mode'] = '本地';
+        }
+        if ($data['info']['status'] = 1) {
+            $data['info']['status'] = '启用';
+        } else {
+            $data['info']['status'] = '禁用';
         }
         $data['fortify'] = Db::table('fortify')->where($where)->order("id", 'desc')->limit(0, 10)->select()->toArray();
         $data['semgrep'] = Db::table('semgrep')->where($where)->order("id", 'desc')->limit(0, 10)->select()->toArray();
