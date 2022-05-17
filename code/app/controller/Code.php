@@ -13,6 +13,12 @@ use think\Request;
 
 class Code extends Common
 {
+    public $tools = [
+        'semgrep'=>'semgrep',
+        'fortify'=>'fortify',
+        'kunlun'=>'kunlun',
+        'webshell'=>'河马webshell检测',
+    ];
 
     public function index(Request $request)
     {
@@ -62,8 +68,17 @@ class Code extends Common
         $data = array_merge($data, CodeModel::getScanNum($codeIds));
         // 获取分页显示
         $data['page'] = $list->render();
+        $data['tools_list'] = $this->tools;
 
         return View::fetch('list', $data);
+    }
+
+    public function tools(Request $request){
+        $project_id = $request->param('project_id');
+        $where[] = ['type','=',2];
+        $where[] = ['project_id','=',$project_id];
+        $tools = Db::name('project_tools')->where($where)->column('tools_name');
+        return $this->apiReturn(0,$tools,'ok');
     }
 
     // 启用-暂停扫描
@@ -175,6 +190,7 @@ class Code extends Common
             Db::table('code_python')->where(['code_id' => $id])->delete();
             Db::table('code_java')->where(['code_id' => $id])->delete();
             Db::table('plugin_scan_log')->where(['app_id' => $id, 'scan_type' => 2])->delete();
+            Db::table('project_tools')->wherewhere('project_id', $id)->where('type', 2)->delete();
 
             return redirect($_SERVER['HTTP_REFERER']);
         } else {
@@ -203,6 +219,7 @@ class Code extends Common
             Db::table('code_python')->where($map)->delete();
             Db::table('code_java')->where($map)->delete();
             Db::table('plugin_scan_log')->whereIn('app_id', $ids)->where('scan_type', 2)->delete();
+            Db::table('project_tools')->whereIn('project_id', $ids)->where('type', 2)->delete();
 
             return $this->apiReturn(1, [], '批量删除成功');
         } else {
@@ -759,6 +776,7 @@ class Code extends Common
 
     public function _add_code(Request $request)
     {
+        $tools = $request->param('tools');
         $data['name'] = $request->param('name');
         $data['project_type'] = $request->param('project_type');
         $data['is_private'] = $request->param('is_private');
@@ -778,8 +796,20 @@ class Code extends Common
                 }
             }
         }
-        CodeModel::addData($data);
-
+        $project_id = CodeModel::addData($data);
+        $project_tools_data = [];
+        if ($tools) {
+            foreach ($tools as $v) {
+                $project_tools_data[] = [
+                    'type'=>2,
+                    'project_id'=>$project_id,
+                    'tools_name'=>$v,
+                    'create_time'=>date('Y-m-d H:i:s',time())
+                ];
+            }
+            Db::name('project_tools')->where('project_id',$project_id)->where('type',2)->delete();
+            Db::name('project_tools')->insertAll($project_tools_data);
+        }
         return redirect(url('code/index'));
     }
 
@@ -816,10 +846,33 @@ class Code extends Common
         // $this->Location("index.php?s=code_check/index");
     }
 
+    public function edit_tools(Request $request){
+        $project_id = $request->param('project_id');
+        if (!Db::name('code')->where('id',$project_id)->count('id')) {
+            $this->error('白盒审计项目不存在','index');
+        }
+        $tools = $request->param('tools');
+        $project_tools_data = [];
+        if ($tools) {
+            foreach ($tools as $k=>$v) {
+                $project_tools_data[] = [
+                    'type'=>2,
+                    'project_id'=>$project_id,
+                    'tools_name'=>$v,
+                    'create_time'=>date('Y-m-d H:i:s',time())
+                ];
+            }
+            Db::name('project_tools')->where('project_id',$project_id)->where('type',2)->delete();
+            Db::name('project_tools')->insertAll($project_tools_data);
+        }
+        $this->success('工具修改成功','index');
+    }
+
     public function add_file(Request $request){
         if ($request->isPost()) {
             //$name = $request->param('name');
             $project_type = $request->param('project_type');
+            $tools = $request->param('tools');
             $file = $request->file('file');
             if (!$file) {
                 $this->error('请先上传项目压缩包');
@@ -850,21 +903,29 @@ class Code extends Common
                     $data['name'] = $name;
                     $data['is_online'] = 2;
                     $data['project_type'] = $project_type;
-                    Db::name('code')->insert($data);
-                    $this->success('白盒项目添加成功','index');
+                    $project_id = Db::name('code')->insertGetId($data);
+                    $project_tools_data = [];
+                    if ($tools) {
+                        foreach ($tools as $k=>$v) {
+                            $project_tools_data[] = [
+                                'type'=>2,
+                                'project_id'=>$project_id,
+                                'tools_name'=>$v,
+                                'create_time'=>date('Y-m-d H:i:s',time())
+                            ];
+                        }
+                        Db::name('project_tools')->where('project_id',$project_id)->where('type',2)->delete();
+                        Db::name('project_tools')->insertAll($project_tools_data);
+                    }
+                    $this->success('白盒审计项目添加成功','index');
                 } else {
-                    $this->error('白盒项目添加失败');
+                    $this->error('白盒审计项目添加失败');
                 }
             } catch (\think\exception\ValidateException $e) {
                 $this->error($e->getMessage());
             }
         } else {
-            $data['tools_list'] = [
-                'semgrep'=>'kunlun',
-                'kunlun'=>'kunlun',
-                'fortify'=>'fortify',
-                'webshell'=>'webshell',
-            ];
+            $data['tools_list'] = $this->tools;
             return View::fetch('add_file', $data);
         }
     }

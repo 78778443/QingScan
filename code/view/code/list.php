@@ -124,8 +124,10 @@ $searchArr = [
                                     ?>
                                     <a href="<?php echo url('code/edit_modal', ['id' => $value['id']]) ?>" class="btn btn-sm btn-outline-success">编辑</a>
                                     <?php }?>
-                                    <a href="<?php echo url('code/qingkong', ['id' => $value['id']]) ?>"
-                                       class="btn btn-sm btn-outline-warning">重新扫描</a>
+                                    <a href="javascript:;" onclick="tools(<?php echo $value['id'];?>,'<?php echo $value['name'];?>')"
+                                       class="btn btn-sm btn-outline-warning">工具列表</a>
+                                    <!--<a href="<?php /*echo url('code/qingkong', ['id' => $value['id']]) */?>"
+                                       class="btn btn-sm btn-outline-warning">重新扫描</a>-->
                                     <a href="<?php echo url('code/code_del', ['id' => $value['id']]) ?>"
                                        class="btn btn-sm btn-outline-danger">删除</a>
                                 </td>
@@ -141,6 +143,7 @@ $searchArr = [
     </div>
 </div>
 {include file='public/fenye' /}
+{include file='code/tools' /}
 {include file='code/add_modal' /}
 {include file='public/footer' /}
 

@@ -85,4 +85,12 @@ class BaseModel
         $where[] = ['status','=',1];
         return Db::name('code')->where($where)->limit($num)->orderRand()->select()->toArray();
     }
+
+    // 检查工具权限
+    public static function checkToolAuth($type,$project_id,$tools_name){
+        $where[] = ['type','=',$type];
+        $where[] = ['project_id','=',$project_id];
+        $where[] = ['tools_name','=',$tools_name];
+        return Db::name('project_tools')->where($where)->count('id');
+    }
 }

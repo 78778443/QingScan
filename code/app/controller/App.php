@@ -19,6 +19,16 @@ class App extends Common
 
     public function index(Request $request)
     {
+        /*$list = Db::table('plugin_scan_log')->alias('a')
+            ->leftJoin('plugin b','b.id=a.plugin_id')
+            ->where($where)
+            ->field('a.*,b.name,b.result_file')
+            ->order("a.id", 'desc')
+            ->paginate([
+                'list_rows'=> $pageSize,//每页数量
+                'query' => $request->param(),
+            ]);
+        exit;*/
         $pageSize = 15;
         $statusCode = $request->param('statuscode');
         $cms = base64_decode($_GET['cms'] ?? '');
@@ -229,7 +239,6 @@ class App extends Common
             return $this->apiReturn(0,[],'请选择要重新扫描的数据');
         }
         $where[] = ['id','in',$ids];
-        $map[] = ['app_id','in',$ids];
         if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
             $where[] = ['user_id', '=', $this->userId];
         }
@@ -244,13 +253,6 @@ class App extends Common
             Db::name('app')->where($where)->where('status',1)->update(['status'=>2]);
             $this->success('扫描已暂停');
         }
-        /*$num = ConfigModel::value('maxProcesses');
-        if ($num != -1) {
-            ConfigModel::set_value('maxProcesses',-1);
-        } else {
-            //ConfigModel::set_value('maxProcesses',0);
-            //$this->success('扫描已启动');
-        }*/
     }
 
     // 单个工具重新扫描

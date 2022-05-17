@@ -227,6 +227,9 @@ class CodeCheckModel extends BaseModel
             processSleep(1);
             $list = self::getCodeStayScanList('scan_time');
             foreach ($list as $value) {
+                if (!self::checkToolAuth(2,$value['id'],'fortify')) {
+                    continue;
+                }
                 PluginModel::addScanLog($value['id'], __METHOD__, 2,0);
 
                 $prName = cleanString($value['name']);
@@ -275,6 +278,9 @@ class CodeCheckModel extends BaseModel
             processSleep(1);
             $list = self::getCodeStayScanList('kunlun_scan_time');
             foreach ($list as $value) {
+                if (!self::checkToolAuth(2,$value['id'],'kunlun')) {
+                    continue;
+                }
                 PluginModel::addScanLog($value['id'], __METHOD__, 2,0);
                 $prName = cleanString($value['name']);
                 $codeUrl = $value['ssh_url'];
@@ -304,7 +310,11 @@ class CodeCheckModel extends BaseModel
             processSleep(1);
             $list = self::getCodeStayScanList('semgrep_scan_time');
             foreach ($list as $value) {
+                if (!self::checkToolAuth(2,$value['id'],'semgrep')) {
+                    continue;
+                }
                 PluginModel::addScanLog($value['id'], __METHOD__, 2,0);
+
                 $prName = cleanString($value['name']);
                 $codeUrl = $value['ssh_url'];
                 $filepath = "{$codePath}/{$prName}";

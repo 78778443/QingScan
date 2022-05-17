@@ -54,6 +54,18 @@
                         <label class="form-label">私钥</label>
                         <input type="text" name="private_key" class="form-control" placeholder="私钥">
                     </div>
+                    <div class="mb-3">
+                        <label class="form-label">需要调用的工具</label>
+                        <div class="checkbox">
+                            <?php
+                            foreach ($tools_list as $k=>$v) {
+                                ?>
+                                <label>
+                                    <input type="checkbox" name="tools[]" value="<?php echo $k;?>"><?php echo $v;?>
+                                </label>
+                            <?php }?>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-outline-info">提交</button>

@@ -284,7 +284,7 @@ class CodeModel extends BaseModel
 
     private static function add($data)
     {
-        Db::table(self::$tableName)->insert($data);
+        return Db::table(self::$tableName)->insertGetId($data);
     }
 
     public static function getScanNum(array $codeIds)

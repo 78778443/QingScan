@@ -12,8 +12,11 @@ class CodeWebshellModel extends BaseModel
         while (true) {
             processSleep(1);
             $list = self::getCodeStayScanList('webshell_scan_time');
-
             foreach ($list as $v) {
+                if (!self::checkToolAuth(2,$v['id'],'webshell')) {
+                    continue;
+                }
+
                 self::scanTime('code',$v['id'],'webshell_scan_time');
                 PluginModel::addScanLog($v['id'], __METHOD__, 2);
                 $codePath = "/data/codeCheck/";
