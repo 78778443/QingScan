@@ -21,7 +21,6 @@ class SemgrepModel extends BaseModel
         $cmd = "semgrep -f /data/tools/semgrep/rules.yaml {$codePath} --json  -o {$outPath}";
 
         $result = systemLog($cmd);
-
     }
 
     public static function addDataAll(int $codeId, string $jsonPath, $user_id = 0)

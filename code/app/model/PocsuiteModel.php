@@ -45,20 +45,15 @@ class PocsuiteModel extends BaseModel
                 $value['CompanyType'] = $icpInfo['Result']['CompanyType'];
                 Db::table('pocsuite3')->save($value);
             }
-
-
         }
 
     }
 
     public static function getCompanyInfo($name)
     {
-
-
         $headers = array();
         array_push($headers, "X-Bce-Signature:AppCode/" . "2e8ddd3610be457f92e92c845dac8f82");
         array_push($headers, "Content-Type" . ":" . "application/json;charset=UTF-8");
-
 
         $url = "http://gwgp-dc8od3uiqjb.n.bdcloudapi.com" . "/enterprise2/query" . "?company={$name}&creditno=null&regno=null&";
         $curl = curl_init();
@@ -70,23 +65,18 @@ class PocsuiteModel extends BaseModel
         curl_setopt($curl, CURLOPT_HEADER, true);
 
         list($header, $body) = explode("\r\n\r\n", curl_exec($curl), 2);
-
         return json_decode($body, true);
-
     }
 
     public static function updateCompony()
     {
         $list = Db::table('pocsuite3')->whereNotNull('CompanyName')->whereNull("regcapital")->limit(2)->select()->toArray();
-
-
         foreach ($list as $value) {
             $info = self::getCompanyInfo($value['CompanyName']);
             if (intval($info['status']) != 0) {
                 addlog( "{$value['CompanyName']} 没有获取到公司信息" );
                 continue;
             }
-
             $value['regcapital'] = $info['result']['regcapital'] ?? "";
             $value['regaddress'] = $info['result']['regaddress'] ?? "";
 
@@ -94,7 +84,6 @@ class PocsuiteModel extends BaseModel
                 echo "{$value['CompanyName']} 没有获取到公司注册资金信息" . PHP_EOL;
                 continue;
             }
-
             Db::table('pocsuite3')->save($value);
         }
     }

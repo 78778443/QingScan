@@ -54,6 +54,7 @@ class Index extends Common
         $semgrepCount = Db::table('semgrep')->count();
         $fortifyCount = Db::table('fortify')->count();
         $mobsfscanCount = Db::table('mobsfscan')->count();
+        $murphysecCount = Db::table('murphysec')->count();
         $phpCount = Db::table('code_composer')->count();
         $pythonCount = Db::table('code_python')->count();
         $javaCount = Db::table('code_java')->count();
@@ -88,7 +89,7 @@ class Index extends Common
                 "value" => $hostCount,
                 "subInfo" => [
                     ["name" => "port", "value" => $portCount, "href" => url('host_port/index')],
-                    ["name" => "组件", "value" => $serviceCount, "href" => url('host_port/index')],
+                    ["name" => "中间件", "value" => $serviceCount, "href" => url('host_port/index')],
                 ]
             ],
             [
@@ -98,6 +99,7 @@ class Index extends Common
                     ["name" => "fortify", "value" => $fortifyCount, "href" => url('code/bug_list')],
                     ["name" => "semgrep", "value" => $semgrepCount, "href" => url('code/semgrep_list')],
                     ["name" => "mobsfscan", "value" => $mobsfscanCount, "href" => url('mobsfscan/index')],
+                    ["name" => "murphysec", "value" => $murphysecCount, "href" => url('murphysec/index')],
                     ["name" => "webshell", "value" => $hemaCount, "href" => url('code_webshell/index')],
                     ["name" => "php", "value" => $phpCount, "href" => url('code_composer/index')],
                     ["name" => "python", "value" => $pythonCount, "href" => url('code_python/index')],

@@ -55,35 +55,6 @@ class UrlsModel extends BaseModel
 
     }
 
-
-    public static function getCrawlerInfo($crawlerId)
-    {
-
-        //查询具体数据,并刷新缓存
-        $result = self::getList(['id' => $crawlerId]);
-
-
-        return $result[0] ?? false;
-
-    }
-
-    /**
-     * 获取APP的URL地址
-     *
-     * @param int $appId
-     * @return mixed
-     */
-    public static function getCrawlerList(int $appId)
-    {
-
-        //查询具体数据,并刷新缓存
-        $result = self::getList(['app_id' => $appId]);
-
-
-        return $result;
-
-    }
-
     /**
      * @param  $where
      * @param int $limit
@@ -92,103 +63,10 @@ class UrlsModel extends BaseModel
      */
     private static function getList($where, int $limit = 15, int $page = 1, array $otherParam = [])
     {
-
         $result = Db::table(self::$tableName)->where($where)->select()->toArray();
-
         return $result;
     }
 
-    private static function getCount($where, array $otherParam = [])
-    {
-        $group = $otherParam['group'] ?? '';
-
-
-        $api = Db::table(self::$tableName)->where($where);
-
-        if ($group) {
-            $api = $api->group($group);
-        }
-
-        $count = $api->group($group)->count();
-
-        return $count;
-
-    }
-
-
-    public static function getListByWherePage($where, $page, $pageSize = 15)
-    {
-
-        $list = self::getList($where, $pageSize, $page);
-
-        $count = self::getCount($where);
-
-        return ['list' => $list, 'count' => $count, 'pageSize' => $pageSize];
-    }
-
-    public static function getListByWhere($where)
-    {
-
-        $list = self::getList($where);
-
-        return $list;
-    }
-
-    /**
-     * 获取单条记录
-     *
-     * @param int $id
-     * @return array
-     */
-    public static function getInfo(int $id)
-    {
-        $where = ['id' => $id];
-
-        $list = self::getList($where);
-
-        return $list[0] ?? [];
-    }
-
-    /**
-     * 内部方法，更新数据
-     *
-     * @param array $where
-     * @param array $data
-     * @return mixed
-     */
-    private static function updateByWhere(array $where, array $data)
-    {
-
-        Db::table('crawler')->where($where)->update($data);
-    }
-
-    /**
-     * 更新生成任务状态
-     *
-     * @param string $crawlerNum
-     * @param int $status
-     */
-    public static function updateStatus(int $id, int $status)
-    {
-        $where = ['id' => $id];
-        $data = ['status' => $status];
-        self::updateByWhere($where, $data);
-    }
-
-
-    public static function updateScanStatus(int $id, int $status, string $cmdResult)
-    {
-        $where = ['id' => $id];
-        $data = ['scan_status' => $status, 'cmd_result' => $cmdResult];
-        self::updateByWhere($where, $data);
-    }
-
-    public static function updateCrawlStatus(int $id, int $status)
-    {
-        $where = ['id' => $id];
-        $data = ['crawl_status' => $status];
-        self::updateByWhere($where, $data);
-    }
 
     /**
      * @param array $data
@@ -196,7 +74,6 @@ class UrlsModel extends BaseModel
     public static function addData(array $data, $metod = 'get')
     {
         $data['method'] = $metod;
-
         return self::add($data);
     }
 

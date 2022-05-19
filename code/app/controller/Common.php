@@ -172,6 +172,16 @@ class Common extends BaseController
         return $projectList;
     }
 
+    public function getMyCodeList(){
+        $where[] = ['is_delete','=',0];
+        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
+            $where[] = ['user_id', '=', $this->userId];
+        }
+        //查询项目数据
+        $projectArr = Db::table('code')->where($where)->field('id,name')->select()->toArray();
+        return array_column($projectArr, 'name', 'id');
+    }
+
 
     /**
      * 使用PHPEXECL导入

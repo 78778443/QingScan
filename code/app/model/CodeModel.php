@@ -301,6 +301,16 @@ class CodeModel extends BaseModel
             ->group('code_id')->select()->toArray();
         $data['semgrepNum'] = array_column($tempArr, 'num', 'code_id');
 
+        $tempArr = Db::table('mobsfscan')->whereIn('code_id', $codeIdStr)
+            ->field('code_id,count(code_id) as num')
+            ->group('code_id')->select()->toArray();
+        $data['mobsfscanNum'] = array_column($tempArr, 'num', 'code_id');
+
+        $tempArr = Db::table('murphysec')->whereIn('code_id', $codeIdStr)
+            ->field('code_id,count(code_id) as num')
+            ->group('code_id')->select()->toArray();
+        $data['murphysecNum'] = array_column($tempArr, 'num', 'code_id');
+
         $tempArr = Db::table('code_webshell')->whereIn('code_id', $codeIdStr)
             ->field('code_id,count(code_id) as num')
             ->group('code_id')->select()->toArray();

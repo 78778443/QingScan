@@ -120,13 +120,9 @@ class FortifyModel extends BaseModel
      */
     public static function getCrawlerList(int $appId)
     {
-
         //查询具体数据,并刷新缓存
         $result = self::getList(['app_id' => $appId]);
-
-
         return $result;
-
     }
 
     /**
@@ -143,24 +139,6 @@ class FortifyModel extends BaseModel
 
         return $result;
     }
-
-    private static function getCount($where, array $otherParam = [])
-    {
-        $db = new MysqlLib(getMysql());
-        $group = $otherParam['group'] ?? '';
-
-        $db = $db->table(self::$tableName);
-
-        if ($group) {
-            $db->group($group);
-        }
-
-        $result = $db->where($where)->count();
-
-
-        return $result[0]['num'] ?? 0;
-    }
-
 
     public static function getListByWherePage($where, $page, $pageSize = 15)
     {
@@ -196,52 +174,6 @@ class FortifyModel extends BaseModel
     }
 
     /**
-     * 内部方法，更新数据
-     *
-     * @param array $where
-     * @param array $data
-     * @return mixed
-     */
-    private static function updateByWhere(array $where, array $data)
-    {
-        $crawlerApi = new MysqlLib();
-
-        //更新条件
-        $crawlerApi = $crawlerApi->table(self::$tableName)->where($where);
-
-        //执行更新并返回数据
-        $crawlerApi->update($data);
-    }
-
-    /**
-     * 更新生成任务状态
-     *
-     * @param string $crawlerNum
-     * @param int $status
-     */
-    public static function updateStatus(int $id, int $status)
-    {
-        $where = ['id' => $id];
-        $data = ['status' => $status];
-        self::updateByWhere($where, $data);
-    }
-
-
-    public static function updateScanStatus(int $id, int $status, string $cmdResult)
-    {
-        $where = ['id' => $id];
-        $data = ['scan_status' => $status, 'cmd_result' => $cmdResult];
-        self::updateByWhere($where, $data);
-    }
-
-    public static function updateCrawlStatus(int $id, int $status)
-    {
-        $where = ['id' => $id];
-        $data = ['crawl_status' => $status];
-        self::updateByWhere($where, $data);
-    }
-
-    /**
      * @param array $data
      */
     public static function addDataAll(int $id, array $data, $user_id = 0)
@@ -252,15 +184,6 @@ class FortifyModel extends BaseModel
             $value['hash'] = md5($value['code_id'] . $value['Category'] . $value['Abstract'] . $value['Primary']);
             self::add($value);
         }
-    }
-
-    public static function getProjectCount($projectId)
-    {
-        $where = ['code_id' => $projectId];
-
-        $data = DB::table(self::tableName)->where($where)->count();
-
-        return $data;
     }
 
     public static function startScan($codePath, $outPath)

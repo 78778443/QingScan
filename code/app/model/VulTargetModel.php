@@ -17,6 +17,4 @@ class VulTargetModel extends BaseModel
 {
 
     public static $tableName = "vul_target";
-
-
 }

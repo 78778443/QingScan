@@ -17,6 +17,7 @@ class Code extends Common
         'semgrep'=>'semgrep',
         'fortify'=>'fortify',
         'kunlun'=>'kunlun',
+        'murphysec'=>'murphysec',
         'webshell'=>'河马webshell检测',
     ];
 
@@ -56,7 +57,6 @@ class Code extends Common
                 $v['ssh_url'] = '本地';
                 $v['pulling_mode'] = '本地';
             }
-            $v['mobsfscan'] = Db::name('mobsfscan')->where('code_id',$v['id'])->count('id');
             if ($v['status'] == 1) {
                 $v['status'] = '启用';
             } else {
@@ -164,6 +164,7 @@ class Code extends Common
         $data['fortify'] = Db::table('fortify')->where($where)->order("id", 'desc')->limit(0, 10)->select()->toArray();
         $data['semgrep'] = Db::table('semgrep')->where($where)->order("id", 'desc')->limit(0, 10)->select()->toArray();
         $data['mobsfscan'] = Db::table('mobsfscan')->where($where)->order("id", 'desc')->limit(0, 10)->select()->toArray();
+        $data['murphysec'] = Db::table('murphysec')->where($where)->order("id", 'desc')->limit(0, 10)->select()->toArray();
         $data['hema'] = Db::table('code_webshell')->where($where)->order("id", 'desc')->limit(0, 10)->select()->toArray();
         $data['java'] = Db::table('code_java')->where($where)->order("id", 'desc')->limit(0, 10)->select()->toArray();
         $data['python'] = Db::table('code_python')->where($where)->order("id", 'desc')->limit(0, 10)->select()->toArray();
@@ -245,6 +246,7 @@ class Code extends Common
             'kunlun_scan_time' => '2000-01-01 00:00:00',
             'semgrep_scan_time' => '2000-01-01 00:00:00',
             'mobsfscan_scan_time' => '2000-01-01 00:00:00',
+            'murphysec_scan_time' => '2000-01-01 00:00:00',
             'composer_scan_time' => '2000-01-01 00:00:00',
             'java_scan_time' => '2000-01-01 00:00:00',
             'python_scan_time' => '2000-01-01 00:00:00',
@@ -254,6 +256,8 @@ class Code extends Common
         Db::table('fortify')->where($map)->delete();
         Db::table('semgrep')->where($map)->delete();
         Db::table('mobsfscan')->where($map)->delete();
+        Db::table('murphysec')->where($map)->delete();
+        Db::table('murphysec_vuln')->where($map)->delete();
         Db::table('code_webshell')->where($map)->delete();
         Db::table('code_composer')->where($map)->delete();
         Db::table('code_python')->where($map)->delete();
@@ -1145,6 +1149,11 @@ class Code extends Common
             case 'mobsfscan':
                 $data['mobsfscan_scan_time']  ='2000-01-01 00:00:00';
                 Db::table('mobsfscan')->where(['code_id' => $id])->delete();
+                break;
+            case 'murphysec':
+                $data['murphysec_scan_time']  ='2000-01-01 00:00:00';
+                Db::table('murphysec')->where(['code_id' => $id])->delete();
+                Db::table('murphysec_vuln')->where(['code_id' => $id])->delete();
                 break;
             case 'webshell':
                 $data['webshell_scan_time']  ='2000-01-01 00:00:00';

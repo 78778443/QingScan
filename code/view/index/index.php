@@ -21,7 +21,7 @@
                 <?php foreach ($value['subInfo'] as $subVaule) { ?>
                     <div class="col-md-4">
                         <h5>
-                            <span style="width:80px;" class="badge  text-dark text-right">{$subVaule['name']}</span>:
+                            <span style="width:100px;" class="badge  text-dark text-right">{$subVaule['name']}</span>:
                             <a style="width:70px;" class="badge bg-info text-right" href="{$subVaule['href']}">{$subVaule['value']}</a>
                         </h5>
                     </div>

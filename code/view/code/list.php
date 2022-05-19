@@ -60,6 +60,7 @@ $searchArr = [
                             <th>Fortify</th>
                             <th>Semgrep</th>
                             <th>mobsfscan</th>
+                            <th>murphysec</th>
                             <th>webshell</th>
                             <th>PHP依赖</th>
                             <th>Python依赖</th>
@@ -92,7 +93,12 @@ $searchArr = [
                                 </td>
                                 <td>
                                     <a title="扫描时间:<?php echo $value['mobsfscan_scan_time'] ?>"
-                                       href="<?php echo url('mobsfscan/index', ['code_id' => $value['id']]); ?>"><?php echo $value['mobsfscan']; ?>
+                                       href="<?php echo url('mobsfscan/index', ['code_id' => $value['id']]); ?>"><?php echo $mobsfscanNum[$value['id']] ?? 0; ?>
+                                    </a>
+                                </td>
+                                <td>
+                                    <a title="扫描时间:<?php echo $value['murphysec_scan_time'] ?>"
+                                       href="<?php echo url('murphysec/index', ['code_id' => $value['id']]); ?>"><?php echo $murphysecNum[$value['id']] ?? 0; ?>
                                     </a>
                                 </td>
                                 <td>

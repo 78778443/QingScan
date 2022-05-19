@@ -21,6 +21,7 @@ use app\model\HostPortModel;
 use app\model\HydraModel;
 use app\model\KafkaModel;
 use app\model\MobsfscanModel;
+use app\model\Murphysec;
 use app\model\OneForAllModel;
 use app\model\PluginModel;
 use app\model\ProcessSafeModel;
@@ -135,6 +136,8 @@ class Scan extends Command
             CodeWebshellModel::code_webshell_scan();
         } elseif ($func == 'mobsfscan') {
             MobsfscanModel::mobsfscan();
+        } elseif ($func == 'murphysecScan') {
+            Murphysec::murphysec_scan();
         } elseif ($func == 'deleteDir') {
             PluginModel::deleteCodeDir();
         } elseif ($func == 'custom') {

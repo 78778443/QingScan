@@ -44,10 +44,13 @@ $dengjiArrColor = ['Low' => 'secondary', 'Medium' => 'primary', 'High' => 'warni
             <h5><span style="color:#888">kunlun_scan_time:</span> <?php /*echo $info['kunlun_scan_time'] */?></h5>
         </div>-->
         <div class="col-md-4">
+            <h5><span style="color:#888">semgrep:</span> <?php echo $info['semgrep_scan_time'] ?></h5>
+        </div>
+        <div class="col-md-4">
             <h5><span style="color:#888">mobsfscan_scan_time:</span> <?php echo $info['mobsfscan_scan_time'] ?></h5>
         </div>
         <div class="col-md-4">
-            <h5><span style="color:#888">semgrep:</span> <?php echo $info['semgrep_scan_time'] ?></h5>
+            <h5><span style="color:#888">murphysec_scan_time:</span> <?php echo $info['murphysec_scan_time'] ?></h5>
         </div>
         <div class="col-md-4">
             <h5><span style="color:#888">composer组件:</span> <?php echo $info['composer_scan_time'] ?></h5>
@@ -263,6 +266,49 @@ $dengjiArrColor = ['Low' => 'secondary', 'Medium' => 'primary', 'High' => 'warni
                 </tr>
             <?php } ?>
             <?php if (empty($mobsfscan)) { ?>
+                <tr>
+                    <td colspan="12" class="text-center"><?php echo getScanStatus($info['id'], 'crawlergoScan'); ?></td>
+                </tr>
+            <?php } ?>
+        </table>
+    </div>
+    <div class="col-auto  tuchu_col">
+        <h4 class="text-center">
+            murphysec
+            <a href="<?php echo url('code/rescan', ['id'=>$info['id'],'tools_name' => 'murphysec']) ?>"
+               onClick="return confirm('确定要清空该工具数据重新扫描吗?')"
+               class="btn btn-sm btn-outline-warning">重新扫描</a>
+            <a href="<?php echo url('murphysec/index', ['code_id' => $info['id']]) ?>"
+               class="btn btn-sm btn-outline-primary" style="float: right">查看更多</a>
+        </h4>
+        <table class="table table-bordered table-hover table-striped">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>所属项目</th>
+                <th>缺陷组件</th>
+                <th>当前版本</th>
+                <th>最小修复版本</th>
+                <th>语言</th>
+                <th>修复状态</th>
+                <th>时间</th>
+            </tr>
+            </thead>
+            <?php foreach ($murphysec as $value) {
+                $project = getCodeInfo($value['code_id']);
+                ?>
+                <tr>
+                    <td><?php echo $value['id'] ?></td>
+                    <td><?php echo $value['code_name'] ?></td>
+                    <td><?php echo $value['comp_name'] ?></td>
+                    <td><?php echo $value['version'] ?></td>
+                    <td><?php echo $value['min_fixed_version'] ?></td>
+                    <td><?php echo $value['language'] ?></td>
+                    <td><?php echo $value['repair_status'] ?></td>
+                    <td><?php echo $value['create_time'] ?></td>
+                </tr>
+            <?php } ?>
+            <?php if (empty($murphysec)) { ?>
                 <tr>
                     <td colspan="12" class="text-center"><?php echo getScanStatus($info['id'], 'crawlergoScan'); ?></td>
                 </tr>

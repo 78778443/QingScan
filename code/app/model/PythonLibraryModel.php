@@ -60,40 +60,4 @@ class PythonLibraryModel extends BaseModel
         }
 
     }
-
-    public function a()
-    {
-        /*$filename = "/data/codeCheck/{$v['name']}/requirements.txt";
-        if (!is_dir("/data/codeCheck/{$v['name']}")) {
-            addlog("项目目录不存在:{$filename}");
-            self::scanTime('code',$v['id'],'python_scan_time');
-            continue;
-        }
-        if (file_exists($filename)) {
-            //打开一个文件
-            $file = fopen($filename, "r");
-            //检测指正是否到达文件的未端
-            while (!feof($file)) {
-                $result = fgets($file);
-                if (!empty($result)) {
-                    $data[] = [
-                        'user_id' => $v['user_id'],
-                        'code_id' => $v['id'],
-                        'name' => $result,
-                        'create_time' => date('Y-m-d H:i:s', time())
-                    ];
-                }
-            }
-            //关闭被打开的文件
-            fclose($file);
-        } else {
-            addlog("项目组件文件不存在:{$filename}");
-            self::scanTime('code',$v['id'],'python_scan_time');
-        }
-        /*if ($data) {
-            self::scanTime('code',$v['id'],'python_scan_time');
-            //Db::name('code')->where('id', $v['id'])->update(['compose_scan_time' => date('Y-m-d H:i:s', time())]);
-            Db::name('code_python')->insertAll($data);
-        }*/
-    }
 }
