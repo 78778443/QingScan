@@ -1589,16 +1589,6 @@ CREATE TABLE `project_tools` (
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
-DROP TABLE IF EXISTS `project_tools`;
-CREATE TABLE `project_tools` (
-    `id` int(10) NOT NULL AUTO_INCREMENT,
-    `type` tinyint(1) NOT NULL DEFAULT '1' COMMENT '1app 2code',
-    `project_id` int(10) NOT NULL DEFAULT '9' COMMENT '项目id',
-    `tools_name` varchar(50) NOT NULL DEFAULT '' COMMENT '工具名称',
-    `create_time` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-    PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
-
 DROP TABLE IF EXISTS `murphysec`;
 CREATE TABLE `murphysec` (
     `id` int(10) NOT NULL AUTO_INCREMENT,
