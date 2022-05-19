@@ -1158,9 +1158,10 @@ INSERT INTO `process_safe` VALUES (35, 'scan wafw00fScan', 'cd /root/qingscan/co
 INSERT INTO `process_safe` VALUES (37, 'scan nucleiScan', 'cd /root/qingscan/code  &&  php think scan nucleiScan>> /tmp/nucleiScan.txt & ', 0, 'nuclei扫描', '2022-05-11 18:01:16', 0);
 INSERT INTO `process_safe` VALUES (38, 'scan vulmapPocTest', 'cd /root/qingscan/code  &&  php think scan vulmapPocTest>> /tmp/vulmapPocTest.txt & ', 0, 'vulmap漏洞扫描POC测试', '2022-05-11 18:01:17', 0);
 INSERT INTO `process_safe` VALUES (39, 'scan dismapScan', 'cd /root/qingscan/code  &&  php think scan dismapScan>> /tmp/dismapScan.txt & ', 0, 'dismap指纹识别', '2022-05-11 18:01:18', 0);
-INSERT INTO `process_safe` VALUES (40, 'scan plugin_safe', 'cd /root/qingscan/code  &&  php think scan plugin_safe>> /tmp/plugin_safe.txt & ', 1, '自定义工具守护', '2022-01-05 23:44:56', 3);
+INSERT INTO `process_safe` VALUES (40, 'scan plugin_safe', 'cd /root/qingscan/code  &&  php think scan plugin_safe>> /tmp/plugin_safe.txt & ', 0, '自定义工具守护', '2022-01-05 23:44:56', 3);
 INSERT INTO `process_safe` VALUES (41, 'scan crawlergoScan', 'cd /root/qingscan/code  &&  php think scan crawlergoScan>> /tmp/crawlergoScan.txt & ', 0, 'crawlergo爬虫URL收集', '2022-05-11 18:01:20', 0);
 INSERT INTO `process_safe` VALUES (42, 'scan mobsfscan', 'cd /root/qingscan/code  &&  php think scan mobsfscan>> /tmp/mobsfscan.txt & ', 0, 'mobsfscan代码审计(app)', '2022-05-10 11:09:24', 1);
+INSERT INTO `process_safe` VALUES (43, 'scan murphysecScan', 'cd /root/qingscan/code  &&  php think scan murphysecScan>> /tmp/murphysecScan.txt & ', 1, '开源组件漏洞扫描工具', '2022-05-19 16:35:14', 1, 0);
 
 -- ----------------------------
 -- Table structure for proxy
@@ -1638,8 +1639,8 @@ ALTER TABLE `code` ADD COLUMN `mobsfscan_scan_time` datetime(0) NOT NULL DEFAULT
 ALTER TABLE `code` ADD COLUMN `project_type` tinyint(1) NOT NULL DEFAULT 0 COMMENT '1php 2java 3python 4go 5app 6其他';
 ALTER TABLE `code` ADD COLUMN `status` tinyint(1) NOT NULL DEFAULT 1 COMMENT '1启用 2禁用';
 INSERT INTO `auth_rule` (`href`, `title`, `is_delete`, `is_open_auth`, `pid`, `sort`, `created_at`, `menu_status`, `update_time`, `level`, `delete_time`, `icon_url`) VALUES ('mobsfscan/index', 'mobsfscan列表', 0, 1, 14, 4, 1652079904, 1, 1652079930, 2, 0, '');
-ALTER TABLE `code` ADD COLUMN `murphysec_scan_time` datetime(0) NOT NULL DEFAULT '2000-01-01 00:00:00';
 INSERT INTO `auth_rule` (`href`, `title`, `is_delete`, `is_open_auth`, `pid`, `sort`, `created_at`, `menu_status`, `update_time`, `level`, `delete_time`, `icon_url`) VALUES ('murphysec/index', 'murphysec列表', 0, 1, 14, 4, 1652861447, 1, 1652861478, 2, 0, '');
+ALTER TABLE `code` ADD COLUMN `murphysec_scan_time` datetime(0) NOT NULL DEFAULT '2000-01-01 00:00:00';
 ALTER TABLE `log` CHANGE `content` `content` text;
 
 SET FOREIGN_KEY_CHECKS = 1;
