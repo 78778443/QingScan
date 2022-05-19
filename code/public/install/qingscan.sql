@@ -1615,7 +1615,7 @@ CREATE TABLE `murphysec` (
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
-DROP TABLE IF EXISTS `murphysec`;
+DROP TABLE IF EXISTS `murphysec_vuln`;
 CREATE TABLE `murphysec_vuln` (
     `id` int(10) NOT NULL AUTO_INCREMENT,
     `user_id` int(10) NOT NULL,

@@ -1,6 +1,7 @@
 ALTER TABLE `code` ADD COLUMN `status` tinyint(1) NOT NULL DEFAULT 1 COMMENT '1启用 2禁用';
 ALTER TABLE `code` ADD COLUMN `murphysec_scan_time` datetime(0) NOT NULL DEFAULT '2000-01-01 00:00:00';
 INSERT INTO `auth_rule` (`href`, `title`, `is_delete`, `is_open_auth`, `pid`, `sort`, `created_at`, `menu_status`, `update_time`, `level`, `delete_time`, `icon_url`) VALUES ('murphysec/index', 'murphysec列表', 0, 1, 14, 4, 1652861447, 1, 1652861478, 2, 0, '');
+ALTER TABLE `log` CHANGE `content` `content` text;
 
 DROP TABLE IF EXISTS `project_tools`;
 CREATE TABLE `project_tools` (
@@ -28,7 +29,7 @@ CREATE TABLE `murphysec` (
                              PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
-DROP TABLE IF EXISTS `murphysec`;
+DROP TABLE IF EXISTS `murphysec_vuln`;
 CREATE TABLE `murphysec_vuln` (
                                   `id` int(10) NOT NULL AUTO_INCREMENT,
                                   `user_id` int(10) NOT NULL,
