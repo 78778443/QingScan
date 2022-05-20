@@ -5,7 +5,7 @@ namespace app\model;
 use think\facade\App;
 use think\facade\Db;
 
-class Murphysec extends BaseModel
+class MurphysecModel extends BaseModel
 {
     public static function murphysec_scan()
     {

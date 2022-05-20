@@ -4,6 +4,8 @@ INSERT INTO `auth_rule` (`href`, `title`, `is_delete`, `is_open_auth`, `pid`, `s
 ALTER TABLE `log` CHANGE `content` `content` text;
 INSERT INTO `process_safe` VALUES (43, 'scan murphysecScan', 'cd /root/qingscan/code  &&  php think scan murphysecScan>> /tmp/murphysecScan.txt & ', 1, '开源组件漏洞扫描工具', '2022-05-19 16:35:14', 1);
 update process_safe set note='subdomain子域名扫描' where id='16';
+INSERT INTO `system_config` (`name`, `key`, `value`, `is_delete`) VALUES ('墨菲安全token', 'murphysec_token', 'xxxxxxxxxxxxxxxxxx', 0);
+update system_config set name='最大进程数量' where key='maxProcesses';
 
 DROP TABLE IF EXISTS `project_tools`;
 CREATE TABLE `project_tools` (

@@ -1250,6 +1250,8 @@ INSERT INTO `system_config` VALUES (3, '百度ak', 'baidu_ak', 'xxxxxxxx', 0);
 INSERT INTO `system_config` VALUES (4, 'github秘钥', 'github_token', 'xxxxxxxxx', 0);
 INSERT INTO `system_config` VALUES (5, 'awvs地址', 'awvs_url', 'xxxxxxxxxxxxxxxxxx', 0);
 INSERT INTO `system_config` VALUES (6, 'awvs密钥', 'awvs_token', 'xxxxxxxxxxxxxxxxxx', 0);
+INSERT INTO `system_config` VALUES (7,'最大进程数量', 'maxProcesses', '1', 0);
+INSERT INTO `system_config` VALUES (8,'墨菲安全token', 'murphysec_token', 'xxxxxxxxxxxxxxxxxx', 0);
 
 -- ----------------------------
 -- Table structure for system_zanzhu
@@ -1635,7 +1637,6 @@ INSERT INTO `auth_rule`( `href`, `title`, `is_delete`, `is_open_auth`, `pid`, `s
 INSERT INTO `auth_rule` (`href`, `title`, `is_delete`, `is_open_auth`, `pid`, `sort`, `created_at`, `menu_status`, `update_time`, `level`, `delete_time`, `icon_url`) VALUES ('mobsfscan/index', 'mobsfscan列表', 0, 1, 14, 4, 1652079904, 1, 1652079930, 2, 0, '');
 INSERT INTO `auth_rule` (`href`, `title`, `is_delete`, `is_open_auth`, `pid`, `sort`, `created_at`, `menu_status`, `update_time`, `level`, `delete_time`, `icon_url`) VALUES ('murphysec/index', 'murphysec列表', 0, 1, 14, 4, 1652861447, 1, 1652861478, 2, 0, '');
 INSERT INTO `auth_rule` (`auth_rule_id`,`href`, `title`, `is_delete`, `is_open_auth`, `pid`, `sort`, `created_at`, `menu_status`, `update_time`, `level`, `delete_time`, `icon_url`) VALUES (333,'', '插件中心', 0, 1, 0, 8, 1642257783, 0, 0, 1, 0, '');
-INSERT INTO `system_config` (`name`, `key`, `value`, `is_delete`) VALUES ('暂停扫描', 'maxProcesses', '1', 0);
 ALTER TABLE `code` ADD COLUMN `is_online` int(10) NOT NULL DEFAULT 1 COMMENT '1线上   2本地';
 ALTER TABLE `code` ADD COLUMN `mobsfscan_scan_time` datetime(0) NOT NULL DEFAULT '2000-01-01 00:00:00';
 ALTER TABLE `code` ADD COLUMN `project_type` tinyint(1) NOT NULL DEFAULT 0 COMMENT '1php 2java 3python 4go 5app 6其他';

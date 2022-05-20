@@ -19,9 +19,8 @@ use app\model\GoogleModel;
 use app\model\HostModel;
 use app\model\HostPortModel;
 use app\model\HydraModel;
-use app\model\KafkaModel;
 use app\model\MobsfscanModel;
-use app\model\Murphysec;
+use app\model\MurphysecModel;
 use app\model\OneForAllModel;
 use app\model\PluginModel;
 use app\model\ProcessSafeModel;
@@ -33,7 +32,6 @@ use app\model\XrayModel;
 use think\console\Command;
 use think\console\Input;
 use think\console\input\Argument;
-use think\console\input\Option;
 use think\console\Output;
 
 class Scan extends Command
@@ -137,7 +135,7 @@ class Scan extends Command
         } elseif ($func == 'mobsfscan') {
             MobsfscanModel::mobsfscan();
         } elseif ($func == 'murphysecScan') {
-            Murphysec::murphysec_scan();
+            MurphysecModel::murphysec_scan();
         } elseif ($func == 'deleteDir') {
             PluginModel::deleteCodeDir();
         } elseif ($func == 'custom') {
