@@ -105,6 +105,7 @@ class Murphysec extends Common
             $where[] = ['user_id', '=', $this->userId];
         }
         if (Db::name('murphysec')->where($where)->delete()) {
+            Db::name('murphysec_vuln')->where('murphysec_id',$id)->delete();
             return redirect($_SERVER['HTTP_REFERER']);
         } else {
             $this->error('删除失败');

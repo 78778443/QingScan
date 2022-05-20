@@ -186,12 +186,14 @@ class Code extends Common
             Db::table('fortify')->where(['code_id' => $id])->delete();
             Db::table('semgrep')->where(['code_id' => $id])->delete();
             Db::table('mobsfscan')->where(['code_id' => $id])->delete();
+            Db::table('murphysec')->where(['code_id' => $id])->delete();
+            Db::table('murphysec_vuln')->where(['code_id' => $id])->delete();
             Db::table('code_webshell')->where(['code_id' => $id])->delete();
             Db::table('code_composer')->where(['code_id' => $id])->delete();
             Db::table('code_python')->where(['code_id' => $id])->delete();
             Db::table('code_java')->where(['code_id' => $id])->delete();
-            Db::table('plugin_scan_log')->where(['app_id' => $id, 'scan_type' => 2])->delete();
-            Db::table('project_tools')->wherewhere('project_id', $id)->where('type', 2)->delete();
+            Db::table('plugin_scan_log')->where(['app_id' => $id])->where('scan_type', 2)->delete();
+            Db::table('project_tools')->where('project_id', $id)->where('type', 2)->delete();
 
             return redirect($_SERVER['HTTP_REFERER']);
         } else {
@@ -210,11 +212,14 @@ class Code extends Common
         $where[] = ['id', 'in', $ids];
         if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
             $where[] = ['user_id', '=', $this->userId];
+            $map[] = ['user_id', '=', $this->userId];
         }
         if (Db::name('code')->where($where)->delete()) {
             Db::table('fortify')->where($map)->delete();
             Db::table('semgrep')->where($map)->delete();
             Db::table('mobsfscan')->where($map)->delete();
+            Db::table('murphysec')->where($map)->delete();
+            Db::table('murphysec_vuln')->where($map)->delete();
             Db::table('code_webshell')->where($map)->delete();
             Db::table('code_composer')->where($map)->delete();
             Db::table('code_python')->where($map)->delete();
