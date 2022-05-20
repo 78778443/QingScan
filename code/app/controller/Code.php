@@ -904,7 +904,7 @@ class Code extends Common
                 $runtime = \think\facade\App::getRuntimePath().'storage/';
                 // 解压目录
                 $zip = new \ZipArchive();
-                $save_dir = '/data/codeCheck/'.$name;
+                $save_dir = '/data/codeCheck/';
                 if ($zip->open($runtime.$savename) === TRUE) {//中文文件名要使用ANSI编码的文件格式
                     $zip->extractTo($save_dir);//提取全部文件
                     $zip->close();
