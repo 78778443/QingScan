@@ -14,7 +14,7 @@ services:
     ports:
       - "33306:3306"
   qingscan:
-    image: registry.cn-beijing.aliyuncs.com/xtian/qingscan:20220512
+    image: registry.cn-beijing.aliyuncs.com/xtian/qingscan:20220520
     container_name: qingscan
 #    network_mode: "host"
     links:
