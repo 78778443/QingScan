@@ -2,6 +2,11 @@
 <?php
 $dengjiArr = ['Low', 'Medium', 'High', 'Critical'];
 $dengjiArrColor = ['Low' => 'secondary', 'Medium' => 'primary', 'High' => 'warning text-dark', 'Critical' => 'danger'];
+$show_level = [
+    1=>'强烈建议修复',
+    2=>'建议修复',
+    3=>'可选修复'
+];
 ?>
 
 <div class="col-md-12 ">
@@ -287,6 +292,7 @@ $dengjiArrColor = ['Low' => 'secondary', 'Medium' => 'primary', 'High' => 'warni
                 <th>ID</th>
                 <th>所属项目</th>
                 <th>缺陷组件</th>
+                <th>处置建议</th>
                 <th>当前版本</th>
                 <th>最小修复版本</th>
                 <th>语言</th>
@@ -301,6 +307,7 @@ $dengjiArrColor = ['Low' => 'secondary', 'Medium' => 'primary', 'High' => 'warni
                     <td><?php echo $value['id'] ?></td>
                     <td><?php echo $value['code_name'] ?></td>
                     <td><?php echo $value['comp_name'] ?></td>
+                    <td><?php echo $show_level[$value['show_level']] ?></td>
                     <td><?php echo $value['version'] ?></td>
                     <td><?php echo $value['min_fixed_version'] ?></td>
                     <td><?php echo $value['language'] ?></td>

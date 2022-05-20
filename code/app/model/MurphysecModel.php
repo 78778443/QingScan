@@ -10,12 +10,13 @@ class MurphysecModel extends BaseModel
     public static function murphysec_scan()
     {
         ini_set('max_execution_time', 0);
-        $tools = '/data/tools/amd64/murphysec';
+        $tools = '/murphysec';
         $murphysec_token = ConfigModel::value('murphysec_token');
         if (!$murphysec_token) {
             addlog(["murphysec扫描失败，请先配置墨菲安全平台token"]);
             exit;
         }
+        chmod('/data/tools/amd64', 0755);
         $filename = App::getRuntimePath().'tools/murphysec/';
         if (!is_dir($filename)) {
             mkdir($filename, 0777, true);
