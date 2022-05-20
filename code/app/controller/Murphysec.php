@@ -104,7 +104,7 @@ class Murphysec extends Common
         if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
             $where[] = ['user_id', '=', $this->userId];
         }
-        if (Db::name('murphysec')->where('id',$id)->delete()) {
+        if (Db::name('murphysec')->where($where)->delete()) {
             return redirect($_SERVER['HTTP_REFERER']);
         } else {
             $this->error('删除失败');
