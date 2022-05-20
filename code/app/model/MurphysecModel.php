@@ -16,7 +16,7 @@ class MurphysecModel extends BaseModel
             addlog(["murphysec扫描失败，请先配置墨菲安全平台token"]);
             exit;
         }
-        chmod('/data/tools/amd64/murphysec', 0755);
+        chmod('/data/tools/amd64/murphysec', 0777);
         $filename = App::getRuntimePath().'tools/murphysec/';
         if (!is_dir($filename)) {
             mkdir($filename, 0777, true);
