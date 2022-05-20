@@ -30,8 +30,6 @@ while page <= num:
 
         data_reg = '<button class="layui-btn layui-btn-sm btn-speed " data-url=".*?" data-protocol="http" data-ip="(.*?)" data-port="(.*?)" data-unique-id=".*?">测速 </button><'
         data = re.findall(data_reg, list[0], re.M | re.I | re.S)
-        print(data)
-        exit()
         for i in data:
             get_agent_url = 'https://ip.jiangxianli.com/api/web-request-speed?protocol=http&ip=' + i[0] + '&port=' + i[
                 1] + '&web_link=http://www.baidu.com'
