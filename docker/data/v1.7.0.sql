@@ -2,7 +2,8 @@ ALTER TABLE `code` ADD COLUMN `status` tinyint(1) NOT NULL DEFAULT 1 COMMENT '1�
 ALTER TABLE `code` ADD COLUMN `murphysec_scan_time` datetime(0) NOT NULL DEFAULT '2000-01-01 00:00:00';
 INSERT INTO `auth_rule` (`href`, `title`, `is_delete`, `is_open_auth`, `pid`, `sort`, `created_at`, `menu_status`, `update_time`, `level`, `delete_time`, `icon_url`) VALUES ('murphysec/index', 'murphysec列表', 0, 1, 14, 4, 1652861447, 1, 1652861478, 2, 0, '');
 ALTER TABLE `log` CHANGE `content` `content` text;
-INSERT INTO `process_safe` VALUES (43, 'scan murphysecScan', 'cd /root/qingscan/code  &&  php think scan murphysecScan>> /tmp/murphysecScan.txt & ', 1, '开源组件漏洞扫描工具', '2022-05-19 16:35:14', 1, 0);
+INSERT INTO `process_safe` VALUES (43, 'scan murphysecScan', 'cd /root/qingscan/code  &&  php think scan murphysecScan>> /tmp/murphysecScan.txt & ', 1, '开源组件漏洞扫描工具', '2022-05-19 16:35:14', 1);
+update process_safe set note='subdomain子域名扫描' where id='16';
 
 DROP TABLE IF EXISTS `project_tools`;
 CREATE TABLE `project_tools` (
