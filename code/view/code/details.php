@@ -309,7 +309,7 @@ $show_level = [
                     <td><?php echo $value['version'] ?></td>
                     <td><?php echo $value['min_fixed_version'] ?></td>
                     <td><?php echo $value['language'] ?></td>
-                    <td><?php echo $value['repair_status'] ?></td>
+                    <td><?php echo $value['repair_status']==1?'未修复':'已修复' ?></td>
                     <td><?php echo $value['create_time'] ?></td>
                 </tr>
             <?php } ?>
