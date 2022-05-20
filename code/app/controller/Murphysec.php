@@ -8,6 +8,12 @@ use think\facade\View;
 
 class Murphysec extends Common
 {
+    public $show_level = [
+        1=>'强烈建议修复',
+        2=>'建议修复',
+        3=>'可选修复'
+    ];
+
     public function index(Request $request){
         /*echo '<pre>';
         $result_path = \think\facade\App::getRuntimePath().'tools/murphysec/nps_vnc.json';
@@ -68,9 +74,27 @@ class Murphysec extends Common
             }
         }
         $data['page'] = $list->render();
+        $data['show_level'] = $this->show_level;
         //查询项目数据
         $data['projectList'] = $this->getMyCodeList();
         return View::fetch('index', $data);
+    }
+
+    public function batch_repair(Request $request){
+        $ids = $request->param('ids');
+        $this->addUserLog('murphysec',"批量修复数据[$ids]");
+        if (!$ids) {
+            return $this->apiReturn(0,[],'请先选择要修复的数据');
+        }
+        $map[] = ['id','in',$ids];
+        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
+            $map[] = ['user_id', '=', $this->userId];
+        }
+        if (Db::name('murphysec')->where($map)->update(['repair_status'=>2])) {
+            return $this->apiReturn(1,[],'批量修改成功');
+        } else {
+            return $this->apiReturn(0,[],'批量修改失败');
+        }
     }
 
     public function del(Request $request)
