@@ -290,7 +290,6 @@ $show_level = [
             <thead>
             <tr>
                 <th>ID</th>
-                <th>所属项目</th>
                 <th>缺陷组件</th>
                 <th>处置建议</th>
                 <th>当前版本</th>
@@ -305,7 +304,6 @@ $show_level = [
                 ?>
                 <tr>
                     <td><?php echo $value['id'] ?></td>
-                    <td><?php echo $value['code_name'] ?></td>
                     <td><?php echo $value['comp_name'] ?></td>
                     <td><?php echo $show_level[$value['show_level']] ?></td>
                     <td><?php echo $value['version'] ?></td>
