@@ -18,6 +18,10 @@ class OneForAllModel extends BaseModel
             processSleep(1);
             $app_list = self::getAppStayScanList('subdomain_scan_time');
             foreach ($app_list as $k => $v) {
+                if (!self::checkToolAuth(1,$v['id'],'subdomain')) {
+                    continue;
+                }
+
                 PluginModel::addScanLog($v['id'], __METHOD__, 0);
                 self::scanTime('app',$v['id'],'subdomain_scan_time');
 

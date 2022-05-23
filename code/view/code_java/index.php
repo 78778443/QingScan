@@ -5,8 +5,9 @@ $searchArr = [
     'action' => $_SERVER['REQUEST_URI'],
     'method' => 'get',
     'inputs' => [
-        ['type' => 'text', 'name' => 'search', 'placeholder' => "search"]
-    ]];
+        ['type' => 'text', 'name' => 'search', 'placeholder' => "search"],
+        ['type' => 'select', 'name' => 'code_id', 'options' => $projectList, 'frist_option' => '项目列表'],
+]];
 ?>
 {include file='public/search' /}
 

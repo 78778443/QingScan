@@ -6,7 +6,7 @@ $searchArr = [
     'method' => 'get',
     'inputs' => [
         ['type' => 'text', 'name' => 'search', 'placeholder' => "依赖库"],
-        //['type' => 'select', 'name' => 'name', 'options' => $nameArr, 'frist_option' => '请选择'],
+        ['type' => 'select', 'name' => 'code_id', 'options' => $projectList, 'frist_option' => '项目列表'],
     ]];
 ?>
 {include file='public/search' /}

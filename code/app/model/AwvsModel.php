@@ -17,6 +17,10 @@ class AwvsModel extends BaseModel
             processSleep(1);
             $list = self::getAppStayScanList('awvs_scan_time');
             foreach ($list as $val) {
+                if (!self::checkToolAuth(1,$val['id'],'awvs')) {
+                    continue;
+                }
+
                 PluginModel::addScanLog($val['id'], __METHOD__, 0);
                 self::scanTime('app', $val['id'], 'awvs_scan_time');
 

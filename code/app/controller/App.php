@@ -16,19 +16,25 @@ use think\Request;
 class App extends Common
 {
     public $statusArr = ["未启用", "已启用", "已删除"];
+    public $tools = [
+        'xray'=>'xray',
+        'awvs'=>'awvs',
+        'rad'=>'rad爬虫',
+        'nmap'=>'nmap',
+        'whatweb'=>'whatweb',
+        'subdomain'=>'subdomain',
+        'hydra'=>'hydra',
+        'sqlmap'=>'sqlmap',
+        'dirmapScan'=>'dirmapScan',
+        'wafw00f'=>'wafw00f',
+        'nuclei'=>'nuclei',
+        'vulmap'=>'vulmap',
+        'dismap'=>'dismap',
+        'crawlergo'=>'crawlergo',
+    ];
 
     public function index(Request $request)
     {
-        /*$list = Db::table('plugin_scan_log')->alias('a')
-            ->leftJoin('plugin b','b.id=a.plugin_id')
-            ->where($where)
-            ->field('a.*,b.name,b.result_file')
-            ->order("a.id", 'desc')
-            ->paginate([
-                'list_rows'=> $pageSize,//每页数量
-                'query' => $request->param(),
-            ]);
-        exit;*/
         $pageSize = 15;
         $statusCode = $request->param('statuscode');
         $cms = base64_decode($_GET['cms'] ?? '');
@@ -44,7 +50,6 @@ class App extends Common
             $where = array_merge($where, ['user_id' => $this->userId]);
             $where1[] = ['user_id', '=', $this->userId];
         }
-
         $list = Db::table('app')->LeftJoin('app_info info', 'app.id = info.app_id')->where($where)->paginate([
             'list_rows'=> $pageSize,//每页数量
             'query' => $request->param(),
@@ -73,7 +78,6 @@ class App extends Common
             } else {
                 $v['status'] = '暂停';
             }
-
             // 数据统计
             $v['oneforall_num'] = Db::table('one_for_all')->where('app_id', $v['id'])->where($where1)->count('id');
             $v['dirmap_num'] = Db::table('app_dirmap')->where('app_id', $v['id'])->where($where1)->count('id');
@@ -90,7 +94,7 @@ class App extends Common
         }
         $configArr = ConfigModel::getNameArr();
         $data['statusArr'] = $this->statusArr;
-        $data['GET'] = $_GET;
+        $data['tools_list'] = $this->tools;
         $data = array_merge($data, $configArr);
         return View::fetch('index', $data);
     }
@@ -102,28 +106,41 @@ class App extends Common
         }
         $data['name'] = $request->param('name');
         $data['url'] = $request->param('url');
-        $data['username'] = $request->param('username');
-        $data['password'] = $request->param('password');
-        $data['is_xray'] = $request->param('is_xray');
+        /*$data['username'] = $request->param('username');
+        $data['password'] = $request->param('password');*/
+        $tools = $request->param('tools');
+        /*$data['is_xray'] = $request->param('is_xray');
         $data['is_awvs'] = $request->param('is_awvs');
         $data['is_whatweb'] = $request->param('is_whatweb');
         $data['is_one_for_all'] = $request->param('is_one_for_all');
         $data['is_hydra'] = $request->param('is_hydra');
-        $data['is_dirmap'] = $request->param('is_dirmap');
+        $data['is_dirmap'] = $request->param('is_dirmap');*/
         $data['is_intranet'] = $request->param('is_intranet');
-        $id = AppModel::addData($data);
+        $project_id = Db::name('app')->insertGetId($data);
+        $project_tools_data = [];
+        if ($tools) {
+            foreach ($tools as $k=>$v) {
+                $project_tools_data[] = [
+                    'type'=>1,
+                    'project_id'=>$project_id,
+                    'tools_name'=>$v,
+                    'create_time'=>date('Y-m-d H:i:s',time())
+                ];
+            }
+            Db::name('project_tools')->where('project_id',$project_id)->where('type',1)->delete();
+            Db::name('project_tools')->insertAll($project_tools_data);
+        }
         $host = parse_url($data['url'])['host'];
         if (!empty($host)) {
             // 写入到关键词监控表中
             $data = [
                 'user_id' => $this->userId,
-                'app_id' => $id,
+                'app_id' => $project_id,
                 'title' => $host,
                 'create_time' => date('Y-m-d H:i:s', time())
             ];
             Db::name('github_keyword_monitor')->insert($data);
         }
-
         return redirect(url('app/index'));
     }
 
@@ -143,7 +160,6 @@ class App extends Common
         if (!$data['info']) {
             return $this->error('数据不存在');
         }
-
         $data['whatweb'] = Db::table('app_whatweb')->where($where)->where($where1)->order("id", 'desc')->limit(0, 15)->select()->toArray();
         $data['oneforall'] = Db::table('one_for_all')->where($where)->order("id", 'desc')->limit(0, 15)->select()->toArray();
         $data['hydra'] = Db::table('host_hydra_scan_details')->where($where)->order("id", 'desc')->limit(0, 15)->select()->toArray();

@@ -18,6 +18,10 @@ class HydraModel extends BaseModel
             $hydra = config('tools.hydra');
             $filename = "{$file_path}hydra.txt";
             foreach ($app_list as $k => $v) {
+                if (!self::checkToolAuth(1,$v['id'],'hydra')) {
+                    continue;
+                }
+
                 PluginModel::addScanLog($v['id'], __METHOD__, 0,1);
                 self::scanTime('host',$v['id'],'hydra_scan_time');
 

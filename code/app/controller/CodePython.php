@@ -33,7 +33,7 @@ class CodePython extends Common
             $v['code_name'] = Db::table('code')->where('id',$v['code_id'])->value('name');
         }
         $data['page'] = $list->render();
-        $data['nameArr'] = Db::table('code_python')->group('name')->column('name');
+        $data['projectList'] = $this->getMyCodeList();
         return View::fetch('index', $data);
     }
 

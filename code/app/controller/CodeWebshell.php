@@ -34,8 +34,7 @@ class CodeWebshell extends Common
         }
         $data['page'] = $list->render();
         //查询项目数据
-        $projectArr = Db::table('code')->where($map)->where('is_delete',0)->select()->toArray();
-        $data['projectList'] = array_column($projectArr, 'name', 'id');
+        $data['projectList'] = $this->getMyCodeList();
         return View::fetch('index', $data);
     }
 

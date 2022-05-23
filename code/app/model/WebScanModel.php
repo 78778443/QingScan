@@ -26,6 +26,10 @@ class WebScanModel extends BaseModel
             $count = Db::table('app')->whereTime('crawler_time', '<=', $endTime)->where($where)->count('id');
             print("开始执行rad扫描任务,{$count} 个项目等待扫描..." . PHP_EOL);
             foreach ($list as $value) {
+                if (!self::checkToolAuth(1,$value['id'],'rad')) {
+                    continue;
+                }
+
                 PluginModel::addScanLog($value['id'], __METHOD__, 0);
                 self::scanTime('app', $value['id'], 'crawler_time');
 
@@ -128,6 +132,10 @@ class WebScanModel extends BaseModel
             $count = Db::table('app')->whereTime('xray_scan_time', '<=', $endTime)->where($where)->count('id');
             print("开始执行xray漏洞扫描任务,{$count} 个项目等待扫描..." . PHP_EOL);
             foreach ($list as $val) {
+                if (!self::checkToolAuth(1,$val['id'],'xray')) {
+                    continue;
+                }
+
                 PluginModel::addScanLog($val['id'], __METHOD__, 0);
                 self::scanTime('app', $val['id'], 'xray_scan_time');
 
@@ -331,6 +339,10 @@ class WebScanModel extends BaseModel
             processSleep(1);
             $list = self::getAppStayScanList('nuclei_scan_time');
             foreach ($list as $v) {
+                if (!self::checkToolAuth(1,$v['id'],'nuclei')) {
+                    continue;
+                }
+
                 PluginModel::addScanLog($v['id'], __METHOD__, 0);
                 self::scanTime('app', $v['id'], 'nuclei_scan_time');
 
@@ -399,6 +411,10 @@ class WebScanModel extends BaseModel
             processSleep(1);
             $list = self::getAppStayScanList('vulmap_scan_time');
             foreach ($list as $v) {
+                if (!self::checkToolAuth(1,$v['id'],'vulmap')) {
+                    continue;
+                }
+
                 PluginModel::addScanLog($v['id'], __METHOD__, 0);
                 self::scanTime('app', $v['id'], 'vulmap_scan_time');
 
@@ -456,6 +472,10 @@ class WebScanModel extends BaseModel
             processSleep(1);
             $list = self::getAppStayScanList('crawlergo_scan_time');
             foreach ($list as $val) {
+                if (!self::checkToolAuth(1,$val['id'],'crawlergo')) {
+                    continue;
+                }
+
                 PluginModel::addScanLog($val['id'], __METHOD__, 0);
                 self::scanTime('app', $val['id'], 'crawlergo_scan_time');
 
@@ -506,6 +526,10 @@ class WebScanModel extends BaseModel
             processSleep(1);
             $list = self::getAppStayScanList('dismap_scan_time');
             foreach ($list as $v) {
+                if (!self::checkToolAuth(1,$v['id'],'dismap')) {
+                    continue;
+                }
+
                 PluginModel::addScanLog($v['id'], __METHOD__, 0);
                 self::scanTime('app', $v['id'], 'dismap_scan_time');
 

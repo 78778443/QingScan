@@ -273,6 +273,10 @@ class HostPortModel extends BaseModel
             processSleep(1);
             $taskList = Db::table('host_port')->where(['service' => null])->orderRand()->limit(10)->select()->toArray();
             foreach ($taskList as $value) {
+                if (!self::checkToolAuth(1,$value['id'],'nmap')) {
+                    continue;
+                }
+
                 PluginModel::addScanLog($value['id'], __METHOD__, 1,1);
                 $result = [];
                 $cmd = "nmap -sS -Pn -T4  -p {$value['port']} {$value['host']} | grep open | grep -v Discovered |grep -v grep";

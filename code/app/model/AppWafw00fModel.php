@@ -16,6 +16,10 @@ class AppWafw00fModel extends BaseModel
             processSleep(1);
             $list = self::getAppStayScanList('wafw00f_scan_time');
             foreach ($list as $v) {
+                if (!self::checkToolAuth(1,$v['id'],'wafw00f')) {
+                    continue;
+                }
+
                 PluginModel::addScanLog($v['id'], __METHOD__, 0);
                 self::scanTime('app', $v['id'], 'wafw00f_scan_time');
 

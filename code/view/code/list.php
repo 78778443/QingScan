@@ -124,18 +124,18 @@ $searchArr = [
                                 <td><?php echo $value['status'];?></td>
                                 <td>
                                     <a href="<?php echo url('code/details', ['id' => $value['id']]) ?>"
-                                       class="btn btn-sm btn-outline-primary">查看</a>
+                                       class="btn btn-sm btn-outline-primary">查看详情</a>
                                     <?php
                                         if ($value['is_online'] == 1) {
                                     ?>
                                     <a href="<?php echo url('code/edit_modal', ['id' => $value['id']]) ?>" class="btn btn-sm btn-outline-success">编辑</a>
                                     <?php }?>
-                                    <a href="javascript:;" onclick="tools(<?php echo $value['id'];?>,'<?php echo $value['name'];?>')"
+                                    <a href="javascript:;" onclick="tools(<?php echo $value['id'];?>,'<?php echo $value['name'];?>',2)"
                                        class="btn btn-sm btn-outline-warning">工具列表</a>
                                     <!--<a href="<?php /*echo url('code/qingkong', ['id' => $value['id']]) */?>"
                                        class="btn btn-sm btn-outline-warning">重新扫描</a>-->
-                                    <a href="<?php echo url('code/code_del', ['id' => $value['id']]) ?>"
-                                       class="btn btn-sm btn-outline-danger">删除</a>
+                                    <!--<a href="<?php /*echo url('code/code_del', ['id' => $value['id']]) */?>"
+                                       class="btn btn-sm btn-outline-danger">删除</a>-->
                                 </td>
                             </tr>
                         <?php } ?>
@@ -149,7 +149,7 @@ $searchArr = [
     </div>
 </div>
 {include file='public/fenye' /}
-{include file='code/tools' /}
+{include file='process_safe/tools' /}
 {include file='code/add_modal' /}
 {include file='public/footer' /}
 

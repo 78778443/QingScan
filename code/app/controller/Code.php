@@ -23,15 +23,7 @@ class Code extends Common
 
     public function index(Request $request)
     {
-        /*echo '<pre>';
-        //$endTime = date('Y-m-d', time() - 86400 * 15);
-        $where[] = ['is_delete','=',0];
-        $where[] = ['project_type','in',[4,5]];
-        $list = Db::table('code')->where($where)->limit(1)->orderRand()->select()->toArray();
-        var_dump($list);
-        exit;*/
         $pageSize = 25;
-
         $where[] = ['is_delete', '=', 0];
         $map = [];
         if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
@@ -71,14 +63,6 @@ class Code extends Common
         $data['tools_list'] = $this->tools;
 
         return View::fetch('list', $data);
-    }
-
-    public function tools(Request $request){
-        $project_id = $request->param('project_id');
-        $where[] = ['type','=',2];
-        $where[] = ['project_id','=',$project_id];
-        $tools = Db::name('project_tools')->where($where)->column('tools_name');
-        return $this->apiReturn(0,$tools,'ok');
     }
 
     // 启用-暂停扫描
@@ -605,10 +589,7 @@ class Code extends Common
         $data['fileList'] = Db::table('semgrep')->where($map)->group('path')->column('path');
         $data['check_status_list'] = ['未审计', '有效漏洞', '无效漏洞'];
         //查询项目列表
-        $projectList = Db::table('semgrep')->where($map)->group('code_id')->column('code_id');
-        $projectList = Db::table('code')->whereIn('id', $projectList)->field('id,name')->select()->toArray();
-        $data['projectList'] = array_column($projectList, 'name', 'id');
-
+        $data['projectList'] = $this->getMyCodeList();
         return View::fetch('semgrep_list', $data);
     }
 
@@ -853,28 +834,6 @@ class Code extends Common
 
         $result = CodeCheckModel::addData($data);
         // $this->Location("index.php?s=code_check/index");
-    }
-
-    public function edit_tools(Request $request){
-        $project_id = $request->param('project_id');
-        if (!Db::name('code')->where('id',$project_id)->count('id')) {
-            $this->error('白盒审计项目不存在','index');
-        }
-        $tools = $request->param('tools');
-        $project_tools_data = [];
-        if ($tools) {
-            foreach ($tools as $k=>$v) {
-                $project_tools_data[] = [
-                    'type'=>2,
-                    'project_id'=>$project_id,
-                    'tools_name'=>$v,
-                    'create_time'=>date('Y-m-d H:i:s',time())
-                ];
-            }
-            Db::name('project_tools')->where('project_id',$project_id)->where('type',2)->delete();
-            Db::name('project_tools')->insertAll($project_tools_data);
-        }
-        $this->success('工具修改成功','index');
     }
 
     public function add_file(Request $request){

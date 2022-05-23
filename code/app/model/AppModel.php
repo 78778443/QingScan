@@ -74,7 +74,6 @@ class AppModel extends BaseModel
                         $url = "http://" . $url;
                     }
                     $subDomain = ['name' => $appInfo['name'], 'url' => $url];
-                    //var_dump($subDomain);
                     Db::table(self::$tableName)->extra("IGNORE")->insert($subDomain);
                 }
                 $appInfo['subdomain_time'] = date('Y-m-d H:i:s');
@@ -257,7 +256,7 @@ class AppModel extends BaseModel
 
     private static function add($data)
     {
-        $datetime = date('Y-m-d H:i:s', time() + 86400 * 365);
+        /*$datetime = date('Y-m-d H:i:s', time() + 86400 * 365);
         if ($data['is_xray'] == 0) {
             $data['xray_scan_time'] = $datetime;
         }
@@ -269,15 +268,15 @@ class AppModel extends BaseModel
         }
         if ($data['is_one_for_all'] == 0) {
             $data['subdomain_scan_time'] = $datetime;
-        }
+        }*/
 //        if ($data['is_hydra'] == 0) {
 //            if (!Db::name('host')->where('app_id',$data[''])) {
 //
 //            }
 //        }
-        if ($data['is_dirmap'] == 0) {
+        /*if ($data['is_dirmap'] == 0) {
             $data['dirmap_scan_time'] = $datetime;
-        }
+        }*/
         //return Db::table(self::$tableName)->insert($data);
         return Db::table(self::$tableName)->insertGetId($data);
     }
@@ -293,6 +292,10 @@ class AppModel extends BaseModel
             $list = self::getAppStayScanList('whatweb_scan_time',10);
             @mkdir($file_path,0777, true);
             foreach ($list as $k => $v) {
+                if (!self::checkToolAuth(1,$v['id'],'whatweb')) {
+                    continue;
+                }
+
                 PluginModel::addScanLog($v['id'], __METHOD__, 0);
                 self::scanTime('app',$val['id'],'whatweb_scan_time');
 

@@ -33,11 +33,6 @@ class Urls extends Common
             'query' => $request->param(),
         ]);
         $data['list'] = $list->items();
-        /*foreach ($data['list'] as &$v) {
-            if () {
-
-            }
-        }*/
         // 获取分页显示
         $data['page'] = $list->render();
 

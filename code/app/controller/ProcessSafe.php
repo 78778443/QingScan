@@ -134,4 +134,48 @@ class ProcessSafe extends Common
             return $this->apiReturn(0,[],'操作失败');
         }
     }
+
+
+
+    public function edit_tools(Request $request){
+        $project_id = $request->param('project_id');
+        $type = $request->param('type');
+        if ($type == 1) {
+            if (!Db::name('app')->where('id',$project_id)->count('id')) {
+                $this->error('黑盒扫描项目不存在','index');
+            }
+        } else {
+            if (!Db::name('code')->where('id',$project_id)->count('id')) {
+                $this->error('白盒审计项目不存在','index');
+            }
+        }
+        $tools = $request->param('tools');
+        $project_tools_data = [];
+        if ($tools) {
+            foreach ($tools as $k=>$v) {
+                $project_tools_data[] = [
+                    'type'=>$type,
+                    'project_id'=>$project_id,
+                    'tools_name'=>$v,
+                    'create_time'=>date('Y-m-d H:i:s',time())
+                ];
+            }
+            Db::name('project_tools')->where('project_id',$project_id)->where('type',$type)->delete();
+            Db::name('project_tools')->insertAll($project_tools_data);
+        }
+        if ($type == 1) {
+            $this->success('工具修改成功','app/index');
+        } else {
+            $this->success('工具修改成功','code/index');
+        }
+    }
+
+    public function tools(Request $request){
+        $type = $request->param('type');
+        $project_id = $request->param('project_id');
+        $where[] = ['type','=',$type];
+        $where[] = ['project_id','=',$project_id];
+        $tools = Db::name('project_tools')->where($where)->column('tools_name');
+        return $this->apiReturn(0,$tools,'ok');
+    }
 }

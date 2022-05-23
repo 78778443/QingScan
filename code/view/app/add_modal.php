@@ -28,7 +28,7 @@
                     <!--                        <label class="form-label">密码</label>-->
                     <!--                        <input type="text" name="password" class="form-control" placeholder="URL">-->
                     <!--                    </div>-->
-                    <div class="mb-3">
+                    <!--<div class="mb-3">
                         <label class="form-label">是否xary扫描</label>
                         <select name="is_xray" class="form-select" aria-label="Default select">
                             <option value="1">是</option>
@@ -56,19 +56,31 @@
                             <option value="0">否</option>
                         </select>
                     </div>
-                    <!--<div class="mb-3">
+                    <div class="mb-3">
                         <label class="form-label">是否hydra扫描</label>
                         <select name="is_hydra" class="form-control">
                             <option value="1">是</option>
                             <option value="0">否</option>
                         </select>
-                    </div>-->
+                    </div>
                     <div class="mb-3">
                         <label class="form-label">是否dirmap扫描</label>
                         <select name="is_dirmap" class="form-select" aria-label="Default select">
                             <option value="1">是</option>
                             <option value="0">否</option>
                         </select>
+                    </div>-->
+                    <div class="mb-3">
+                        <label class="form-label">需要调用的工具</label>
+                        <div class="checkbox">
+                            <?php
+                            foreach ($tools_list as $k=>$v) {
+                                ?>
+                                <label>
+                                    <input type="checkbox" name="tools[]" value="<?php echo $k;?>"><?php echo $v;?>
+                                </label>
+                            <?php }?>
+                        </div>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">是否为内网</label>

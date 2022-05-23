@@ -17,6 +17,10 @@ class AppDirmapModel extends BaseModel
             processSleep(1);
             $list = self::getAppStayScanList('dirmap_scan_time');
             foreach ($list as $v) {
+                if (!self::checkToolAuth(1,$v['id'],'dirmap')) {
+                    continue;
+                }
+
                 PluginModel::addScanLog($v['id'], __METHOD__, 0);
                 self::scanTime('app', $v['id'], 'dirmap_scan_time');
 

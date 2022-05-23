@@ -165,35 +165,30 @@
                                 <a href="javascript:;" onclick="start_agent(<?php echo $value['id'] ?>)"
                                    class="btn btn-sm btn-outline-success">启动代理</a>
                             <?php }?>
+                            <a href="javascript:;" onclick="tools(<?php echo $value['id'];?>,'<?php echo $value['name'];?>',1)"
+                               class="btn btn-sm btn-outline-warning">工具列表</a>
                             <a href="<?php echo url('details', ['id' => $value['id']]) ?>"
                                class="btn btn-sm btn-outline-primary">查看详情</a>
-                            <a href="<?php echo url('app/qingkong', ['id' => $value['id']]) ?>"
+                            <!--<a href="<?php /*echo url('app/qingkong', ['id' => $value['id']]) */?>"
                                onClick="return confirm('确定要清空数据重新扫描吗?')"
-                               class="btn btn-sm btn-outline-warning">重新扫描</a>
-                            <a href="<?php echo url('app/del', ['id' => $value['id']]) ?>"
+                               class="btn btn-sm btn-outline-warning">重新扫描</a>-->
+                            <!--<a href="<?php /*echo url('app/del', ['id' => $value['id']]) */?>"
                                onClick="return confirm('确定要删除吗?')"
-                               class="btn btn-sm btn-outline-danger">删除</a>
+                               class="btn btn-sm btn-outline-danger">删除</a>-->
                         </td>
                     </tr>
                 <?php } ?>
                 </tbody>
                 <?php if(empty($list)){?>
-                    <tr><td colspan="17" class="text-center">暂无目标</td></tr>
+                    <tr><td colspan="18" class="text-center">暂无目标</td></tr>
                 <?php }?>
             </table>
         </div>
         {include file='public/fenye' /}
     </div>
-
-    <style>
-        .modal-dialog {
-            width: 600px;
-        }
-    </style>
-    <!-- Modal -->
     {include file='app/add_modal' /}
     {include file='app/set_modal' /}
-
+    {include file='process_safe/tools' /}
     {include file='public/footer' /}
     <script>
         function start_agent(id) {

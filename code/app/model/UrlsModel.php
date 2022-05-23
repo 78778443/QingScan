@@ -92,9 +92,11 @@ class UrlsModel extends BaseModel
             $endTime = date('Y-m-d', time() - 86400 * 15);
             $where[] = ['is_delete','=',0];
             $list = Db::name('urls')->whereTime('sqlmap_scan_time', '<=', $endTime)->where($where)->field('id,url,app_id,user_id')->limit(5)->orderRand()->select()->toArray();
-            //$count = Db::table('urls')->whereTime('sqlmap_scan_time', '<=', $endTime)->where($where)->count('id');
-            //print("开始执行sqlmap扫描任务,{$count} 个项目等待扫描..." . PHP_EOL);
             foreach ($list as $k => $v) {
+                if (!self::checkToolAuth(1,$v['id'],'sqlmap')) {
+                    continue;
+                }
+
                 PluginModel::addScanLog($v['id'], __METHOD__, 3);
                 self::scanTime('urls',$v['id'],'sqlmap_scan_time');
 

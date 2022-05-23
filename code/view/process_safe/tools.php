@@ -5,8 +5,9 @@
                 <h5 class="modal-title" id="toolBackdropLabel">工具列表</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form method="post" action="<?= url("code/edit_tools") ?>">
+            <form method="post" action="<?= url("process_safe/edit_tools") ?>">
                 <div class="modal-body">
+                    <input type="hidden" name="type" id="type" value="1">
                     <input type="hidden" name="project_id" id="project_id" value="0">
                     <div class="mb-3">
                         <label class="form-label">项目名称：</label>
@@ -33,14 +34,15 @@
     </div>
 </div>
 <script>
-    function tools(id,name) {
+    function tools(id,name,type) {
         $('#project_id').val(id)
+        $('#type').val(type)
         $('#name').html(name)
 
         $.ajax({
             type: "get",
-            url: "<?php echo url('code/tools')?>",
-            data: {project_id:id},
+            url: "<?php echo url('process_safe/tools')?>",
+            data: {project_id:id,type:type},
             dataType: "json",
             success: function (res) {
                 $('.tools').each(function(index,item){

@@ -23,8 +23,7 @@ class Mobsfscan extends Common
         }
         $data['page'] = $list->render();
         //查询项目列表
-        $projectList = Db::table('code')->where($map)->field('id,name')->select()->toArray();
-        $data['projectList'] = array_column($projectList, 'name', 'id');
+        $data['projectList'] = $this->getMyCodeList();
         $data['fileList'] = [];
         $data['check_status_list'] = ['未审计', '有效漏洞', '无效漏洞'];
         $data['CategoryList'] = Db::table('semgrep')->where($map)->group('check_id')->column('check_id');
