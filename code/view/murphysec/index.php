@@ -14,9 +14,8 @@ $searchArr = [
 
 <div class="col-md-12 ">
     <div class="row tuchu">
-        <!--            <div class="col-md-1"></div>-->
         <div class="col-md-12 ">
-            <form class="row g-3" id="frmUpload" action="<?php echo url('app/batch_import') ?>" method="post"
+            <form class="row g-3"
                   enctype="multipart/form-data">
                 <div class="col-auto">
                     <a href="javascript:;" onclick="batch_repair()"
@@ -24,7 +23,7 @@ $searchArr = [
                 </div>
                 <div class="col-auto">
                     <a href="javascript:;" onclick="batch_del()"
-                       class="btn btn-outline-success">批量删除</a>
+                       class="btn btn-outline-danger">批量删除</a>
                 </div>
             </form>
             <table class="table table-bordered table-hover table-striped">
@@ -76,19 +75,7 @@ $searchArr = [
 </div>
 {include file='public/footer' /}
 
-
 <script>
-    function quanxuan(obj){
-        var child = $('.table').find('.ids');
-        child.each(function(index, item){
-            if (obj.checked) {
-                item.checked = true
-            } else {
-                item.checked = false
-            }
-        })
-    }
-
     function batch_repair(){
         var child = $('.table').find('.ids');
         var ids = ''

@@ -55,12 +55,4 @@ $searchArr = [
 </div>
 
 {include file='public/fenye' /}
-<!--<script>
-    $("#starScan").click(function () {
-        $.get("/index.php?s=host/_start_scan&url_id=<?php /*echo $value['id'] */?>", function (result) {
-            alert("操作成功")
-            location.reload();
-        });
-    });
-</script>-->
 {include file='public/footer' /}

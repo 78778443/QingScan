@@ -9,6 +9,17 @@
         </ul>
     </div>
 </footer>
-
+<script>
+    function quanxuan(obj) {
+        var child = $('.table').find('.ids');
+        child.each(function (index, item) {
+            if (obj.checked) {
+                item.checked = true
+            } else {
+                item.checked = false
+            }
+        })
+    }
+</script>
 </body>
 </html>

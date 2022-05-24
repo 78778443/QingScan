@@ -30,6 +30,10 @@ class Mobsfscan extends Common
         return View::fetch('index', $data);
     }
 
+    public function batch_audit(Request $request){
+        return $this->batch_audit_that($request,'mobsfscan');
+    }
+
     public function del(Request $request)
     {
         $id = $request->param('id');

@@ -21,16 +21,6 @@ $dengjiArr = ['Low', 'Medium', 'High', 'Critical'];
     ?>
     {include file='public/search' /}
 
-
-<!--            <form class="form-inline" method="get" action="--><?php //echo $_SERVER['REQUEST_URI'] ?><!--">-->
-<!--                <input type="text" name="search" class="form-control" placeholder="search"-->
-<!--                       value="--><?php //echo htmlentities($_GET['search'] ?? '') ?><!--">-->
-<!--                <button type="submit" class="btn btn-outline-primary">搜索</button>-->
-<!--            </form>-->
-<!--        </div>-->
-
-
-
 <div class="col-md-12 ">
     <div class="row tuchu">
         <div class="col-md-12 ">

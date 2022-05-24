@@ -80,7 +80,7 @@ $show_level = [
             <a href="<?php echo url('code/rescan', ['id'=>$info['id'],'tools_name' => 'fortify']) ?>"
                onClick="return confirm('确定要清空该工具数据重新扫描吗?')"
                class="btn btn-sm btn-outline-warning">重新扫描</a>
-            <a href="<?php echo url('code/bug_list', ['code_id' => $info['id']]) ?>"
+            <a href="<?php echo url('fortify/index', ['code_id' => $info['id']]) ?>"
                class="btn btn-sm btn-outline-primary" style="float: right">查看更多</a>
         </h4>
         <table class="table table-bordered table-hover table-striped">
@@ -91,8 +91,8 @@ $show_level = [
                 <th>危险等级</th>
                 <th>污染来源</th>
                 <th>执行位置</th>
-                <th>所属项目</th>
-                <th>创建时间</th>
+                <!--<th>所属项目</th>-->
+                <th>扫描时间</th>
                 <th>状态</th>
             </tr>
             </thead>
@@ -132,12 +132,12 @@ $show_level = [
                     <td title="<?php echo htmlentities($value['Primary']['Snippet'] ?? '') ?>">
                         <a href="<?php echo $url; ?>"
                            target="_blank">
-                            <?php echo $value['Primary']['FileName'] ?>
+                            <?php echo isset($value['Primary'])?$value['Primary']['FileName']:'' ?>
                         </a>
                     </td>
-                    <td><a href="<?php echo U('code_check/bug_list', ['code_id' => $value['code_id']]) ?>">
-                            <?php echo isset($projectArr[$value['code_id']]) ? $projectArr[$value['code_id']]['name'] : '' ?></a>
-                    </td>
+                    <!--<td><a href="<?php /*echo U('code_check/bug_list', ['code_id' => $value['code_id']]) */?>">
+                            <?php /*echo isset($projectArr[$value['code_id']]) ? $projectArr[$value['code_id']]['name'] : '' */?></a>
+                    </td>-->
                     <td><?php echo $value['create_time'] ?></td>
                     <td><select class="changCheckStatus form-select" data-id="<?php echo $value['id'] ?>">
                             <option value="0" <?php echo $value['check_status'] == 0 ? 'selected' : ''; ?> >未审核</option>
@@ -161,7 +161,7 @@ $show_level = [
             <a href="<?php echo url('code/rescan', ['id'=>$info['id'],'tools_name' => 'semgrep']) ?>"
                onClick="return confirm('确定要清空该工具数据重新扫描吗?')"
                class="btn btn-sm btn-outline-warning">重新扫描</a>
-            <a href="<?php echo url('code/semgrep_list', ['code_id' => $info['id']]) ?>"
+            <a href="<?php echo url('semgrep/index', ['code_id' => $info['id']]) ?>"
                class="btn btn-sm btn-outline-primary" style="float: right">查看更多</a>
         </h4>
         <table class="table table-bordered table-hover table-striped">
@@ -172,8 +172,8 @@ $show_level = [
                 <th>危险等级</th>
                 <th>污染来源</th>
                 <th>代码行号</th>
-                <th>所属项目</th>
-                <th>创建时间</th>
+                <!--<th>所属项目</th>-->
+                <th>扫描时间</th>
                 <th>状态</th>
             </tr>
             </thead>
@@ -198,7 +198,7 @@ $show_level = [
                         </a>
                     </td>
                     <td>{$value['end_line']}</td>
-                    <td><?php echo isset($projectArr[$value['code_id']]) ? $projectArr[$value['code_id']]['name'] : '' ?></td>
+                    <!--<td><?php /*echo isset($projectArr[$value['code_id']]) ? $projectArr[$value['code_id']]['name'] : '' */?></td>-->
                     <td><?php echo $value['create_time'] ?></td>
                     <td>
                         <select class="changCheckStatus form-select" data-id="<?php echo $value['id'] ?>">

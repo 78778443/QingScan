@@ -15,14 +15,13 @@ $searchArr = [
         ['text' => '清空日志',
             'ext' => [
                 "href" => url('log/clear_all'),
-                "class" => "btn btn-outline-success"
+                "class" => "btn btn-outline-danger"
             ]
         ]
     ]]; ?>
 {include file='public/search' /}
 <div class="col-md-12 ">
     <div class="row tuchu">
-        <!--            <div class="col-md-1"></div>-->
         <div class="col-md-12 ">
             <table class="table table-bordered table-hover table-striped">
                 <thead>

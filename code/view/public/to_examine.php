@@ -1,5 +1,29 @@
-<input type="hidden" id="check_status" value="0">
+<input type="hidden" id="to_examine_id" value="0">
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" style="padding-top: 10%;text-align: center">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">审核</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="post">
+                <div class="modal-body">
+                    <div class="checkbox">
+                        <label>
+                            <input type="radio" name="check_status" value="1">有效漏洞
+                            <input type="radio" name="check_status" value="2">无效漏洞
+                        </label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="submit" class="btn btn-outline-info">提交</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!--<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -9,12 +33,6 @@
             </div>
             <div class="modal-body">
                 <form>
-                    <!--<div class="radio">
-                        <label>
-                            <input type="radio" name="check_status" value="0" checked>
-                            待审核
-                        </label>
-                    </div>-->
                     <div class="radio">
                         <label>
                             <input type="radio" name="check_status" value="1">
@@ -35,26 +53,11 @@
             </div>
         </div>
     </div>
-</div>
-<div class="modal fade" id="myModal">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>提示</h3>
-            </div>
-            <div class="modal-body">
-                <p id="message">确定要关闭警告框信息？</p>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-outline-info" data-dismiss="modal">关闭</button>
-            </div>
-        </div>
-    </div>
-</div>
+</div>-->
 <script>
     function to_examine(id) {
-        $('#check_status').val(id)
-        $('#exampleModal').modal()
+        $('#to_examine_id').val(id)
+        $('#exampleModal').modal('show')
     }
 
     $('#submit').click(function () {
@@ -62,7 +65,7 @@
         if ($("input[name='check_status']:checked").val() > 0) {
             check_status = $("input[name='check_status']:checked").val();
         }
-        var id = $('#check_status').val()
+        var id = $('#to_examine_id').val()
         $.ajax({
             type: "post",
             url: $('#to_examine_url').val(),

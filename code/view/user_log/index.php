@@ -10,7 +10,7 @@ $searchArr = [
         ['text' => '清空日志',
             'ext' => [
                 "href" => url('user_log/clear_all'),
-                "class" => "btn btn-outline-success"
+                "class" => "btn btn-outline-danger"
             ]
         ]
     ]];

@@ -42,7 +42,7 @@ $searchArr = [
                         </div>
                         <div class="col-auto">
                             <a href="javascript:;" onclick="batch_del()"
-                               class="btn btn-outline-success">批量删除</a>
+                               class="btn btn-outline-danger">批量删除</a>
                         </div>
                     </form>
                     <table class="table table-bordered table-hover table-striped">

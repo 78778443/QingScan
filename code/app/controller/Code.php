@@ -14,8 +14,8 @@ use think\Request;
 class Code extends Common
 {
     public $tools = [
-        'semgrep'=>'semgrep',
         'fortify'=>'fortify',
+        'semgrep'=>'semgrep',
         'kunlun'=>'kunlun',
         'murphysec'=>'murphysec',
         'webshell'=>'河马webshell检测',

@@ -52,14 +52,14 @@
                 </div>
                 <div class="col-auto">
                     <a href="javascript:;" onclick="batch_del()"
-                       class="btn btn-outline-success">批量删除</a>
+                       class="btn btn-outline-danger">批量删除</a>
                 </div>
             </form>
 
             <table class="table table-bordered table-hover table-striped">
                 <thead>
                 <tr>
-                    <th>
+                    <th width="70">
                         <label>
                             <input type="checkbox" value="-1" onclick="quanxuan(this)">全选
                         </label>
@@ -206,18 +206,6 @@
                     }
                 }
             });
-        }
-
-
-        function quanxuan(obj){
-            var child = $('.table').find('input[type="checkbox"]');
-            child.each(function(index, item){
-                if (obj.checked) {
-                    item.checked = true
-                } else {
-                    item.checked = false
-                }
-            })
         }
 
         function suspend_scan(status){
