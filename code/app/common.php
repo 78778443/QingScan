@@ -1237,7 +1237,7 @@ function processSleep($time)
     $num = ConfigModel::value('maxProcesses');
     $num = empty($num) ? 4 : $num;
 
-    if (getProcessNum() < $num) {
+    if (getProcessNum() <= $num) {
         return true;
     } else {
         addlog("{$list[0]} 进程数量已到最大值 {$num},将休息30秒后运行");

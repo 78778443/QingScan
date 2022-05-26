@@ -93,10 +93,9 @@ class UrlsModel extends BaseModel
             $where[] = ['is_delete','=',0];
             $list = Db::name('urls')->whereTime('sqlmap_scan_time', '<=', $endTime)->where($where)->field('id,url,app_id,user_id')->limit(5)->orderRand()->select()->toArray();
             foreach ($list as $k => $v) {
-                if (!self::checkToolAuth(1,$v['id'],'sqlmap')) {
+                if (!self::checkToolAuth(1,$v['app_id'],'sqlmap')) {
                     continue;
                 }
-
                 PluginModel::addScanLog($v['id'], __METHOD__, 3);
                 self::scanTime('urls',$v['id'],'sqlmap_scan_time');
 
