@@ -43,6 +43,6 @@ return [
         'level' => 9 //数据库备份文件压缩级别 1普通 4 一般  9最高
     ],
     'plugin_store'=>[
-        'domain_name'=>'http://store.qingscan.songboy.site:48080/'
+        'domain_name'=>'http://qingscan.xtblog.net/'
     ]
 ];

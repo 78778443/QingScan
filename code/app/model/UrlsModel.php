@@ -101,9 +101,9 @@ class UrlsModel extends BaseModel
                 self::scanTime('urls',$v['id'],'sqlmap_scan_time');
 
                 $arr = parse_url($v['url']);
-                $blackExt = ['.js', '.css', '.json', '.png', '.jpg', '.jpeg', '.gif', '.mp3', '.mp4'];
+                $blackExt = ['.js', '.css', '.png', '.jpg', '.jpeg', '.gif', '.mp3', '.mp4','.ico','.bmp','.wmv','.avi','.psd'];
                 //没有可以注入的参数
-                if (!isset($arr['query']) or in_array_strpos($arr['path'], $blackExt) or (strpos($arr['query'], '=') === false)) {
+                if (!isset($arr['query']) or in_array_strpos(strtolower($arr['path']), $blackExt) or (strpos($arr['query'], '=') === false)) {
                     PluginModel::addScanLog($v['id'], __METHOD__, 3,2);
                     addlog(["URL地址不存在可以注入的参数", $v['url']]);
                     continue;

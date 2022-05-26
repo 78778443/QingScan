@@ -44,5 +44,4 @@ $searchArr = [
     </div>
 </div>
 {include file='public/fenye' /}
-
 {include file='public/footer' /}

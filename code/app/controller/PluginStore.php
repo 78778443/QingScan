@@ -25,22 +25,26 @@ class PluginStore extends Common
             $this->error('获取插件信息失败：'.$list['msg']);
         }
         $list = $list['data'];
-        foreach ($list as &$v) {
-            $v['is_install'] = 0;
-            $v['status'] = '未安装';
-            $where['name'] = $v['name'];
-            $info = Db::name('plugin_store')->where($where)->find();
-            if ($info) {
-                $v['is_install'] = 1;
-                if ($info['status']) {
-                    $v['status'] = '开启';
-                } else {
-                    $v['status'] = '禁用';
+        if ($list) {
+            foreach ($list as &$v) {
+                $v['is_install'] = 0;
+                $v['status'] = '未安装';
+                $where['name'] = $v['name'];
+                $info = Db::name('plugin_store')->where($where)->find();
+                if ($info) {
+                    $v['is_install'] = 1;
+                    if ($info['status']) {
+                        $v['status'] = '开启';
+                    } else {
+                        $v['status'] = '禁用';
+                    }
+                    $v['plugin_id'] = $info['id'];
                 }
-                $v['plugin_id'] = $info['id'];
             }
+            $data['list'] = $list;
+        } else {
+            $data['list'] = [];
         }
-        $data['list'] = $list;
         return View::fetch('index',$data);
     }
 
@@ -68,7 +72,7 @@ class PluginStore extends Common
             return $this->apiReturn(0,[],'插件安装失败，错误原因：'.$result['msg']);
         }
         // 下载链接
-        $download_url = $result['data']['download_url'];
+        $download_url = $this->plugin_store_domain.$result['data']['download_url'];
         $save_dir = \think\facade\App::getRuntimePath().'plugins/'; // 服务资源目录
         $filename = substr($download_url, strrpos($download_url, '/') + 1);
         if (downloadFile($download_url, $save_dir, $filename) === true) {

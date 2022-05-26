@@ -92,9 +92,9 @@ class WebScanModel extends BaseModel
                 foreach ($urlList as $val) {
                     $val['URL'] = rtrim($val['URL'],'/');
                     $arr = parse_url($val['URL']);
-                    $blackExt = ['.js', '.css', '.json', '.png', '.jpg', '.jpeg', '.gif', '.mp3', '.mp4'];
+                    $blackExt = ['.js', '.css', '.png', '.jpg', '.jpeg', '.gif', '.mp3', '.mp4','.ico','.bmp','.wmv','.avi','.psd'];
                     //if (!isset($arr['query']) or (isset($arr['path']) && in_array_strpos($arr['path'], $blackExt)) or (strpos($arr['query'], '=') === false)) {
-                    if (isset($arr['path']) && in_array_strpos($arr['path'], $blackExt) || in_array_strpos($val['URL'],$blackExt)) {
+                    if (isset($arr['path']) && in_array_strpos(strtolower($arr['path']), $blackExt) || in_array_strpos(strtolower($val['URL']),$blackExt)) {
                         addlog(["rad扫描跳过无意义URL", $val['URL']]);
                         continue;
                     }
