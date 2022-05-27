@@ -32,7 +32,9 @@ class OneForAllModel extends BaseModel
                     continue;
                 }
                 $host_arr = explode('.',$host);
-                unset($host_arr[0]);
+                if (strstr($host, 'www.')) {
+                    unset($host_arr[0]);
+                }
                 $domain = implode('.',$host_arr);
                 $file_path = $tools.'/results/';
                 $cmd = "cd {$tools}  && python3 ./oneforall.py --target {$host} --path {$file_path} run";

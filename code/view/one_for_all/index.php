@@ -28,6 +28,7 @@ $searchArr = [
                 <th>端口</th>
                 <th>ip</th>
                 <th>状态</th>
+                <th>创建时间</th>
                 <th style="width: 200px">操作</th>
             </tr>
             </thead>
@@ -44,6 +45,7 @@ $searchArr = [
                     <td><?php echo $value['port'] ?></td>
                     <td><?php echo $value['ip'] ?></td>
                     <td><?php echo $value['status'] ?></td>
+                    <td><?php echo $value['create_time'] ?></td>
                     <td>
                         <a href="<?php echo url('one_for_all/del',['id'=>$value['id']])?>" class="btn btn-sm btn-outline-danger">删除</a>
                     </td>

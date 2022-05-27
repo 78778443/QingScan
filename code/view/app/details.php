@@ -32,7 +32,7 @@ $typeArr = [
         <div class="col-md-4">
             <h5><span style="color:#888">whatweb(指纹扫描):</span> <?php echo $info['whatweb_scan_time'] ?></h5></div>
         <div class="col-md-4">
-            <h5><span style="color:#888">V2子域名扫描时间:</span> <?php echo $info['subdomain_scan_time'] ?></h5></div>
+            <h5><span style="color:#888">oneforall子域名扫描时间:</span> <?php echo $info['subdomain_scan_time'] ?></h5></div>
         <div class="col-md-4">
             <h5><span style="color:#888">获取基本信息时间: </span><?php echo $info['screenshot_time'] ?></h5></div>
         <div class="col-md-4">
@@ -380,6 +380,7 @@ $typeArr = [
                 <th>端口</th>
                 <th>ip</th>
                 <th>状态</th>
+                <th>创建时间</th>
             </tr>
             </thead>
             <?php foreach ($oneforall as $value) { ?>
@@ -389,6 +390,7 @@ $typeArr = [
                     <td><?php echo $value['port'] ?></td>
                     <td><?php echo $value['ip'] ?></td>
                     <td><?php echo $value['status'] ?></td>
+                    <td><?php echo $value['create_time'] ?></td>
                 </tr>
             <?php } ?>
             <?php if (empty($oneforall)) { ?>

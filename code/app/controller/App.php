@@ -21,7 +21,7 @@ class App extends Common
         'awvs'=>'awvs',
         'rad'=>'rad爬虫',
         'auto_add_host'=>'解析主机记录',
-        'nmap'=>'nmap',
+        #'nmap'=>'nmap',
         'masscan'=>'masscan',
         'whatweb'=>'whatweb',
         'subdomain'=>'subdomain',
