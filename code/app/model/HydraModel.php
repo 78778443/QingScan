@@ -18,7 +18,7 @@ class HydraModel extends BaseModel
             $hydra = config('tools.hydra');
             $filename = "{$file_path}hydra.txt";
             foreach ($app_list as $k => $v) {
-                if (!self::checkToolAuth(1,$v['id'],'hydra')) {
+                if (!self::checkToolAuth(1,$v['app_id'],'hydra')) {
                     continue;
                 }
 

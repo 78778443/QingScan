@@ -142,7 +142,6 @@ class WebScanModel extends BaseModel
                 $url = $val['url'];
                 $id = $val['id'];
                 $user_id = $val['user_id'];
-                //addlog(["XRAY开始执行扫描任务", $id, $url]);
                 $path = "cd /data/tools/xray/ && ";
                 $pathArr = getSavePath($url, "xray", $id);
 

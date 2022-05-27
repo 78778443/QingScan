@@ -220,6 +220,9 @@ class HostModel extends BaseModel
             processSleep(1);
             $appList = Db::table('app')->where(['status' => 1])->limit(100)->order('id','desc')->select()->toArray();
             foreach ($appList as $app) {
+                if (!self::checkToolAuth(1,$app['id'],'auto_add_host')) {
+                    continue;
+                }
                 PluginModel::addScanLog($app['id'], __METHOD__, 0);
                 $domain = parse_url($app['url'])['host'];
                 $host = gethostbyname($domain);
