@@ -12,7 +12,6 @@ class GithubNoticeModel extends BaseModel
     public static function getNotice()
     {
         ini_set('max_execution_time', 0);
-        echo "<pre>";
         while (true) {
             processSleep(1);
             $url = 'https://github.com/advisories?page=';
@@ -46,7 +45,6 @@ class GithubNoticeModel extends BaseModel
                     continue;
                 }
                 foreach ($data[1] as $K => $v) {
-                    echo 1;exit;
                     $details = file_get_contents($v);
                     // 获取标题
                     $title_reg = '/<h2 data-view-component="true" class="lh-condensed Subhead-heading">(.*?)\n<\/h2>/';

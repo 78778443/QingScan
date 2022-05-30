@@ -326,7 +326,6 @@ class HostPortModel extends BaseModel
                 }
                 PluginModel::addScanLog($val['id'], __METHOD__, 1,1);
             }
-            print_r("扫描主机端口完成，休息10秒...");
             sleep(10);
         }
     }

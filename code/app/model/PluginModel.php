@@ -248,7 +248,6 @@ class PluginModel extends BaseModel
      */
     public static function addScanLog(int $appId, string $pluginName, int $scanType, int $logType = 0, $isCustom=1,array $data = [])
     {
-
         $pluginName = explode('::', $pluginName)[1] ?? 'method_error';
         $data['app_id'] = $appId;
         $data['plugin_name'] = $pluginName;
@@ -257,7 +256,6 @@ class PluginModel extends BaseModel
         $data['is_custom'] = $isCustom;
         $data['content'] = (isset($data['content']) && !is_string($data['content'])) ? var_export($data['content'], true) : '';
         $data['content'] = substr($data['content'], 0, 4999);
-
         Db::table('plugin_scan_log')->extra("IGNORE")->insert($data);
     }
 }

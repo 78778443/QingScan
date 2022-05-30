@@ -476,7 +476,7 @@ $typeArr = [
     </div>
     <div class="col-auto  tuchu_col">
         <h4 class="text-center">
-            Nmap列表
+            masscan列表
             <a href="<?php echo url('app/rescan', ['id'=>$info['id'],'tools_name' => 'NmapPortScan']) ?>"
                onClick="return confirm('确定要清空该工具数据重新扫描吗?')"
                class="btn btn-sm btn-outline-warning">重新扫描</a>
@@ -497,7 +497,6 @@ $typeArr = [
                 <th>os</th>
                 <th>html</th>
                 <th>headers</th>
-                <th>is_delete</th>
                 <th>scan_time</th>
             </tr>
             </thead>
@@ -514,7 +513,6 @@ $typeArr = [
                     <td><?php echo $value['os'] ?></td>
                     <td><?php echo $value['html'] ?></td>
                     <td><?php echo $value['headers'] ?></td>
-                    <td><?php echo $value['is_delete'] ?></td>
                     <td><?php echo $value['scan_time'] ?></td>
                 </tr>
             <?php } ?>
