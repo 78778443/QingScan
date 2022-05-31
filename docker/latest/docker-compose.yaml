@@ -13,6 +13,7 @@ services:
 #        target: "/var/lib/mysql"
     ports:
       - "33306:3306"
+    restart: always
   qingscan:
     image: registry.cn-beijing.aliyuncs.com/xtian/qingscan:20220520
     container_name: qingscan
@@ -25,6 +26,7 @@ services:
         target: "/root/files"
     ports:
       - "8000:8000"
+    restart: always
     stdin_open: true
     tty: true
     command: /bin/bash -c "php /root/qingscan/safe.php"
@@ -33,3 +35,4 @@ services:
     container_name: awvs
     ports:
       - "13443:3443"
+    restart: always
