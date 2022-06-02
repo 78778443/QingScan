@@ -62,7 +62,7 @@ class ProcessSafeModel extends BaseModel
                     //$cmd = "kill -9 $(ps -ef |  grep '{$v['key']}'  | grep -v grep | awk '{print \$2}')";
                     $cmd = "kill -s 9 `ps -aux | grep '{$v['key']}' | awk '{print $2}'`";
                     systemLog($cmd);
-                    addlog("已强制终止任务2:{$info['value']}");
+                    addlog("已强制终止任务2:{$v['value']}");
                 }
             }
             sleep($timeSleep);
