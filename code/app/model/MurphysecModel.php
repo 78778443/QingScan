@@ -11,11 +11,7 @@ class MurphysecModel extends BaseModel
     {
         ini_set('max_execution_time', 0);
         $tools = '/data/tools/amd64/murphysec';
-        $murphysec_token = ConfigModel::value('murphysec_token');
-        if (!$murphysec_token) {
-            addlog(["murphysec扫描失败，请先配置墨菲安全平台token"]);
-            exit;
-        }
+
         chmod('/data/tools/amd64/murphysec', 0777);
         $filename = App::getRuntimePath().'tools/murphysec/';
         if (!is_dir($filename)) {
@@ -30,7 +26,11 @@ class MurphysecModel extends BaseModel
                 if (!self::checkToolAuth(2,$val['id'],'murphysec')) {
                     continue;
                 }
-
+                $murphysec_token = ConfigModel::value('murphysec_token');
+                if (!$murphysec_token) {
+                    addlog(["murphysec扫描失败，请先配置墨菲安全平台token"]);
+                    exit;
+                }
                 PluginModel::addScanLog($val['id'], __METHOD__, 2);
                 self::scanTime('code', $val['id'], 'murphysec_scan_time');
 

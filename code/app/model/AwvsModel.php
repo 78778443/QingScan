@@ -10,8 +10,6 @@ class AwvsModel extends BaseModel
     public static function awvsScan()
     {
         ini_set('max_execution_time', 0);
-        $awvs_url = ConfigModel::value('awvs_url');
-        $awvs_token = ConfigModel::value('awvs_token');
 
         while (true) {
             processSleep(1);
@@ -20,13 +18,15 @@ class AwvsModel extends BaseModel
                 if (!self::checkToolAuth(1,$val['id'],'awvs')) {
                     continue;
                 }
+                $awvs_url = ConfigModel::value('awvs_url');
+                $awvs_token = ConfigModel::value('awvs_token');
 
                 PluginModel::addScanLog($val['id'], __METHOD__, 0);
                 self::scanTime('app', $val['id'], 'awvs_scan_time');
 
                 $url = $val['url'];
                 $id = $val['id'];
-                if (empty($awvs_url) || empty($awvs_token)) {
+                if (!$awvs_url || !$awvs_token) {
                     $errMsg = ["执行AWVS扫描任务失败,未找到有效得配置信息", $awvs_url, $awvs_token, $id, $url];
                     PluginModel::addScanLog($val['id'], __METHOD__, 0, 2,1, ["content" => $errMsg]);
                     addlog($errMsg);
