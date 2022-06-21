@@ -18,7 +18,7 @@ class Login extends BaseController
         if ($arr) {
             return redirect(url('index/index'));
         }
-        //echo ucenter_md5('123456' . 'admin', config('app.UC_AUTH_KEY'));
+        //echo ucenter_md5('123456' . 'test_scan', config('app.UC_AUTH_KEY'));
         return View::fetch('user/login');
     }
 

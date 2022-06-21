@@ -293,10 +293,25 @@ class CodeCheckModel extends BaseModel
                 $result = KunlunModel::startScan($filepath);
                 if ($result) {
                     self::scanTime('code',$value['id'],'kunlun_scan_time');
+                    $scan_project_id = Db::connect('kunlun')->table("index_project")->where('code_id',0)->where(
+                        'project_name',$prName
+                    )->value('id');
+                    if ($scan_project_id) {
+                        Db::connect('kunlun')->table("index_project")->where('code_id',0)->where(
+                            'project_name',$prName
+                        )->update([
+                            'user_id'=>$value['user_id'],
+                            'code_id'=>$value['id'],
+                        ]);
+                        Db::connect('kunlun')->table("index_scanresulttask")->where('scan_project_id',$scan_project_id)->update([
+                            'user_id'=>$value['user_id'],
+                            'code_id'=>$value['id'],
+                        ]);
+                    }
+                    addlog(["kunlun扫描成功，相关关联数据已修改"]);
                 }
                 PluginModel::addScanLog($value['id'], __METHOD__, 2,1);
             }
-            print_r("跑完一圈,休息10秒..." . PHP_EOL);
             sleep(10);
         }
     }

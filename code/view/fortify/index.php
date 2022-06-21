@@ -95,7 +95,8 @@ $searchArr = [
                             </option>
                             <option value="2" <?php echo $value['check_status'] == 2 ? 'selected' : ''; ?> >无效漏洞
                             </option>
-                        </select></td>
+                        </select>
+                    </td>
                     <td>
                         <a href="<?php echo url('fortify/details', ['id' => $value['id']]) ?>"
                            class="btn btn-sm btn-outline-primary">查看漏洞</a>

@@ -58,6 +58,7 @@ $searchArr = [
                             <th>项目地址</th>
                             <th>clone方式</th>
                             <th>Fortify</th>
+                            <th>Kunlun-M</th>
                             <th>Semgrep</th>
                             <th>mobsfscan</th>
                             <th>murphysec</th>
@@ -84,6 +85,11 @@ $searchArr = [
                                     <a title="扫描时间:<?php echo $value['scan_time'] ?>"
                                        href="<?php echo url('code/bug_list', ['code_id' => $value['id']]); ?>">
                                         <?php echo $fortifyNum[$value['id']] ?? 0 ?>
+                                    </a>
+                                </td>
+                                <td>
+                                    <a title="扫描时间:<?php echo $value['kunlun_scan_time'] ?>"
+                                       href="<?php echo url('kunlun/index', ['code_id' => $value['id']]); ?>"><?php echo $kunlunNum[$value['id']] ?? 0 ?>
                                     </a>
                                 </td>
                                 <td>

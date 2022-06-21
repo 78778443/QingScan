@@ -291,10 +291,16 @@ class CodeModel extends BaseModel
     {
 
         $codeIdStr = implode(',', $codeIds);
+
         $tempArr = Db::table('fortify')->whereIn('code_id', $codeIdStr)
             ->field('code_id,count(code_id) as num')
             ->group('code_id')->select()->toArray();
         $data['fortifyNum'] = array_column($tempArr, 'num', 'code_id');
+
+        $tempArr = Db::connect('kunlun')->table("index_scanresulttask")->whereIn('code_id', $codeIdStr)
+            ->field('code_id,count(code_id) as num')
+            ->group('code_id')->select()->toArray();
+        $data['kunlunNum'] = array_column($tempArr, 'num', 'code_id');
 
         $tempArr = Db::table('semgrep')->whereIn('code_id', $codeIdStr)
             ->field('code_id,count(code_id) as num')
