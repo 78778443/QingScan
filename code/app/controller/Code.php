@@ -146,7 +146,8 @@ class Code extends Common
             $data['info']['status'] = '禁用';
         }
         $data['fortify'] = Db::table('fortify')->where($where)->order("id", 'desc')->limit(0, 10)->select()->toArray();
-        $data['kunlun'] = Db::connect('kunlun')->table("index_scanresulttask")->where($where)->order("id", 'desc')->limit(0, 10)->select()->toArray();
+        //$data['kunlun'] = Db::connect('kunlun')->table("index_scanresulttask")->where($where)->order("id", 'desc')->limit(0, 10)->select()->toArray();
+        $data['kunlun'] = [];
         $data['semgrep'] = Db::table('semgrep')->where($where)->order("id", 'desc')->limit(0, 10)->select()->toArray();
         $data['mobsfscan'] = Db::table('mobsfscan')->where($where)->order("id", 'desc')->limit(0, 10)->select()->toArray();
         $data['murphysec'] = Db::table('murphysec')->where($where)->order("id", 'desc')->limit(0, 10)->select()->toArray();
@@ -245,7 +246,7 @@ class Code extends Common
         Db::table('code')->where($where)->save($array);
         Db::table('fortify')->where($map)->delete();
 
-        $db = Db::connect('kunlun');
+        /*$db = Db::connect('kunlun');
         $project_id = $db->table('index_project')->where($map)->value('id');
         if ($project_id) {
             $db->table('index_newevilfunc')->where('project_id',$project_id)->delete();
@@ -253,7 +254,7 @@ class Code extends Common
             $db->table('index_projectvendors')->where('project_id',$project_id)->delete();
             $db->table('index_scanresulttask')->where('scan_project_id',$project_id)->delete();
             $db->table('index_scantask')->where('project_id',$project_id)->delete();
-        }
+        }*/
 
         Db::table('semgrep')->where($map)->delete();
         Db::table('mobsfscan')->where($map)->delete();
@@ -1119,7 +1120,7 @@ class Code extends Common
                 Db::table('fortify')->where(['code_id' => $id])->delete();
                 break;
             case 'kunlun':
-                $data['kunlun_scan_time']  ='2000-01-01 00:00:00';
+                /*$data['kunlun_scan_time']  ='2000-01-01 00:00:00';
                 $db = Db::connect('kunlun');
                 $project_id = $db->table('index_project')->where($map)->value('id');
                 if ($project_id) {
@@ -1128,7 +1129,7 @@ class Code extends Common
                     $db->table('index_projectvendors')->where('project_id',$project_id)->delete();
                     $db->table('index_scanresulttask')->where('scan_project_id',$project_id)->delete();
                     $db->table('index_scantask')->where('project_id',$project_id)->delete();
-                }
+                }*/
                 break;
             case 'semgrep':
                 $data['semgrep_scan_time']  ='2000-01-01 00:00:00';

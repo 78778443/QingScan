@@ -17,6 +17,7 @@ class Kunlun extends Common
 
     public function index(Request $request)
     {
+        exit();
         $where = [];
         $pageSize = 25;
         $search = $request->param('search', '');
