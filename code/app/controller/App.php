@@ -625,21 +625,21 @@ class App extends Common
         foreach ($list as $k => $v) {
             $data['name'] = $v['A'];
             $data['url'] = $v['B'];
-            $data['username'] = $v['C'];
+            /*$data['username'] = $v['C'];
             $data['password'] = $v['D'];
             $is_xray = intval($v['E']);
             $is_awvs = intval($v['F']);
             $is_whatweb = intval($v['G']);
             $is_one_for_all = intval($v['H']);
-            $is_dirmap = intval($v['I']);
-            $data['is_intranet'] = intval($v['J']);
+            $is_dirmap = intval($v['I']);*/
+            $data['is_intranet'] = intval($v['C']);
 
             // 判断url是否已存在
             if (Db::name('app')->where('url', $data['url'])->count('id')) {
                 $this->error("{$data['url']}地址已存在！");
             }
 
-            $datetime = date('Y-m-d H:i:s', time() + 86400 * 365);
+            /*$datetime = date('Y-m-d H:i:s', time() + 86400 * 365);
             if ($is_xray == 0) {
                 $data['xray_scan_time'] = $datetime;
             }
@@ -654,7 +654,7 @@ class App extends Common
             }
             if ($is_dirmap == 0) {
                 $data['dirmap_scan_time'] = $datetime;
-            }
+            }*/
             $data['user_id'] = $this->userId;
             $temp_data[] = $data;
         }

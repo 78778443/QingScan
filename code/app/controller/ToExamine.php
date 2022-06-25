@@ -75,8 +75,7 @@ class ToExamine extends Common
         if (!$info) {
             return $this->apiReturn(0, [], '数据不存在');
         }
-
-        if (Db::connect('kunlun')->table("index_scanresulttask")->where('id', $id)->update(['check_status' => $check_status])) {
+        if (Db::connect('kunlun')->table("index_scanresulttask")->where('id', $id)->update(['check_status'=>$check_status,'update_time'=>date('Y-m-d H:i:s',time())])) {
             return $this->apiReturn(1, [], '操作成功');
         } else {
             return $this->apiReturn(0, [], '操作失败');
