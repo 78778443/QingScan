@@ -21,7 +21,6 @@ class MurphysecModel extends BaseModel
             processSleep(1);
             $where[] = ['project_type', 'in', [1, 2, 3, 4, 6]];
             $list = self::getCodeStayScanList('murphysec_scan_time');
-
             foreach ($list as $k => $val) {
                 if (!self::checkToolAuth(2,$val['id'],'murphysec')) {
                     continue;

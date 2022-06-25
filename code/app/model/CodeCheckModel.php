@@ -231,6 +231,7 @@ class CodeCheckModel extends BaseModel
                     continue;
                 }
                 PluginModel::addScanLog($value['id'], __METHOD__, 2,0);
+                self::scanTime('code',$value['id'],'scan_time');
 
                 $prName = cleanString($value['name']);
                 $codeUrl = $value['ssh_url'];
