@@ -77,6 +77,7 @@ function batchExecuteSql($sqlArr)
     }
 }
 
+
 function addOldData()
 {
     $str = $_POST['password'] . $_POST['username'];
@@ -85,7 +86,7 @@ function addOldData()
     //导入最新的数据格式
     $sql = "UPDATE  user SET username=?,password=? where id = 1";
 
-    $result = Db::execute($sql,[$_POST['username'],$password]);
+    $result = Db::connect('mysql')->execute($sql,[$_POST['username'],$password]);
     if ($result) {
         echo " <a class=\"btn btn-lg btn-outline-success\" href='/' >导入数据成功!,进入首页</a>";
         file_put_contents('install.lock', '');
@@ -101,6 +102,8 @@ function addOldData()
             $newVersion = substr($filename,0,strripos($filename,'.'));
             file_put_contents($sqlPath.'/update.lock',$newVersion);
         }
+    } else {
+        echo "<h2 style='color: red'> 数据导入失败:</h2><code>{$sql}</code><br>";
     }
 }
 

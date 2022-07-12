@@ -24,7 +24,7 @@ if (!basename($path) == 'step1.php') {
                 数据库用户名：<input class="form-control" type='text' name='DB_USER' value='root'/><br/>
                 数据库密码：<input class="form-control" type='password' name='DB_PASS' value="123" /><br/>
                 数据库名称：<input class="form-control" type='text' name='DB_NAME' value='QingScan'/><br/>
-                数据库字符集：<input class="form-control" type='text' name='DB_CHARSET' value='utf8'/><br/>
+                数据库字符集：<input class="form-control" type='text' name='DB_CHARSET' value='utf8mb4'/><br/>
 
                 <hr/>
                 管理员：<input class="form-control" type='text' name='username' placeholder="例如:admin" required/><br/>
