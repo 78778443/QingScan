@@ -36,7 +36,7 @@
                     <label>
                         <input type="checkbox" name="remember_password" value="1"> 记住我
                     </label>
-                    <a href="<?php echo url('login/register')?>">注册</a>
+                    <!--<a href="<?php /*echo url('login/register')*/?>">注册</a>-->
                 </div>
                 <button class="btn btn-lg btn-outline-primary btn-block" type="submit">登录</button>
             </form>

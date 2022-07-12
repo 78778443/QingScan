@@ -58,6 +58,7 @@ class Login extends BaseController
     }
 
     public function register(){
+        exit();
         if ($this->request->isPost()) {
             $this->error('注册功能待完善,暂时关闭，如需添加用户请在管理后台添加~');
             $username = input('username'); // 账号
