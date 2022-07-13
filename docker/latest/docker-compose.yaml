@@ -10,6 +10,11 @@ services:
     ports:
       - "33306:3306"
     restart: always
+    command:
+      --wait_timeout=31536000
+      --interactive_timeout=31536000
+      --max_connections=1000
+      --default-authentication-plugin=mysql_native_password
   qingscan:
     image: registry.cn-beijing.aliyuncs.com/xtian/qingscan:20220520
     container_name: qingscan
