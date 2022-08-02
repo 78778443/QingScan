@@ -87,4 +87,10 @@ class Login extends BaseController
             return View::fetch('user/register');
         }
     }
+
+    public function clear_cache(){
+        $cmd = "cd /root/qingscan/code/runtime/ && rm -rf ./*";
+        systemLog($cmd,false);
+        $this->success('系统缓存,清除成功','index');
+    }
 }
