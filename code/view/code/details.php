@@ -430,7 +430,6 @@ $show_level = [
             <thead>
             <tr>
                 <th>ID</th>
-                <th>项目名称</th>
                 <th>modelVersion</th>
                 <th>groupId</th>
                 <th>artifactId</th>
@@ -441,7 +440,6 @@ $show_level = [
             <?php foreach ($java as $value) { ?>
                 <tr>
                     <td><?php echo $value['id'] ?></td>
-                    <td><?php echo $value['code_id'] ?></td>
                     <td><?php echo $value['modelVersion'] ?></td>
                     <td><?php echo $value['groupId'] ?></td>
                     <td><?php echo $value['artifactId'] ?></td>
@@ -471,7 +469,6 @@ $show_level = [
             <thead>
             <tr>
                 <th>ID</th>
-                <th>项目名称</th>
                 <th>依赖库</th>
                 <th>时间</th>
             </tr>
@@ -479,7 +476,6 @@ $show_level = [
             <?php foreach ($python as $value) { ?>
                 <tr>
                     <td><?php echo $value['id'] ?></td>
-                    <td><?php echo $value['code_id'] ?></td>
                     <td><?php echo $value['name'] ?></td>
                     <td><?php echo $value['create_time'] ?></td>
                 </tr>
@@ -505,7 +501,6 @@ $show_level = [
             <thead>
             <tr>
                 <th>ID</th>
-                <th>项目名称</th>
                 <th>name</th>
                 <th>version</th>
                 <th>source</th>
@@ -517,7 +512,6 @@ $show_level = [
                 ?>
                 <tr>
                     <td><?php echo $value['id'] ?></td>
-                    <td><?php echo $value['code_id'] ?></td>
                     <td><?php echo $value['name'] ?></td>
                     <td><?php echo $value['version'] ?></td>
                     <td><pre><?php echo $value['source'] ?></pre></td>

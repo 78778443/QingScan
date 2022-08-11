@@ -3,8 +3,9 @@
 // 相关工具配置
 return [
     'hydra' => [
-        'password'=>\think\facade\App::getRuntimePath().'tools/hydra/password.txt',
-        'install_path'=>'/data/tools/hydra/'
+        'install_path'=>'/data/tools/hydra/',
+        'username'=>\think\facade\App::getRootPath().'tools/hydra/username.txt',
+        'password'=>\think\facade\App::getRootPath().'tools/hydra/password.txt'
     ],
     'sqlmap' => [
         'install_path'=>''
