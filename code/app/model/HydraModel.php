@@ -25,7 +25,7 @@ class HydraModel extends BaseModel
                 PluginModel::addScanLog($v['id'], __METHOD__, 0,1);
                 self::scanTime('host',$v['id'],'hydra_scan_time');
 
-                systemLog("hydra -l root -P {$hydra['password']} -b json -o {$file_path}hydra.txt -e ns {$v['host']} ssh -V");
+                systemLog("hydra -L {$hydra['username']} -P {$hydra['password']} -b json -o {$file_path}hydra.txt -e ns {$v['host']} ssh -V");
                 if (file_exists($filename)) {
                     $result = json_decode(file_get_contents($filename),true);
                     if ($result['results']) {

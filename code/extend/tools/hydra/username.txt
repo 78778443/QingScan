@@ -1,0 +1,11 @@
+administrator
+root
+admin
+guest
+sa
+internal
+system
+sys
+anonymous
+myUserAdmin
+postgres
