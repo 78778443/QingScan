@@ -6,6 +6,7 @@ use app\model\AppModel;
 use app\model\CodeCheckModel;
 use app\model\FortifyModel;
 use app\model\CodeModel;
+use Mpdf\Mpdf;
 use think\facade\Db;
 use think\facade\View;
 use think\Request;
@@ -126,7 +127,6 @@ class Code extends Common
 
     public function details(Request $request)
     {
-
         $codeId = $request->param('id');
         $where[] = ['code_id', '=', $codeId];
         $map[] = ['id', '=', $codeId];
@@ -157,6 +157,22 @@ class Code extends Common
         $data['php'] = Db::table('code_composer')->where($where)->order("id", 'desc')->limit(0, 10)->select()->toArray();
         $projectArr = Db::table('code')->where($map)->select()->toArray();
         $data['projectArr'] = array_column($projectArr, null, 'id');
+
+        /*$html = View::fetch('export', $data);
+
+        $mpdf = new Mpdf(['mode'=>'utf-8',
+            'format' => 'A4',
+        ]);
+        $mpdf->SetDisplayMode('fullpage');
+        //自动分析录入内容字体
+        $mpdf->autoScriptToLang = true;
+        $mpdf->autoLangToFont = true;
+        //文章pdf文件存储路径
+        //以html为标准分析写入内容
+        $mpdf->WriteHTML($html);
+        //生成文件
+        $mpdf->Output('1.pdf','I');
+        exit;*/
 
         return View::fetch('details', $data);
     }
