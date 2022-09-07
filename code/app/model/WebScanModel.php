@@ -116,7 +116,7 @@ class WebScanModel extends BaseModel
                 }
                 PluginModel::addScanLog($value['id'], __METHOD__, 0, 1,1, ['content' => $urlList]);
             }
-            sleep(10);
+            sleep(30);
         }
 
     }
@@ -229,7 +229,7 @@ class WebScanModel extends BaseModel
                 addlog(["xray扫描数据写入成功:" . json_encode($addr,JSON_UNESCAPED_UNICODE)]);
                 PluginModel::addScanLog($val['id'], __METHOD__, 0,1);
             }
-            sleep(10);
+            sleep(30);
         }
     }
 
@@ -259,7 +259,7 @@ class WebScanModel extends BaseModel
                 }
                 PluginModel::addScanLog($v['id'], __METHOD__, 0,1);
             }
-            sleep(10);
+            sleep(30);
         }
     }
 
@@ -576,7 +576,7 @@ class WebScanModel extends BaseModel
                 PluginModel::addScanLog($v['id'], __METHOD__,0, 1);
             }
 
-            sleep(30);
+            sleep(60);
         }
     }
 }

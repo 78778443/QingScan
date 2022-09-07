@@ -62,7 +62,7 @@ class CodeJavaModel extends BaseModel
                 }
                 PluginModel::addScanLog($v['id'], __METHOD__, 2,1);
             }
-            sleep(10);
+            sleep(30);
         }
     }
 }

@@ -66,7 +66,7 @@ class MobsfscanModel extends BaseModel
                 addlog(["mobsfscan扫描数据写入成功:" . json_encode($data)]);
                 @unlink($filename);
             }
-            sleep(10);
+            sleep(30);
         }
     }
 }

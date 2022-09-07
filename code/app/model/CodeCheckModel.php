@@ -264,7 +264,7 @@ class CodeCheckModel extends BaseModel
             }
 
             addlog("fortify 完成本次扫描任务，休息10秒");
-            sleep(10);
+            sleep(30);
         }
     }
 
@@ -313,7 +313,7 @@ class CodeCheckModel extends BaseModel
                 }
                 PluginModel::addScanLog($value['id'], __METHOD__, 2,1);
             }
-            sleep(10);
+            sleep(30);
         }
     }
 
@@ -353,7 +353,7 @@ class CodeCheckModel extends BaseModel
                 PluginModel::addScanLog($value['id'], __METHOD__, 2,1);
             }
 
-            sleep(10);
+            sleep(30);
         }
     }
 }

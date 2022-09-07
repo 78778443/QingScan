@@ -71,7 +71,7 @@ class MurphysecModel extends BaseModel
                 PluginModel::addScanLog($val['id'], __METHOD__, 2, 1);
                 addlog(["murphysec扫描数据写入成功:" . json_encode($data)]);
             }
-            sleep(10);
+            sleep(30);
         }
     }
 }

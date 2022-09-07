@@ -56,8 +56,7 @@ class PythonLibraryModel extends BaseModel
                 }
                 PluginModel::addScanLog($v['id'], __METHOD__, 1, 2);
             }
-            sleep(10);
+            sleep(30);
         }
-
     }
 }

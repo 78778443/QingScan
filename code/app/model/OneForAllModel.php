@@ -64,7 +64,7 @@ class OneForAllModel extends BaseModel
                 }
                 PluginModel::addScanLog($v['id'], __METHOD__, 0,1);
             }
-            sleep(10);
+            sleep(30);
         }
     }
 
