@@ -27,6 +27,7 @@ QingScan 是一款聚合扫描器，本身不生产安全扫描功能，但会�
 
 > 1. fortify 涉及许可证问题，镜像内不包含，需要自己将Linux版本的fortify放到`/data/tools`文件夹中
 > 2. AWVS 调用主要通过API，需要自己将API配置系统，配置管理中去
+> 3. murphysec 调用时，需要自己将墨菲安全token配置到管理中去
 
 ## 远程支持
 
