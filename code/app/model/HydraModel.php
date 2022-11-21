@@ -22,7 +22,7 @@ class HydraModel extends BaseModel
                     continue;
                 }
 
-                PluginModel::addScanLog($v['id'], __METHOD__, 0,1);
+                PluginModel::addScanLog($v['id'], __METHOD__, 1);
                 self::scanTime('host',$v['id'],'hydra_scan_time');
 
                 systemLog("hydra -L {$hydra['username']} -P {$hydra['password']} -b json -o {$file_path}hydra.txt -e ns {$v['host']} ssh -V");
@@ -41,12 +41,12 @@ class HydraModel extends BaseModel
                         }
                         Db::name('host_hydra_scan_details')->insertAll($dataAll);
                     } else {
-                        PluginModel::addScanLog($v['id'], __METHOD__, 0,1);
+                        PluginModel::addScanLog($v['id'], __METHOD__, 1,2);
                         addlog(["hydra文件内容格式错误：{$filename}"]);
                     }
                     @unlink($filename);
                 } else {
-                    PluginModel::addScanLog($v['id'], __METHOD__, 0,1);
+                    PluginModel::addScanLog($v['id'], __METHOD__, 1,2);
                     addlog(["hydra文件内容获取失败：{$filename}"]);
                 }
                 PluginModel::addScanLog($v['id'], __METHOD__, 1,1);

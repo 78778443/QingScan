@@ -26,6 +26,7 @@ use app\model\PluginModel;
 use app\model\ProcessSafeModel;
 use app\model\ProxyModel;
 use app\model\PythonLibraryModel;
+use app\model\UnauthorizedModel;
 use app\model\UrlsModel;
 use app\model\WebScanModel;
 use app\model\XrayModel;
@@ -136,6 +137,8 @@ class Scan extends Command
             MobsfscanModel::mobsfscan();
         } elseif ($func == 'murphysecScan') {
             MurphysecModel::murphysec_scan();
+        } elseif ($func == 'unauthorizeScan') {
+            UnauthorizedModel::unauthorizeScan();
         } elseif ($func == 'deleteDir') {
             PluginModel::deleteCodeDir();
         } elseif ($func == 'custom') {

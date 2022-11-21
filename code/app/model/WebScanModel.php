@@ -214,7 +214,7 @@ class WebScanModel extends BaseModel
                     $newData = [
                         'app_id' => $val['id'],
                         'create_time' => substr($value['create_time'], 0, 10),
-                        'detail' => json_encode($value['detail'],JSON_UNESCAPED_UNICODE),
+                        'detail' => base64_encode($value['detail']),
                         'plugin' => json_encode($value['plugin'],JSON_UNESCAPED_UNICODE),
                         'target' => json_encode($value['target'],JSON_UNESCAPED_UNICODE),
                         'url' => $value['detail']['addr'],
@@ -260,33 +260,6 @@ class WebScanModel extends BaseModel
                 PluginModel::addScanLog($v['id'], __METHOD__, 0,1);
             }
             sleep(30);
-        }
-    }
-
-    // 开启xray被动模式代理 本地代理
-    public static function startXrayAgent1()
-    {
-        exit;
-        ini_set('max_execution_time', 0);
-        $agent = "/data/tools/xray/";
-        while (true) {
-            $list = Db::name('app_xray_agent_port')->where('start_up', 0)->limit(10)->orderRand()->select()->toArray();
-            foreach ($list as $v) {
-                // 执行命令查看任务是否已经执行
-                $cmd = "ps -ef | grep 'xray_" . $v['app_id'] . "_" . $v['xray_agent_prot'] . "' | grep -v ' grep'";
-                $result = [];
-                execLog($cmd, $result);
-                // 如果返回值长度是0说明任务没有执行
-                if (count($result) == 0) {
-                    Db::name('app_xray_agent_port')->where('id', $v['id'])->update(['start_up' => 1]);
-
-                    $cmd = "cd {$agent} && nohup ./xray_linux_amd64 webscan --listen 0.0.0.0:{$v['xray_agent_prot']} --json-output {$v['app_id']}.json   xray_{$v['app_id']}_{$v['xray_agent_prot']} >> /dev/null 2>&1";
-                    // 执行命令
-                    systemLog($cmd);
-                    addlog(["xray代理模式启动", json_encode($cmd)]);
-                }
-            }
-            sleep(3);
         }
     }
 
