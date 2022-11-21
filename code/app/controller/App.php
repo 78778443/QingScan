@@ -21,6 +21,7 @@ class App extends Common
         'awvs'=>'awvs',
         'rad'=>'rad爬虫',
         'auto_add_host'=>'解析主机记录',
+        'unauthorize'=>'未授权扫描',
         #'nmap'=>'nmap',
         'masscan'=>'masscan',
         'whatweb'=>'whatweb',

@@ -81,6 +81,8 @@ class Xray extends Common
         if (!$info) {
             $this->error('数据不存在');
         }
+        //var_dump($info['detail']);exit;
+
         $info['detail'] = json_decode($info['detail'], true);
 
         $upper_id = Db::name('xray')->where('id','<',$id)->order('id','desc')->value('id');

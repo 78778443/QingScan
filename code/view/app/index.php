@@ -160,13 +160,13 @@
                         <td>
                             <?php if($value['xray_agent_port'] ?? ''){?>
                                 <a href="javascript:;" onclick="start_agent(<?php echo $value['id'] ?>)"
-                                   class="btn btn-sm btn-outline-success">关闭代理</a>
+                                   class="btn btn-sm btn-outline-success" style="margin-bottom: 5px">关闭代理</a>
                             <?php }else{?>
                                 <a href="javascript:;" onclick="start_agent(<?php echo $value['id'] ?>)"
-                                   class="btn btn-sm btn-outline-success">启动代理</a>
+                                   class="btn btn-sm btn-outline-success" style="margin-bottom: 5px">启动代理</a>
                             <?php }?>
                             <a href="javascript:;" onclick="tools(<?php echo $value['id'];?>,'<?php echo $value['name'];?>',1)"
-                               class="btn btn-sm btn-outline-warning">工具列表</a>
+                               class="btn btn-sm btn-outline-warning" style="margin-bottom: 5px">工具列表</a>
                             <a href="<?php echo url('details', ['id' => $value['id']]) ?>"
                                class="btn btn-sm btn-outline-primary">查看详情</a>
                             <!--<a href="<?php /*echo url('app/qingkong', ['id' => $value['id']]) */?>"
