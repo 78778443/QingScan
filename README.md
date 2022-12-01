@@ -25,9 +25,10 @@ QingScan 是一款聚合扫描器，本身不生产安全扫描功能，但会�
 4. 浏览器访问  http://127.0.0.1:8000/ 自动进入安装界面
 5. 安装中出现任何问题，请查看视频安装教程:https://www.bilibili.com/video/BV1rF411i7Gx
 
-> 1. fortify 涉及许可证问题，镜像内不包含，需要自己将Linux版本的fortify放到`/data/tools`文件夹中
-> 2. AWVS 调用主要通过API，需要自己将API配置系统，配置管理中去
-> 3. murphysec 调用时，需要自己将墨菲安全token配置到管理中去
+6. fortify 涉及许可证问题，镜像内不包含，需要自己将Linux版本的fortify放到`/data/tools`文件夹中
+7. AWVS 调用主要通过API，需要自己将API配置系统，配置管理中去
+8. murphysec 调用时，需要自己将墨菲安全token配置到管理中去
+9. AWVS默认账户:admin@admin.com 默认密码:Admin123
 
 ## 远程支持
 
