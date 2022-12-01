@@ -24,11 +24,20 @@ QingScan 是一款聚合扫描器，本身不生产安全扫描功能，但会�
 3. <b>首次</b>启动需要更新容器内代码`docker exec  qingscan sh -c 'cd /root/qingscan && git fetch && git reset --hard origin/main && rm code/public/install/install.lock' `
 4. 浏览器访问  http://127.0.0.1:8000/ 自动进入安装界面
 5. 安装中出现任何问题，请查看视频安装教程:https://www.bilibili.com/video/BV1rF411i7Gx
-
 6. fortify 涉及许可证问题，镜像内不包含，需要自己将Linux版本的fortify放到`/data/tools`文件夹中
 7. AWVS 调用主要通过API，需要自己将API配置系统，配置管理中去
 8. murphysec 调用时，需要自己将墨菲安全token配置到管理中去
 9. AWVS默认账户:admin@admin.com 默认密码:Admin123
+
+## 注意事项（如不想重新安装数据库）
+
+1. 下载代码后,启动容器`cd QingScan/docker/latest  && docker-compose up -d `
+2. <b>首次</b>启动需要更新容器内代码`docker exec  qingscan sh -c 'cd /root/qingscan && git fetch && git reset --hard origin/main' `
+3. 执行`docker exec -it qingscan /bin/bash` 进入到容器里面
+4. 查看`root/qingscan/code/public/install/install.lock`是否存在,如不存在创建
+5. 查看`root/qingscan/docker/data/update.lock`文件里面的内容版本号是多少,执行大于该版本的sql语句(文件在`root/qingscan/docker/data`目录下)
+6. 浏览器访问  http://127.0.0.1:8000/
+
 
 ## 远程支持
 
