@@ -31,12 +31,14 @@ QingScan 是一款聚合扫描器，本身不生产安全扫描功能，但会�
 
 ## 注意事项（如不想重新安装数据库）
 
-1. 下载代码后,启动容器`cd QingScan/docker/latest  && docker-compose up -d `
-2. <b>首次</b>启动需要更新容器内代码`docker exec  qingscan sh -c 'cd /root/qingscan && git fetch && git reset --hard origin/main' `
-3. 执行`docker exec -it qingscan /bin/bash` 进入到容器里面
-4. 查看`root/qingscan/code/public/install/install.lock`是否存在,如不存在创建
-5. 查看`root/qingscan/docker/data/update.lock`文件里面的内容版本号是多少,执行大于该版本的sql语句(文件在`root/qingscan/docker/data`目录下)
-6. 浏览器访问  http://127.0.0.1:8000/
+1. 先进入到现有的qingscan容器中`docker exec -it qingscan  /bin/bash`
+2. 查看`root/qingscan/docker/data/update.lock`文件里面的内容版本号是多少
+3. 下载新代码后,启动容器`cd QingScan/docker/latest  && docker-compose up -d `
+4. <b>首次</b>启动需要更新容器内代码`docker exec qingscan sh -c 'cd /root/qingscan && git fetch && git reset --hard origin/main' `
+5. 执行`docker exec -it qingscan /bin/bash` 进入到容器里面
+6. 查看`root/qingscan/code/public/install/install.lock`是否存在,如不存在创建
+7. 根据第一步查看到的版本号，执行大于该版本的sql语句(文件在`root/qingscan/docker/data`目录下)
+8. 浏览器访问  http://127.0.0.1:8000/
 
 
 ## 远程支持
