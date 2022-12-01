@@ -1,16 +1,17 @@
 /*
  Navicat Premium Data Transfer
 
+ Source Server         : localhost_33336
  Source Server Type    : MySQL
  Source Server Version : 50736
- Source Host           : localhost:33306
+ Source Host           : localhost:33336
  Source Schema         : QingScan
 
  Target Server Type    : MySQL
  Target Server Version : 50736
  File Encoding         : 65001
 
- Date: 01/12/2022 17:12:56
+ Date: 01/12/2022 18:17:21
 */
 
 SET NAMES utf8mb4;
@@ -959,7 +960,7 @@ CREATE TABLE `host_unauthorized`  (
   `status` tinyint(1) NOT NULL DEFAULT 1,
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of host_unauthorized
@@ -1003,7 +1004,7 @@ CREATE TABLE `mobsfscan`  (
   `check_status` tinyint(1) NOT NULL DEFAULT 0 COMMENT '0未审核  1有效漏洞  2无效漏洞',
   `update_time` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = MyISAM AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = MyISAM AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of mobsfscan
@@ -1027,7 +1028,7 @@ CREATE TABLE `murphysec`  (
   `create_time` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   `update_time` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of murphysec
@@ -1055,7 +1056,7 @@ CREATE TABLE `murphysec_vuln`  (
   `vuln_path` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
   `publish_time` int(11) NOT NULL COMMENT '发布时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of murphysec_vuln
@@ -1314,7 +1315,7 @@ CREATE TABLE `project_tools`  (
   `tools_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '工具名称',
   `create_time` datetime NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of project_tools
@@ -1578,12 +1579,11 @@ CREATE TABLE `user`  (
   `token` char(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '',
   `url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '' COMMENT '主页url',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = COMPACT;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = COMPACT;
 
 -- ----------------------------
 -- Records of user
 -- ----------------------------
-INSERT INTO `user` VALUES (1, 'admin', '2871d22a3e5df21199ed0f2c2320c417', '', '测试', 8, 1635494087, '', 0, 1, 1640704760, 0, 0, '', '', '', '1ca4725c34758183af3fd1f723f07a31', '/');
 
 -- ----------------------------
 -- Table structure for user_log
@@ -1597,17 +1597,11 @@ CREATE TABLE `user_log`  (
   `type` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '操作类型',
   `ip` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = COMPACT;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = COMPACT;
 
 -- ----------------------------
 -- Records of user_log
 -- ----------------------------
-INSERT INTO `user_log` VALUES (1, 'admin', '2022-12-01 16:08:10', '登录成功，账号：admin', '用户登录', '172.18.0.1');
-INSERT INTO `user_log` VALUES (2, 'admin', '2022-12-01 16:09:08', '系统更新成功,当前版本号[v1.6.0]', '系统更新', '172.18.0.1');
-INSERT INTO `user_log` VALUES (3, 'admin', '2022-12-01 17:00:33', '清空数据表[log]成功', '日志管理', '172.18.0.1');
-INSERT INTO `user_log` VALUES (4, 'admin', '2022-12-01 17:00:51', '清空数据表[log]成功', '日志管理', '172.18.0.1');
-INSERT INTO `user_log` VALUES (5, 'admin', '2022-12-01 17:11:06', '清空数据表[log]成功', '日志管理', '172.18.0.1');
-INSERT INTO `user_log` VALUES (6, 'admin', '2022-12-01 17:12:48', '清空数据表[log]成功', '日志管理', '172.18.0.1');
 
 -- ----------------------------
 -- Table structure for vul_target
