@@ -17,7 +17,7 @@ class Code extends Common
     public $tools = [
         'fortify'=>'fortify',
         'semgrep'=>'semgrep',
-        'kunlun'=>'kunlun',
+        //'kunlun'=>'kunlun',
         'murphysec'=>'murphysec',
         'webshell'=>'河马webshell检测',
     ];
@@ -147,7 +147,7 @@ class Code extends Common
         }
         $data['fortify'] = Db::table('fortify')->where($where)->order("id", 'desc')->limit(0, 10)->select()->toArray();
         //$data['kunlun'] = Db::connect('kunlun')->table("index_scanresulttask")->where($where)->order("id", 'desc')->limit(0, 10)->select()->toArray();
-        $data['kunlun'] = [];
+        //$data['kunlun'] = [];
         $data['semgrep'] = Db::table('semgrep')->where($where)->order("id", 'desc')->limit(0, 10)->select()->toArray();
         $data['mobsfscan'] = Db::table('mobsfscan')->where($where)->order("id", 'desc')->limit(0, 10)->select()->toArray();
         $data['murphysec'] = Db::table('murphysec')->where($where)->order("id", 'desc')->limit(0, 10)->select()->toArray();
