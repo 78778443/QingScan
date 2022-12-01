@@ -1,11 +1,16 @@
 /*
  Navicat Premium Data Transfer
 
+ Source Server Type    : MySQL
+ Source Server Version : 50736
+ Source Host           : localhost:33306
+ Source Schema         : QingScan
+
  Target Server Type    : MySQL
- Target Server Version : 50651
+ Target Server Version : 50736
  File Encoding         : 65001
 
- Date: 17/12/2021 11:09:38
+ Date: 01/12/2022 17:12:56
 */
 
 SET NAMES utf8mb4;
@@ -16,36 +21,36 @@ SET FOREIGN_KEY_CHECKS = 0;
 -- ----------------------------
 DROP TABLE IF EXISTS `app`;
 CREATE TABLE `app`  (
-                        `id` int(11) NOT NULL AUTO_INCREMENT,
-                        `status` tinyint(4) NULL DEFAULT 1,
-                        `name` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
-                        `url` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
-                        `create_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
-                        `crawler_time` datetime(0) NULL DEFAULT '2000-01-01 00:00:00',
-                        `awvs_scan_time` datetime(0) NULL DEFAULT '2000-01-01 00:00:00',
-                        `subdomain_time` datetime(0) NULL DEFAULT '2000-01-01 00:00:00',
-                        `is_delete` tinyint(1) NOT NULL DEFAULT 0,
-                        `username` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT '',
-                        `password` char(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT '',
-                        `whatweb_scan_time` datetime(0) NULL DEFAULT '2000-01-01 00:00:00',
-                        `subdomain_scan_time` datetime(0) NULL DEFAULT '2000-01-01 00:00:00' COMMENT 'OneForAll子域名扫描时间',
-                        `screenshot_time` datetime(0) NULL DEFAULT '2000-01-01 00:00:00' COMMENT '截图时间',
-                        `xray_scan_time` datetime(0) NOT NULL DEFAULT '2000-01-01 00:00:00',
-                        `dirmap_scan_time` datetime(0) NULL DEFAULT '2000-01-01 00:00:00',
-                        `user_id` int(10) NOT NULL DEFAULT 0,
-                        `wafw00f_scan_time` datetime(0) NOT NULL DEFAULT '2000-01-01 00:00:00',
-                        `jietu_path` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
-                        `is_intranet` tinyint(1) NOT NULL DEFAULT 0,
-                        `nuclei_scan_time` datetime(0) NULL DEFAULT '2000-01-01 00:00:00',
-                        `dismap_scan_time` datetime(0) NULL DEFAULT '2000-01-01 00:00:00',
-                        `crawlergo_scan_time` datetime(0) NULL DEFAULT '2000-01-01 00:00:00',
-                        `vulmap_scan_time` datetime(0) NULL DEFAULT '2000-01-01 00:00:00',
-                        `xray_agent_port` int(10) NOT NULL DEFAULT 0 COMMENT 'xray被动代理端口',
-                        `agent_time` datetime(0) NOT NULL DEFAULT '2000-01-01 00:00:00',
-                        `agent_start_up` int(1) NOT NULL DEFAULT 0 COMMENT 'xray代理是否已启动',
-                        PRIMARY KEY (`id`) USING BTREE,
-                        UNIQUE INDEX `un_url`(`url`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = Compact;
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `status` tinyint(4) NULL DEFAULT 1,
+  `name` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
+  `url` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
+  `create_time` datetime NULL DEFAULT CURRENT_TIMESTAMP,
+  `crawler_time` datetime NULL DEFAULT '2000-01-01 00:00:00',
+  `awvs_scan_time` datetime NULL DEFAULT '2000-01-01 00:00:00',
+  `subdomain_time` datetime NULL DEFAULT '2000-01-01 00:00:00',
+  `is_delete` tinyint(1) NOT NULL DEFAULT 0,
+  `username` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT '',
+  `password` char(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT '',
+  `whatweb_scan_time` datetime NULL DEFAULT '2000-01-01 00:00:00',
+  `subdomain_scan_time` datetime NULL DEFAULT '2000-01-01 00:00:00' COMMENT 'OneForAll子域名扫描时间',
+  `screenshot_time` datetime NULL DEFAULT '2000-01-01 00:00:00' COMMENT '截图时间',
+  `xray_scan_time` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `dirmap_scan_time` datetime NULL DEFAULT '2000-01-01 00:00:00',
+  `user_id` int(10) NOT NULL DEFAULT 0,
+  `wafw00f_scan_time` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `jietu_path` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
+  `is_intranet` tinyint(1) NOT NULL DEFAULT 0,
+  `nuclei_scan_time` datetime NULL DEFAULT '2000-01-01 00:00:00',
+  `dismap_scan_time` datetime NULL DEFAULT '2000-01-01 00:00:00',
+  `crawlergo_scan_time` datetime NULL DEFAULT '2000-01-01 00:00:00',
+  `vulmap_scan_time` datetime NULL DEFAULT '2000-01-01 00:00:00',
+  `xray_agent_port` int(10) NOT NULL DEFAULT 0 COMMENT 'xray被动代理端口',
+  `agent_time` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `agent_start_up` int(1) NOT NULL DEFAULT 0 COMMENT 'xray代理是否已启动',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE INDEX `un_url`(`url`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = COMPACT;
 
 -- ----------------------------
 -- Records of app
@@ -56,39 +61,42 @@ CREATE TABLE `app`  (
 -- ----------------------------
 DROP TABLE IF EXISTS `app_crawlergo`;
 CREATE TABLE `app_crawlergo`  (
-                                  `id` int(10) NOT NULL AUTO_INCREMENT,
-                                  `app_id` int(10) NOT NULL,
-                                  `user_id` int(10) NOT NULL DEFAULT 0,
-                                  `url` text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL,
-                                  `method` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '',
-                                  `accept` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '',
-                                  `cache_control` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '',
-                                  `cookie` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '',
-                                  `referer` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '',
-                                  `spider_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '',
-                                  `user_agent` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '',
-                                  `data` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '',
-                                  `source` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '',
-                                  `create_time` datetime(0) NOT NULL DEFAULT '2000-01-01 00:00:00',
-                                  PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin COMMENT = 'url收集' ROW_FORMAT = Compact;
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `app_id` int(10) NOT NULL,
+  `user_id` int(10) NOT NULL DEFAULT 0,
+  `url` text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL,
+  `method` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '',
+  `accept` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '',
+  `cache_control` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '',
+  `cookie` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '',
+  `referer` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '',
+  `spider_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '',
+  `user_agent` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '',
+  `data` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '',
+  `source` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '',
+  `create_time` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin COMMENT = 'url收集' ROW_FORMAT = COMPACT;
 
+-- ----------------------------
+-- Records of app_crawlergo
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for app_dirmap
 -- ----------------------------
 DROP TABLE IF EXISTS `app_dirmap`;
 CREATE TABLE `app_dirmap`  (
-                               `id` int(10) NOT NULL AUTO_INCREMENT,
-                               `app_id` int(10) NOT NULL,
-                               `code` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '' COMMENT '状态码',
-                               `size` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT '大小kb',
-                               `type` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT '类型',
-                               `url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT 'url地址',
-                               `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
-                               `user_id` int(10) NOT NULL DEFAULT 0,
-                               PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = Compact;
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `app_id` int(10) NOT NULL,
+  `code` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '' COMMENT '状态码',
+  `size` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT '大小kb',
+  `type` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT '类型',
+  `url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT 'url地址',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `user_id` int(10) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = COMPACT;
 
 -- ----------------------------
 -- Records of app_dirmap
@@ -99,13 +107,13 @@ CREATE TABLE `app_dirmap`  (
 -- ----------------------------
 DROP TABLE IF EXISTS `app_dismap`;
 CREATE TABLE `app_dismap`  (
-                               `id` int(10) NOT NULL AUTO_INCREMENT,
-                               `app_id` int(10) NOT NULL DEFAULT 0,
-                               `user_id` int(10) NOT NULL DEFAULT 0,
-                               `result` text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL COMMENT '结果',
-                               `create_time` datetime(0) NULL DEFAULT '2000-01-01 00:00:00',
-                               PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = Compact;
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `app_id` int(10) NOT NULL DEFAULT 0,
+  `user_id` int(10) NOT NULL DEFAULT 0,
+  `result` text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL COMMENT '结果',
+  `create_time` datetime NULL DEFAULT '2000-01-01 00:00:00',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = COMPACT;
 
 -- ----------------------------
 -- Records of app_dismap
@@ -116,20 +124,20 @@ CREATE TABLE `app_dismap`  (
 -- ----------------------------
 DROP TABLE IF EXISTS `app_info`;
 CREATE TABLE `app_info`  (
-                             `app_id` int(11) NOT NULL DEFAULT 0,
-                             `cms` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
-                             `server` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
-                             `statuscode` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
-                             `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
-                             `length` int(11) NULL DEFAULT NULL,
-                             `code` int(3) NOT NULL DEFAULT 0 COMMENT '状态码',
-                             `page_title` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '' COMMENT '网页标题',
-                             `header` text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL COMMENT '网页header',
-                             `icon` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '' COMMENT '网页ICON',
-                             `url_screenshot` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '' COMMENT 'url屏幕截图',
-                             PRIMARY KEY (`app_id`) USING BTREE,
-                             CONSTRAINT `app_id` FOREIGN KEY (`app_id`) REFERENCES `app` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = Compact;
+  `app_id` int(11) NOT NULL DEFAULT 0,
+  `cms` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
+  `server` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
+  `statuscode` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
+  `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
+  `length` int(11) NULL DEFAULT NULL,
+  `code` int(3) NOT NULL DEFAULT 0 COMMENT '状态码',
+  `page_title` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '' COMMENT '网页标题',
+  `header` text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL COMMENT '网页header',
+  `icon` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '' COMMENT '网页ICON',
+  `url_screenshot` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '' COMMENT 'url屏幕截图',
+  PRIMARY KEY (`app_id`) USING BTREE,
+  CONSTRAINT `app_id` FOREIGN KEY (`app_id`) REFERENCES `app` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = COMPACT;
 
 -- ----------------------------
 -- Records of app_info
@@ -140,29 +148,32 @@ CREATE TABLE `app_info`  (
 -- ----------------------------
 DROP TABLE IF EXISTS `app_nuclei`;
 CREATE TABLE `app_nuclei`  (
-                               `id` int(10) NOT NULL AUTO_INCREMENT,
-                               `app_id` int(10) NOT NULL,
-                               `user_id` int(10) NOT NULL,
-                               `template` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT '',
-                               `template_url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT '',
-                               `template_id` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT '',
-                               `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT '',
-                               `author` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT '' COMMENT '作者',
-                               `tags` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT '' COMMENT '标签',
-                               `description` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT '' COMMENT '描述',
-                               `reference` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT '',
-                               `severity` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT '',
-                               `type` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT '' COMMENT '协议类型',
-                               `host` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT '',
-                               `matched_at` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT '',
-                               `extracted_results` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT '',
-                               `ip` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT '',
-                               `create_time` datetime(0) NULL DEFAULT NULL,
-                               `curl_command` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
-                               `status` tinyint(1) NOT NULL DEFAULT 0,
-                               PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 106 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = Compact;
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `app_id` int(10) NOT NULL,
+  `user_id` int(10) NOT NULL,
+  `template` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT '',
+  `template_url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT '',
+  `template_id` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT '',
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT '',
+  `author` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT '' COMMENT '作者',
+  `tags` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT '' COMMENT '标签',
+  `description` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT '' COMMENT '描述',
+  `reference` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT '',
+  `severity` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT '',
+  `type` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT '' COMMENT '协议类型',
+  `host` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT '',
+  `matched_at` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT '',
+  `extracted_results` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT '',
+  `ip` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT '',
+  `create_time` datetime NULL DEFAULT NULL,
+  `curl_command` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
+  `status` tinyint(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 106 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = COMPACT;
 
+-- ----------------------------
+-- Records of app_nuclei
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for app_vulmap
@@ -186,7 +197,7 @@ CREATE TABLE `app_vulmap`  (
   `vuln_class` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '' COMMENT '漏洞名称',
   `create_time` int(10) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin COMMENT = '漏洞扫描' ROW_FORMAT = Compact;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin COMMENT = '漏洞扫描' ROW_FORMAT = COMPACT;
 
 -- ----------------------------
 -- Records of app_vulmap
@@ -200,13 +211,13 @@ CREATE TABLE `app_wafw00f`  (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `app_id` int(10) NOT NULL,
   `user_id` int(10) NOT NULL DEFAULT 0,
-  `create_time` datetime(0) NULL DEFAULT NULL,
+  `create_time` datetime NULL DEFAULT NULL,
   `url` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
   `detected` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
   `firewall` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT 'waf防火墙名称',
   `manufacturer` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT '厂商',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin COMMENT = 'waf指纹识别' ROW_FORMAT = Compact;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin COMMENT = 'waf指纹识别' ROW_FORMAT = COMPACT;
 
 -- ----------------------------
 -- Records of app_wafw00f
@@ -223,11 +234,11 @@ CREATE TABLE `app_whatweb`  (
   `http_status` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
   `request_config` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
   `plugins` text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL,
-  `create_time` datetime(0) NULL DEFAULT '2000-01-01 00:00:00',
-  `poc_scan_time` datetime(0) NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `create_time` datetime NULL DEFAULT '2000-01-01 00:00:00',
+  `poc_scan_time` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   `user_id` int(10) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin COMMENT = 'web指纹识别' ROW_FORMAT = Compact;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin COMMENT = 'web指纹识别' ROW_FORMAT = COMPACT;
 
 -- ----------------------------
 -- Records of app_whatweb
@@ -245,10 +256,10 @@ CREATE TABLE `app_whatweb_poc`  (
   `key` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '',
   `value` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '',
   `result` text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL,
-  `create_time` datetime(0) NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `create_time` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   `user_id` int(10) NOT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = Compact;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = COMPACT;
 
 -- ----------------------------
 -- Records of app_whatweb_poc
@@ -262,12 +273,15 @@ CREATE TABLE `app_xray_agent_port`  (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `app_id` int(10) NOT NULL,
   `xray_agent_prot` int(10) NOT NULL COMMENT '代理端口',
-  `create_time` datetime(0) NULL DEFAULT '2000-01-01 00:00:00',
+  `create_time` datetime NULL DEFAULT '2000-01-01 00:00:00',
   `start_up` int(1) NOT NULL DEFAULT 0 COMMENT '是否已启动',
   `is_get_result` int(1) NOT NULL DEFAULT 0 COMMENT '是否已获取结果',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin COMMENT = '本地代理' ROW_FORMAT = Compact;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin COMMENT = '本地代理' ROW_FORMAT = COMPACT;
 
+-- ----------------------------
+-- Records of app_xray_agent_port
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for auth_group
@@ -282,7 +296,7 @@ CREATE TABLE `auth_group`  (
   `is_delete` tinyint(1) NOT NULL DEFAULT 0,
   `created_at` int(10) NOT NULL DEFAULT 0 COMMENT '添加时间',
   PRIMARY KEY (`auth_group_id`) USING BTREE
-) ENGINE = MyISAM AUTO_INCREMENT = 10 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = MyISAM AUTO_INCREMENT = 10 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of auth_group
@@ -312,7 +326,7 @@ CREATE TABLE `auth_rule`  (
   `delete_time` int(10) NOT NULL DEFAULT 0,
   `icon_url` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' COMMENT '图标样式',
   PRIMARY KEY (`auth_rule_id`) USING BTREE
-) ENGINE = MyISAM AUTO_INCREMENT = 88 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '权限列表' ROW_FORMAT = Dynamic;
+) ENGINE = MyISAM AUTO_INCREMENT = 337 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '权限列表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of auth_rule
@@ -426,6 +440,17 @@ INSERT INTO `auth_rule` VALUES (106, 'code/rescan', '未知', 0, 1, 43, 0, 16416
 INSERT INTO `auth_rule` VALUES (107, 'code_webshell/index', '河马(WebShell)', 0, 1, 14, 7, 1641671594, 1, 1641671642, 2, 0, '');
 INSERT INTO `auth_rule` VALUES (108, 'app/export', '未知', 0, 1, 43, 0, 1641736005, 1, 0, 3, 0, '');
 INSERT INTO `auth_rule` VALUES (110, 'app/rescan', '未知', 0, 1, 43, 0, 1642142719, 1, 0, 3, 0, '');
+INSERT INTO `auth_rule` VALUES (111, 'zhiwen/index', '指纹列表', 0, 1, 35, 11, 1643338608, 1, 0, 2, 0, '');
+INSERT INTO `auth_rule` VALUES (112, 'backup/backup', '未知', 0, 1, 43, 0, 1643091277, 1, 0, 3, 0, '');
+INSERT INTO `auth_rule` VALUES (113, 'user_log/index', '登录日志', 0, 1, 23, 9, 1643018839, 1, 0, 2, 0, '');
+INSERT INTO `auth_rule` VALUES (114, 'backup/index', '数据备份', 0, 1, 23, 8, 1642854435, 1, 0, 2, 0, '');
+INSERT INTO `auth_rule` VALUES (115, 'github_keyword_monitor_notice/index', 'github关键词监控结果', 0, 1, 35, 8, 1642852575, 1, 0, 2, 0, '');
+INSERT INTO `auth_rule` VALUES (116, 'mobsfscan/index', 'mobsfscan列表', 0, 1, 14, 4, 1652079904, 1, 1652079930, 2, 0, '');
+INSERT INTO `auth_rule` VALUES (117, 'murphysec/index', 'murphysec列表', 0, 1, 14, 4, 1652861447, 1, 1652861478, 2, 0, '');
+INSERT INTO `auth_rule` VALUES (333, '', '插件中心', 0, 1, 0, 8, 1642257783, 0, 0, 1, 0, '');
+INSERT INTO `auth_rule` VALUES (334, 'config/clear_cache', '清除缓存', 0, 1, 23, 10, 1660199916, 1, 0, 2, 0, '');
+INSERT INTO `auth_rule` VALUES (335, 'unauthorized/index', '未授权列表', 0, 1, 35, 4, 1669016435, 1, 1669016502, 2, 0, '');
+INSERT INTO `auth_rule` VALUES (336, 'index/upgrade_tips', '未知', 0, 1, 43, 0, 1669882093, 1, 0, 3, 0, '');
 
 -- ----------------------------
 -- Table structure for awvs_app
@@ -445,7 +470,7 @@ CREATE TABLE `awvs_app`  (
   `user_id` int(10) NOT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `un_target`(`target_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = Compact;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = COMPACT;
 
 -- ----------------------------
 -- Records of awvs_app
@@ -485,14 +510,14 @@ CREATE TABLE `awvs_vuln`  (
   `request` text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL,
   `response_info` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
   `source` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
-  `create_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
+  `create_time` datetime NULL DEFAULT CURRENT_TIMESTAMP,
   `check_status` tinyint(1) NOT NULL DEFAULT 0 COMMENT '审核状态',
   `is_delete` tinyint(1) NOT NULL DEFAULT 0,
   `user_id` int(10) NOT NULL DEFAULT 0,
   `app_id` int(11) NULL DEFAULT 0,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `un_vuln_id`(`vuln_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = Compact;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = COMPACT;
 
 -- ----------------------------
 -- Records of awvs_vuln
@@ -506,13 +531,13 @@ CREATE TABLE `bug`  (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `status` tinyint(4) NULL DEFAULT 1,
   `name` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
-  `create_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
+  `create_time` datetime NULL DEFAULT CURRENT_TIMESTAMP,
   `detail` text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL COMMENT '漏洞详情',
   `category` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
   `host` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
   `check_status` tinyint(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = Compact;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = COMPACT;
 
 -- ----------------------------
 -- Records of bug
@@ -528,25 +553,30 @@ CREATE TABLE `code`  (
   `ssh_url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
   `desc` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
   `hash` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
-  `scan_time` datetime(0) NOT NULL DEFAULT '2000-01-01 00:00:00',
-  `sonar_scan_time` datetime(0) NOT NULL DEFAULT '2000-01-01 00:00:00',
-  `kunlun_scan_time` datetime(0) NOT NULL DEFAULT '2000-01-01 00:00:00',
-  `semgrep_scan_time` datetime(0) NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `scan_time` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `sonar_scan_time` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `kunlun_scan_time` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `semgrep_scan_time` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   `pulling_mode` char(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '' COMMENT '拉取方式（支持SSH、HTTPS）',
   `is_private` tinyint(1) NOT NULL DEFAULT 0,
   `username` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '' COMMENT '用户名',
   `password` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '' COMMENT '密码',
   `private_key` text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL,
   `is_delete` tinyint(1) NOT NULL DEFAULT 0,
-  `composer_scan_time` datetime(0) NOT NULL DEFAULT '2000-01-01 00:00:00',
-  `java_scan_time` datetime(0) NOT NULL DEFAULT '2000-01-01 00:00:00',
-  `python_scan_time` datetime(0) NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `composer_scan_time` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `java_scan_time` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `python_scan_time` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   `user_id` int(10) NOT NULL DEFAULT 0,
   `star` char(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '',
-  `webshell_scan_time` datetime(0) NOT NULL DEFAULT '2000-01-01 00:00:00',
-  `create_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
+  `webshell_scan_time` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `create_time` datetime NULL DEFAULT CURRENT_TIMESTAMP,
+  `is_online` int(10) NOT NULL DEFAULT 1 COMMENT '1线上   2本地',
+  `mobsfscan_scan_time` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `project_type` tinyint(1) NOT NULL DEFAULT 0 COMMENT '1php 2java 3python 4go 5app 6其他',
+  `status` tinyint(1) NOT NULL DEFAULT 1 COMMENT '1启用 2禁用',
+  `murphysec_scan_time` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = Compact;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = COMPACT;
 
 -- ----------------------------
 -- Records of code
@@ -561,14 +591,14 @@ CREATE TABLE `code_check`  (
   `app_id` int(11) NULL DEFAULT 0,
   `content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
   `status` tinyint(4) NULL DEFAULT 1,
-  `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `files` text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL,
   `author` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
   `project_hash` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
   `version` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
   `project_id` int(11) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = Compact;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = COMPACT;
 
 -- ----------------------------
 -- Records of code_check
@@ -587,7 +617,7 @@ CREATE TABLE `code_check_notice`  (
   `start` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `version` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Compact;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = COMPACT;
 
 -- ----------------------------
 -- Records of code_check_notice
@@ -602,26 +632,26 @@ CREATE TABLE `code_composer`  (
   `name` varchar(2048) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `version` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `source` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-  `dist` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-  `require` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `dist` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
+  `require` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
   `conflict` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-  `require_dev` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `require_dev` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
   `suggest` varchar(2550) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `extra` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `autoload` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `notification_url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `license` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-  `authors` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `authors` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
   `description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-  `keywords` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-  `funding` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `keywords` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
+  `funding` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
   `time` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `code_id` int(11) NULL DEFAULT NULL,
   `user_id` int(11) NULL DEFAULT NULL,
-  `create_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
+  `create_time` datetime NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Compact;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = COMPACT;
 
 -- ----------------------------
 -- Records of code_composer
@@ -633,14 +663,14 @@ CREATE TABLE `code_composer`  (
 DROP TABLE IF EXISTS `code_hook`;
 CREATE TABLE `code_hook`  (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `create_time` datetime(0) NULL DEFAULT NULL,
-  `update_time` datetime(0) NULL DEFAULT NULL,
+  `create_time` datetime NULL DEFAULT NULL,
+  `update_time` datetime NULL DEFAULT NULL,
   `status` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `path` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `gitlab_id` int(11) NULL DEFAULT NULL,
   `project` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Compact;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = COMPACT;
 
 -- ----------------------------
 -- Records of code_hook
@@ -665,10 +695,10 @@ CREATE TABLE `code_java`  (
   `properties` text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL,
   `dependencies` text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL,
   `build` text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL,
-  `create_time` datetime(0) NULL DEFAULT NULL,
+  `create_time` datetime NULL DEFAULT NULL,
   `user_id` int(10) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = Compact;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = COMPACT;
 
 -- ----------------------------
 -- Records of code_java
@@ -682,10 +712,10 @@ CREATE TABLE `code_python`  (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `code_id` int(10) NOT NULL,
   `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
-  `create_time` datetime(0) NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `create_time` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   `user_id` int(10) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = Compact;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = COMPACT;
 
 -- ----------------------------
 -- Records of code_python
@@ -698,13 +728,13 @@ DROP TABLE IF EXISTS `code_webshell`;
 CREATE TABLE `code_webshell`  (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `code_id` int(10) NOT NULL,
-  `create_time` datetime(0) NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `create_time` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   `check_status` int(1) NOT NULL DEFAULT 0 COMMENT '审核状态',
   `user_id` int(10) NOT NULL DEFAULT 0,
   `type` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '' COMMENT '类型',
   `filename` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '' COMMENT '文件路径',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = Compact;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = COMPACT;
 
 -- ----------------------------
 -- Records of code_webshell
@@ -720,9 +750,9 @@ CREATE TABLE `config`  (
   `status` tinyint(4) NULL DEFAULT 1 COMMENT '状态',
   `type` tinyint(4) NULL DEFAULT 1 COMMENT '类型',
   `data` text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL COMMENT '配置内容',
-  `create_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0),
+  `create_time` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = Compact;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = COMPACT;
 
 -- ----------------------------
 -- Records of config
@@ -734,7 +764,7 @@ CREATE TABLE `config`  (
 DROP TABLE IF EXISTS `fortify`;
 CREATE TABLE `fortify`  (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `Category` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
   `Folder` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
   `Kingdom` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
@@ -750,9 +780,10 @@ CREATE TABLE `fortify`  (
   `hash` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
   `is_delete` tinyint(1) NOT NULL DEFAULT 0,
   `user_id` int(10) NOT NULL DEFAULT 0,
+  `update_time` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `un_hash`(`hash`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = Compact;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = COMPACT;
 
 -- ----------------------------
 -- Records of fortify
@@ -767,11 +798,11 @@ CREATE TABLE `github_keyword_monitor`  (
   `app_id` int(10) NOT NULL DEFAULT 0,
   `user_id` int(10) NOT NULL DEFAULT 0,
   `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '' COMMENT '关键字',
-  `create_time` datetime(0) NULL DEFAULT '2000-01-01 00:00:00',
-  `update_time` datetime(0) NULL DEFAULT '2000-01-01 00:00:00',
-  `scan_time` datetime(0) NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `create_time` datetime NULL DEFAULT '2000-01-01 00:00:00',
+  `update_time` datetime NULL DEFAULT '2000-01-01 00:00:00',
+  `scan_time` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin COMMENT = 'github关键字设置' ROW_FORMAT = Compact;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin COMMENT = 'github关键字设置' ROW_FORMAT = COMPACT;
 
 -- ----------------------------
 -- Records of github_keyword_monitor
@@ -790,9 +821,9 @@ CREATE TABLE `github_keyword_monitor_notice`  (
   `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '',
   `path` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '',
   `html_url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '',
-  `create_time` datetime(0) NULL DEFAULT NULL,
+  `create_time` datetime NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin COMMENT = 'github关键字监控结果' ROW_FORMAT = Compact;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin COMMENT = 'github关键字监控结果' ROW_FORMAT = COMPACT;
 
 -- ----------------------------
 -- Records of github_keyword_monitor_notice
@@ -809,14 +840,14 @@ CREATE TABLE `github_notice`  (
   `cve_id` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
   `cwes` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
   `cvss_score` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
-  `github_release_date` datetime(0) NULL DEFAULT NULL,
+  `github_release_date` datetime NULL DEFAULT NULL,
   `references` text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL COMMENT '参考资料',
   `desc` text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL,
   `package` text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL,
   `hash` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
-  `create_time` datetime(0) NULL DEFAULT '2000-01-01 00:00:00',
+  `create_time` datetime NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = Compact;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = COMPACT;
 
 -- ----------------------------
 -- Records of github_notice
@@ -829,7 +860,7 @@ DROP TABLE IF EXISTS `group`;
 CREATE TABLE `group`  (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = Compact;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = COMPACT;
 
 -- ----------------------------
 -- Records of group
@@ -845,20 +876,21 @@ CREATE TABLE `host`  (
   `domain` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
   `host` text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL,
   `status` tinyint(4) NOT NULL DEFAULT 1,
-  `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `isp` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '' COMMENT '运营商',
   `country` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '' COMMENT '国家',
   `region` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '' COMMENT '省份',
   `city` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '' COMMENT '市',
   `area` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '' COMMENT '地区',
-  `hydra_scan_time` datetime(0) NOT NULL DEFAULT '2000-01-01 00:00:00',
-  `port_scan_time` datetime(0) NOT NULL DEFAULT '2000-01-01 00:00:00',
-  `ip_scan_time` datetime(0) NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `hydra_scan_time` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `port_scan_time` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `ip_scan_time` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   `is_delete` int(4) NOT NULL DEFAULT 0,
   `user_id` int(10) NOT NULL DEFAULT 0,
+  `unauthorize_scan_time` datetime NOT NULL DEFAULT '2000-01-01 00:00:00' COMMENT '未授权扫描时间',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `un_host`(`domain`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = Compact;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = COMPACT;
 
 -- ----------------------------
 -- Records of host
@@ -874,11 +906,11 @@ CREATE TABLE `host_hydra_scan_details`  (
   `type` char(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT 'ssh' COMMENT '类型  如：ssh、mysql等',
   `username` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '',
   `password` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '',
-  `create_time` datetime(0) NULL DEFAULT NULL,
+  `create_time` datetime NULL DEFAULT NULL,
   `app_id` int(10) NOT NULL DEFAULT 0,
   `user_id` int(10) NOT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = Compact;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = COMPACT;
 
 -- ----------------------------
 -- Records of host_hydra_scan_details
@@ -895,21 +927,42 @@ CREATE TABLE `host_port`  (
   `type` char(5) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
   `service` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
   `is_close` tinyint(4) NULL DEFAULT 0 COMMENT '是否关闭',
-  `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
-  `update_time` datetime(0) NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP(0),
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_time` datetime NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   `os` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '操作系统',
   `html` text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL,
   `headers` text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL,
   `is_delete` tinyint(1) NOT NULL DEFAULT 0,
-  `scan_time` datetime(0) NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `scan_time` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   `user_id` int(10) NOT NULL DEFAULT 0,
   `app_id` int(11) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `un_port`(`host`, `port`, `type`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = Compact;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = COMPACT;
 
 -- ----------------------------
 -- Records of host_port
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for host_unauthorized
+-- ----------------------------
+DROP TABLE IF EXISTS `host_unauthorized`;
+CREATE TABLE `host_unauthorized`  (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `host_id` int(10) NOT NULL,
+  `ip` char(20) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL DEFAULT '',
+  `port` int(5) NOT NULL DEFAULT 0,
+  `text` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '',
+  `user_id` int(10) NOT NULL DEFAULT 0,
+  `is_delete` tinyint(1) NOT NULL DEFAULT 0,
+  `status` tinyint(1) NOT NULL DEFAULT 1,
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of host_unauthorized
 -- ----------------------------
 
 -- ----------------------------
@@ -920,13 +973,92 @@ CREATE TABLE `log`  (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL,
   `app` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
-  `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `time`(`create_time`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = Compact;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = COMPACT;
 
 -- ----------------------------
 -- Records of log
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for mobsfscan
+-- ----------------------------
+DROP TABLE IF EXISTS `mobsfscan`;
+CREATE TABLE `mobsfscan`  (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `code_id` int(10) NOT NULL DEFAULT 0,
+  `user_id` int(10) NOT NULL DEFAULT 0,
+  `type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '',
+  `files` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
+  `cwe` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '',
+  `description` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '',
+  `input_case` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '',
+  `masvs` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '',
+  `owasp_mobile` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '',
+  `reference` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '',
+  `severity` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '',
+  `create_time` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `check_status` tinyint(1) NOT NULL DEFAULT 0 COMMENT '0未审核  1有效漏洞  2无效漏洞',
+  `update_time` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = MyISAM AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of mobsfscan
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for murphysec
+-- ----------------------------
+DROP TABLE IF EXISTS `murphysec`;
+CREATE TABLE `murphysec`  (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `user_id` int(10) NOT NULL DEFAULT 0,
+  `code_id` int(10) NULL DEFAULT 0,
+  `comp_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '缺陷组件名称',
+  `version` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '当前版本',
+  `min_fixed_version` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '最小修复版本',
+  `show_level` tinyint(1) NOT NULL COMMENT '修复建议等级 1强烈建议修复 2建议修复 3可选修复',
+  `language` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '语言',
+  `solutions` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '修复方案',
+  `repair_status` tinyint(1) NOT NULL DEFAULT 1 COMMENT '修复状态 1未修复 2已修复',
+  `create_time` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `update_time` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of murphysec
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for murphysec_vuln
+-- ----------------------------
+DROP TABLE IF EXISTS `murphysec_vuln`;
+CREATE TABLE `murphysec_vuln`  (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `user_id` int(10) NOT NULL,
+  `code_id` int(10) NOT NULL,
+  `murphysec_id` int(10) NOT NULL,
+  `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '',
+  `cve_id` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT 'CVE编号',
+  `suggest_level` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '处置建议',
+  `poc` tinyint(1) NOT NULL DEFAULT 0,
+  `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '漏洞描述',
+  `affected_version` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '影响版本',
+  `min_fixed_version` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '最小修复版本',
+  `solutions` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '修复建议',
+  `influence` int(3) NOT NULL DEFAULT 0 COMMENT '影响指数',
+  `level` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '漏洞级别',
+  `vuln_path` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
+  `publish_time` int(11) NOT NULL COMMENT '发布时间',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of murphysec_vuln
 -- ----------------------------
 
 -- ----------------------------
@@ -938,9 +1070,9 @@ CREATE TABLE `node`  (
   `userid` int(10) NOT NULL DEFAULT 0,
   `status` tinyint(1) NOT NULL DEFAULT 0,
   `hostname` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '',
-  `create_time` datetime(0) NULL DEFAULT NULL,
+  `create_time` datetime NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = Compact;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = COMPACT;
 
 -- ----------------------------
 -- Records of node
@@ -984,10 +1116,10 @@ CREATE TABLE `one_for_all`  (
   `source` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
   `elapse` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
   `find` char(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT '',
-  `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `user_id` int(10) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = Compact;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = COMPACT;
 
 -- ----------------------------
 -- Records of one_for_all
@@ -997,46 +1129,53 @@ CREATE TABLE `one_for_all`  (
 -- Table structure for plugin
 -- ----------------------------
 DROP TABLE IF EXISTS `plugin`;
-CREATE TABLE `plugin` (
-    `id` int(10) NOT NULL AUTO_INCREMENT,
-    `user_id` int(10) NOT NULL DEFAULT '0',
-    `name` varchar(100) COLLATE utf8mb4_bin NOT NULL DEFAULT '' COMMENT '插件名称',
-    `cmd` varchar(255) COLLATE utf8mb4_bin NOT NULL COMMENT '插件执行命令',
-    `result_file` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL COMMENT '结果文件存放位置',
-    `create_time` datetime DEFAULT '2000-01-01 00:00:00' COMMENT '添加时间',
-    `status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '0禁用  1启用',
-    `is_delete` tinyint(1) NOT NULL DEFAULT '0',
-    `result_type` varchar(10) COLLATE utf8mb4_bin DEFAULT '' COMMENT 'json、csv、txt',
-    `update_time` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-    `tool_path` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL COMMENT '工具存放位置',
-    `scan_type` int(4) DEFAULT '0' COMMENT '0 app 1 host 2 code  3 url',
-    `type` tinyint(1) NOT NULL DEFAULT '1' COMMENT '1执行插件扫描   2结果分析',
-    PRIMARY KEY (`id`) USING BTREE,
-    UNIQUE KEY `un_name` (`name`,`scan_type`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin ROW_FORMAT=COMPACT COMMENT='自定义插件';
+CREATE TABLE `plugin`  (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `user_id` int(10) NOT NULL DEFAULT 0,
+  `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '' COMMENT '插件名称',
+  `cmd` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT '插件执行命令',
+  `result_file` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '结果文件存放位置',
+  `create_time` datetime NULL DEFAULT '2000-01-01 00:00:00' COMMENT '添加时间',
+  `status` tinyint(1) NOT NULL DEFAULT 0 COMMENT '0禁用  1启用',
+  `is_delete` tinyint(1) NOT NULL DEFAULT 0,
+  `result_type` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT '' COMMENT 'json、csv、txt',
+  `update_time` datetime NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `tool_path` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '工具存放位置',
+  `scan_type` int(4) NULL DEFAULT 0 COMMENT '0 app 1 host 2 code  3 url',
+  `type` tinyint(1) NOT NULL DEFAULT 1 COMMENT '1执行插件扫描   2结果分析',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE INDEX `un_name`(`name`, `scan_type`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin COMMENT = '自定义插件' ROW_FORMAT = COMPACT;
 
+-- ----------------------------
+-- Records of plugin
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for plugin_scan_log
 -- ----------------------------
 DROP TABLE IF EXISTS `plugin_scan_log`;
-CREATE TABLE `plugin_scan_log` (
-   `id` int(10) NOT NULL AUTO_INCREMENT,
-   `app_id` int(10) NOT NULL,
-   `plugin_id` int(10) NOT NULL,
-   `user_id` int(10) NOT NULL DEFAULT '0',
-   `content` varchar(5000) COLLATE utf8mb4_bin DEFAULT NULL COMMENT '扫描结果内容',
-   `create_time` datetime DEFAULT CURRENT_TIMESTAMP,
-   `check_status` tinyint(1) NOT NULL COMMENT '审核状态',
-   `plugin_name` varchar(50) COLLATE utf8mb4_bin DEFAULT NULL COMMENT '插件名称',
-   `scan_type` int(255) DEFAULT NULL COMMENT '0 app 1 host 2 code  3 url',
-   `log_type` int(11) DEFAULT '0' COMMENT '进度  0 开始扫描   1 完成   2 失败',
-   `file_content` varchar(5000) COLLATE utf8mb4_bin DEFAULT NULL,
-   `is_read` tinyint(1) NOT NULL DEFAULT '1' COMMENT '结果是否已读取   1未读  2已读取',
-   `is_custom` int(10) NOT NULL DEFAULT '1' COMMENT '是否为自定义插件 1否  2是',
-   PRIMARY KEY (`id`) USING BTREE,
-   UNIQUE KEY `un_id` (`app_id`,`plugin_name`,`log_type`,`scan_type`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin ROW_FORMAT=COMPACT COMMENT='自定义插件扫描结果';
+CREATE TABLE `plugin_scan_log`  (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `app_id` int(10) NOT NULL,
+  `plugin_id` int(10) NOT NULL,
+  `user_id` int(10) NOT NULL DEFAULT 0,
+  `content` varchar(5000) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '扫描结果内容',
+  `create_time` datetime NULL DEFAULT CURRENT_TIMESTAMP,
+  `check_status` tinyint(1) NOT NULL COMMENT '审核状态',
+  `plugin_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '插件名称',
+  `scan_type` int(255) NULL DEFAULT NULL COMMENT '0 app 1 host 2 code  3 url',
+  `log_type` int(11) NULL DEFAULT 0 COMMENT '进度  0 开始扫描   1 完成   2 失败',
+  `file_content` varchar(5000) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
+  `is_read` tinyint(1) NOT NULL DEFAULT 1 COMMENT '结果是否已读取   1未读  2已读取',
+  `is_custom` int(10) NOT NULL DEFAULT 1 COMMENT '是否为自定义插件 1否  2是',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE INDEX `un_id`(`app_id`, `plugin_name`, `log_type`, `scan_type`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin COMMENT = '自定义插件扫描结果' ROW_FORMAT = COMPACT;
+
+-- ----------------------------
+-- Records of plugin_scan_log
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for plugin_store
@@ -1045,14 +1184,14 @@ DROP TABLE IF EXISTS `plugin_store`;
 CREATE TABLE `plugin_store`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '自增id',
   `status` tinyint(3) UNSIGNED NOT NULL DEFAULT 1 COMMENT '状态 1 开启  0 禁用',
-  `create_time` datetime(0) NULL DEFAULT NULL COMMENT '插件安装时间',
+  `create_time` datetime NULL DEFAULT NULL COMMENT '插件安装时间',
   `name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '插件标识名,英文字母(惟一)',
   `title` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '插件名称',
   `version` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '插件版本号',
   `description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '插件描述',
   `code` char(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '兑换码',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '插件表' ROW_FORMAT = Compact;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '插件表' ROW_FORMAT = COMPACT;
 
 -- ----------------------------
 -- Records of plugin_store
@@ -1066,14 +1205,14 @@ CREATE TABLE `pocs_file`  (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `cve_num` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
-  `create_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
+  `create_time` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `status` tinyint(1) NOT NULL DEFAULT 1,
   `tool` tinyint(1) NOT NULL DEFAULT 0 COMMENT '0 pocsuite3 1 xray 2 其他',
   `content` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT 'POC内容',
   `vul_id` int(11) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `cve_poc`(`cve_num`, `name`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Compact;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = COMPACT;
 
 -- ----------------------------
 -- Records of pocs_file
@@ -1101,7 +1240,7 @@ CREATE TABLE `pocsuite3`  (
   `is_delete` tinyint(1) NOT NULL DEFAULT 0,
   `user_id` int(10) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = Compact;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = COMPACT;
 
 -- ----------------------------
 -- Records of pocsuite3
@@ -1117,29 +1256,29 @@ CREATE TABLE `process_safe`  (
   `value` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
   `status` int(4) NOT NULL DEFAULT 1 COMMENT '0 失效   1启用',
   `note` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '描述',
-  `update_time` datetime(0) NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP(0),
+  `update_time` datetime NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   `type` int(11) NULL DEFAULT 0 COMMENT '工具分类  0  黑盒扫描   1  白盒审计  2  专项扫描  3  系统其他',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 42 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = Compact;
+) ENGINE = InnoDB AUTO_INCREMENT = 45 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = COMPACT;
 
 -- ----------------------------
 -- Records of process_safe
 -- ----------------------------
-INSERT INTO `process_safe` VALUES (2, 'scan xray', 'cd /root/qingscan/code  &&  php think scan xray  >> /tmp/xray.txt & ', 1, 'xray扫描', '2022-01-05 23:40:36', 0);
+INSERT INTO `process_safe` VALUES (2, 'scan xray', 'cd /root/qingscan/code  &&  php think scan xray  >> /tmp/xray.txt & ', 0, 'xray扫描', '2022-12-01 16:55:02', 0);
 INSERT INTO `process_safe` VALUES (3, 'scan awvs', 'cd /root/qingscan/code  &&  php think scan awvs  >> /tmp/awvs.txt & ', 0, 'awvs扫描', '2022-05-11 18:00:47', 0);
-INSERT INTO `process_safe` VALUES (4, 'scan rad', 'cd /root/qingscan/code  &&  php think scan rad  >> /tmp/rad.txt & ', 1, 'rad爬虫', '2022-01-05 23:40:36', 0);
+INSERT INTO `process_safe` VALUES (4, 'scan rad', 'cd /root/qingscan/code  &&  php think scan rad  >> /tmp/rad.txt & ', 0, 'rad爬虫', '2022-12-01 16:54:52', 0);
 INSERT INTO `process_safe` VALUES (5, 'scan host', 'cd /root/qingscan/code  &&  php think scan host  >> /tmp/host.txt & ', 0, '将黑盒目标添加到主机扫描', '2022-05-11 18:00:50', 0);
 INSERT INTO `process_safe` VALUES (6, 'scan port', 'cd /root/qingscan/code  &&  php think scan port  >> /tmp/port.txt & ', 0, '端口发现', '2022-05-11 18:00:50', 0);
 INSERT INTO `process_safe` VALUES (7, 'scan nmap', 'cd /root/qingscan/code  &&  php think scan nmap  >> /tmp/nmap.txt & ', 0, '端口服务识别', '2022-05-11 18:00:52', 0);
 INSERT INTO `process_safe` VALUES (8, 'scan fortify', 'cd /root/qingscan/code  &&  php think scan fortify  >> /tmp/fortify.txt & ', 0, 'fortify代码审计', '2022-05-11 18:00:54', 1);
 INSERT INTO `process_safe` VALUES (9, 'scan kunlun', 'cd /root/qingscan/code  &&  php think scan kunlun  >> /tmp/kunlun.txt & ', 0, 'kunlun代码审计', '2022-05-11 18:00:55', 1);
-INSERT INTO `process_safe` VALUES (10, 'scan semgrep', 'cd /root/qingscan/code  &&  php think scan semgrep  >> /tmp/semgrep.txt & ', 1, 'semgrep代码审计', '2022-01-05 23:40:36', 1);
+INSERT INTO `process_safe` VALUES (10, 'scan semgrep', 'cd /root/qingscan/code  &&  php think scan semgrep  >> /tmp/semgrep.txt & ', 0, 'semgrep代码审计', '2022-12-01 16:54:01', 1);
 INSERT INTO `process_safe` VALUES (13, 'scan google', 'cd /root/qingscan/code  &&  php think scan google >> /tmp/google.txt & ', 0, '获取黑盒目标页面基本信息', '2022-05-11 18:00:57', 0);
 INSERT INTO `process_safe` VALUES (14, 'scan upadteRegion', 'cd /root/qingscan/code  &&  php think scan upadteRegion >> /tmp/upadteRegion.txt & ', 0, '更新IP的基本信息', '2022-05-11 18:00:58', 0);
 INSERT INTO `process_safe` VALUES (15, 'scan whatweb', 'cd /root/qingscan/code  &&  php think scan whatweb >> /tmp/whatweb.txt & ', 0, 'what指纹识别', '2022-05-11 18:00:58', 0);
 INSERT INTO `process_safe` VALUES (16, 'scan subdomainScan', 'cd /root/qingscan/code  &&  php think scan subdomainScan >> /tmp/subdomainScan.txt & ', 0, 'subdomain子域名扫描', '2022-05-11 18:00:59', 0);
 INSERT INTO `process_safe` VALUES (17, 'scan hydra', 'cd /root/qingscan/code  &&  php think scan hydra >> /tmp/hydra.txt & ', 0, 'hydra主机爆破', '2022-05-11 18:01:00', 0);
-INSERT INTO `process_safe` VALUES (18, 'scan sqlmapScan', 'cd /root/qingscan/code  &&  php think scan sqlmapScan >> /tmp/sqlmapScan.txt & ', 1, 'sqlmap扫描URL', '2022-01-05 23:40:36', 0);
+INSERT INTO `process_safe` VALUES (18, 'scan sqlmapScan', 'cd /root/qingscan/code  &&  php think scan sqlmapScan >> /tmp/sqlmapScan.txt & ', 0, 'sqlmap扫描URL', '2022-12-01 16:51:12', 0);
 INSERT INTO `process_safe` VALUES (20, 'scan fofa', 'cd /root/qingscan/code  &&  php think scan fofa >> /tmp/fofa.txt & ', 0, 'fofa收集缺陷站点', '2022-05-11 18:01:02', 0);
 INSERT INTO `process_safe` VALUES (21, 'scan dirmapScan', 'cd /root/qingscan/code  &&  php think scan dirmapScan >> /tmp/dirmapScan.txt & ', 0, '扫描黑盒目标后台', '2022-05-11 18:01:03', 0);
 INSERT INTO `process_safe` VALUES (22, 'scan getNotice', 'cd /root/qingscan/code  &&  php think scan getNotice >> /tmp/getNotice.txt & ', 0, '获取GitHub漏洞公告', '2022-05-11 18:01:04', 0);
@@ -1162,6 +1301,24 @@ INSERT INTO `process_safe` VALUES (40, 'scan plugin_safe', 'cd /root/qingscan/co
 INSERT INTO `process_safe` VALUES (41, 'scan crawlergoScan', 'cd /root/qingscan/code  &&  php think scan crawlergoScan>> /tmp/crawlergoScan.txt & ', 0, 'crawlergo爬虫URL收集', '2022-05-11 18:01:20', 0);
 INSERT INTO `process_safe` VALUES (42, 'scan mobsfscan', 'cd /root/qingscan/code  &&  php think scan mobsfscan>> /tmp/mobsfscan.txt & ', 0, 'mobsfscan代码审计(app)', '2022-05-10 11:09:24', 1);
 INSERT INTO `process_safe` VALUES (43, 'scan murphysecScan', 'cd /root/qingscan/code  &&  php think scan murphysecScan>> /tmp/murphysecScan.txt & ', 0, '开源组件漏洞扫描工具', '2022-05-19 16:35:14', 1);
+INSERT INTO `process_safe` VALUES (44, 'scan unauthorizeScan', 'cd /root/qingscan/code  &&  php think scan unauthorizeScan>> /tmp/unauthorizeScan.txt & ', 0, '未授权扫描', '2022-11-21 18:11:52', 4);
+
+-- ----------------------------
+-- Table structure for project_tools
+-- ----------------------------
+DROP TABLE IF EXISTS `project_tools`;
+CREATE TABLE `project_tools`  (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `type` tinyint(1) NOT NULL DEFAULT 1 COMMENT '1app 2code',
+  `project_id` int(10) NOT NULL DEFAULT 9 COMMENT '项目id',
+  `tools_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '工具名称',
+  `create_time` datetime NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of project_tools
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for proxy
@@ -1172,9 +1329,9 @@ CREATE TABLE `proxy`  (
   `host` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT 'ip地址',
   `port` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT '端口号',
   `status` int(4) NOT NULL DEFAULT 1 COMMENT '1 有效  0 无效',
-  `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin COMMENT = '代理表' ROW_FORMAT = Compact;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin COMMENT = '代理表' ROW_FORMAT = COMPACT;
 
 -- ----------------------------
 -- Records of proxy
@@ -1188,7 +1345,7 @@ CREATE TABLE `semgrep`  (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `check_id` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
   `code_id` int(11) NULL DEFAULT NULL COMMENT '项目ID',
-  `create_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
+  `create_time` datetime NULL DEFAULT CURRENT_TIMESTAMP,
   `end_col` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
   `end_line` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '代码行号',
   `end_offset` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
@@ -1205,8 +1362,9 @@ CREATE TABLE `semgrep`  (
   `check_status` tinyint(1) NOT NULL DEFAULT 0 COMMENT '审核状态',
   `is_delete` tinyint(1) NOT NULL DEFAULT 0,
   `user_id` int(10) NOT NULL DEFAULT 0,
+  `update_time` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = Compact;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = COMPACT;
 
 -- ----------------------------
 -- Records of semgrep
@@ -1220,9 +1378,9 @@ CREATE TABLE `svn_project`  (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `command` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-  `scan_time` datetime(0) NULL DEFAULT '2000-01-01 14:14:14',
+  `scan_time` datetime NULL DEFAULT '2000-01-01 14:14:14',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Compact;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = COMPACT;
 
 -- ----------------------------
 -- Records of svn_project
@@ -1239,7 +1397,7 @@ CREATE TABLE `system_config`  (
   `value` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
   `is_delete` tinyint(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = Compact;
+) ENGINE = InnoDB AUTO_INCREMENT = 9 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = COMPACT;
 
 -- ----------------------------
 -- Records of system_config
@@ -1250,8 +1408,8 @@ INSERT INTO `system_config` VALUES (3, '百度ak', 'baidu_ak', 'xxxxxxxx', 0);
 INSERT INTO `system_config` VALUES (4, 'github秘钥', 'github_token', 'xxxxxxxxx', 0);
 INSERT INTO `system_config` VALUES (5, 'awvs地址', 'awvs_url', 'xxxxxxxxxxxxxxxxxx', 0);
 INSERT INTO `system_config` VALUES (6, 'awvs密钥', 'awvs_token', 'xxxxxxxxxxxxxxxxxx', 0);
-INSERT INTO `system_config` VALUES (7,'最大进程数量', 'maxProcesses', '1', 0);
-INSERT INTO `system_config` VALUES (8,'墨菲安全token', 'murphysec_token', 'xxxxxxxxxxxxxxxxxx', 0);
+INSERT INTO `system_config` VALUES (7, '最大进程数量', 'maxProcesses', '1', 0);
+INSERT INTO `system_config` VALUES (8, '墨菲安全token', 'murphysec_token', 'xxxxxxxxxxxxxxxxxx', 0);
 
 -- ----------------------------
 -- Table structure for system_zanzhu
@@ -1264,7 +1422,7 @@ CREATE TABLE `system_zanzhu`  (
   `time` date NULL DEFAULT NULL,
   `message` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = Compact;
+) ENGINE = InnoDB AUTO_INCREMENT = 11 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = COMPACT;
 
 -- ----------------------------
 -- Records of system_zanzhu
@@ -1289,10 +1447,10 @@ CREATE TABLE `task_host_scan`  (
   `app_id` int(11) NULL DEFAULT NULL,
   `url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
   `status` tinyint(4) NOT NULL DEFAULT 0,
-  `create_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
-  `update_time` datetime(0) NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP(0),
+  `create_time` datetime NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_time` datetime NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = Compact;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = COMPACT;
 
 -- ----------------------------
 -- Records of task_host_scan
@@ -1307,10 +1465,10 @@ CREATE TABLE `task_url_crawler`  (
   `app_id` int(11) NULL DEFAULT NULL,
   `url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
   `status` tinyint(4) NOT NULL DEFAULT 0,
-  `create_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
-  `update_time` datetime(0) NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP(0),
+  `create_time` datetime NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_time` datetime NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = Compact;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = COMPACT;
 
 -- ----------------------------
 -- Records of task_url_crawler
@@ -1323,9 +1481,9 @@ DROP TABLE IF EXISTS `text`;
 CREATE TABLE `text`  (
   `hash` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `content` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`hash`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Compact;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = COMPACT;
 
 -- ----------------------------
 -- Records of text
@@ -1341,12 +1499,12 @@ CREATE TABLE `urls`  (
   `app_id` int(11) NULL DEFAULT 0,
   `url` varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
   `status` tinyint(4) NOT NULL DEFAULT 1,
-  `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `header` varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
   `content` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL,
   `response_header` text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL,
   `hash` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
-  `scan_time` datetime(0) NULL DEFAULT '2000-01-01 00:00:00',
+  `scan_time` datetime NULL DEFAULT '2000-01-01 00:00:00',
   `scheme` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
   `host` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
   `path` varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
@@ -1357,7 +1515,7 @@ CREATE TABLE `urls`  (
   `content_type` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
   `extension` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
   `is_delete` tinyint(1) NOT NULL DEFAULT 0,
-  `sqlmap_scan_time` datetime(0) NULL DEFAULT '2000-01-01 00:00:00',
+  `sqlmap_scan_time` datetime NULL DEFAULT '2000-01-01 00:00:00',
   `id_card` text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL,
   `email` text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL,
   `phone` text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL,
@@ -1367,7 +1525,7 @@ CREATE TABLE `urls`  (
   UNIQUE INDEX `un_url`(`hash`) USING BTREE,
   INDEX `appid`(`app_id`) USING BTREE,
   CONSTRAINT `appid` FOREIGN KEY (`app_id`) REFERENCES `app` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = Compact;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = COMPACT;
 
 -- ----------------------------
 -- Records of urls
@@ -1380,7 +1538,7 @@ DROP TABLE IF EXISTS `urls_sqlmap`;
 CREATE TABLE `urls_sqlmap`  (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `urls_id` int(10) NOT NULL,
-  `create_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
+  `create_time` datetime NULL DEFAULT CURRENT_TIMESTAMP,
   `type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '注入类型',
   `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
   `payload` text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL,
@@ -1390,7 +1548,7 @@ CREATE TABLE `urls_sqlmap`  (
   `dbms` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
   `user_id` int(10) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = Compact;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = COMPACT;
 
 -- ----------------------------
 -- Records of urls_sqlmap
@@ -1420,12 +1578,12 @@ CREATE TABLE `user`  (
   `token` char(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '',
   `url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '' COMMENT '主页url',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = Compact;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = COMPACT;
 
 -- ----------------------------
 -- Records of user
 -- ----------------------------
-INSERT INTO `user` VALUES (1, 'admin', '3a0abf4851d08dc2f0374bf9ce487aaa', '', '测试', 8, 1635494087, '', 0, 1, 1640704760, 0, 0, '', '', '', '1ca4725c34758183af3fd1f723f07a31', '/');
+INSERT INTO `user` VALUES (1, 'admin', '2871d22a3e5df21199ed0f2c2320c417', '', '测试', 8, 1635494087, '', 0, 1, 1640704760, 0, 0, '', '', '', '1ca4725c34758183af3fd1f723f07a31', '/');
 
 -- ----------------------------
 -- Table structure for user_log
@@ -1434,12 +1592,22 @@ DROP TABLE IF EXISTS `user_log`;
 CREATE TABLE `user_log`  (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `username` char(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '',
-  `create_time` datetime(0) NOT NULL,
+  `create_time` datetime NOT NULL,
   `content` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '详情',
   `type` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '操作类型',
   `ip` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Compact;
+) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = COMPACT;
+
+-- ----------------------------
+-- Records of user_log
+-- ----------------------------
+INSERT INTO `user_log` VALUES (1, 'admin', '2022-12-01 16:08:10', '登录成功，账号：admin', '用户登录', '172.18.0.1');
+INSERT INTO `user_log` VALUES (2, 'admin', '2022-12-01 16:09:08', '系统更新成功,当前版本号[v1.6.0]', '系统更新', '172.18.0.1');
+INSERT INTO `user_log` VALUES (3, 'admin', '2022-12-01 17:00:33', '清空数据表[log]成功', '日志管理', '172.18.0.1');
+INSERT INTO `user_log` VALUES (4, 'admin', '2022-12-01 17:00:51', '清空数据表[log]成功', '日志管理', '172.18.0.1');
+INSERT INTO `user_log` VALUES (5, 'admin', '2022-12-01 17:11:06', '清空数据表[log]成功', '日志管理', '172.18.0.1');
+INSERT INTO `user_log` VALUES (6, 'admin', '2022-12-01 17:12:48', '清空数据表[log]成功', '日志管理', '172.18.0.1');
 
 -- ----------------------------
 -- Table structure for vul_target
@@ -1451,13 +1619,13 @@ CREATE TABLE `vul_target`  (
   `ip` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
   `port` int(10) NULL DEFAULT NULL,
   `query` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
-  `create_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
+  `create_time` datetime NULL DEFAULT CURRENT_TIMESTAMP,
   `is_vul` int(11) NOT NULL DEFAULT 0 COMMENT '是否存在漏洞 0 位置 1 存在 2 不存在',
   `vul_id` int(11) NULL DEFAULT NULL COMMENT '缺陷ID',
   `user_id` int(10) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `un_addr`(`ip`, `port`, `vul_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = Compact;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = COMPACT;
 
 -- ----------------------------
 -- Records of vul_target
@@ -1507,8 +1675,8 @@ CREATE TABLE `vulnerable`  (
   `product_type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
   `fofa_max` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
   `fofa_con` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
-  `created_at` datetime(0) NULL DEFAULT NULL,
-  `updated_at` datetime(0) NULL DEFAULT NULL,
+  `created_at` datetime NULL DEFAULT NULL,
+  `updated_at` datetime NULL DEFAULT NULL,
   `user_id` int(10) NULL DEFAULT NULL,
   `is_pass` int(10) NULL DEFAULT NULL,
   `user_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
@@ -1518,13 +1686,16 @@ CREATE TABLE `vulnerable`  (
   `is_pass_attack` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
   `auditor` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
   `cause` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
-  `scan_time` datetime(0) NULL DEFAULT '2000-01-01 00:00:00',
+  `scan_time` datetime NULL DEFAULT '2000-01-01 00:00:00',
   `is_poc` int(10) NULL DEFAULT 0 COMMENT '是否有POC',
   `is_delete` tinyint(1) NOT NULL DEFAULT 0,
-  `target_scan_time` datetime(0) NULL DEFAULT NULL,
+  `target_scan_time` datetime NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Compact;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = COMPACT;
 
+-- ----------------------------
+-- Records of vulnerable
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for xray
@@ -1543,129 +1714,31 @@ CREATE TABLE `xray`  (
   `is_delete` tinyint(1) NOT NULL DEFAULT 0,
   `user_id` int(10) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = Compact;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = COMPACT;
 
+-- ----------------------------
+-- Records of xray
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for zhiwen
 -- ----------------------------
 DROP TABLE IF EXISTS `zhiwen`;
-CREATE TABLE `zhiwen` (
-    `id` int(10) NOT NULL AUTO_INCREMENT,
-    `add_by` varchar(255) DEFAULT NULL,
-    `add_time` varchar(255) DEFAULT NULL,
-    `filters` varchar(255) DEFAULT NULL,
-    `keyword` varchar(255) DEFAULT NULL,
-    `md5` varchar(255) DEFAULT NULL,
-    `supplier` varchar(255) DEFAULT NULL,
-    `tags` varchar(255) DEFAULT NULL,
-    `title` varchar(255) DEFAULT NULL,
-    PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
+CREATE TABLE `zhiwen`  (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `add_by` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `add_time` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `filters` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `keyword` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `md5` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `supplier` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `tags` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = COMPACT;
 
-DROP TABLE IF EXISTS `mobsfscan`;
-CREATE TABLE `mobsfscan` (
-    `id` int(10) NOT NULL AUTO_INCREMENT,
-    `code_id` int(10) NOT NULL DEFAULT '0',
-    `user_id` int(10) NOT NULL DEFAULT '0',
-    `type` varchar(255) NOT NULL DEFAULT '',
-    `files` text,
-    `cwe` varchar(255) NOT NULL DEFAULT '',
-    `description` varchar(500) NOT NULL DEFAULT '',
-    `input_case` varchar(255) NOT NULL DEFAULT '',
-    `masvs` varchar(255) NOT NULL DEFAULT '',
-    `owasp_mobile` varchar(255) NOT NULL DEFAULT '',
-    `reference` varchar(500) NOT NULL DEFAULT '',
-    `severity` varchar(255) NOT NULL DEFAULT '',
-    `create_time` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
-    `check_status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '0未审核  1有效漏洞  2无效漏洞',
-    PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
-
-DROP TABLE IF EXISTS `project_tools`;
-CREATE TABLE `project_tools` (
-    `id` int(10) NOT NULL AUTO_INCREMENT,
-    `type` tinyint(1) NOT NULL DEFAULT '1' COMMENT '1app 2code',
-    `project_id` int(10) NOT NULL DEFAULT '9' COMMENT '项目id',
-    `tools_name` varchar(50) NOT NULL DEFAULT '' COMMENT '工具名称',
-    `create_time` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-    PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
-
-DROP TABLE IF EXISTS `murphysec`;
-CREATE TABLE `murphysec` (
-    `id` int(10) NOT NULL AUTO_INCREMENT,
-    `user_id` int(10) NOT NULL DEFAULT '0',
-    `code_id` int(10) DEFAULT '0',
-    `comp_name` varchar(100) NOT NULL DEFAULT '' COMMENT '缺陷组件名称',
-    `version` varchar(50) NOT NULL DEFAULT '' COMMENT '当前版本',
-    `min_fixed_version` varchar(50) NOT NULL COMMENT '最小修复版本',
-    `show_level` tinyint(1) NOT NULL COMMENT '修复建议等级 1强烈建议修复 2建议修复 3可选修复',
-    `language` varchar(20) NOT NULL DEFAULT '' COMMENT '语言',
-    `solutions` text COMMENT '修复方案',
-    `repair_status` tinyint(1) NOT NULL DEFAULT '1' COMMENT '修复状态 1未修复 2已修复',
-    `create_time` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
-    PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
-
-DROP TABLE IF EXISTS `murphysec_vuln`;
-CREATE TABLE `murphysec_vuln` (
-    `id` int(10) NOT NULL AUTO_INCREMENT,
-    `user_id` int(10) NOT NULL,
-    `code_id` int(10) NOT NULL,
-    `murphysec_id` int(10) NOT NULL,
-    `title` varchar(255) NOT NULL DEFAULT '',
-    `cve_id` varchar(20) NOT NULL DEFAULT '' COMMENT 'CVE编号',
-    `suggest_level` varchar(20) NOT NULL DEFAULT '' COMMENT '处置建议',
-    `poc` tinyint(1) NOT NULL DEFAULT '0',
-    `description` text COMMENT '漏洞描述',
-    `affected_version` varchar(255) NOT NULL DEFAULT '' COMMENT '影响版本',
-    `min_fixed_version` varchar(100) NOT NULL DEFAULT '' COMMENT '最小修复版本',
-    `solutions` text COMMENT '修复建议',
-    `influence` int(3) NOT NULL DEFAULT '0' COMMENT '影响指数',
-    `level` varchar(10) NOT NULL DEFAULT '' COMMENT '漏洞级别',
-    `vuln_path` text,
-    `publish_time` int(11) NOT NULL COMMENT '发布时间',
-    PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-INSERT INTO `auth_rule`( `href`, `title`, `is_delete`, `is_open_auth`, `pid`, `sort`, `created_at`, `menu_status`, `update_time`, `level`, `delete_time`, `icon_url`) VALUES ( 'zhiwen/index', '指纹列表', 0, 1, 35, 11, 1643338608, 1, 0, 2, 0, '');
-INSERT INTO `auth_rule`( `href`, `title`, `is_delete`, `is_open_auth`, `pid`, `sort`, `created_at`, `menu_status`, `update_time`, `level`, `delete_time`, `icon_url`) VALUES ( 'backup/backup', '未知', 0, 1, 43, 0, 1643091277, 1, 0, 3, 0, '');
-INSERT INTO `auth_rule`( `href`, `title`, `is_delete`, `is_open_auth`, `pid`, `sort`, `created_at`, `menu_status`, `update_time`, `level`, `delete_time`, `icon_url`) VALUES ( 'user_log/index', '登录日志', 0, 1, 23, 9, 1643018839, 1, 0, 2, 0, '');
-INSERT INTO `auth_rule`( `href`, `title`, `is_delete`, `is_open_auth`, `pid`, `sort`, `created_at`, `menu_status`, `update_time`, `level`, `delete_time`, `icon_url`) VALUES ( 'backup/index', '数据备份', 0, 1, 23, 8, 1642854435, 1, 0, 2, 0, '');
-INSERT INTO `auth_rule`( `href`, `title`, `is_delete`, `is_open_auth`, `pid`, `sort`, `created_at`, `menu_status`, `update_time`, `level`, `delete_time`, `icon_url`) VALUES ( 'github_keyword_monitor_notice/index', 'github关键词监控结果', 0, 1, 35, 8, 1642852575, 1, 0, 2, 0, '');
-INSERT INTO `auth_rule` (`href`, `title`, `is_delete`, `is_open_auth`, `pid`, `sort`, `created_at`, `menu_status`, `update_time`, `level`, `delete_time`, `icon_url`) VALUES ('mobsfscan/index', 'mobsfscan列表', 0, 1, 14, 4, 1652079904, 1, 1652079930, 2, 0, '');
-INSERT INTO `auth_rule` (`href`, `title`, `is_delete`, `is_open_auth`, `pid`, `sort`, `created_at`, `menu_status`, `update_time`, `level`, `delete_time`, `icon_url`) VALUES ('murphysec/index', 'murphysec列表', 0, 1, 14, 4, 1652861447, 1, 1652861478, 2, 0, '');
-INSERT INTO `auth_rule` (`auth_rule_id`,`href`, `title`, `is_delete`, `is_open_auth`, `pid`, `sort`, `created_at`, `menu_status`, `update_time`, `level`, `delete_time`, `icon_url`) VALUES (333,'', '插件中心', 0, 1, 0, 8, 1642257783, 0, 0, 1, 0, '');
-ALTER TABLE `code` ADD COLUMN `is_online` int(10) NOT NULL DEFAULT 1 COMMENT '1线上   2本地';
-ALTER TABLE `code` ADD COLUMN `mobsfscan_scan_time` datetime(0) NOT NULL DEFAULT '2000-01-01 00:00:00';
-ALTER TABLE `code` ADD COLUMN `project_type` tinyint(1) NOT NULL DEFAULT 0 COMMENT '1php 2java 3python 4go 5app 6其他';
-ALTER TABLE `code` ADD COLUMN `status` tinyint(1) NOT NULL DEFAULT 1 COMMENT '1启用 2禁用';
-ALTER TABLE `code` ADD COLUMN `murphysec_scan_time` datetime(0) NOT NULL DEFAULT '2000-01-01 00:00:00';
-
-ALTER TABLE `fortify` ADD COLUMN `update_time` datetime(0) NOT NULL DEFAULT '2000-01-01 00:00:00';
-ALTER TABLE `mobsfscan` ADD COLUMN `update_time` datetime(0) NOT NULL DEFAULT '2000-01-01 00:00:00';
-ALTER TABLE `semgrep` ADD COLUMN `update_time` datetime(0) NOT NULL DEFAULT '2000-01-01 00:00:00';
-ALTER TABLE `murphysec` ADD COLUMN `update_time` datetime(0) NOT NULL DEFAULT '2000-01-01 00:00:00';
-
-
-INSERT INTO `auth_rule` (`href`, `title`, `is_delete`, `is_open_auth`, `pid`, `sort`, `created_at`, `menu_status`, `update_time`, `level`, `delete_time`, `icon_url`) VALUES ('config/clear_cache', '清除缓存', 0, 1, 23, 10, 1660199916, 1, 0, 2, 0, '');
-ALTER TABLE `host` ADD COLUMN `unauthorize_scan_time` datetime(0) NOT NULL DEFAULT '2000-01-01 00:00:00' COMMENT '未授权扫描时间';
-DROP TABLE IF EXISTS `host_unauthorized`;
-CREATE TABLE `host_unauthorized` (
-                                     `id` int(10) NOT NULL AUTO_INCREMENT,
-                                     `host_id` int(10) NOT NULL,
-                                     `ip` char(20) CHARACTER SET latin1 NOT NULL DEFAULT '',
-                                     `port` int(5) NOT NULL DEFAULT '0',
-                                     `text` varchar(255) NOT NULL DEFAULT '',
-                                     `user_id` int(10) NOT NULL DEFAULT '0',
-                                     `is_delete` tinyint(1) NOT NULL DEFAULT '0',
-                                     `status` tinyint(1) NOT NULL DEFAULT '1',
-                                     `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                                     PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-INSERT INTO `QingScan`.`auth_rule` (`href`, `title`, `is_delete`, `is_open_auth`, `pid`, `sort`, `created_at`, `menu_status`, `update_time`, `level`, `delete_time`, `icon_url`) VALUES ('unauthorized/index', '未授权列表', 0, 1, 35, 4, 1669016435, 1, 1669016502, 2, 0, '');
-INSERT INTO `QingScan`.`process_safe` (`key`, `value`, `status`, `note`, `update_time`, `type`) VALUES ('scan unauthorizeScan', 'cd /root/qingscan/code  &&  php think scan unauthorizeScan>> /tmp/unauthorizeScan.txt & ', 0, '未授权扫描', '2022-11-21 18:11:52', 4);
+-- ----------------------------
+-- Records of zhiwen
+-- ----------------------------
 
 SET FOREIGN_KEY_CHECKS = 1;
