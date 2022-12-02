@@ -32,10 +32,15 @@ use think\facade\Db;
                     //更新python配置
                     setPythonConfig();
 
-                    //从SQL文件中提取SQL语句
-                    $sqlArr = getSQLArr('./qingscan.sql');
-                    //批量执行SQL语句
-                    batchExecuteSql('mysql',$sqlArr);
+                    try {
+                        //从SQL文件中提取SQL语句
+                        $sqlArr = getSQLArr();
+                        //批量执行SQL语句
+                        batchExecuteSql($sqlArr);
+                    }catch (Exception $e){
+                        echo $e->getMessage();
+                        exit();
+                    }
 
                     addOldData();
                     ?>
@@ -62,10 +67,10 @@ function setPythonConfig(){
 }
 
 
-function batchExecuteSql($database,$sqlArr)
+function batchExecuteSql($sqlArr)
 {;
     foreach ($sqlArr as $sql) {
-        $result = Db::connect($database)->execute($sql);
+        $result = Db::execute($sql);
         if ($result === 0) {
 //            echo "执行SQL语句成功:<pre>{$sql}</pre><br>";
         } elseif (strstr($sql, "INSERT") && $result === 1) {
@@ -83,9 +88,8 @@ function addOldData()
     $password = '' === $str ? '' : md5(md5(sha1($str) . 'xt1l3a21uo0tu2oxtds3wWte23dsxix2d3in7yuhui32yuapatmdsnnzdazh1612ongxxin2z') . '###xt');;
 
     //导入最新的数据格式
-    $sql = "UPDATE  user SET username=?,password=? where id = 1";
-
-    $result = Db::connect('mysql')->execute($sql,[$_POST['username'],$password]);
+    $sql = "UPDATE user SET username=?,password=? where id = 1";
+    $result = Db::name('user')->where('id',1)->update(['username'=>$_POST['username'],'password'=>$password,'update_time'=>time()]);
     if ($result) {
         echo " <a class=\"btn btn-lg btn-outline-success\" href='/' >导入数据成功!,进入首页</a>";
         file_put_contents('install.lock', '');
@@ -106,9 +110,9 @@ function addOldData()
     }
 }
 
-function getSqlArr($filename)
+function getSqlArr()
 {
-    $str = file_get_contents($filename);
+    $str = file_get_contents('./qingscan.sql');
     //匹配删表语句
     $zhengze = "/DROP.*;/Us";
     preg_match_all($zhengze, $str, $shanbiao);
