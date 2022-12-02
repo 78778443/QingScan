@@ -16,7 +16,7 @@ services:
       --max_connections=1000
       --default-authentication-plugin=mysql_native_password
   qingscan:
-    image: registry.cn-beijing.aliyuncs.com/xtian/qingscan:20221201
+    image: registry.cn-chengdu.aliyuncs.com/qingscan/qingscan:20221201
     container_name: qingscan
     #    network_mode: "host"
     links:
