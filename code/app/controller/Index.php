@@ -46,6 +46,8 @@ class Index extends Common
         $portCount = Db::table('host_port')->count();
         //服务数量
         $serviceCount = Db::table('host_port')->group("service")->count();
+        // 未授权漏洞
+        $unauthorizedCount = Db::table('host_unauthorized')->count();
 
 
         ####### 白盒统计
@@ -90,6 +92,7 @@ class Index extends Common
                 "subInfo" => [
                     ["name" => "port", "value" => $portCount, "href" => url('host_port/index')],
                     ["name" => "中间件", "value" => $serviceCount, "href" => url('host_port/index')],
+                    ["name" => "未授权漏洞", "value" => $unauthorizedCount, "href" => url('unauthorized/index')],
                 ]
             ],
             [
