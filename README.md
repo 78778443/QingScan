@@ -20,32 +20,28 @@ QingScan 是一款聚合扫描器，本身不生产安全扫描功能，但会�
 ## 安装教程
 
 1. 需要安装docker、docker-compose 安装方法 http://get.daocloud.io/
-2. 下载代码后,启动容器`cd QingScan/docker/latest  && docker-compose up -d `
-3. <b>首次</b>启动需要更新容器内代码`docker exec  qingscan sh -c 'cd /root/qingscan && git fetch && git reset --hard origin/main && rm code/public/install/install.lock' `
+2. 下载代码后,启动容器`cd QingScan/ && docker-compose up -d `
+3. <b>首次</b>启动更新容器内代码`docker exec  qingscan sh -c 'cd /root/qingscan && git fetch && git reset --hard origin/main && rm code/public/install/install.lock' `
 4. 浏览器访问  http://127.0.0.1:8000/ 自动进入安装界面
 5. 安装中出现任何问题，请查看视频安装教程:https://www.bilibili.com/video/BV1rF411i7Gx
-6. fortify 涉及许可证问题，镜像内不包含，需要自己将Linux版本的fortify放到`/data/tools`文件夹中
-7. AWVS 调用主要通过API，需要自己将API配置系统，配置管理中去
-8. murphysec 调用时，需要自己将墨菲安全token配置到管理中去
-9. AWVS默认账户:admin@admin.com 默认密码:Admin123
 
-## 注意事项（如不想重新安装数据库）
+### 插件配置说明
+- fortify 涉及许可证问题，镜像内不包含，需要自己将Linux版本的fortify放到`/data/tools`文件夹中
+- AWVS 调用主要通过API，需要自己将API配置系统，配置管理中去
+- AWVS默认账户:admin@admin.com 默认密码:Admin123
+- murphysec 调用时，需要自己将墨菲安全token配置到管理中去
 
-1. 先进入到现有的qingscan容器中`docker exec -it qingscan  /bin/bash`
-2. 查看`root/qingscan/docker/data/update.lock`文件里面的内容版本号是多少
-3. 下载新代码后,启动容器`cd QingScan/docker/latest  && docker-compose up -d `
-4. <b>首次</b>启动需要更新容器内代码`docker exec qingscan sh -c 'cd /root/qingscan && git fetch && git reset --hard origin/main' `
-5. 执行`docker exec -it qingscan /bin/bash` 进入到容器里面
-6. 查看`root/qingscan/code/public/install/install.lock`是否存在,如不存在创建
-7. 根据第一步查看到的版本号，执行大于该版本的sql语句(文件在`root/qingscan/docker/data`目录下)
-8. 浏览器访问  http://127.0.0.1:8000/
+### 重复安装(保留上一次数据)
 
+1. 使用数据库管理软件,导出之前的数据为SQL文件
+2. 重新安装一次qingscan
+3. 将导出的SQL文件,覆盖到现在的数据库
 
-## 远程支持
+## 支持支持
 
-QingScan尽最大能力保障各位安装的顺畅，但QingScan人力有限，目前仍然无法预料到每一处场景，希望您尽量按照视频教程中的环境来搭建；
+QingScan尽最大能力保障各位使用的顺畅，但QingScan人力有限，目前仍然无法预料到每一处场景，希望您尽量按照视频教程中的环境来搭建和使用；
 
-如果在安装的过程中遇到比较麻烦的问题，也可以联系我们的工程师远程协助帮你解决问题(需淘宝下单`18.8`元人民币),下单后主动添加群里`婷婷的橙子`为好友，并将向日葵的ID和验证码发给她。
+如果在安装或使用的过程中遇到任何问题，也可以联系我们的工程师远程协助帮你解决问题(需淘宝下单`18.8`元人民币),下单后主动添加群里`婷婷的橙子`为好友，并将向日葵的ID和验证码发给她。
 
 淘宝链接地址：https://item.taobao.com/item.htm?spm=a2126o.success.0.0.5e484831UkSn6H&id=666295567386&mt=
 ![QingScan 远程协助安装二维码](https://user-images.githubusercontent.com/8509054/170407026-ab399c52-37a6-4ebe-8e96-31fe61ae4b32.png)
@@ -97,11 +93,6 @@ QingScan尽最大能力保障各位安装的顺畅，但QingScan人力有限，�
 
 除非您已充分阅读、完全理解并接受本协议所有条款，否则，请您不要使用本工具。您的使用行为或者您以其他任何明示或者默示方式表示接受本协议的，即视为您已阅读并同意本协议的约束。
 
-## 捐赠打赏
-
-QingScan的迭代开发离不开每一位用户的支持，如果你觉得QingScan好用，麻烦在GitHub中点击 `star`;目前QingScan为免费软件，如果你对软件非常认可，也可以给我们进行捐赠，捐赠名单将会公示在QingScan主页中，同时对于捐赠的小伙伴，将会获得技术优先支持~
-
-![捐赠打赏二维码](https://user-images.githubusercontent.com/8509054/148172121-693005b3-9c75-41c3-b886-1f6476f41165.jpg)
 
 
 ## Stargazers
