@@ -10,71 +10,96 @@ $typeArr = [
 ?>
 <div class="col-md-12 ">
     <div class="row tuchu">
-        <div class="col-md-4">
-            <h5 style="align-content: center"><span style="color:#888">id:</span> <?php echo $info['id'] ?></h5></div>
-        <div class="col-md-4">
-            <h5><span style="color:#888">状态:</span> <?php echo $info['status']==1?'启用':'暂停' ?></h5></div>
-        <div class="col-md-4">
-            <h5><span style="color:#888">名称: </span><?php echo $info['name'] ?></h5></div>
-        <div class="col-md-4">
-            <h5><span style="color:#888">URL: </span><?php echo $info['url'] ?></h5></div>
-        <div class="col-md-4">
-            <h5><span style="color:#888">创建: </span><?php echo $info['create_time'] ?></h5></div>
+        <div class="col-md-12" style="margin-bottom:10px;">
+            <span style="font-size:18px;color:#ccc;">基本信息</span>
+        </div>
+        <div class="col-md-2">
+            <span style="float: right"><span style="color:#ccc">id:</span> <?php echo $info['id'] ?></span>
+        </div>
+        <div class="col-md-2">
+            <span style="float: right"><span
+                        style="color:#ccc">状态:</span> <?php echo $info['status'] == 1 ? '启用' : '暂停' ?></span>
+        </div>
+        <div class="col-md-2">
+            <span style="float: right"><span style="color:#ccc">名称: </span><?php echo $info['name'] ?></span></div>
+        <div class="col-md-3">
+            <span style="float: right"><span style="color:#ccc">URL: </span><?php echo $info['url'] ?></span></div>
+        <div class="col-md-3">
+            <span style="float: right"><span style="color:#ccc">创建: </span><?php echo $info['create_time'] ?></span>
+        </div>
+        <?php if ($info['username']) { ?>
+            <div class="col-md-4">
+                <span style="float: right"><span
+                            style="color:#ccc">用户名称:</span> <?php echo $info['username'] ?></span>
+            </div>
+            <div class="col-md-4">
+                <span style="float: right"><span style="color:#ccc">密码:</span> <?php echo $info['password'] ?></span>
+            </div>
+        <?php } ?>
 
-        <div class="col-md-4">
-            <h5><span style="color:#888">用户名称:</span> <?php echo $info['username'] ?></h5></div>
-        <div class="col-md-4">
-            <h5><span style="color:#888">密码:</span> <?php echo $info['password'] ?></h5></div>
-    </div>
-    <div class="row tuchu">
-        <div class="col-md-4">
-            <h5><span style="color:#888">RAD(爬虫):</span> <?php echo $info['crawler_time'] ?></h5></div>
-        <div class="col-md-4">
-            <h5><span style="color:#888">whatweb(指纹扫描):</span> <?php echo $info['whatweb_scan_time'] ?></h5></div>
-        <div class="col-md-4">
-            <h5><span style="color:#888">oneforall子域名扫描时间:</span> <?php echo $info['subdomain_scan_time'] ?></h5></div>
-        <div class="col-md-4">
-            <h5><span style="color:#888">获取基本信息时间: </span><?php echo $info['screenshot_time'] ?></h5></div>
-        <div class="col-md-4">
-            <h5><span style="color:#888">xray扫描时间：</span><?php echo $info['xray_scan_time'] ?></h5></div>
-        <div class="col-md-4">
-            <h5><span style="color:#888">dirmap扫描时间:</span> <?php echo $info['dirmap_scan_time'] ?></h5></div>
-        <div class="col-md-4">
-            <h5><span style="color:#888">DisMap扫描时间:</span> <?php echo $info['dismap_scan_time'] ?></h5>
+        <div class="col-md-12" style="margin-bottom:10px;">
+            <span style="font-size:18px;color:#ccc;">扫描概述</span>
         </div>
-        <div class="col-md-4">
-            <h5><span style="color:#888">Crawlergo扫描时间:</span> <?php echo $info['crawlergo_scan_time'] ?></h5>
+        <div class="col-md-3">
+            <span style="float: right"><span style="color:#ccc">RAD:</span> <?php echo $info['crawler_time'] ?></span>
         </div>
-        <div class="col-md-4">
-            <h5><span style="color:#888">Vulmap扫描时间:</span> <?php echo $info['vulmap_scan_time'] ?></h5>
+        <div class="col-md-3">
+            <span style="float: right"><span style="color:#ccc">whatweb:</span> <?php echo $info['whatweb_scan_time'] ?></span>
         </div>
-        <div class="col-md-4">
-            <h5><span style="color:#888">awvs扫描时间:</span> <?php echo $info['awvs_scan_time'] ?></h5></div>
-        <div class="col-md-4">
-            <h5><span style="color:#888">子域名扫描时间: </span><?php echo $info['subdomain_time'] ?></h5></div>
+        <div class="col-md-3">
+            <span style="float: right"><span
+                        style="color:#ccc">oneforall:</span> <?php echo $info['subdomain_scan_time'] ?></span>
+        </div>
+        <div class="col-md-3">
+            <span style="float: right"><span style="color:#ccc">基本信息: </span><?php echo $info['screenshot_time'] ?></span>
+        </div>
+        <div class="col-md-3">
+            <span style="float: right"><span style="color:#ccc">xray：</span><?php echo $info['xray_scan_time'] ?></span>
+        </div>
+        <div class="col-md-3">
+            <span style="float: right"><span
+                        style="color:#ccc">dirmap:</span> <?php echo $info['dirmap_scan_time'] ?></span></div>
+        <div class="col-md-3">
+            <span style="float: right"><span
+                        style="color:#ccc">DisMap:</span> <?php echo $info['dismap_scan_time'] ?></span>
+        </div>
+        <div class="col-md-3">
+            <span style="float: right"><span
+                        style="color:#ccc">Crawlergo:</span> <?php echo $info['crawlergo_scan_time'] ?></span>
+        </div>
+        <div class="col-md-3">
+            <span style="float: right"><span
+                        style="color:#ccc">Vulmap:</span> <?php echo $info['vulmap_scan_time'] ?></span>
+        </div>
+        <div class="col-md-3">
+            <span style="float: right"><span
+                        style="color:#ccc">awvs:</span> <?php echo $info['awvs_scan_time'] ?></span></div>
+        <div class="col-md-3">
+            <span style="float: right"><span
+                        style="color:#ccc">子域名: </span><?php echo $info['subdomain_time'] ?></span></div>
     </div>
 </div>
 
 
 <div class="row tuchu_margin">
-    <div class="col-auto  tuchu_col">
-        <h4 class="text-center">
-            RAD(URL爬虫)
-            <a href="<?php echo url('app/rescan', ['id'=>$info['id'],'tools_name' => 'rad']) ?>"
-               onClick="return confirm('确定要清空该工具数据重新扫描吗?')"
-               class="btn btn-sm btn-outline-warning">重新扫描</a>
-            <a href="<?php echo url('urls/index', ['app_id' => $info['id']]) ?>"
-               class="btn btn-sm btn-outline-primary" style="float: right">查看更多</a>
-        </h4>
+    <div class="col-12  tuchu_col">
+        <span class="text-center">
+            RAD <span style="color:#ccc;">(URL爬虫)</span></span>
+        <a href="<?php echo url('app/rescan', ['id' => $info['id'], 'tools_name' => 'rad']) ?>"
+           onClick="return confirm('确定要清空该工具数据ReScan吗?')"
+           class="btn btn-sm btn-outline-warning" style="float: right">ReScan</a>
+        <a href="<?php echo url('urls/index', ['app_id' => $info['id']]) ?>"
+           class="btn btn-sm btn-outline-primary" style="float: right">more</a>
+        </span>
         <table class="table table-bordered table-hover table-striped">
             <thead>
-            <tr>
+            <tr style="color:#ccc;">
                 <th>ID</th>
                 <th>URL</th>
                 <th>APP</th>
                 <th>ICP</th>
                 <th>邮箱</th>
-                <th>sqlmap扫描时间</th>
+                <th>sqlmap</th>
                 <th>创建时间</th>
             </tr>
             </thead>
@@ -101,21 +126,21 @@ $typeArr = [
             <?php } ?>
         </table>
     </div>
-    <div class="col-auto  tuchu_col">
-        <h4 class="text-center">
-            crawlergo(URL爬虫扫描)
-            <a href="<?php echo url('app/rescan', ['id'=>$info['id'],'tools_name' => 'crawlergoScan']) ?>"
-               onClick="return confirm('确定要清空该工具数据重新扫描吗?')"
-               class="btn btn-sm btn-outline-warning">重新扫描</a>
+    <div class="col-12  tuchu_col">
+        <span class="text-center">
+            <span>crawlergo<span style="color:#ccc;">(URL爬虫扫描)</span></span>
+            <a href="<?php echo url('app/rescan', ['id' => $info['id'], 'tools_name' => 'crawlergoScan']) ?>"
+               onClick="return confirm('确定要清空该工具数据ReScan吗?')"
+               class="btn btn-sm btn-outline-warning" style="float: right">ReScan</a>
             <a href="<?php echo url('app_crawlergo/index', ['app_id' => $info['id']]) ?>"
-               class="btn btn-sm btn-outline-primary" style="float: right">查看更多</a>
-        </h4>
-        <table class="table table-bordered table-hover table-striped">
+               class="btn btn-sm btn-outline-primary" style="float: right">more</a>
+        </span>
+        <table class="table table-bordered table-hover table-striped" style="color:#ccc;">
             <thead>
             <tr>
                 <th>ID</th>
                 <th>url</th>
-                <th>扫描时间</th>
+                <th></th>
             </tr>
             </thead>
             <?php foreach ($crawlergo as $value) { ?>
@@ -133,16 +158,16 @@ $typeArr = [
         </table>
     </div>
 
-    <div class="col-auto  tuchu_col">
-        <h4 class="text-center">
-            AWVS(综合扫描)
-            <a href="<?php echo url('app/rescan', ['id'=>$info['id'],'tools_name' => 'awvsScan']) ?>"
-               onClick="return confirm('确定要清空该工具数据重新扫描吗?')"
-               class="btn btn-sm btn-outline-warning">重新扫描</a>
+    <div class="col-12  tuchu_col">
+        <span class="text-center">
+            AWVS <span style="color:#ccc;">(综合扫描)</span>
+            <a href="<?php echo url('app/rescan', ['id' => $info['id'], 'tools_name' => 'awvsScan']) ?>"
+               onClick="return confirm('确定要清空该工具数据ReScan吗?')"
+               class="btn btn-sm btn-outline-warning" style="float: right">ReScan</a>
             <a href="<?php echo url('bug/awvs', ['app_id' => $info['id']]) ?>"
-               class="btn btn-sm btn-outline-primary" style="float: right">查看更多</a>
-        </h4>
-        <table class="table table-bordered table-hover table-striped">
+               class="btn btn-sm btn-outline-primary" style="float: right">more</a>
+        </span>
+        <table class="table table-bordered table-hover table-striped" style="color:#ccc;">
             <thead>
             <tr>
                 <th>ID</th>
@@ -172,22 +197,22 @@ $typeArr = [
         </table>
     </div>
 
-    <div class="col-auto  tuchu_col">
-        <h4 class="text-center">
-            nuclei(POC扫描)
-            <a href="<?php echo url('app/rescan', ['id'=>$info['id'],'tools_name' => 'nucleiScan']) ?>"
-               onClick="return confirm('确定要清空该工具数据重新扫描吗?')"
-               class="btn btn-sm btn-outline-warning">重新扫描</a>
+    <div class="col-12  tuchu_col">
+        <span class="text-center">
+            nuclei <span style="color:#ccc;">(POC扫描)</span>
+            <a href="<?php echo url('app/rescan', ['id' => $info['id'], 'tools_name' => 'nucleiScan']) ?>"
+               onClick="return confirm('确定要清空该工具数据ReScan吗?')"
+               class="btn btn-sm btn-outline-warning" style="float: right">ReScan</a>
             <a href="<?php echo url('app_nuclei/index', ['app_id' => $info['id']]) ?>"
-               class="btn btn-sm btn-outline-primary" style="float: right">查看更多</a>
-        </h4>
-        <table class="table table-bordered table-hover table-striped">
+               class="btn btn-sm btn-outline-primary" style="float: right">more</a>
+        </span>
+        <table class="table table-bordered table-hover table-striped" style="color:#ccc;">
             <thead>
             <tr>
                 <th>ID</th>
                 <th>name</th>
                 <th>host</th>
-                <th>扫描时间</th>
+                <th></th>
             </tr>
             </thead>
             <?php foreach ($nuclei as $value) { ?>
@@ -206,16 +231,16 @@ $typeArr = [
         </table>
     </div>
 
-    <div class="col-auto  tuchu_col">
-        <h4 class="text-center">
-            XRAY(黑盒+POC)
-            <a href="<?php echo url('app/rescan', ['id'=>$info['id'],'tools_name' => 'xray']) ?>"
-               onClick="return confirm('确定要清空该工具数据重新扫描吗?')"
-               class="btn btn-sm btn-outline-warning">重新扫描</a>
+    <div class="col-12  tuchu_col">
+        <span class="text-center">
+            XRAY <span style="color:#ccc;">(黑盒+POC)</span>
+            <a href="<?php echo url('app/rescan', ['id' => $info['id'], 'tools_name' => 'xray']) ?>"
+               onClick="return confirm('确定要清空该工具数据ReScan吗?')"
+               class="btn btn-sm btn-outline-warning" style="float: right">ReScan</a>
             <a href="<?php echo url('xray/index', ['app_id' => $info['id']]) ?>"
-               class="btn btn-sm btn-outline-primary" style="float: right">查看更多</a>
-        </h4>
-        <table class="table table-bordered table-hover table-striped">
+               class="btn btn-sm btn-outline-primary" style="float: right">more</a>
+        </span>
+        <table class="table table-bordered table-hover table-striped" style="color:#ccc;">
             <thead>
             <tr>
                 <th>ID</th>
@@ -239,14 +264,14 @@ $typeArr = [
             <?php } ?>
         </table>
     </div>
-    <div class="col-auto  tuchu_col">
-        <h4 class="text-center">
+    <div class="col-12  tuchu_col">
+        <span class="text-center">
             app信息
-            <a href="<?php echo url('app/rescan', ['id'=>$info['id'],'tools_name' => 'getBaseInfo']) ?>"
-               onClick="return confirm('确定要清空该工具数据重新扫描吗?')"
-               class="btn btn-sm btn-outline-warning">重新扫描</a>
-        </h4>
-        <table class="table table-bordered table-hover table-striped">
+            <a href="<?php echo url('app/rescan', ['id' => $info['id'], 'tools_name' => 'getBaseInfo']) ?>"
+               onClick="return confirm('确定要清空该工具数据ReScan吗?')"
+               class="btn btn-sm btn-outline-warning" style="float: right">ReScan</a>
+        </span>
+        <table class="table table-bordered table-hover table-striped" style="color:#ccc;">
             <thead>
             <tr>
                 <th>app_id</th>
@@ -283,16 +308,16 @@ $typeArr = [
         </table>
     </div>
 
-    <div class="col-auto  tuchu_col">
-        <h4 class="text-center">
-            whatweb（指纹识别）
-            <a href="<?php echo url('app/rescan', ['id'=>$info['id'],'tools_name' => 'whatweb']) ?>"
-               onClick="return confirm('确定要清空该工具数据重新扫描吗?')"
-               class="btn btn-sm btn-outline-warning">重新扫描</a>
+    <div class="col-12  tuchu_col">
+        <span class="text-center">
+            whatweb <span style="color:#ccc;">（指纹识别）</span>
+            <a href="<?php echo url('app/rescan', ['id' => $info['id'], 'tools_name' => 'whatweb']) ?>"
+               onClick="return confirm('确定要清空该工具数据ReScan吗?')"
+               class="btn btn-sm btn-outline-warning" style="float: right">ReScan</a>
             <a href="<?php echo url('whatweb/index', ['app_id' => $info['id']]) ?>"
-               class="btn btn-sm btn-outline-primary" style="float: right">查看更多</a>
-        </h4>
-        <table class="table table-bordered table-hover table-striped">
+               class="btn btn-sm btn-outline-primary" style="float: right">more</a>
+        </span>
+        <table class="table table-bordered table-hover table-striped" style="color:#ccc;">
             <thead>
             <tr>
                 <th>ID</th>
@@ -321,16 +346,16 @@ $typeArr = [
         </table>
     </div>
 
-    <div class="col-auto  tuchu_col">
-        <h4 class="text-center">
-            sqlmap（SQL注入）
-            <a href="<?php echo url('app/rescan', ['id'=>$info['id'],'tools_name' => 'sqlmapScan']) ?>"
-               onClick="return confirm('确定要清空该工具数据重新扫描吗?')"
-               class="btn btn-sm btn-outline-warning">重新扫描</a>
+    <div class="col-12  tuchu_col">
+        <span class="text-center">
+            sqlmap <span style="color:#ccc;">（SQL注入）</span>
+            <a href="<?php echo url('app/rescan', ['id' => $info['id'], 'tools_name' => 'sqlmapScan']) ?>"
+               onClick="return confirm('确定要清空该工具数据ReScan吗?')"
+               class="btn btn-sm btn-outline-warning" style="float: right">ReScan</a>
             <a href="<?php echo url('sqlmap/index', ['app_id' => $info['id']]) ?>"
-               class="btn btn-sm btn-outline-primary" style="float: right">查看更多</a>
-        </h4>
-        <table class="table table-bordered table-hover table-striped">
+               class="btn btn-sm btn-outline-primary" style="float: right">more</a>
+        </span>
+        <table class="table table-bordered table-hover table-striped" style="color:#ccc;">
             <thead>
             <tr>
                 <th>ID</th>
@@ -363,16 +388,16 @@ $typeArr = [
         </table>
     </div>
 
-    <div class="col-auto  tuchu_col">
-        <h4 class="text-center">
-            oneforall（子域名）
-            <a href="<?php echo url('app/rescan', ['id'=>$info['id'],'tools_name' => 'subdomainScan']) ?>"
-               onClick="return confirm('确定要清空该工具数据重新扫描吗?')"
-               class="btn btn-sm btn-outline-warning">重新扫描</a>
+    <div class="col-12  tuchu_col">
+        <span class="text-center">
+            oneforall <span style="color:#ccc;">（子域名）</span>
+            <a href="<?php echo url('app/rescan', ['id' => $info['id'], 'tools_name' => 'subdomainScan']) ?>"
+               onClick="return confirm('确定要清空该工具数据ReScan吗?')"
+               class="btn btn-sm btn-outline-warning" style="float: right">ReScan</a>
             <a href="<?php echo url('one_for_all/index', ['app_id' => $info['id']]) ?>"
-               class="btn btn-sm btn-outline-primary" style="float: right">查看更多</a>
-        </h4>
-        <table class="table table-bordered table-hover table-striped">
+               class="btn btn-sm btn-outline-primary" style="float: right">more</a>
+        </span>
+        <table class="table table-bordered table-hover table-striped" style="color:#ccc;">
             <thead>
             <tr>
                 <th>ID</th>
@@ -395,22 +420,22 @@ $typeArr = [
             <?php } ?>
             <?php if (empty($oneforall)) { ?>
                 <tr>
-                    <td colspan="5" class="text-center"><?php echo getScanStatus($info['id'], 'subdomainScan'); ?></td>
+                    <td colspan="6" class="text-center"><?php echo getScanStatus($info['id'], 'subdomainScan'); ?></td>
                 </tr>
             <?php } ?>
         </table>
     </div>
 
-    <div class="col-auto  tuchu_col">
-        <h4 class="text-center">
-            hydra（主机暴力破解）
-            <a href="<?php echo url('app/rescan', ['id'=>$info['id'],'tools_name' => 'sshScan']) ?>"
-               onClick="return confirm('确定要清空该工具数据重新扫描吗?')"
-               class="btn btn-sm btn-outline-warning">重新扫描</a>
+    <div class="col-12  tuchu_col">
+        <span class="text-center">
+            hydra <span style="color:#ccc;">（主机暴力破解）</span>
+            <a href="<?php echo url('app/rescan', ['id' => $info['id'], 'tools_name' => 'sshScan']) ?>"
+               onClick="return confirm('确定要清空该工具数据ReScan吗?')"
+               class="btn btn-sm btn-outline-warning" style="float: right">ReScan</a>
             <a href="<?php echo url('hydra/index', ['app_id' => $info['id']]) ?>"
-               class="btn btn-sm btn-outline-primary" style="float: right">查看更多</a>
-        </h4>
-        <table class="table table-bordered table-hover table-striped">
+               class="btn btn-sm btn-outline-primary" style="float: right">more</a>
+        </span>
+        <table class="table table-bordered table-hover table-striped" style="color:#ccc;">
             <thead>
             <tr>
                 <th>ID</th>
@@ -437,16 +462,16 @@ $typeArr = [
         </table>
     </div>
 
-    <div class="col-auto  tuchu_col">
-        <h4 class="text-center">
-            dirmap（扫后台）
-            <a href="<?php echo url('app/rescan', ['id'=>$info['id'],'tools_name' => 'dirmapScan']) ?>"
-               onClick="return confirm('确定要清空该工具数据重新扫描吗?')"
-               class="btn btn-sm btn-outline-warning">重新扫描</a>
+    <div class="col-12  tuchu_col">
+        <span class="text-center">
+            dirmap <span style="color:#ccc;">（扫后台）</span>
+            <a href="<?php echo url('app/rescan', ['id' => $info['id'], 'tools_name' => 'dirmapScan']) ?>"
+               onClick="return confirm('确定要清空该工具数据ReScan吗?')"
+               class="btn btn-sm btn-outline-warning" style="float: right">ReScan</a>
             <a href="<?php echo url('dirmap/index', ['app_id' => $info['id']]) ?>"
-               class="btn btn-sm btn-outline-primary" style="float: right">查看更多</a>
-        </h4>
-        <table class="table table-bordered table-hover table-striped">
+               class="btn btn-sm btn-outline-primary" style="float: right">more</a>
+        </span>
+        <table class="table table-bordered table-hover table-striped" style="color:#ccc;">
             <thead>
             <tr>
                 <th>ID</th>
@@ -474,16 +499,16 @@ $typeArr = [
             <?php } ?>
         </table>
     </div>
-    <div class="col-auto  tuchu_col">
-        <h4 class="text-center">
+    <div class="col-12  tuchu_col">
+        <span class="text-center">
             masscan列表
-            <a href="<?php echo url('app/rescan', ['id'=>$info['id'],'tools_name' => 'NmapPortScan']) ?>"
-               onClick="return confirm('确定要清空该工具数据重新扫描吗?')"
-               class="btn btn-sm btn-outline-warning">重新扫描</a>
+            <a href="<?php echo url('app/rescan', ['id' => $info['id'], 'tools_name' => 'NmapPortScan']) ?>"
+               onClick="return confirm('确定要清空该工具数据ReScan吗?')"
+               class="btn btn-sm btn-outline-warning" style="float: right">ReScan</a>
             <a href="<?php echo url('host_port/index', ['app_id' => $info['id']]) ?>"
-               class="btn btn-sm btn-outline-primary" style="float: right">查看更多</a>
-        </h4>
-        <table class="table table-bordered table-hover table-striped">
+               class="btn btn-sm btn-outline-primary" style="float: right">more</a>
+        </span>
+        <table class="table table-bordered table-hover table-striped" style="color:#ccc;">
             <thead>
             <tr>
                 <th>id</th>
@@ -524,16 +549,16 @@ $typeArr = [
         </table>
     </div>
 
-    <div class="col-auto  tuchu_col">
-        <h4 class="text-center">
+    <div class="col-12  tuchu_col">
+        <span class="text-center">
             vulmap信息
-            <a href="<?php echo url('app/rescan', ['id'=>$info['id'],'tools_name' => 'vulmapPocTest']) ?>"
-               onClick="return confirm('确定要清空该工具数据重新扫描吗?')"
-               class="btn btn-sm btn-outline-warning">重新扫描</a>
+            <a href="<?php echo url('app/rescan', ['id' => $info['id'], 'tools_name' => 'vulmapPocTest']) ?>"
+               onClick="return confirm('确定要清空该工具数据ReScan吗?')"
+               class="btn btn-sm btn-outline-warning" style="float: right">ReScan</a>
             <a href="<?php echo url('vulmap/index', ['app_id' => $info['id']]) ?>"
-               class="btn btn-sm btn-outline-primary" style="float: right">查看更多</a>
-        </h4>
-        <table class="table table-bordered table-hover table-striped">
+               class="btn btn-sm btn-outline-primary" style="float: right">more</a>
+        </span>
+        <table class="table table-bordered table-hover table-striped" style="color:#ccc;">
             <thead>
             <tr>
                 <th>ID</th>
@@ -581,16 +606,16 @@ $typeArr = [
             <?php } ?>
         </table>
     </div>
-    <div class="col-auto  tuchu_col">
-        <h4 class="text-center">
+    <div class="col-12  tuchu_col">
+        <span class="text-center">
             主机列表
-            <a href="<?php echo url('app/rescan', ['id'=>$info['id'],'tools_name' => 'autoAddHost']) ?>"
-               onClick="return confirm('确定要清空该工具数据重新扫描吗?')"
-               class="btn btn-sm btn-outline-warning">重新扫描</a>
+            <a href="<?php echo url('app/rescan', ['id' => $info['id'], 'tools_name' => 'autoAddHost']) ?>"
+               onClick="return confirm('确定要清空该工具数据ReScan吗?')"
+               class="btn btn-sm btn-outline-warning" style="float: right">ReScan</a>
             <a href="<?php echo url('host/index', ['app_id' => $info['id']]) ?>"
-               class="btn btn-sm btn-outline-primary" style="float: right">查看更多</a>
-        </h4>
-        <table class="table table-bordered table-hover table-striped">
+               class="btn btn-sm btn-outline-primary" style="float: right">more</a>
+        </span>
+        <table class="table table-bordered table-hover table-striped" style="color:#ccc;">
             <thead>
             <tr>
                 <th>ID</th>
@@ -635,14 +660,14 @@ $typeArr = [
         </table>
     </div>
 
-    <div class="col-auto  tuchu_col">
-        <h4 class="text-center">
-            DisMap（CMS指纹识别）
-            <a href="<?php echo url('app/rescan', ['id'=>$info['id'],'tools_name' => 'dismapScan']) ?>"
-               onClick="return confirm('确定要清空该工具数据重新扫描吗?')"
-               class="btn btn-sm btn-outline-warning">重新扫描</a>
-        </h4>
-        <table class="table table-bordered table-hover table-striped">
+    <div class="col-12  tuchu_col">
+        <span class="text-center">
+            DisMap <span style="color:#ccc;">（CMS指纹识别）</span>
+            <a href="<?php echo url('app/rescan', ['id' => $info['id'], 'tools_name' => 'dismapScan']) ?>"
+               onClick="return confirm('确定要清空该工具数据ReScan吗?')"
+               class="btn btn-sm btn-outline-warning" style="float: right">ReScan</a>
+        </span>
+        <table class="table table-bordered table-hover table-striped" style="color:#ccc;">
             <thead>
             <tr>
                 <th>ID</th>
@@ -665,16 +690,16 @@ $typeArr = [
         </table>
     </div>
 
-    <div class="col-auto  tuchu_col">
-        <h4 class="text-center">
+    <div class="col-12  tuchu_col">
+        <span class="text-center">
             自定义插件
-            <a href="<?php echo url('app/rescan', ['id'=>$info['id'],'tools_name' => 'plugin']) ?>"
-               onClick="return confirm('确定要清空该工具数据重新扫描吗?')"
-               class="btn btn-sm btn-outline-warning">重新扫描</a>
+            <a href="<?php echo url('app/rescan', ['id' => $info['id'], 'tools_name' => 'plugin']) ?>"
+               onClick="return confirm('确定要清空该工具数据ReScan吗?')"
+               class="btn btn-sm btn-outline-warning" style="float: right">ReScan</a>
             <a href="<?php echo url('plugin_result/index', ['app_id' => $info['id']]) ?>"
-               class="btn btn-sm btn-outline-primary" style="float: right">查看更多</a>
-        </h4>
-        <table class="table table-bordered table-hover table-striped">
+               class="btn btn-sm btn-outline-primary" style="float: right">more</a>
+        </span>
+        <table class="table table-bordered table-hover table-striped" style="color:#ccc;">
             <thead>
             <tr>
                 <th>ID</th>
@@ -696,16 +721,16 @@ $typeArr = [
             <?php } ?>
         </table>
     </div>
-    <div class="col-auto  tuchu_col">
-        <h4 class="text-center">
-            github关键词监控结果列表
-            <!--<a href="<?php /*echo url('app/rescan', ['id'=>$info['id'],'tools_name' => 'plugin']) */?>"
-               onClick="return confirm('确定要清空该工具数据重新扫描吗?')"
-               class="btn btn-sm btn-outline-warning">重新扫描</a>-->
+    <div class="col-12  tuchu_col">
+        <span class="text-center">
+            github <span style="color:#ccc;">关键词监控结果</span>
+            <!--<a href="<?php /*echo url('app/rescan', ['id'=>$info['id'],'tools_name' => 'plugin']) */ ?>"
+               onClick="return confirm('确定要清空该工具数据ReScan吗?')"
+               class="btn btn-sm btn-outline-warning"  style="float: right">ReScan</a>-->
             <a href="<?php echo url('github_keyword_monitor_notice/index', ['app_id' => $info['id']]) ?>"
-               class="btn btn-sm btn-outline-primary" style="float: right">查看更多</a>
-        </h4>
-        <table class="table table-bordered table-hover table-striped">
+               class="btn btn-sm btn-outline-primary" style="float: right">more</a>
+        </span>
+        <table class="table table-bordered table-hover table-striped" style="color:#ccc;">
             <thead>
             <tr>
                 <th>ID</th>
@@ -733,7 +758,7 @@ $typeArr = [
             <?php } ?>
         </table>
     </div>
-    <!--    <div class="col-auto  tuchu_col">-->
+    <!--    <div class="col-12  tuchu_col">-->
     <!--        <button id="download_pdf" class="btn btn-primary">导出为PDF</button>-->
     <!--    </div>-->
 </div>

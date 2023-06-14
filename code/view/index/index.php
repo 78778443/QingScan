@@ -16,14 +16,14 @@
         <div class="col-md-6">
             <div class="row tuchu " style="min-height:300px;">
 
-                <h3>{$value['name']}:<span class="badge bg-primary">{$value['value']}</span></h3>
+                <span style="color:#ccc;font-size:21px;">{$value['name']}:<span class="badge bg-primary">{$value['value']}</span></span>
 
                 <?php foreach ($value['subInfo'] as $subVaule) { ?>
                     <div class="col-md-4">
-                        <h5>
-                            <span style="width:100px;" class="badge  text-dark text-right">{$subVaule['name']}</span>:
+                        <div style="font-size: 21px;">
+                            <span style="width:100px;color:#666;" class="badge   text-right">{$subVaule['name']}</span>:
                             <a style="width:70px;" class="badge bg-info text-right" href="{$subVaule['href']}">{$subVaule['value']}</a>
-                        </h5>
+                        </div>
                     </div>
                 <?php } ?>
 

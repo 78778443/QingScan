@@ -24,13 +24,13 @@
         "topthink/framework": "^6.0.0",
         "topthink/think-orm": "^2.0",
         "topthink/think-view": "^1.0",
-        "php-amqplib/php-amqplib": "^2.12",
         "xaboy/form-builder": "~2.0",
         "rmccue/requests": "^1.8",
         "jeremykendall/php-domain-parser": "^6.1",
         "wamkj/thinkphp6.0-databackup": "^1.0",
         "phpoffice/phpspreadsheet": "^1.20",
-        "mpdf/mpdf": "^8.0"
+        "mpdf/mpdf": "^8.0",
+      "ext-json": "*"
     },
     "require-dev": {
         "symfony/var-dumper": "^4.2",
