@@ -8,19 +8,13 @@ QingScan 是一款聚合扫描器，本身不生产安全扫描功能，但会�
 - GitHub：https://github.com/78778443/QingScan
 - 码云地址：https://gitee.com/songboy/QingScan
 - 详细文档：http://wiki.qingscan.site
-- 哔哩哔哩：https://space.bilibili.com/437273065
-- 官网地址：http://qingscan.site/
+- 哔哩哔哩：https://space.bilibili.com/437273065 
 
-
-## 在线演示
-在线体验地址：http://demo.qingscan.site/
-用户名：admin   密码：admin
-> 注：在线体验地址为功能演示，不会对目标实际扫描~
-
+ 
 ## 安装教程
 
-1. 需要安装docker、docker-compose 安装方法 http://get.daocloud.io/
-2. 下载代码后,启动容器`cd QingScan/docker/latest && docker-compose up -d `
+1. 需要安装docker、docker-compose  
+2. 下载代码后,启动容器`git clone https://gitee.com/songboy/QingScan.git && cd QingScan/docker/latest && docker-compose up -d `
 3. <b>首次</b>启动更新容器内代码`docker exec  qingscan sh -c 'cd /root/qingscan && git fetch && git reset --hard origin/main && rm code/public/install/install.lock' `
 4. 浏览器访问  http://127.0.0.1:8000/ 自动进入安装界面
 5. 安装中出现任何问题，请查看视频安装教程:https://www.bilibili.com/video/BV1rF411i7Gx
@@ -30,12 +24,7 @@ QingScan 是一款聚合扫描器，本身不生产安全扫描功能，但会�
 - AWVS 调用主要通过API，需要自己将API配置系统，配置管理中去
 - AWVS默认账户:admin@admin.com 默认密码:Admin123
 - murphysec 调用时，需要自己将墨菲安全token配置到管理中去
-
-#### 重复安装(保留上一次数据)
-
-1. 使用数据库管理软件,导出之前的数据为SQL文件(不要表结构,只需要数据部分)
-2. 重新安装一次qingscan
-3. 将导出的SQL文件的,覆盖到现在的数据库(再次提醒,不要表结构,只需要数据部分)
+ 
 
 ## 技术支持
 

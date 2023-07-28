@@ -1,2 +1,0 @@
-INSERT INTO `QingScan`.`auth_rule` (`href`, `title`, `is_delete`, `is_open_auth`, `pid`, `sort`, `created_at`, `menu_status`, `update_time`, `level`, `delete_time`, `icon_url`) VALUES ('unauthorized/index', '未授权列表', 0, 1, 35, 4, 1669016435, 1, 1669016502, 2, 0, '');
-INSERT INTO `QingScan`.`process_safe` (`key`, `value`, `status`, `note`, `update_time`, `type`) VALUES ('scan unauthorizeScan', 'cd /root/qingscan/code  &&  php think scan unauthorizeScan>> /tmp/unauthorizeScan.txt & ', 0, '未授权扫描', '2022-11-21 18:11:52', 4);
