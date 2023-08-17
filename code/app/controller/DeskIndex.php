@@ -39,7 +39,7 @@ class DeskIndex extends BaseController
         //黑盒项目数量
         $appCount = Db::table('app')->where($where)->count();
         //黑盒rad数量
-        $urlsCount = Db::table('urls')->where($where)->count();
+        $urlsCount = Db::table('asm_urls')->where($where)->count();
         //黑盒xray数量
         $xrayCount = Db::table('xray')->where($where)->count();
         //黑盒sqlmap数量
@@ -60,11 +60,11 @@ class DeskIndex extends BaseController
 
         ##########
         //资产探测
-        $hostCount = Db::table('host')->count();
+        $hostCount = Db::table('asm_host')->count();
         //端口数量
-        $portCount = Db::table('host_port')->count();
+        $portCount = Db::table('asm_host_port')->count();
         //服务数量
-        $serviceCount = Db::table('host_port')->group("service")->count();
+        $serviceCount = Db::table('asm_host_port')->group("service")->count();
 
 
         ####### 白盒统计
@@ -87,7 +87,7 @@ class DeskIndex extends BaseController
 
         $data = [
             [
-                "name" => "黑盒信息",
+                "name" => "网站扫描",
                 "value" => $appCount,
                 "subInfo" => [
                     ["name" => "rad", "value" => $urlsCount],

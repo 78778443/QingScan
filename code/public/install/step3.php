@@ -55,7 +55,7 @@ use think\facade\Db;
 <?php
 function setPythonConfig(){
     $filename = '/data/tools/reptile/config.yaml';
-    $arr = @yaml_parse_file($filename);
+    $arr = yaml_parse_file($filename);
     if ($arr) {
         $arr['mysql']['host'] = $_POST['DB_HOST'];
         $arr['mysql']['port'] = (int)($_POST['DB_PORT']);
@@ -91,7 +91,7 @@ function addOldData()
     $sql = "UPDATE user SET username=?,password=? where id = 1";
     $result = Db::name('user')->where('id',1)->update(['username'=>$_POST['username'],'password'=>$password,'update_time'=>time()]);
     if ($result) {
-        echo " <a class=\"btn btn-lg btn-outline-success\" href='/' >导入数据成功!,进入首页</a>";
+        echo " <a class=\"btn btn-lg btn-outline-info\" href='/' >导入数据成功!,进入首页</a>";
         file_put_contents('install.lock', '');
 
         // 更新版本号

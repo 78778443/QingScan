@@ -85,19 +85,19 @@
                             {include file='public/to_examine' /}
                             <?php if($info['check_status'] == 0){?>
                                 <span class="follow-vul j-follow-vul ">
-                                <a href="javascript:;" class="btn btn-outline-warning" onclick="to_examine(<?php echo $info['id']?>)">审核</a>
+                                <a href="javascript:;" class="btn btn-sm btn-outline-secondary" onclick="to_examine(<?php echo $info['id']?>)">审核</a>
                             </span>
                             <?php }?>
                             <span class="follow-vul j-follow-vul ">
-                              <a href="<?php echo url('bug/awvs') ?>" class="btn btn-outline-primary">返回列表页</a>
+                              <a href="<?php echo url('bug/awvs') ?>" class="btn btn-sm btn-outline-secondary">返回列表页</a>
                             </span>
                                 <span class="follow-vul j-follow-vul ">
                                 <a href="<?php echo url('code_check/bug_detail', ['id' => $info['upper_id']]) ?>"
-                                   class="btn btn-outline-warning">上一页</a>
+                                   class="btn btn-sm btn-outline-secondary">上一页</a>
                             </span>
                                 <span class="follow-vul j-follow-vul ">
                                 <a href="<?php echo url('code_check/bug_detail', ['id' => $info['lower_id']]) ?>"
-                                   class="btn btn-outline-success">下一页</a>
+                                   class="btn btn-sm btn-outline-secondary">下一页</a>
                             </span>
                         </div>
                     </div>

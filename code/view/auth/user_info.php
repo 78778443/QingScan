@@ -40,8 +40,8 @@
                 <input type="text" name="token" class="form-control" readonly value="<?php echo $info['token']?>">
             </div>
             <div class="row" style="height: 10px"></div>
-            <button type="submit" class="btn btn-outline-success">提交</button>
-            <a href="javascript:history.go(-1);" class="btn btn-outline-info">返回</a>
+            <button type="submit" class="btn btn-sm btn-outline-secondary">提交</button>
+            <a href="javascript:history.go(-1);" class="btn btn-sm btn-outline-secondary">返回</a>
         </form>
     </div>
     <div class="col-md-3"></div>

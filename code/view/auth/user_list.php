@@ -12,7 +12,7 @@ $searchArr = [
     'btnArr' => [
         ['text' => '添加用户', 'ext' => [
             "href" => url('auth/userAdd'),
-            "class" => "btn btn-outline-success"
+            "class" => "btn btn-sm btn-outline-secondary"
         ]
         ]
     ]]; ?>
@@ -21,7 +21,7 @@ $searchArr = [
     <div class="row tuchu">
         <!--            <div class="col-md-1"></div>-->
         <div class="col-md-12 ">
-            <table class="table table-bordered table-hover table-striped">
+            <table class="table  table-hover table-sm">
                 <thead>
                 <tr>
                     <th>ID</th>
@@ -49,7 +49,7 @@ $searchArr = [
                         <td><?php echo $value['created_at'] ?></td>
                         <td>
                             <a href="<?php echo url('auth/userEdit', ['id' => $value['id']]) ?>"
-                               class="btn btn-sm btn-outline-success">编辑</a>
+                               class="btn btn-sm btn-outline-secondary">编辑</a>
                             <a href="<?php echo url('auth/userDel', ['id' => $value['id']]) ?>"
                                class="btn btn-sm btn-outline-danger">删除</a>
                         </td>

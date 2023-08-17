@@ -17,8 +17,8 @@
             <label class="form-label">value</label>
             <input type="text" name="value" class="form-control" placeholder="请输入value" value="<?php echo $info['value']?>">
         </div>
-        <button type="submit" class="btn btn-outline-success">提交</button>
-        <a href="<?php echo url('config/index')?>" class="btn btn-outline-info">返回</a>
+        <button type="submit" class="btn btn-sm btn-outline-secondary">提交</button>
+        <a href="<?php echo url('config/index')?>" class="btn btn-sm btn-outline-secondary">返回</a>
     </form>
 </div>
 <div class="col-md-3"></div>

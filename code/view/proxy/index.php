@@ -14,7 +14,7 @@ $searchArr = [
     'btnArr' => [
         ['text' => '添加', 'ext' => [
             "href" => url('add'),
-            "class" => "btn btn-outline-success"
+            "class" => "btn btn-sm btn-outline-secondary"
         ]]
     ]]; ?>
 {include file='public/search' /}
@@ -24,7 +24,7 @@ $searchArr = [
         <!--            <div class="col-md-1"></div>-->
         <div class="col-md-12 ">
             {include file='public/batch_del' /}
-            <table class="table table-bordered table-hover table-striped">
+            <table class="table  table-hover table-sm">
                 <thead>
                 <tr>
                     <th width="80">
@@ -54,9 +54,9 @@ $searchArr = [
                         <td><?php echo $value['create_time'] ?></td>
                         <td>
                             <a href="<?php echo url('test_speed',['id'=>$value['id']])?>"
-                               class="btn btn-sm btn-outline-primary">测速</a>
+                               class="btn btn-sm btn-outline-secondary">测速</a>
                             <a href="<?php echo url('edit',['id'=>$value['id']])?>"
-                               class="btn btn-sm btn-outline-success">编辑</a>
+                               class="btn btn-sm btn-outline-secondary">编辑</a>
                             <a href="<?php echo url('del',['id'=>$value['id']])?>" class="btn btn-sm btn-outline-danger">删除</a>
                         </td>
                     </tr>

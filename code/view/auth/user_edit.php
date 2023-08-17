@@ -7,7 +7,7 @@
                     <input type="hidden" name="id" value="<?php echo $info['id']?>">
                     <div class="mb-3">
                         <label class="form-label">所属用户组</label>
-                        <select name="auth_group_id" class="form-select">
+                        <select name="auth_group_id" class="form-select form-select-sm">
                             <option value="0">请选择所属用户组</option>
                             <?php foreach ($authGroup as $item){ ?>
                             <option value="<?php echo $item['auth_group_id']?>" <?php if($info['auth_group_id'] == $item['auth_group_id'] ) echo 'selected'?>><?php echo $item['title']?></option>
@@ -49,13 +49,13 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label">状态</label>
-                        <select name="status" class="form-select">
+                        <select name="status" class="form-select form-select-sm">
                             <option value="1" <?php if($info['status'] == 1 ) echo 'selected'?>>正常</option>
                             <option value="0" <?php if($info['status'] == 0 ) echo 'selected'?>>禁用</option>
                         </select>
                     </div>
-                    <button type="submit" class="btn btn-outline-success">提交</button>
-                    <a href="<?php echo url('auth/user_list')?>" class="btn btn-outline-info">返回</a>
+                    <button type="submit" class="btn btn-sm btn-outline-secondary">提交</button>
+                    <a href="<?php echo url('auth/user_list')?>" class="btn btn-sm btn-outline-secondary">返回</a>
                 </form>
             </div>
             <div class="col-md-3"></div>

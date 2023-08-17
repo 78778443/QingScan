@@ -7,7 +7,7 @@
                 <form method="post" action="">
                     <div class="mb-3">
                         <label class="form-label">父类</label>
-                        <select name="pid" class="form-select" aria-label="Default select">
+                        <select name="pid" class="form-select form-select-sm" aria-label="Default select">
                             <option value="0">默认顶级</option>
                             <?php foreach ($auth_rule as $item){ ?>
                             <option value="<?php echo $item['auth_rule_id']?>"><?php echo $item['ltitle']?></option>
@@ -24,14 +24,14 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label">是否验证权限</label>
-                        <select name="is_open_auth" class="form-select" aria-label="Default select">
+                        <select name="is_open_auth" class="form-select form-select-sm" aria-label="Default select">
                             <option value="1">是</option>
                             <option value="0">否</option>
                         </select>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">是否显示</label>
-                        <select name="menu_status" class="form-select" aria-label="Default select">
+                        <select name="menu_status" class="form-select form-select-sm" aria-label="Default select">
                             <option value="1">显示</option>
                             <option value="0">隐藏</option>
                         </select>
@@ -41,8 +41,8 @@
                         <input type="text" name="sort" class="form-control" placeholder="请输入排序">
                     </div>
                     <div class="row" style="height: 10px"></div>
-                    <button type="submit" class="btn btn-outline-success">提交</button>
-                    <a href="<?php echo url('auth/auth_rule')?>" class="btn btn-outline-info">返回</a>
+                    <button type="submit" class="btn btn-sm btn-outline-secondary">提交</button>
+                    <a href="<?php echo url('auth/auth_rule')?>" class="btn btn-sm btn-outline-secondary">返回</a>
                 </form>
             </div>
             <div class="col-md-3"></div>

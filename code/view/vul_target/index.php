@@ -1,5 +1,8 @@
 {include file='public/head' /}
-
+<div class="col-md-1 " style="padding-right:0;">
+    {include file='public/vulLeftMenu' /}
+</div>
+<div class="col-md-11 " style="padding-left:0;">
 <?php
 $searchArr = [
     'action' => url('code/bug_list'),
@@ -10,7 +13,7 @@ $searchArr = [
     'btnArr' => [
         ['text' => '添加', 'ext' => [
             "href" => url('add'),
-            "class" => "btn btn-outline-success"
+            "class" => "btn btn-sm btn-outline-secondary"
         ]
         ]
     ]
@@ -27,11 +30,11 @@ $searchArr = [
                 <input type="file" class="form-control form-control" name="file" accept=".xls,.csv" required/>
             </div>
             <div class="col-auto">
-                <input type="submit" class="btn btn-outline-info" value="批量添加项目">
+                <input type="submit" class="btn btn-sm btn-outline-secondary" value="批量添加项目">
             </div>
             <div class="col-auto">
                 <a href="<?php echo url('vul_target/downloaAppTemplate') ?>"
-                   class="btn btn-outline-success">下载模板</a>
+                   class="btn btn-sm btn-outline-secondary">下载模板</a>
             </div>
         </form>
     </div>
@@ -41,7 +44,7 @@ $searchArr = [
 <div class="row tuchu">
     <div class="col-md-12 ">
         {include file='public/batch_del' /}
-            <table class="table table-bordered table-hover table-striped">
+            <table class="table  table-hover table-sm">
                 <thead>
                 <tr>
                     <th>
@@ -77,7 +80,7 @@ $searchArr = [
                         <td><?php echo $value['vul_id'] ?></td>
                         <td>
                             <?php if ($value['content']) { ?>
-                                <a class="btn btn-outline-info">POC验证</a>
+                                <a class="btn btn-sm btn-outline-secondary">POC验证</a>
                             <?php } ?>
                             <a href="<?php echo url('del', ['id' => $value['id']]) ?>"
                                class="btn btn-sm btn-outline-danger">删除</a>
@@ -88,4 +91,5 @@ $searchArr = [
     </div>
 </div>
 {include file='public/fenye' /}
+</div>
 {include file='public/footer' /}

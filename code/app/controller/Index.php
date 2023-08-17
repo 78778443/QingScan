@@ -20,7 +20,7 @@ class Index extends Common
         //黑盒项目数量
         $appCount = Db::table('app')->where($where)->count();
         //黑盒rad数量
-        $urlsCount = Db::table('urls')->where($where)->count();
+        $urlsCount = Db::table('asm_urls')->where($where)->count();
         //黑盒xray数量
         $xrayCount = Db::table('xray')->where($where)->count();
         //黑盒sqlmap数量
@@ -41,11 +41,11 @@ class Index extends Common
 
         ##########
         //资产探测
-        $hostCount = Db::table('host')->count();
+        $hostCount = Db::table('asm_host')->count();
         //端口数量
-        $portCount = Db::table('host_port')->count();
+        $portCount = Db::table('asm_host_port')->count();
         //服务数量
-        $serviceCount = Db::table('host_port')->group("service")->count();
+        $serviceCount = Db::table('asm_host_port')->group("service")->count();
         // 未授权漏洞
         $unauthorizedCount = Db::table('host_unauthorized')->count();
 
@@ -72,7 +72,7 @@ class Index extends Common
 
         $data = [
             [
-                "name" => "黑盒信息",
+                "name" => "网站扫描",
                 "value" => $appCount,
                 "subInfo" => [
                     ["name" => "rad", "value" => $urlsCount, "href" => url('urls/index')],
@@ -110,7 +110,7 @@ class Index extends Common
                 ]
             ]
             , [
-                "name" => "漏洞站点",
+                "name" => "专项利用",
                 "value" => $pocsuite3Count,
                 "subInfo" => [
                     ["name" => "漏洞情报", "value" => $vulnerableCount, "href" => url('vulnerable/index')],
@@ -146,12 +146,12 @@ class Index extends Common
         $bugPaihang = array_slice($bugPaihang, 0, 10);
 
         //端口发现
-        $portCount = Db::table('host_port')->field('port as name,count(port) as value')->group('port')->select()->toArray();
+        $portCount = Db::table('asm_host_port')->field('port as name,count(port) as value')->group('port')->select()->toArray();
         array_multisort(array_column($portCount, 'value'), SORT_DESC, $portCount);
         $portCount = array_slice($portCount, 0, 10);
 
         //主机统计
-        $hostCount = Db::table('host_port')->field('host as name,count(host) as value')->group('host')->select()->toArray();
+        $hostCount = Db::table('asm_host_port')->field('host as name,count(host) as value')->group('host')->select()->toArray();
         array_multisort(array_column($hostCount, 'value'), SORT_DESC, $hostCount);
         $hostCount = array_slice($hostCount, 0, 10);
 
@@ -183,7 +183,7 @@ class Index extends Common
         if (!$result['code']) {
             return $this->apiReturn(0,[],'');
         }
-        $path = \think\facade\App::getRootPath() . '../docker/data/update.lock';
+        $path = \think\facade\App::getRootPath() . '../docker./data/update.lock';
         // 获取当前版本号
         $version = file_get_contents($path);
         $news_version = $result['data']['news_version'];

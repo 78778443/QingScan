@@ -20,3 +20,5 @@ code/public/install/install.lock
 /code/icon/
 /docker/latest/mysql/*
 !docker/latest/mysql/null
+/github/
+/code/data/

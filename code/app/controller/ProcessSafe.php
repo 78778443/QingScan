@@ -117,9 +117,7 @@ class ProcessSafe extends Common
     public function update_status(Request $request){
         $ids = $request->param('ids');
         $map[] = ['id','in',$ids];
-        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
-            $map[] = ['user_id', '=', $this->userId];
-        }
+        
         $type = $request->param('type',1);
         if ($type == 1) {
             $status = 1;

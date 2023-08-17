@@ -46,7 +46,7 @@
             </div>
             <div class="mb-3">
                 <label class="form-label">状态</label>
-                <select name="status" class="form-select">
+                <select name="status" class="form-select form-select-sm">
                     <option value="1" <?php echo $info['status'] == 1?'selected':''?>>启用</option>
                     <option value="0" <?php echo $info['status'] == 0?'selected':''?>>禁用</option>
                 </select>
@@ -75,8 +75,8 @@
                 <input type="text" name="result_file" class="form-control" value="<?php echo $info['result_file']?>" placeholder="扫描结果存放位置(选填)">
             </div>
             <div class="row" style="height: 10px"></div>
-            <button type="submit" class="btn btn-outline-success">提交</button>
-            <a href="<?php echo url('index') ?>" class="btn btn-outline-info">返回</a>
+            <button type="submit" class="btn btn-sm btn-outline-secondary">提交</button>
+            <a href="<?php echo url('index') ?>" class="btn btn-sm btn-outline-secondary">返回</a>
         </form>
     </div>
     <div class="col-md-3"></div>

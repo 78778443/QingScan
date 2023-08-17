@@ -1,4 +1,8 @@
 {include file='public/head' /}
+<div class="col-md-1 " style="padding-right:0;">
+    {include file='public/vulLeftMenu' /}
+</div>
+<div class="col-md-11 " style="padding-left:0;">
 <?php
 $searchArr = [
     'action' => url('github_notice/index'),
@@ -14,7 +18,7 @@ $searchArr = [
     <!--            <div class="col-md-1"></div>-->
     <div class="col-md-12 ">
         {include file='public/batch_del' /}
-        <table class="table table-bordered table-hover table-striped">
+        <table class="table  table-hover table-sm">
             <thead>
             <tr>
                 <th width="70">
@@ -55,5 +59,5 @@ $searchArr = [
 <input type="hidden" id="to_examine_url" value="<?php echo url('to_examine/xray')?>">
 
 {include file='public/to_examine' /}
-{include file='public/fenye' /}
+{include file='public/fenye' /}</div>
 {include file='public/footer' /}

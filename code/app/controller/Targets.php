@@ -4,10 +4,9 @@ namespace app\controller;
 
 
 use app\model\AppModel;
-use app\model\UrlsModel;
-use app\model\TaskModel;
-use app\model\XrayModel;
 use app\model\GroupModel;
+use app\model\TaskModel;
+use app\webscan\model\XrayModel;
 use think\Request;
 
 class Targets extends Common

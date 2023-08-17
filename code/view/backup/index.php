@@ -10,7 +10,7 @@ $searchArr = [
     'btnArr' => [
         ['text' => '手动备份', 'ext' => [
             "href" => url('backup'),
-            "class" => "btn btn-outline-success"
+            "class" => "btn btn-sm btn-outline-secondary"
         ]]
     ]];
 
@@ -21,7 +21,7 @@ $searchArr = [
 <div class="col-md-12 ">
     <div class="row tuchu">
         <div class="col-md-12 ">
-            <table class="table table-bordered table-hover table-striped">
+            <table class="table  table-hover table-sm">
                 <thead>
                 <tr>
                     <th>编号</th>
@@ -39,9 +39,9 @@ $searchArr = [
                         <td><?php echo $value['create_time'] ?></td>
                         <td>
                             <!--<a href="<?php /*echo url('recovery',['time'=>$value['time']])*/?>"
-                               class="btn btn-sm btn-outline-success">恢复</a>-->
+                               class="btn btn-sm btn-outline-secondary">恢复</a>-->
                             <a href="<?php echo url('download',['time'=>$value['time']])?>"
-                               class="btn btn-sm btn-outline-success">下载</a>
+                               class="btn btn-sm btn-outline-secondary">下载</a>
                             <a href="<?php echo url('del',['time'=>$value['time']])?>" class="btn btn-sm btn-outline-danger">删除</a>
                         </td>
                     </tr>

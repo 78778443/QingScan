@@ -37,7 +37,7 @@
                 </div>
                 <div class="mb-3">
                     <label class="form-label">漏洞等级</label>
-                    <select name="vul_level" class="form-select" aria-label="Default select example">
+                    <select name="vul_level" class="form-select form-select-sm" aria-label="Default select example">
                         <option value="严重" >严重</option>
                         <option value="高危" >高危</option>
                         <option value="中危" >高危</option>
@@ -106,7 +106,7 @@
                 </div>
                 <div class="mb-3">
                     <label class="form-label">product_open</label>
-                    <select name="product_open" class="form-select" aria-label="Default select example">
+                    <select name="product_open" class="form-select form-select-sm" aria-label="Default select example">
                         <option value="是" >是</option>
                         <option value="否" >否</option>
                     </select>
@@ -185,7 +185,7 @@
                 </div>
                 <div class="mb-3">
                     <label class="form-label">is_pass_attack</label>
-                    <select name="is_pass_attack" class="form-select" aria-label="Default select example">
+                    <select name="is_pass_attack" class="form-select form-select-sm" aria-label="Default select example">
                         <option value="1" >是</option>
                         <option value="0" >否</option>
                     </select>
@@ -204,7 +204,7 @@
                 </div>
                 <div class="mb-3">
                     <label class="form-label">是否有POC</label>
-                    <select name="is_poc" class="form-select" aria-label="Default select example">
+                    <select name="is_poc" class="form-select form-select-sm" aria-label="Default select example">
                         <option value="1" >是</option>
                         <option value="0" >否</option>
                     </select>
@@ -212,8 +212,8 @@
             </div>
         </div><div class="row" style="height: 10px"></div>
             <div class="modal-footer">
-                <a href="<?php echo url('index')?>" class="btn btn-outline-success">返回</a>
-                <button type="submit" class="btn btn-outline-info">提交</button>
+                <a href="<?php echo url('index')?>" class="btn btn-sm btn-outline-secondary">返回</a>
+                <button type="submit" class="btn btn-sm btn-outline-secondary">提交</button>
             </div>
         </div>
     </form>

@@ -89,7 +89,7 @@
             <input type="checkbox" value="remember-me"> 记住我
         </label>
     </div>
-    <button class="btn btn-lg btn-outline-primary btn-block" type="submit">登录</button>
+    <button class="btn btn-lg btn-outline-info btn-block" type="submit">登录</button>
 </form>
 
 

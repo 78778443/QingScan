@@ -12,7 +12,7 @@ $searchArr = [
     'btnArr' => [
         ['text' => '添加菜单', 'ext' => [
             "href" => url('auth/ruleAdd'),
-            "class" => "btn btn-outline-success"
+            "class" => "btn btn-sm btn-outline-secondary"
         ]
         ]
     ]]; ?>
@@ -21,7 +21,7 @@ $searchArr = [
     <div class="row tuchu">
         <!--            <div class="col-md-1"></div>-->
         <div class="col-md-12 ">
-            <table class="table table-bordered table-hover table-striped">
+            <table class="table  table-hover table-sm">
                 <thead>
                 <tr>
                     <th>ID</th>
@@ -53,9 +53,9 @@ $searchArr = [
                         <td><?php echo $value['sort'] ?></td>
                         <td>
                             <!--<a href="<?php /*echo url('auth/userEdit',['auth_rule_id'=>$value['auth_rule_id']])*/?>"
-                               class="btn btn-sm btn-outline-primary">添加子类</a>-->
+                               class="btn btn-sm btn-outline-secondary">添加子类</a>-->
                             <a href="<?php echo url('auth/ruleEdit',['auth_rule_id'=>$value['auth_rule_id']])?>"
-                               class="btn btn-sm btn-outline-success">编辑</a>
+                               class="btn btn-sm btn-outline-secondary">编辑</a>
                             <a href="<?php echo url('auth/ruleDel',['auth_rule_id'=>$value['auth_rule_id']])?>" class="btn btn-sm btn-outline-danger">删除</a>
                         </td>
                     </tr>

@@ -46,7 +46,7 @@ class DeskApp extends BaseController
         $data['app_info'] = Db::table('app_info')->where($where)->order("app_id", 'desc')->limit(0, 15)->select()->toArray();
         $data['app_vulmap'] = Db::table('app_vulmap')->where($where)->order("app_id", 'desc')->limit(0, 15)->select()->toArray();
         $data['app_dismap'] = Db::table('app_dismap')->where($where)->order("app_id", 'desc')->limit(0, 15)->select()->toArray();
-        $data['urls'] = Db::table('urls')->where($where)->order("app_id", 'desc')->limit(0, 15)->select()->toArray();
+        $data['urls'] = Db::table('asm_urls')->where($where)->order("app_id", 'desc')->limit(0, 15)->select()->toArray();
         $data['xray'] = Db::table('xray')->where($where)->order("app_id", 'desc')->limit(0, 15)->select()->toArray();
         $data['nuclei'] = Db::table('app_nuclei')->where($where)->order("app_id", 'desc')->limit(0, 15)->select()->toArray();
         $data['crawlergo'] = Db::table('app_crawlergo')->where($where)->order("app_id", 'desc')->limit(0, 15)->select()->toArray();
@@ -54,8 +54,8 @@ class DeskApp extends BaseController
         //获取此域名对应主机的端口信息
         $urlInfo = parse_url($data['info']['url']);
         $ip = gethostbyname($urlInfo['host']);
-        $data['host_port'] = Db::table('host_port')->where(['host' => $ip])->limit(0, 15)->select()->toArray();
-        $data['host'] = Db::table('host')->where(['host' => $ip])->limit(0, 15)->select()->toArray();
+        $data['host_port'] = Db::table('asm_host_port')->where(['host' => $ip])->limit(0, 15)->select()->toArray();
+        $data['host'] = Db::table('asm_host')->where(['host' => $ip])->limit(0, 15)->select()->toArray();
 
         return $this->apiReturn(200, $data);
     }

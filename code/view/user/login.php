@@ -2,17 +2,17 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>QingScan 登录</title>
+    <title><?=env('website')?> 登录</title>
 
     <!-- Bootstrap core CSS -->
     <link href="/static/4.6/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 </head>
-<body>
+<body style="background-image: url(/static/images/login-bg.png);">
 <div class="container">
     <div class="row" style="margin:100px;"></div>
     <div class="row">
         <div class="col-md-4"></div>
-        <div class="col-md-4">
+        <div class="col-md-4" style="background-color:#fff;padding:40px;border-radius: 10px;">
             <form class="form-signin"   action="<?php echo url('login/doLogin') ?>" method="POST">
                 <div class="text-center mb-4">
                     <img class="mb-4" src="/static/favicon.svg" alt="" width="72" height="72">

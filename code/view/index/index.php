@@ -11,18 +11,16 @@
         border-width: 1px;
     }
 </style>
-<div class="row">
+<div class="row" style="--bs-gutter-x:0rem">
     <?php foreach ($data as $key => $value) { ?>
         <div class="col-md-6">
-            <div class="row tuchu " style="min-height:300px;">
-
-                <span style="color:#ccc;font-size:21px;">{$value['name']}:<span class="badge bg-primary">{$value['value']}</span></span>
-
+            <div class="row tuchu " style="min-height:300px;border-radius: 10px;">
+                <span style="color:#999;font-size:21px;">{$value['name']}: <span class="btn btn-sm btn-outline-info">{$value['value']}</span></span>
                 <?php foreach ($value['subInfo'] as $subVaule) { ?>
                     <div class="col-md-4">
                         <div style="font-size: 21px;">
-                            <span style="width:100px;color:#666;" class="badge   text-right">{$subVaule['name']}</span>:
-                            <a style="width:70px;" class="badge bg-info text-right" href="{$subVaule['href']}">{$subVaule['value']}</a>
+                            <span style="width:100px;color:#999;" class="badge   text-right">{$subVaule['name']}</span>:
+                            <a style="width:70px;" class="btn btn-sm btn-outline-secondary" href="{$subVaule['href']}">{$subVaule['value']}</a>
                         </div>
                     </div>
                 <?php } ?>

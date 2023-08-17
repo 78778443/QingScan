@@ -19,8 +19,8 @@
                 <?php echo $info['result']?>
             </div>
         </div>
-        <a href="<?php echo url('index')?>" class="btn btn-outline-info">返回</a>
-        <button type="submit" class="btn btn-outline-success">测速</button>
+        <a href="<?php echo url('index')?>" class="btn btn-sm btn-outline-secondary">返回</a>
+        <button type="submit" class="btn btn-sm btn-outline-secondary">测速</button>
     </form>
 </div>
 <div class="col-md-3"></div>

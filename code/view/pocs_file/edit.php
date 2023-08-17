@@ -10,15 +10,15 @@
         </div>
         <div class="mb-3">
             <label class="form-label">cve_num</label>
-            <input type="text" name="cve_num" class="form-control" disabled value="<?php echo $info['cve_num']?>">
+            <input type="text" name="cve_num" class="form-control"   value="<?php echo $info['cve_num']?>">
         </div>
         <div class="mb-3">
             <label class="form-label">内容</label>
-            <textarea class="form-control" rows="8" name="content" readonly><?php echo $info['content']?></textarea>
+            <textarea class="form-control" rows="8" name="content"  ><?php echo $info['content']?></textarea>
         </div>
         <div class="mb-3">
             <label class="form-label">工具类型</label>
-            <select name="tool" class="form-select" readonly>
+            <select name="tool" class="form-select form-select-sm" readonly>
                 <option value="1" <?php echo $info['tool'] == 0 ?'selected':'';?>>pocsuite3</option>
                 <option value="1" <?php echo $info['tool'] == 1 ?'selected':'';?>>xray</option>
                 <option value="0" <?php echo $info['tool'] == 2 ?'selected':'';?>>其他</option>
@@ -26,13 +26,13 @@
         </div>
         <div class="mb-3">
             <label class="form-label">状态</label>
-            <select name="status" class="form-select">
+            <select name="status" class="form-select form-select-sm">
                 <option value="1" <?php echo $info['status'] == 1 ?'selected':'';?>>正常</option>
                 <option value="0" <?php echo $info['status'] == 0 ?'selected':'';?>>禁用</option>
             </select>
         </div>
-        <button type="submit" class="btn btn-outline-success">提交</button>
-        <a href="<?php echo url('index')?>" class="btn btn-outline-info">返回</a>
+        <button type="submit" class="btn btn-sm btn-outline-secondary">提交</button>
+        <a href="<?php echo url('index')?>" class="btn btn-sm btn-outline-secondary">返回</a>
     </form>
 </div>
 <div class="col-md-3"></div>

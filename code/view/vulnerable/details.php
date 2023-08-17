@@ -112,15 +112,15 @@
 </div>
 <div class="tuchu col-md-12 text-center">
     <span class="follow-vul j-follow-vul ">
-      <a href="<?php echo url('vulnerable/index') ?>" class="btn btn-outline-primary">返回列表页</a>
+      <a href="<?php echo url('vulnerable/index') ?>" class="btn btn-sm btn-outline-secondary">返回列表页</a>
     </span>
     <span class="follow-vul j-follow-vul ">
         <a href="<?php echo url('vulnerable/details', ['id' => $info['upper_id']]) ?>"
-           class="btn btn-outline-warning">上一页</a>
+           class="btn btn-sm btn-outline-secondary">上一页</a>
     </span>
     <span class="follow-vul j-follow-vul ">
         <a href="<?php echo url('vulnerable/details', ['id' => $info['lower_id']]) ?>"
-           class="btn btn-outline-success">下一页</a>
+           class="btn btn-sm btn-outline-secondary">下一页</a>
     </span>
 </div>
 {include file='public/to_examine' /}

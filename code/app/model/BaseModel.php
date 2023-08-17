@@ -62,35 +62,36 @@ class BaseModel
     }
 
 
-    public static function scanTime($table,$id,$filed)
+    public static function scanTime($table, $id, $filed)
     {
         $data = [$filed => date('Y-m-d H:i:s', time())];
         return Db::name($table)->where('id', $id)->update($data);
     }
 
     // 获取app待扫描列表
-    public static function getAppStayScanList($filed,$num=1){
+    public static function getAppStayScanList($filed, $num = 1)
+    {
         $endTime = date('Y-m-d', time() - 86400 * 15);
-        $where[] = [$filed,'<=',$endTime];
-        $where[] = ['is_delete','=',0];
-        $where[] = ['status','=',1];
+        $where[] = [$filed, '<=', $endTime];
+        $where[] = ['is_delete', '=', 0];
+        $where[] = ['status', '=', 1];
         return Db::name('app')->where($where)->field('id,name,url,username,password,user_id,is_intranet')->limit($num)->orderRand()->select()->toArray();
     }
 
     // 获取app待扫描列表
-    public static function getCodeStayScanList($filed,$where = [],$num=1){
-        $endTime = date('Y-m-d', time() - 86400*15);
-        $where[] = [$filed,'<=',$endTime];
-        $where[] = ['is_delete','=',0];
-        $where[] = ['status','=',1];
+    public static function getCodeStayScanList($filed, $where = [], $num = 1)
+    {
+        $where[] = ['is_delete', '=', 0];
+        $where[] = ['status', '=', 1];
         return Db::name('code')->where($where)->limit($num)->orderRand()->select()->toArray();
     }
 
     // 检查工具权限
-    public static function checkToolAuth($type,$project_id,$tools_name){
-        $where[] = ['type','=',$type];
-        $where[] = ['project_id','=',$project_id];
-        $where[] = ['tools_name','=',$tools_name];
+    public static function checkToolAuth($type, $project_id, $tools_name)
+    {
+        $where[] = ['type', '=', $type];
+        $where[] = ['project_id', '=', $project_id];
+        $where[] = ['tools_name', '=', $tools_name];
         return Db::name('project_tools')->where($where)->count('id');
     }
 }

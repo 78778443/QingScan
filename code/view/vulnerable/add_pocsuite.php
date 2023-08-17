@@ -62,8 +62,8 @@
             </div>
         </div><div class="row" style="height: 10px"></div>
             <div class="modal-footer">
-                <a href="<?php echo url('index')?>" class="btn btn-outline-success">返回</a>
-                <button type="submit" class="btn btn-outline-info">提交</button>
+                <a href="<?php echo url('index')?>" class="btn btn-sm btn-outline-secondary">返回</a>
+                <button type="submit" class="btn btn-sm btn-outline-secondary">提交</button>
             </div>
         </div>
     </form>

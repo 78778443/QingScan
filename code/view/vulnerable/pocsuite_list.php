@@ -1,5 +1,8 @@
 {include file='public/head' /}
-
+<div class="col-md-1 " style="padding-right:0;">
+    {include file='public/vulLeftMenu' /}
+</div>
+<div class="col-md-11 " style="padding-left:0;">
 <?php
 $dengjiArr = ['Low', 'Medium', 'High', 'Critical'];
 ?>
@@ -13,7 +16,7 @@ $searchArr = [
     'btnArr' => [
         ['text' => '添加', 'ext' => [
             "href" => url('add_pocsuite'),
-            "class" => "btn btn-outline-success"
+            "class" => "btn btn-sm btn-outline-secondary"
         ]
         ]
     ]
@@ -29,11 +32,11 @@ $searchArr = [
                 <input type="file" class="form-control form-control" name="file" accept=".xls,.csv" required/>
             </div>
             <div class="col-auto">
-                <input type="submit" class="btn btn-outline-info" value="批量添加项目">
+                <input type="submit" class="btn btn-sm btn-outline-secondary" value="批量添加项目">
             </div>
             <div class="col-auto">
                 <a href="<?php echo url('downloaAppTemplate') ?>"
-                   class="btn btn-outline-success">下载模板</a>
+                   class="btn btn-sm btn-outline-secondary">下载模板</a>
             </div>
         </form>
     </div>
@@ -42,7 +45,7 @@ $searchArr = [
 <div class="row tuchu">
     <div class="col-md-12 ">
         {include file='public/batch_del' /}
-        <table class="table table-bordered table-hover table-striped">
+        <table class="table  table-hover table-sm">
             <thead>
             <tr>
                 <th width="80">
@@ -71,7 +74,7 @@ $searchArr = [
 
                     <td>
 <!--                        <a href="/index.php?s=code_check/bug_detail&id=--><?php //echo $value['id'] ?><!--"-->
-<!--                           class="btn btn-sm btn-outline-primary">查看漏洞</a>-->
+<!--                           class="btn btn-sm btn-outline-secondary">查看漏洞</a>-->
                         <a href="<?php echo url('vulnerable/pocsuite_del',['id'=>$value['id']])?>" class="btn btn-sm btn-outline-danger">删除</a>
                     </td>
                 </tr>
@@ -80,6 +83,7 @@ $searchArr = [
     </div>
 </div>
 {include file='public/fenye' /}
+</div>
 {include file='public/footer' /}
 
 <input type="hidden" id="batch_del_url" value="<?php echo url('pocsuite_batch_del')?>">

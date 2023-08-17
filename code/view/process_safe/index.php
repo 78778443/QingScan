@@ -14,11 +14,11 @@ $searchArr = [
     'btnArr' => [
         ['text' => '添加守护进程', 'ext' => [
             "href" => url('add'),
-            "class" => "btn btn-outline-success"
+            "class" => "btn btn-sm btn-outline-secondary"
         ]],
         ['text' => '查看进程', 'ext' => [
             "href" => url('showProcess'),
-            "class" => "btn btn-outline-info"
+            "class" => "btn btn-sm btn-outline-secondary"
         ]]
     ]
 
@@ -31,15 +31,15 @@ $searchArr = [
             <form class="row g-3" id="frmUpload" action="" method="post" enctype="multipart/form-data">
                 <div class="col-auto">
                     <a href="javascript:;" onclick="update_status(1)"
-                       class="btn btn-outline-success">启用</a>
+                       class="btn btn-sm btn-outline-secondary">启用</a>
                 </div>
 
                 <div class="col-auto">
                     <a href="javascript:;" onclick="update_status(2)"
-                       class="btn btn-outline-success">禁用</a>
+                       class="btn btn-sm btn-outline-secondary">禁用</a>
                 </div>
             </form>
-            <table class="table table-bordered table-hover table-striped">
+            <table class="table  table-hover table-sm">
                 <thead>
                 <tr>
                     <th>
@@ -76,7 +76,7 @@ $searchArr = [
                         </td>
                         <td>
                             <a href="<?php echo url('edit', ['id' => $value['id']]) ?>"
-                               class="btn btn-sm btn-outline-success">编辑</a>
+                               class="btn btn-sm btn-outline-secondary">编辑</a>
                             <a href="<?php echo url('del', ['id' => $value['id']]) ?>"
                                class="btn btn-sm btn-outline-danger">删除</a>
                         </td>

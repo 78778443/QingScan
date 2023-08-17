@@ -5,13 +5,14 @@ $btnArr = $searchArr['btnArr'] ?? [];
 ?>
 <div class="row tuchu">
     <div class="col-md-10">
-        <form class="row g-3" method="<?php echo $searchArr['method'] ?>" action="<?php echo $searchArr['action'] ?>">
+        <form class="row g-3" method="<?php echo $searchArr['method'] ?>"
+              action="<?php echo $searchArr['action'] ?>">
             <?php foreach ($inputs as $inputInfo) { ?>
                 <div class="col-auto">
                     <?php
                     //下拉框处理
                     if ($inputInfo['type'] == 'select') { ?>
-                        <select class="form-select" name="{$inputInfo['name']}">
+                        <select class="form-select form-select-sm" name="{$inputInfo['name']}" style="color: #666;">
                             <option value="<?php echo $inputInfo['frist_option_value'] ?? '' ?>" <?php echo empty($inputInfo['options']) ? 'selected' : '' ?>>
                                 {$inputInfo['frist_option']}
                             </option>
@@ -27,7 +28,7 @@ $btnArr = $searchArr['btnArr'] ?? [];
                         //普通input处理
                     } elseif ($inputInfo['type'] == 'text') { ?>
                         <div class="col-auto">
-                            <input type="{$inputInfo['type']}" class="form-control" name="{$inputInfo['name']}"
+                            <input type="{$inputInfo['type']}" class="form-control form-control-sm" name="{$inputInfo['name']}"
                                    value="<?php echo $inputInfo['value'] ?? strip_tags($_GET['search'] ?? '') ?>"
                                    placeholder="{$inputInfo['placeholder']}">
                         </div>
@@ -36,9 +37,9 @@ $btnArr = $searchArr['btnArr'] ?? [];
             <?php } ?>
             <?php if (!empty($inputs)) { ?>
                 <div class="col-auto">
-                    <input type="submit" class="btn btn-outline-primary" value="搜索">
+                    <input type="submit" class="btn btn-sm btn-outline-secondary" value="搜索">
                 </div>
-            <?php }?>
+            <?php } ?>
         </form>
     </div>
     <div class="col-md-2">

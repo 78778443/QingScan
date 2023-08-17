@@ -2,6 +2,8 @@
 
 namespace app\model;
 
+use app\webscan\model\XrayModel;
+
 class GroupModel extends BaseModel
 {
 

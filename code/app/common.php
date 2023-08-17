@@ -1,7 +1,120 @@
 <?php
 // 应用公共文件
 $branch = empty(getenv("branch")) ? 'master' : getenv("branch");
+function formatTimestampWithinRange($timestamp, $years = 3) {
+    // 获取当前时间的时间戳
+    $currentTimestamp = time();
 
+    // 计算允许的时间戳上下限
+    $minTimestamp = $currentTimestamp - ($years * 365 * 24 * 60 * 60);
+    $maxTimestamp = $currentTimestamp;
+
+    // 判断是否在允许的时间戳范围内
+    if ($timestamp >= $minTimestamp && $timestamp <= $maxTimestamp) {
+        // 将时间戳转换为时间格式，可根据需要自定义格式
+        $formattedTime = date('Y-m-d H:i:s', $timestamp);
+        return $formattedTime;
+    } else {
+        // 不在时间戳范围内则返回原时间戳
+        return $timestamp;
+    }
+}
+
+
+function formatJson($json)
+{
+    if (is_json($json) === false) return $json;
+    $result = '';
+    $indentation = 0;
+    $inQuotes = false;
+
+    for ($i = 0; $i < strlen($json); $i++) {
+        $char = $json[$i];
+
+        if ($inQuotes) {
+            $result .= $char;
+            if ($char === '"') {
+                if ($i > 0 && $json[$i - 1] !== '\\') {
+                    $inQuotes = false;
+                }
+            }
+        } else {
+            switch ($char) {
+                case '{':
+                case '[':
+                    $result .= $char . "\n" . str_repeat('    ', $indentation + 1);
+                    $indentation++;
+                    break;
+                case '}':
+                case ']':
+                    $indentation--;
+                    $result .= "\n" . str_repeat('    ', $indentation) . $char;
+                    break;
+                case ',':
+                    $result .= $char . "\n" . str_repeat('    ', $indentation);
+                    break;
+                case ':':
+                    $result .= $char . ' ';
+                    break;
+                case '"':
+                    $result .= $char;
+                    $inQuotes = true;
+                    break;
+                default:
+                    $result .= $char;
+            }
+        }
+    }
+
+    return $result;
+}
+
+function portIsOpen($ip, $port)
+{
+    $sock = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
+    if ($sock === false) return false;
+
+    socket_set_nonblock($sock);
+    try {
+        $result = @socket_connect($sock, $ip, $port);
+    } catch (Exception $e) {
+        $result = false;
+    }
+    if ($result === false && socket_last_error($sock) != SOCKET_EINPROGRESS) {
+        // 处理连接失败的情况
+        socket_close($sock);
+        return false;
+    }
+
+    $r = array($sock);
+    $w = array($sock);
+    $f = array($sock);
+    $return = socket_select($r, $w, $f, 1);
+    socket_close($sock);
+
+    return ($return == 1);
+}
+
+function getMainDomain($subdomain)
+{
+    $tlds = ['com', 'net', 'org', 'cn', 'edu', 'gov', 'co'];
+
+    $parts = explode('.', $subdomain);
+    $numParts = count($parts);
+
+    // 判断是否满足 "x.y" 的格式
+    if ($numParts >= 2) {
+        // 判断倒数第二部分是否为 TLD 后缀
+        if (in_array($parts[$numParts - 2], $tlds)) {
+            $mainDomain = implode('.', array_slice($parts, -3));
+        } else {
+            $mainDomain = implode('.', array_slice($parts, -2));
+        }
+        return $mainDomain;
+    }
+
+    return null;
+}
 
 function getRabbitMq()
 {
@@ -15,7 +128,7 @@ function getFileType(array $fileList)
     $typeList = [];
     foreach ($fileList as $val) {
         $fileInfo = pathinfo($val);
-        if(!isset($fileInfo['extension'])){
+        if (!isset($fileInfo['extension'])) {
             continue;
         }
         $typeList[$fileInfo['extension']] = $fileInfo['extension'];
@@ -42,14 +155,20 @@ function getGitAddr($prName, $sshUrl, $filePath, $line = "")
     }
     return $url;
 
-    /*$url = str_replace(':', '/', $sshUrl);
-    $url = str_replace('git@', 'http://', $url);
-    $url = str_replace('.git', $gitlabPath, $url);
-    if ($line != "") {
-        $url .= "#L{$line}";
-    }*/
+}
 
-    return $url;
+function getGitProjectName($cloneUrl)
+{
+    // 检查是否是SSH格式的克隆地址
+    if (preg_match('/^git@[\w.]+:(\w+)\/([\w.-]+)\.git$/', $cloneUrl, $matches)) {
+        return $matches[2];
+    } // 检查是否是HTTPS格式的克隆地址
+    elseif (preg_match('/^https?:\/\/[\w.]+\/(\w+)\/([\w.-]+)\.git$/', $cloneUrl, $matches)) {
+        return $matches[2];
+    } // 其他未知格式的地址，返回空或您认为合适的默认值
+    else {
+        return null;
+    }
 }
 
 function getSavePath($url, $tool = "xray", $id)
@@ -92,6 +211,7 @@ function getMysql()
 
 use app\model\BaseModel;
 use app\model\ConfigModel;
+use Symfony\Component\Yaml\Yaml;
 use think\facade\Db;
 use think\facade\Log;
 
@@ -171,7 +291,7 @@ function addlog($content, $out = false)
     Db::table('log')->whereTime('create_time', '<=', $endTime)->delete();
 
     if ($out or is_cli()) {
-        echo var_export($content, true) . PHP_EOL;
+//        echo var_export($content, true) . PHP_EOL;
     }
 }
 
@@ -238,6 +358,7 @@ function downCode($codePath, $prName, $codeUrl, $is_private = 0, $username = '',
 
 function cleanString($string)
 {
+    if(empty($string)) return $string;
     //$string = strtolower($string);
     $string = preg_replace("/[^a-z0-9A-Z-_]/i", "", $string);
 
@@ -261,6 +382,7 @@ function systemLog($shell, $showRet = true)
 {
     //转换成字符串
     $remark = "即将执行命令：{$shell}";
+    echo $remark.PHP_EOL;
     addlog($remark);
     //记录日志
     exec($shell, $output);
@@ -627,6 +749,7 @@ function ucenter_md5($str, $key = 'lyj0p2wtexiax32ijn23pantnyzdayu32hui3dlayuan1
  */
 function think_decrypt($data, $key = '')
 {
+    if ($data === null) return '';
     $key = md5(empty($key) ? config('app.UC_AUTH_KEY') : $key);
     $data = str_replace(array('-', '_'), array('+', '/'), $data);
     $mod4 = strlen($data) % 4;
@@ -965,7 +1088,7 @@ function getUninstallPath($name)
     }
     // 获取tools工具中符合的数据
     $tools = [];
-    //$tools_path = '/data/tools/plugins/';
+    //$tools_path = './extend/tools/plugins/';
     $tools_path = $app . '../../tools/plugins/';
     foreach (scandir($tools_path) as $value) {
         if ($value != '.' && $value != '..') {
@@ -1162,6 +1285,16 @@ function readCsv($uploadfile = '')
     return $data;
 }
 
+function moveKeyToFront($array, $keyToMove)
+{
+    if (array_key_exists($keyToMove, $array)) {
+        $valueToMove = $array[$keyToMove];
+        unset($array[$keyToMove]);
+        $array = array($keyToMove => $valueToMove) + $array;
+    }
+    return $array;
+}
+
 /**
  * 获取code表信息
  * @param int $id
@@ -1221,6 +1354,33 @@ function getProcessNum()
     }
     //返回数量
     return count($result);
+}
+
+function is_json($string)
+{
+    json_decode($string);
+    return (json_last_error() == JSON_ERROR_NONE);
+}
+
+function yamlDump(array $data): string
+{
+    return Yaml::dump($data);
+}
+
+function isIPv4($ip)
+{
+    $parts = explode('.', $ip);
+    if (count($parts) !== 4) {
+        return false;
+    }
+
+    foreach ($parts as $part) {
+        if (!is_numeric($part) || $part < 0 || $part > 255) {
+            return false;
+        }
+    }
+
+    return true;
 }
 
 function processSleep($time)

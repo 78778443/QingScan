@@ -191,45 +191,44 @@ class ConfigModel extends BaseModel
     // 备份数据库
     public static function backup()
     {
-        while (true) {
-            processSleep(1);
-            $backup = config('app.backup');
-            if (!file_exists($backup['path'])) {
-                mkdir($backup['path'], 0777, true);
-                addlog("文件不存在:{$backup['path']}");
-            }
-            $filename = $backup['path'] . 'runtime.lock';
-            $status = true;
-            if (file_exists($filename)) {
-                $content = file_get_contents($filename);
-                if ($content + 3600 * 24 - 100 > time()) {
-                    $status = false;
-                    sleep(60);
-                } else {
-                    file_put_contents($filename, time());
-                }
+        $backup = config('app.backup');
+        if (!file_exists($backup['path'])) {
+            mkdir($backup['path'], 0777, true);
+            addlog("文件不存在:{$backup['path']}");
+        }
+        $filename = $backup['path'] . 'runtime.lock';
+        $status = true;
+        if (file_exists($filename)) {
+            $content = file_get_contents($filename);
+            if ($content + 3600 * 24 - 100 > time()) {
+                $status = false;
+                sleep(60);
             } else {
                 file_put_contents($filename, time());
             }
-            if ($status) {
-                ini_set('max_execution_time', 0);
-                $db = new Backup($backup);
-                $time = time();
-                $file = ['name' => date('Ymd-His', $time), 'part' => 1];
-                foreach ($db->dataList() as $k => $v) {
-                    $db->setFile($file)->backup($v['name'], 0);
-                }
-            }
-            addlog("数据库备份完成，休息3600秒");
-            sleep(3600);
+        } else {
+            file_put_contents($filename, time());
         }
+        if ($status) {
+           
+            $db = new Backup($backup);
+            $time = time();
+            $file = ['name' => date('Ymd-His', $time), 'part' => 1];
+            foreach ($db->dataList() as $k => $v) {
+                $db->setFile($file)->backup($v['name'], 0);
+            }
+        }
+        addlog("数据库备份完成");
+
     }
 
-    public static function value($key){
-        return Db::name('system_config')->where('key',$key)->value('value');
+    public static function value($key)
+    {
+        return Db::name('system_config')->where('key', $key)->value('value');
     }
 
-    public static function set_value($key,$val){
-        return Db::name('system_config')->where('key',$key)->update(['value'=>$val]);
+    public static function set_value($key, $val)
+    {
+        return Db::name('system_config')->where('key', $key)->update(['value' => $val]);
     }
 }

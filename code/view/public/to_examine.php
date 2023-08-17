@@ -16,44 +16,12 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" id="submit" class="btn btn-outline-info">提交</button>
+                    <button type="button" id="submit" class="btn btn-sm btn-outline-secondary">提交</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
-
-<!--<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
-                </button>
-                <h4 class="modal-title" id="exampleModalLabel">请选择审核状态</h4>
-            </div>
-            <div class="modal-body">
-                <form>
-                    <div class="radio">
-                        <label>
-                            <input type="radio" name="check_status" value="1">
-                            有效漏洞
-                        </label>
-                    </div>
-                    <div class="radio">
-                        <label>
-                            <input type="radio" name="check_status" value="2">
-                            无效漏洞
-                        </label>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                <button type="button" class="btn btn-outline-primary" id="submit">确定</button>
-            </div>
-        </div>
-    </div>
-</div>-->
 <script>
     function to_examine(id) {
         $('#to_examine_id').val(id)

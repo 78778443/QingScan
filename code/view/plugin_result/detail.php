@@ -23,7 +23,7 @@
             <input type="text" class="form-control" value="{$info['create_time']}" disabled>
         </div>
         <div class="mb-3">
-            <a class="btn btn-outline-info" href="{:url('PluginResult/index')}">返回列表</a>
+            <a class="btn btn-sm btn-outline-secondary" href="{:url('PluginResult/index')}">返回列表</a>
         </div>
     </div>
 </div>

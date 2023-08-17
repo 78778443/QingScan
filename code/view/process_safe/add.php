@@ -15,7 +15,7 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label">工具类型</label>
-                        <select name="type" class="form-select">
+                        <select name="type" class="form-select form-select-sm">
                             <option value="0">黑盒扫描</option>
                             <option value="1">白盒审计</option>
                             <option value="2">专项利用</option>
@@ -29,14 +29,14 @@
                     </div>
                     <div class="mb-3">
                         <label>状态</label>
-                        <select name="status" class="form-select" aria-label="Default select">
+                        <select name="status" class="form-select form-select-sm" aria-label="Default select">
                             <option value="1">正常</option>
                             <option value="0">禁用</option>
                         </select>
                     </div>
                     <div class="row" style="height: 10px"></div>
-                    <button type="submit" class="btn btn-outline-success">提交</button>
-                    <a href="<?php echo url('index')?>" class="btn btn-outline-info">返回</a>
+                    <button type="submit" class="btn btn-sm btn-outline-secondary">提交</button>
+                    <a href="<?php echo url('index')?>" class="btn btn-sm btn-outline-secondary">返回</a>
                 </form>
             </div>
             <div class="col-md-3"></div>

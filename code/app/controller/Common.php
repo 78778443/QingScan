@@ -30,7 +30,7 @@ class Common extends BaseController
             if (request()->isAjax()) {
                 $this->apiReturn('0', [], '请先登录');
             } else {
-                header("Location: ".url('login/index'));
+                header("Location: ".url('/login/index'));
                 exit();
             }
         }
@@ -294,9 +294,7 @@ class Common extends BaseController
             return $this->apiReturn(0,[],'请先选择要审核的数据');
         }
         $map[] = ['id','in',$ids];
-        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
-            $map[] = ['user_id', '=', $this->userId];
-        }
+        
         if (Db::name($table)->where($map)->update(['check_status'=>$check_status,'update_time'=>date('Y-m-d H:i:s',time())])) {
             return $this->apiReturn(1,[],'审核成功');
         } else {
@@ -312,9 +310,7 @@ class Common extends BaseController
             return $this->apiReturn(0,[],'请先选择要删除的数据');
         }
         $map[] = ['id','in',$ids];
-        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
-            $map[] = ['user_id', '=', $this->userId];
-        }
+        
         if (Db::name($table)->where($map)->delete()) {
             return $this->apiReturn(1,[],'删除成功');
         } else {

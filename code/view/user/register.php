@@ -2,12 +2,12 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>QingScan 登录</title>
+    <title><?=env('website')?> 登录</title>
 
     <!-- Bootstrap core CSS -->
     <link href="/static/4.6/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 </head>
-<body>
+<body style="background-image: url(/static/images/login-bg.png);">
 <div class="container">
     <div class="row" style="margin:100px;"></div>
     <div class="row">
@@ -39,7 +39,7 @@
                 </div>
 
                 <div class="form-label-group">
-                    <button class="btn btn-lg btn-outline-primary btn-block" type="submit">注册</button>
+                    <button class="btn btn-lg btn-outline-info btn-block" type="submit">注册</button>
                     <a href="<?php echo url('login/index')?>">返回登陆</a>
                 </div>
             </form>

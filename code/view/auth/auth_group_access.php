@@ -10,8 +10,8 @@
 
                 </ul>
                 <div class="layui-form-item text-center">
-                    <button type="button" class="btn btn-outline-success" id="submit">提交</button>
-                    <button class="btn btn-outline-primary" type="button" onclick="window.history.back()">返回</button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" id="submit">提交</button>
+                    <button class="btn btn-sm btn-outline-secondary" type="button" onclick="window.history.back()">返回</button>
                 </div>
             </form>
         </div>

@@ -58,32 +58,29 @@ class AppModel extends BaseModel
     {
         $user = ConfigModel::value('fofa_user');
         $token = ConfigModel::value('fofa_token');
-        while (true) {
-            processSleep(1);
-            $appList = self::getAppStayScanList('subdomain_time',10);
-            foreach ($appList as $appInfo) {
-                PluginModel::addScanLog($appInfo['id'], __METHOD__, 0);
-                $str = urlencode(base64_encode('domain="' . parse_url($appInfo['url'])['host'] . '"'));
-                $list = Requests::get("https://fofa.so/api/v1/search/all?email={$user}&key={$token}&qbase64=" . $str);
 
-                $list = json_decode($list->body, true)['results'];
+        $appList = self::getAppStayScanList('subdomain_time', 10);
+        foreach ($appList as $appInfo) {
+            PluginModel::addScanLog($appInfo['id'], __METHOD__, 0);
+            $str = urlencode(base64_encode('domain="' . parse_url($appInfo['url'])['host'] . '"'));
+            $list = Requests::get("https://fofa.so/api/v1/search/all?email={$user}&key={$token}&qbase64=" . $str);
 
-                foreach ($list as $value) {
-                    $url = $value[0] . ":" . $value[2] . "/";
-                    if (strpos($url, 'https://') === false) {
-                        $url = "http://" . $url;
-                    }
-                    $subDomain = ['name' => $appInfo['name'], 'url' => $url];
-                    Db::table(self::$tableName)->extra("IGNORE")->insert($subDomain);
+            $list = json_decode($list->body, true)['results'];
+
+            foreach ($list as $value) {
+                $url = $value[0] . ":" . $value[2] . "/";
+                if (strpos($url, 'https://') === false) {
+                    $url = "http://" . $url;
                 }
-                $appInfo['subdomain_time'] = date('Y-m-d H:i:s');
-                Db::table(self::$tableName)->save($appInfo);
-                PluginModel::addScanLog($appInfo['id'], __METHOD__, 0,1);
+                $subDomain = ['name' => $appInfo['name'], 'url' => $url];
+                Db::table(self::$tableName)->extra("IGNORE")->insert($subDomain);
             }
-
-            print_r("休息10秒..." . PHP_EOL);
-            sleep(10);
+            $appInfo['subdomain_time'] = date('Y-m-d H:i:s');
+            Db::table(self::$tableName)->save($appInfo);
+            PluginModel::addScanLog($appInfo['id'], __METHOD__, 0, 1);
         }
+
+
     }
 
 
@@ -285,105 +282,100 @@ class AppModel extends BaseModel
     // web指纹识别
     public static function whatweb()
     {
-        ini_set('max_execution_time', 0);
-        $file_path = '/data/tools/whatweb';
-        while (true) {
-            processSleep(1);
-            $list = self::getAppStayScanList('whatweb_scan_time',10);
-            @mkdir($file_path,0777, true);
-            foreach ($list as $k => $v) {
-                if (!self::checkToolAuth(1,$v['id'],'whatweb')) {
-                    continue;
-                }
+        $file_path = './extend/tools/whatweb';
 
-                PluginModel::addScanLog($v['id'], __METHOD__, 0);
-                self::scanTime('app',$val['id'],'whatweb_scan_time');
-
-                $filename = "{$file_path}/whatweb.json";
-                $cmd = "whatweb {$v['url']} --log-json $filename";
-                systemLog($cmd);
-                if (file_exists($filename) == false) {
-                    PluginModel::addScanLog($v['id'], __METHOD__, 0,2);
-                    addlog(["whatweb扫描结果文件不存在:{$filename}"]);
-                    continue;
-                }
-
-                $contents = file_get_contents($filename);
-                $arr = json_decode($contents,true);
-                if ($contents && is_array($arr)) {
-                    $target = [];
-                    $http_status = [];
-                    $request_config = [];
-                    $plugins = [];
-                    foreach ($arr as $val) {
-                        $target[] = isset($val['target'])?$val['target']:[];
-                        $http_status[] = isset($val['http_status'])?$val['http_status']:[];
-                        $request_config[] = isset($val['request_config'])?$val['request_config']:[];
-                        $plugins[] = isset($val['plugins'])?$val['plugins']:[];
-                    }
-                    $data = [
-                        'app_id'=>$v['id'],
-                        'user_id'=>$v['user_id'],
-                        'target'=>json_encode($target,JSON_UNESCAPED_UNICODE),
-                        'http_status'=>json_encode($http_status,JSON_UNESCAPED_UNICODE),
-                        'request_config'=>json_encode($request_config,JSON_UNESCAPED_UNICODE),
-                        'plugins'=>json_encode($plugins,JSON_UNESCAPED_UNICODE),
-                        'create_time'=>date('Y-m-d H:i:s',time()),
-                    ];
-                    if ($data) {
-                        Db::name('app_whatweb')->insert($data);
-                    }
-                } else {
-                    PluginModel::addScanLog($v['id'], __METHOD__, 0,2);
-                    addlog(["whatweb扫描结果文件内容格式错误:{$filename}"]);
-                }
-                @unlink($filename);
-                PluginModel::addScanLog($v['id'], __METHOD__,0, 1);
+        $list = self::getAppStayScanList('whatweb_scan_time', 10);
+        @mkdir($file_path, 0777, true);
+        foreach ($list as $k => $v) {
+            if (!self::checkToolAuth(1, $v['id'], 'whatweb')) {
+                continue;
             }
-            sleep(10);
+
+            PluginModel::addScanLog($v['id'], __METHOD__, 0);
+            self::scanTime('app', $val['id'], 'whatweb_scan_time');
+
+            $filename = "{$file_path}/whatweb.json";
+            $cmd = "whatweb {$v['url']} --log-json $filename";
+            systemLog($cmd);
+            if (file_exists($filename) == false) {
+                PluginModel::addScanLog($v['id'], __METHOD__, 0, 2);
+                addlog(["whatweb扫描结果文件不存在:{$filename}"]);
+                continue;
+            }
+
+            $contents = file_get_contents($filename);
+            $arr = json_decode($contents, true);
+            if ($contents && is_array($arr)) {
+                $target = [];
+                $http_status = [];
+                $request_config = [];
+                $plugins = [];
+                foreach ($arr as $val) {
+                    $target[] = isset($val['target']) ? $val['target'] : [];
+                    $http_status[] = isset($val['http_status']) ? $val['http_status'] : [];
+                    $request_config[] = isset($val['request_config']) ? $val['request_config'] : [];
+                    $plugins[] = isset($val['plugins']) ? $val['plugins'] : [];
+                }
+                $data = [
+                    'app_id' => $v['id'],
+                    'user_id' => $v['user_id'],
+                    'target' => json_encode($target, JSON_UNESCAPED_UNICODE),
+                    'http_status' => json_encode($http_status, JSON_UNESCAPED_UNICODE),
+                    'request_config' => json_encode($request_config, JSON_UNESCAPED_UNICODE),
+                    'plugins' => json_encode($plugins, JSON_UNESCAPED_UNICODE),
+                    'create_time' => date('Y-m-d H:i:s', time()),
+                ];
+                if ($data) {
+                    Db::name('app_whatweb')->insert($data);
+                }
+            } else {
+                PluginModel::addScanLog($v['id'], __METHOD__, 0, 2);
+                addlog(["whatweb扫描结果文件内容格式错误:{$filename}"]);
+            }
+            @unlink($filename);
+            PluginModel::addScanLog($v['id'], __METHOD__, 0, 1);
         }
+
     }
 
-    public static function whatwebPocTest(){
-        ini_set('max_execution_time', 0);
-        while (true) {
-            processSleep(1);
-            $list = Db::name('app_whatweb')->whereTime('poc_scan_time', '<=', date('Y-m-d H:i:s', time() - (86400 * 15)))->limit(1)->orderRand()->select()->toArray();
-            foreach ($list as $val) {
-                self::scanTime('app_whatweb',$val['id'],'poc_scan_time');
-                $whatwebArr = whatwebArr($val['plugins']);
-                foreach ($whatwebArr as $k=>$v) {
-                    $where[] = ['product_name','=',$k];
-                    $where[] = ['affect_ver','like',"%{$v}%"];
-                    $where[] = ['is_delete','=',0];
-                    $where[] = ['is_poc','=',1];
-                    $cve_num = Db::name('vulnerable')->where($where)->value('cve_num');
-                    if ($cve_num) { // 存在poc
-                        $pocfile = Db::name('pocs_file')->where('cve_num',$cve_num)->value('poc_file');
-                        $url = Db::name('app')->where('id',$val['app_id'])->value('url');
-                        if (strpos($pocfile,'/data/') === false) {
-                            $pocfile = '/data/'.$pocfile;
-                        }
-                        $cmd = "pocsuite -r {$pocfile} -u {$url} --verify";
-                        execLog($cmd, $output);
-                        addlog(["poc验证结束", $val['id'], $url, $cmd, json_encode($output)]);
+    public static function whatwebPocTest()
+    {
 
-                        $data = [
-                            'whatweb_id'=>$val['id'],
-                            'url'=>$val['url'],
-                            'app_id'=>$val['app_id'],
-                            'user_id'=>$val['user_id'],
-                            'key'=>$k,
-                            'value'=>$v,
-                            'result'=>json_encode($output),
-                            'output'=>date('Y-m-d H:i:s',time())
-                        ];
-                        Db::name('app_whatweb_poc')->insert($data);
+        $list = Db::name('app_whatweb')->whereTime('poc_scan_time', '<=', date('Y-m-d H:i:s', time() - (86400 * 15)))->limit(1)->orderRand()->select()->toArray();
+        foreach ($list as $val) {
+            self::scanTime('app_whatweb', $val['id'], 'poc_scan_time');
+            $whatwebArr = whatwebArr($val['plugins']);
+            foreach ($whatwebArr as $k => $v) {
+                $where[] = ['product_name', '=', $k];
+                $where[] = ['affect_ver', 'like', "%{$v}%"];
+                $where[] = ['is_delete', '=', 0];
+                $where[] = ['is_poc', '=', 1];
+                $cve_num = Db::name('vulnerable')->where($where)->value('cve_num');
+                if ($cve_num) { // 存在poc
+                    $pocfile = Db::name('pocs_file')->where('cve_num', $cve_num)->value('poc_file');
+                    $url = Db::name('app')->where('id', $val['app_id'])->value('url');
+                    if (strpos($pocfile, './extend/') === false) {
+                        $pocfile = './extend/' . $pocfile;
                     }
+                    $cmd = "pocsuite -r {$pocfile} -u {$url} --verify";
+                    execLog($cmd, $output);
+                    addlog(["poc验证结束", $val['id'], $url, $cmd, json_encode($output)]);
+
+                    $data = [
+                        'whatweb_id' => $val['id'],
+                        'url' => $val['url'],
+                        'app_id' => $val['app_id'],
+                        'user_id' => $val['user_id'],
+                        'key' => $k,
+                        'value' => $v,
+                        'result' => json_encode($output),
+                        'output' => date('Y-m-d H:i:s', time())
+                    ];
+                    Db::name('app_whatweb_poc')->insert($data);
                 }
             }
-            sleep(10);
         }
+
     }
 
     //获取项目列表
@@ -395,7 +387,7 @@ class AppModel extends BaseModel
     }
 
 
-    public static function updateScanTime($id,$filed)
+    public static function updateScanTime($id, $filed)
     {
         $data = [$filed => date('Y-m-d H:i:s', time())];
         Db::name('app')->where('id', $id)->update($data);

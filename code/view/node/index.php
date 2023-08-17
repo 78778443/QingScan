@@ -13,7 +13,7 @@ $searchArr = [
 <div class="col-md-12 ">
     <div class="row tuchu">
         <div class="col-md-12 ">
-            <table class="table table-bordered table-hover table-striped">
+            <table class="table  table-hover table-sm">
                 <thead>
                 <tr>
                     <th>ID</th>

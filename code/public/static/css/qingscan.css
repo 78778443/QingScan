@@ -1,49 +1,41 @@
-.AutoNewline
-{
-    Word-break: break-all;/*必须*/
+.AutoNewline {
+    Word-break: break-all; /*必须*/
 }
+
 header a:hover {
     text-decoration: none;
+}
+
+table th {
+    color: #999;
 }
 
 .qiantuchu {
     background-color: #eee;
     padding: 20px;
-    margin-top: 10px;
-    margin-bottom: 10px;
-    margin-left: 5px;
-    margin-right: 5px;
+    margin: 10px 5px;
 }
 
 .tuchu_margin {
-    margin-top: 10px;
-    margin-bottom: 10px;
-    margin-left: 5px;
-    margin-right: 5px;
+    margin: 10px 5px;
 }
 
 .tuchu {
     background-color: #ffffff;
     padding: 20px;
-    margin-top: 10px;
-    margin-bottom: 10px;
-    margin-left: 5px;
-    margin-right: 5px;
+    margin: 10px 5px;
+    border-radius: 5px;
 }
 
 .tuchu_col {
     background-color: #ffffff;
     padding: 10px;
-    margin: 10px;
-    margin-left: 0px;
+    margin: 10px 10px 10px 0px;
+    border-radius: 5px;
 }
+
 .fenye {
     background-color: #ffffff;
-    padding: 20px;
-    margin-top: 10px;
-    margin-left: 5px;
-    margin-right: 5px;
-    margin-bottom: 80px;
 }
 
 
@@ -54,16 +46,46 @@ header a:hover {
     text-overflow: ellipsis;
     cursor: pointer;
 }
+
 footer {
     /*position: absolute;*/
     bottom: 0; /* 4. 设置页脚position为absolute之后，再将其bottom值设为0，即可使其处于页面的底部 */
     width: 100%;
     background-color: #457B9D;
 }
+
 .footer {
     background-color: #ffffff;
-    padding: 10px;
-    max-height: 60px;
-    padding-top: 20px;
-    padding-bottom: 20px;
+    padding: 5px;
 }
+
+
+table a {
+    color: #333;
+    text-decoration: none; /* 去除下划线 */
+}
+
+.nav-active {
+    background-color: #fff!important;
+    border-radius: 10px;
+    color: #999 !important;
+    font-weight: bold;
+}
+
+a.nav-link{
+    border-radius: 10px;
+}
+
+a.nav-link:hover {
+    background-color: #fff!important;
+    border-radius: 10px;
+    color: #999 !important;
+    font-weight: bold;
+}
+
+ .truncate-td {
+     white-space: nowrap;
+     overflow: hidden;
+     text-overflow: ellipsis;
+     max-width: 300px; /* 设置最大宽度 */
+ }

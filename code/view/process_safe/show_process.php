@@ -13,14 +13,14 @@ $searchArr = [
     'btnArr' => [
         ['text' => '返回列表', 'ext' => [
             "href" => url('index'),
-            "class" => "btn btn-outline-success"
+            "class" => "btn btn-sm btn-outline-secondary"
         ]
         ]
     ]]; ?>
 {include file='public/search' /}
 <div class="col-md-12 ">
     <div class="row tuchu">
-        <table class="table table-bordered table-hover table-striped">
+        <table class="table  table-hover table-sm">
             <tbody>
             <?php foreach ($info as $val) {
                 $arr = array_values(array_filter(explode('  ', $val)));
@@ -32,7 +32,7 @@ $searchArr = [
                     <td><?php echo $arr[2] ?? '' ?></td>
                     <td><?php echo $arr[3] ?? '' ?></td>
                     <td><?php echo $arr[4] ?? '' ?></td>
-                    <td><a href="<?php echo url('kill', ['pid' => $arr[1] ?? '']) ?>" class="btn btn-outline-danger">干掉他！</a>
+                    <td><a href="<?php echo url('kill', ['pid' => $arr[1] ?? '']) ?>" class="btn btn-sm btn-outline-danger">干掉他！</a>
                     </td>
                 </tr>
             <?php } ?>

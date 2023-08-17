@@ -1,11 +1,11 @@
 <form class="row g-3">
     <div class="col-auto">
         <a href="javascript:;>" onclick="batch_audit()"
-           class="btn btn-outline-success">批量审核</a>
+           class="btn btn-sm btn-outline-secondary">批量审核</a>
     </div>
     <div class="col-auto">
         <a href="javascript:;" onclick="batch_del()"
-           class="btn btn-outline-danger">批量删除</a>
+           class="btn btn-sm btn-outline-danger">批量删除</a>
     </div>
 </form>
 <div class="modal fade" id="batch_auditModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
@@ -25,7 +25,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" id="submit" class="btn btn-outline-info">提交</button>
+                    <button type="button" id="submit" class="btn btn-sm btn-outline-secondary">提交</button>
                 </div>
             </form>
         </div>

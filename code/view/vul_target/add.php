@@ -7,7 +7,7 @@
                 <form method="post" action="">
                     <!--<div class="mb-3">
                         <label class="form-label">缺陷列表</label>
-                        <select name="vul_id" class="form-select" required>
+                        <select name="vul_id" class="form-select form-select-sm" required>
                             <option value="0" selected>pocsuite3</option>
                         </select>
                     </div>-->
@@ -33,15 +33,15 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label">是否存在漏洞</label>
-                        <select name="is_vul" class="form-select">
+                        <select name="is_vul" class="form-select form-select-sm">
                             <option value="0">未知</option>
                             <option value="1">存在</option>
                             <option value="2">不存在</option>
                         </select>
                     </div>
                     <div class="row" style="height: 10px"></div>
-                    <button type="submit" class="btn btn-outline-success">提交</button>
-                    <a href="<?php echo url('index')?>" class="btn btn-outline-info">返回</a>
+                    <button type="submit" class="btn btn-sm btn-outline-secondary">提交</button>
+                    <a href="<?php echo url('index')?>" class="btn btn-sm btn-outline-secondary">返回</a>
                 </form>
             </div>
             <div class="col-md-3"></div>
