@@ -51,7 +51,7 @@ class Common extends BaseController
     private function is_auth($name)
     {
 
-        if (in_array($this->username, explode(',', env('admins')))) return true;
+        if (in_array($this->username, explode(',', env('admins','admin')))) return true;
 
         //管理员和开放地址,不鉴定权限
         $rules = Db::name('auth_group')->where('auth_group_id', $this->auth_group_id)->value('rules');
