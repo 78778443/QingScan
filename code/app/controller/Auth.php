@@ -321,8 +321,7 @@ class Auth extends Common
     {
         $nav = new \Leftnav();
         $map['is_delete'] = 0;
-        $authRule = Db::name('auth_rule')->where($map)->field('auth_rule_id,href,title,is_open_auth,pid,sort,menu_status,level,icon_url')->order
-        ('sort', 'asc')->select()->toArray();
+        $authRule = Db::name('auth_rule')->where($map)->order('sort', 'asc')->select()->toArray();
         $data['list'] = $nav->menu($authRule);
         return View::fetch('auth/auth_rule_list', $data);
     }

@@ -1,7 +1,13 @@
 <?php
+
+$qnrFile = dirname(__FILE__) . "/qnr/functions.php";
+if (file_exists($qnrFile)) require $qnrFile;
+
+
 // 应用公共文件
 $branch = empty(getenv("branch")) ? 'master' : getenv("branch");
-function formatTimestampWithinRange($timestamp, $years = 3) {
+function formatTimestampWithinRange($timestamp, $years = 3)
+{
     // 获取当前时间的时间戳
     $currentTimestamp = time();
 
@@ -19,6 +25,8 @@ function formatTimestampWithinRange($timestamp, $years = 3) {
         return $timestamp;
     }
 }
+
+
 
 
 function formatJson($json)
@@ -140,6 +148,7 @@ function getFileType(array $fileList)
 function getGitAddr($prName, $sshUrl, $filePath, $line = "")
 {
     // 判断类型
+    $domain_name = parse_url($sshUrl)['host'];
     if (preg_match('/gitee\.com/', $sshUrl)) {   // 码云
         $path = substr($sshUrl, strripos($sshUrl, ':') + 1, strlen($sshUrl));
         $domain_name = "https://gitee.com/{$path}";
@@ -272,19 +281,13 @@ function getArrayField(array $data, array $fields)
 function addlog($content, $out = false)
 {
     $content1 = $content;
-    $content = ['app' => 'QingScan', 'msg' => $content, 'time' => date('Y-m-d H:i:s')];
-    $data = json_encode($content, JSON_UNESCAPED_UNICODE) . PHP_EOL;
 
-    $date = date('Y-m-d');
-//    file_put_contents("./logs/log{$date}.json", $data . PHP_EOL, FILE_APPEND);
-    //Log::write($data . PHP_EOL);
     $dataArr = [
-        'app' => 'QingScan',
+        'app' => env('website'),
         'content' => is_array($content1) ? var_export($content1, true) : $content1,
     ];
 
     $dataArr['content'] = substr($dataArr['content'], 0, 4999);
-    //echo '---'.strlen($dataArr['content']).'---';
     \think\facade\Db::name('log')->insert($dataArr);
     //删除5天前的日志
     $endTime = date('Y-m-d', time() - 86400 * 5);
@@ -332,21 +335,11 @@ function getRealSize($size)
 
 function downCode($codePath, $prName, $codeUrl, $is_private = 0, $username = '', $password = '', $key = '')
 {
-    if ($is_private) {  // 私有仓库
-        preg_match('/^(http|https):\/\//', $codeUrl, $agreement);
-        if (!$agreement) {   // ssh拉取
-            $filename = "{$codePath}/id_rsa/";
-            if (!file_exists($filename)) {
-                mkdir($filename, 0777);
-            }
-            $filename .= uniqid() . '_id_rsa';
-            file_put_contents($filename, $key);
-            systemLog("chmod 600 {$filename}");
-            systemLog('git config --global core.sshCommand "ssh -i ' . $filename . '"');
-        } else {
-            $codeUrl = "{$agreement[0]}{$username}:{$password}@" . substr($codeUrl, 8, strlen($codeUrl));
-        }
+    if (!file_exists($codePath)) mkdir($codePath, 0777, true);
+    if (function_exists("addBasicAuthToURL")) {
+        $codeUrl = addBasicAuthToURL($codeUrl,env('gitlab.username'),env('gitlab.password'));
     }
+
     if (!file_exists("{$codePath}/{$prName}")) {
         $cmd = "cd {$codePath}/ && git clone --depth=1 {$codeUrl}  $prName";
         systemLog($cmd);
@@ -358,7 +351,7 @@ function downCode($codePath, $prName, $codeUrl, $is_private = 0, $username = '',
 
 function cleanString($string)
 {
-    if(empty($string)) return $string;
+    if (empty($string)) return $string;
     //$string = strtolower($string);
     $string = preg_replace("/[^a-z0-9A-Z-_]/i", "", $string);
 
@@ -382,7 +375,7 @@ function systemLog($shell, $showRet = true)
 {
     //转换成字符串
     $remark = "即将执行命令：{$shell}";
-    echo $remark.PHP_EOL;
+    echo $remark . PHP_EOL;
     addlog($remark);
     //记录日志
     exec($shell, $output);
@@ -1358,6 +1351,7 @@ function getProcessNum()
 
 function is_json($string)
 {
+    if ($string === null) return false;
     json_decode($string);
     return (json_last_error() == JSON_ERROR_NONE);
 }

@@ -10,19 +10,7 @@
                     <div class="mb-3">
                         <label class="form-label">URL地址</label>
                         <textarea class="form-control" name="url" placeholder="https://example.com/"
-                                  rows="3"></textarea>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">选择工具</label>
-                        <div class="checkbox">
-                            <?php
-                            foreach ($tools_list as $k => $v) {
-                                ?>
-                                <label>
-                                    <input type="checkbox" checked name="tools[]" value="<?php echo $k; ?>"><?php echo $v; ?>
-                                </label>
-                            <?php } ?>
-                        </div>
+                                  rows="6"></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">

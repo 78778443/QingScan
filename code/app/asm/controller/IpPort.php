@@ -2,9 +2,7 @@
 
 namespace app\asm\controller;
 
-use app\asm\model\DomainModel;
 use app\controller\Common;
-use think\facade\Cache;
 use think\facade\Db;
 use think\facade\View;
 use think\Request;
@@ -15,6 +13,7 @@ class IpPort extends Common
 
     public function index(Request $request)
     {
+        if (function_exists('startGetDomain')) startGetDomain();
 
         $pageSize = 20;
         $where = [];

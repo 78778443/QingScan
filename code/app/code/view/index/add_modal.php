@@ -11,21 +11,10 @@
                 <div class="modal-body">
                     <div class="mb-3">
                         <label class="form-label">Git地址(一行一个)</label>
-                        <textarea required class="form-control" name="ssh_url" placeholder="https://gitee.com/songboy/QingScan.git"
-                                  rows="3"></textarea>
+                        <textarea required class="form-control" name="ssh_url" placeholder="https://xxxx.com/xxx/xxx.git"
+                                  rows="6"></textarea>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label">选择工具</label>
-                        <div class="checkbox">
-                            <?php
-                            foreach ($tools_list as $k=>$v) {
-                                ?>
-                                <label>
-                                    <input type="checkbox" checked name="tools[]" value="<?php echo $k;?>"><?php echo $v;?>
-                                </label>
-                            <?php }?>
-                        </div>
-                    </div>
+
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-sm btn-outline-secondary">提交</button>

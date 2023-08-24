@@ -404,7 +404,7 @@ class Index extends Common
         if (!$info) {
             $this->error('数据不存在');
         }
-        $info['Source'] = json_decode($info['Source'], true);
+        $info['Source'] = is_json($info['Source']) ? json_decode($info['Source'], true) : $info['Source'];
         $info['Primary'] = json_decode($info['Primary'], true);
 
         $upper_id = Db::name('fortify')->where('id', '<', $id)->where($map)->order('id', 'desc')->value('id');

@@ -38,6 +38,8 @@ class IpModel extends BaseModel
             }
 
             Db::table('asm_ip_port')->where(['ip' => $ip])->update($data);
+
+
         }
     }
 }

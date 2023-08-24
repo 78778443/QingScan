@@ -19,15 +19,21 @@ class SemgrepModel extends BaseModel
 {
     public static function startScan(string $codePath, string $outPath)
     {
-        $cmd = "semgrep -f ./extend/tools/semgrep/rules.yaml {$codePath} --json  -o {$outPath}";
+        if (file_exists($outPath)) return false;
+        self::installTool();
+        $rulePath = "extend/tools/semgrep/";
+        $ruleConfig = "--config=./{$rulePath}python.yaml --config=./{$rulePath}go.yaml --config=./{$rulePath}java.yaml --config=./{$rulePath}kotlin.yaml --config=./{$rulePath}php.yaml";
+        $cmd = "semgrep $ruleConfig {$codePath} --json  -o {$outPath}";
 
         $result = systemLog($cmd);
     }
 
     public static function addDataAll(int $codeId, string $jsonPath, $user_id = 0)
     {
-        $data = json_decode(file_get_contents($jsonPath), true);
 
+        $data = json_decode(file_get_contents($jsonPath), true);
+        $num = count($data['results']);
+        echo "在{$jsonPath}找到{$num}条结果" . PHP_EOL;
         foreach ($data['results'] as $v1) {
             $data = [];
             foreach ($v1 as $k2 => $v2) {
@@ -41,7 +47,25 @@ class SemgrepModel extends BaseModel
             }
             $data['code_id'] = $codeId;
             $data['user_id'] = $user_id;
-            Db::table('semgrep')->insert($data);
+            $ret = Db::table('semgrep')->insert($data);
+
+            var_dump([$ret, $data]);
+        }
+    }
+
+    public static function installTool()
+    {
+        // 检查 semgrep 是否已安装
+        $semgrepInstalled = shell_exec("command -v semgrep");
+
+        if (!$semgrepInstalled) {
+            // 如果 semgrep 未安装，则执行安装命令
+            echo "semgrep is not installed. Installing...\n";
+            $installCommand = "apt install -y python3-pip && python3 -m pip install semgrep -i https://pypi.tuna.tsinghua.edu.cn/simple";
+            shell_exec($installCommand);
+            echo "semgrep has been installed.\n";
+        } else {
+            echo "semgrep is already installed.\n";
         }
     }
 }

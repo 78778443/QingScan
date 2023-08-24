@@ -1,17 +1,12 @@
 {include file='public/head' /}
 
-<div class="row">
-    <div class="col-2"></div>
-    <div class="col-8">
+    <div class="col-12">
         <div class="row tuchu">
-            <h2 class="text-center">
+            <h3 class="text-center" style="margin-bottom: 30px;color: #666;">
                <span>
                   <?php echo str_replace('data.tools.semgrep.', "", $info['check_id']); ?>
                </span>
-            </h2>
-        </div>
-        <div class="row tuchu">
-
+            </h3>
             <!--漏洞基本信息 begin-->
             <section class="vul-basic-info">
                 <div class="row">
@@ -19,17 +14,11 @@
                         <dl>
                             <dt>所属文件：</dt>
                             <dd>
-                                <?php
-                                    $path = preg_replace("/\/data\/codeCheck\/[a-zA-Z0-9]*\//", "", $info['path']);
-                                    if ($project['is_online'] == 1) {
-                                        $url = getGitAddr($project['name'], $project['ssh_url'], $info['path'], $info['end_line']);
-                                    } else {
-                                        $url = url('code/get_code',['id'=>$info['id'],'type'=>2]);
-                                    }
-                                ?>
-                                <a href="<?php echo $url; ?>"
-                                   target="_blank"><?php echo $path ?>
-                                </a>
+                                    <?php
+                                    $a = $info['project_name'];
+                                    $tmpStr = preg_replace("/\/.*?\/$a/", "", $info['path']);
+                                    echo $tmpStr;
+                                    ?>
                             </dd>
                         </dl>
                     </div>
@@ -49,7 +38,7 @@
                         <dl>
                             <dt>审核状态：</dt>
                             <dd class="hover-scroll">
-                                <select class="changCheckStatus form-select"
+                                <select class="changCheckStatus form-select form-control"
                                         data-id="<?php echo $info['id'] ?>">
                                     <option value="0" <?php echo $info['check_status'] == 0 ? 'selected' : ''; ?> >
                                         未审核
@@ -90,13 +79,13 @@
             <!--漏洞 PoC begin-->
             <section>
                 <div class="clearfix">
-                    <h3 class="pull-left">漏洞描述</h3>
+                    <h3 class="pull-left" style="color: #999;">漏洞描述</h3>
 
                 </div>
                 <div class="padding-md">
 
                     <section>
-                        <div class="circle"><?php echo $info['extra_message'] ?></div>
+                        <div class="circle" style="color: #666;"><?php echo $info['extra_message'] ?></div>
                     </section>
                     <br>
                 </div>
@@ -105,12 +94,12 @@
             <!--漏洞 PoC end-->
             <section class="vul-detail-section vul-detail-content">
                 <div class="clearfix">
-                    <h3 class="pull-left">
+                    <h3 class="pull-left"  style="color: #999;">
                         错误代码
                     </h3>
                 </div>
                 <div class="content-holder padding-md">
-                    <textarea class="form-control" rows="10" disabled>
+                    <textarea class="form-control" rows="10" disabled style="background-color: #fff;">
                         <?php echo $info['extra_lines'] ?>
                     </textarea>
 
@@ -128,7 +117,8 @@
                         </span>
                     <?php } ?>
                     <span class="follow-vul j-follow-vul ">
-                      <a href="<?php echo url('semgrep/index') ?>" class="btn btn-sm btn-outline-secondary">返回列表页</a>
+                      <a href="<?php echo url('semgrep/index') ?>"
+                         class="btn btn-sm btn-outline-secondary">返回列表页</a>
                     </span>
                     <span class="follow-vul j-follow-vul ">
                         <a href="<?php echo url('semgrep/details', ['id' => $info['upper_id']]) ?>"
@@ -142,7 +132,11 @@
             </div>
         </div>
     </div>
-    <div class="col-2"></div>
-</div>
+
+<style>
+    dt{
+        color: #999;
+    }
+</style>
 {include file='public/to_examine' /}
 {include file='public/footer' /}

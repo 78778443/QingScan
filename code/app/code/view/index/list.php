@@ -20,9 +20,8 @@
             ]]
         ]]; ?>
     {include file='public/search' /}
-    <div class="row">
+    <div class="row tuchu">
         <div class="col-md-12 ">
-            <div class="tuchu">
                 <form class="row g-3" id="frmUpload" action="<?php echo url('app/batch_import') ?>" method="post"
                       enctype="multipart/form-data">
                     <div class="col-auto">
@@ -114,14 +113,16 @@
                         </tr>
                     <?php } ?>
                 </table>
-            </div>
+
         </div>
+
         {include file='public/fenye' /}
-        {include file='index/tools' /}
-        {include file='index/add_modal' /}
-        {include file='public/footer' /}
+
     </div>
 </div>
+{include file='index/tools' /}
+{include file='index/add_modal' /}
+{include file='public/footer' /}
 <script>
     function quanxuan(obj) {
         var child = $('.table').find('input[type="checkbox"]');

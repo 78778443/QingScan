@@ -35,7 +35,7 @@ class Proxy extends Common
     public function add(Request $request)
     {
         if ($request->isPost()) {
-           
+            ini_set('max_execution_time', 0);
             $data['host'] = $request->param('host');
             $data['port'] = $request->param('port');
             if (Db::name('proxy')->where('host', $data['host'])->where('port', $data['port'])->count('id')) {
@@ -67,7 +67,7 @@ class Proxy extends Common
             $this->error('数据不存在');
         }
         if ($request->isPost()) {
-           
+            ini_set('max_execution_time', 0);
             $data['host'] = $request->param('host');
             $data['port'] = $request->param('port');
             if (Db::name('proxy')->where('host', $data['host'])->where('port', $data['port'])->where('id', '<>', $id)->count('id')) {

@@ -56,6 +56,7 @@ class Semgrep extends Common
         $data['CategoryList'] = Db::table('semgrep')->where($map)->group('check_id')->column('check_id');
 
         $data['fileList'] = Db::table('semgrep')->where($map)->group('path')->column('path');
+        $data['fileList'] = array_map('basename',$data['fileList']);
         $data['check_status_list'] = ['未审计', '有效漏洞', '无效漏洞'];
         //查询项目列表
         $data['projectList'] = $this->getMyCodeList();

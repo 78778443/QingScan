@@ -79,7 +79,7 @@ class BaseModel
     }
 
     // 获取app待扫描列表
-    public static function getCodeStayScanList($filed, $where = [], $num = 1)
+    public static function getCodeStayScanList($filed, $where = [], $num = 10)
     {
         $where[] = ['is_delete', '=', 0];
         $where[] = ['status', '=', 1];

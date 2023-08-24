@@ -1,10 +1,9 @@
 {include file='public/head' /}
 <div class="row">
-    <div class="col-2"></div>
-    <div class="col-8">
+    <div class="col-12">
         <div class="row tuchu">
             <h2 class="text-center">
-                       <span >
+                       <span>
                           <?php echo $info['Category']; ?>
                        </span>
             </h2>
@@ -29,18 +28,13 @@
                                     <dt>发现时间：</dt>
                                     <dd class="text-gray"><?php echo $info['create_time']; ?></dd>
                                 </dl>
-
                             </div>
                             <div class="col-md-4">
-                                <dl>
-                                    <dt>所属项目：</dt>
-                                    <dd><?php echo htmlentities($projectArr[$info['code_id']]['name']); ?></dd>
-                                </dl>
                                 <dl>
                                     <dt>审核状态：</dt>
                                     <dd>
                                         <select class="changCheckStatus form-select"
-                                                data-id="<?php echo $info['id'] ?>">
+                                                data-id="<?php echo $info['id'] ?>" style="width: 100px;">
                                             <option value="0" <?php echo $info['check_status'] == 0 ? 'selected' : ''; ?> >
                                                 未审核
                                             </option>
@@ -53,13 +47,10 @@
                                         </select>
                                     </dd>
                                 </dl>
-                            </div>
-                            <div class="col-md-4">
                                 <dl data-type="CVE-ID">
                                     <dt>危险等级：</dt>
                                     <dd><?php echo $info['Friority'] ?></dd>
                                 </dl>
-
                             </div>
 
                         </div>
@@ -98,14 +89,14 @@
                                 <dl>
                                     <dt>目标函数：</dt>
                                     <dd>
-                                        <?php echo isset($Source['TargetFunction'])?$Source['TargetFunction']:'' ?>
+                                        <?php echo isset($Source['TargetFunction']) ? $Source['TargetFunction'] : '' ?>
                                     </dd>
                                 </dl>
 
                             </div>
                         </div>
                         <div class="row">
-                            <textarea class="form-control" rows="10" disabled>
+                            <textarea class="form-control" rows="10" disabled  style="background-color: #fff;color: #333;">
                                 <?php echo htmlspecialchars(syntax_highlight($Source['Snippet'])) ?>
                             </textarea>
                         </div>
@@ -117,7 +108,7 @@
             <div class="bug-msg">
                 <section class="vul-basic-info">
                     <div class="clearfix">
-                        <h3 class="pull-left">
+                        <h3 class="pull-left" >
                             触发点信息
                         </h3>
 
@@ -126,26 +117,26 @@
                         <div class="col-md-4">
                             <dl>
                                 <dt>执行点：</dt>
-                                <dd class="text-gray"><?php isset($info['Primary'])?$info['Primary']['FilePath']:'' ?></dd>
+                                <dd class="text-gray"><?php isset($info['Primary']) ? $info['Primary']['FilePath'] : '' ?></dd>
                             </dl>
                             <dl>
                                 <dt>行号：</dt>
-                                <dd><?php isset($info['Primary'])?$info['Primary']['LineStart']:'' ?></dd>
+                                <dd><?php isset($info['Primary']) ? $info['Primary']['LineStart'] : '' ?></dd>
                             </dl>
                         </div>
                         <div class="col-md-4">
                             <dl>
                                 <dt>目标函数：</dt>
                                 <dd>
-                                    <?php echo isset($info['Primary']['TargetFunction'])?$info['Primary']['TargetFunction']:'' ?>
+                                    <?php echo isset($info['Primary']['TargetFunction']) ? $info['Primary']['TargetFunction'] : '' ?>
                                 </dd>
                             </dl>
 
                         </div>
                     </div>
                     <div class="row">
-                            <textarea class="form-control" rows="10" disabled>
-                                <?php echo isset($info['Primary'])?$info['Primary']['Snippet']:''; ?>
+                            <textarea class="form-control" rows="10" disabled style="background-color: #fff;color: #333;">
+                                <?php echo isset($info['Primary']) ? $info['Primary']['Snippet'] : ''; ?>
                             </textarea>
                     </div>
 
@@ -154,7 +145,7 @@
         </div>
         <div class="row tuchu">
             <div class="col-md-12">
-                <div class="text-center" >
+                <div class="text-center">
                     <input type="hidden" id="to_examine_url" value="<?php echo url('to_examine/fortify') ?>">
                     {include file='public/to_examine' /}
                     <?php if ($info['check_status'] == 0) { ?>
@@ -164,7 +155,8 @@
                             </span>
                     <?php } ?>
                     <span class="follow-vul j-follow-vul ">
-                          <a href="<?php echo url('fortify/index') ?>" class="btn btn-sm btn-outline-secondary">返回列表页</a>
+                          <a href="<?php echo url('fortify/index') ?>"
+                             class="btn btn-sm btn-outline-secondary">返回列表页</a>
                         </span>
                     <span class="follow-vul j-follow-vul ">
                             <a href="<?php echo url('fortify/details', ['id' => $info['upper_id']]) ?>"
@@ -178,7 +170,16 @@
             </div>
         </div>
     </div>
-    <div class="col-2"></div>
 </div>
+
+<style>
+    h3{
+        color:#999;
+    }
+    dt{
+        color:#999;
+    }
+
+</style>
 {include file='public/to_examine' /}
 {include file='public/footer' /}

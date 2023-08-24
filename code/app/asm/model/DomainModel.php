@@ -23,22 +23,22 @@ class DomainModel extends BaseModel
                 $data = ['url' => $line];
                 Db::table('asm_urls')->extra('IGNORE')->insert($data);
                 $data = ['sub_domain' => parse_url($line)['host'], 'domain' => getMainDomain(parse_url($line)['host'])];
-                Db::table('asm_sub_domain')->extra('IGNORE')->insert($data);
+                Db::table('asm_sub_domain')->strict(false)->extra('IGNORE')->insert($data);
                 $mainDomain = getMainDomain(parse_url($line)['host']);
                 if ($mainDomain != parse_url($line)['host']) {
-                    Db::table('asm_ip_port')->extra('IGNORE')->insert($data);
+                    Db::table('asm_domain')->strict(false)->extra('IGNORE')->insert($data);
                 }
             } elseif (preg_match($domainPattern, $line)) {
                 $data = ['domain' => getMainDomain($line), 'sub_domain' => $line];
-                Db::table('asm_sub_domain')->extra('IGNORE')->insert($data);
+                Db::table('asm_sub_domain')->strict(false)->extra('IGNORE')->insert($data);
                 $mainDomain = getMainDomain($line);
                 if ($mainDomain != $line) {
                     $data = ['domain' => $mainDomain];
-                    Db::table('asm_ip_port')->extra('IGNORE')->insert($data);
+                    Db::table('asm_domain')->strict(false)->extra('IGNORE')->insert($data);
                 }
             } elseif (preg_match($ipPattern, $line)) {
                 $data = ['ip' => $line];
-                Db::table('asm_ip')->extra('IGNORE')->insert($data);
+                Db::table('asm_ip')->strict(false)->extra('IGNORE')->insert($data);
             }
 
         }

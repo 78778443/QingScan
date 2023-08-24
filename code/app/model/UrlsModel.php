@@ -85,116 +85,116 @@ class UrlsModel extends BaseModel
     public static function sqlmapScan()
     {
         $tools = './extend/tools/sqlmap/';
-        $file_path = $tools . 'result/';
+        $file_path = $tools.'result/';
 
-        $endTime = date('Y-m-d', time() - 86400 * 15);
-        $where[] = ['is_delete', '=', 0];
-        $list = Db::name('urls')->whereTime('sqlmap_scan_time', '<=', $endTime)->where($where)->field('id,url,app_id,user_id')->limit(5)->orderRand()->select()->toArray();
-        foreach ($list as $k => $v) {
-            if (!self::checkToolAuth(1, $v['app_id'], 'sqlmap')) {
-                continue;
-            }
-            PluginModel::addScanLog($v['id'], __METHOD__, 3);
-            self::scanTime('urls', $v['id'], 'sqlmap_scan_time');
-
-            $arr = parse_url($v['url']);
-            $blackExt = ['.js', '.css', '.png', '.jpg', '.jpeg', '.gif', '.mp3', '.mp4', '.ico', '.bmp', '.wmv', '.avi', '.psd'];
-            //没有可以注入的参数
-            if (!isset($arr['query']) or in_array_strpos(strtolower($arr['path']), $blackExt) or (strpos($arr['query'], '=') === false)) {
-                PluginModel::addScanLog($v['id'], __METHOD__, 3, 2);
-                addlog(["URL地址不存在可以注入的参数", $v['url']]);
-                continue;
-            }
-            $cmd = "cd {$tools}  && python3 ./sqlmap.py -u '{$v['url']}' --batch  --random-agent --output-dir={$file_path}";
-            systemLog($cmd);
-            $host = $arr['host'];
-            $outdir = $file_path . "{$host}/";
-            $outfilename = "{$outdir}/log";
-
-            //sqlmap输出异常
-            if (!is_dir($outdir) or !file_exists($outfilename) or !filesize($outfilename)) {
-                PluginModel::addScanLog($v['id'], __METHOD__, 3, 1);
-                addlog(["sqlmap没有找到注入点", $v['url']]);
-                continue;
-            }
-            $ddd = file_get_contents($outfilename);
-            $arr = explode("\n", $ddd);
-
-            $data = [];
-            foreach ($arr as $tmp) {
-                $tempv2 = explode(":", $tmp);
-                if (count($tempv2) == 2) {
-                    $data[trim($tempv2[0])][] = trim($tempv2[1]);
+            $endTime = date('Y-m-d', time() - 86400 * 15);
+            $where[] = ['is_delete','=',0];
+            $list = Db::name('urls')->whereTime('sqlmap_scan_time', '<=', $endTime)->where($where)->field('id,url,app_id,user_id')->limit(5)->orderRand()->select()->toArray();
+            foreach ($list as $k => $v) {
+                if (!self::checkToolAuth(1,$v['app_id'],'sqlmap')) {
+                    continue;
                 }
-            }
+                PluginModel::addScanLog($v['id'], __METHOD__, 3);
+                self::scanTime('urls',$v['id'],'sqlmap_scan_time');
 
-            $bbb = [
-                'system' => isset($data['web server operating system']) ? $data['web server operating system'][0] : '',
-                'application' => isset($data['web application technology']) ? $data['web application technology'][0] : '',
-                'dbms' => isset($data['back-end DBMS']) ? $data['back-end DBMS'][0] : '',
-                'urls_id' => $v['id'],
-                'app_id' => $v['app_id'],
-                'user_id' => $v['user_id'],
-            ];
-            foreach ($data['Payload'] as $key => $value) {
-                $bbb['payload'] = $value;
-                $bbb['title'] = $data['Title'][$key];
-                $bbb['type'] = $data['Type'][$key];
-                Db::name('urls_sqlmap')->insert($bbb);
+                $arr = parse_url($v['url']);
+                $blackExt = ['.js', '.css', '.png', '.jpg', '.jpeg', '.gif', '.mp3', '.mp4','.ico','.bmp','.wmv','.avi','.psd'];
+                //没有可以注入的参数
+                if (!isset($arr['query']) or in_array_strpos(strtolower($arr['path']), $blackExt) or (strpos($arr['query'], '=') === false)) {
+                    PluginModel::addScanLog($v['id'], __METHOD__, 3,2);
+                    addlog(["URL地址不存在可以注入的参数", $v['url']]);
+                    continue;
+                }
+                $cmd = "cd {$tools}  && python3 ./sqlmap.py -u '{$v['url']}' --batch  --random-agent --output-dir={$file_path}";
+                systemLog($cmd);
+                $host = $arr['host'];
+                $outdir = $file_path . "{$host}/";
+                $outfilename = "{$outdir}/log";
+
+                //sqlmap输出异常
+                if (!is_dir($outdir) or !file_exists($outfilename) or !filesize($outfilename)) {
+                    PluginModel::addScanLog($v['id'], __METHOD__, 3,1);
+                    addlog(["sqlmap没有找到注入点", $v['url']]);
+                    continue;
+                }
+                $ddd = file_get_contents($outfilename);
+                $arr = explode("\n", $ddd);
+
+                $data = [];
+                foreach ($arr as $tmp) {
+                    $tempv2 = explode(":", $tmp);
+                    if (count($tempv2) == 2) {
+                        $data[trim($tempv2[0])][] = trim($tempv2[1]);
+                    }
+                }
+
+                $bbb = [
+                    'system' => isset($data['web server operating system'])?$data['web server operating system'][0]:'',
+                    'application' => isset($data['web application technology'])?$data['web application technology'][0]:'',
+                    'dbms' => isset($data['back-end DBMS'])?$data['back-end DBMS'][0]:'',
+                    'urls_id' => $v['id'],
+                    'app_id' => $v['app_id'],
+                    'user_id' => $v['user_id'],
+                ];
+                foreach ($data['Payload'] as $key => $value) {
+                    $bbb['payload'] = $value;
+                    $bbb['title'] = $data['Title'][$key];
+                    $bbb['type'] = $data['Type'][$key];
+                    Db::name('urls_sqlmap')->insert($bbb);
+                }
+                addlog(["sqlmap扫描成功数据已写入：", $v['url']]);
+                systemLog("rm -rf $outdir");
+                PluginModel::addScanLog($v['id'], __METHOD__, 3,1);
             }
-            addlog(["sqlmap扫描成功数据已写入：", $v['url']]);
-            systemLog("rm -rf $outdir");
-            PluginModel::addScanLog($v['id'], __METHOD__, 3, 1);
-        }
 
     }
 
     public static function reptile()
     {
 
-        $list = Db::name('urls')->where('is_delete', 0)->field('id,url')->limit(5)->orderRand()->select()->toArray();
-        foreach ($list as $v) {
-            PluginModel::addScanLog($v['id'], __METHOD__, 0);
-            $arr = parse_url($v['url']);
-            if (in_array_strpos($arr['path'], ['.js', '.css', '.json', '.png', '.jpg', '.jpeg', '.gif', '.mp3', '.mp4'])) {
-                PluginModel::addScanLog($v['id'], __METHOD__, 3, 2);
-                addlog("此URL地址不是普通HTML文本:{$v['url']}");
-                continue;
-            }
-            $result = curl_get_url_head($v['url']);
-            if ($result['code'] != '200') {
-                PluginModel::addScanLog($v['id'], __METHOD__, 3, 2);
-                addlog("此URL地址状态码不是200:{$v['url']}");
-                continue;
-            }
-            $content = curl_get($v['url']);
-            $data = [];
-            $preg_phone = '/^1[345789]\d{9}$/ims';
-            preg_match_all($preg_phone, $content, $phone);
-            if (preg_match_all($preg_phone, $content, $phone)) {
-                $data['phone'] = json_encode($phone[0]);
-            }
+            $list = Db::name('urls')->where('is_delete', 0)->field('id,url')->limit(5)->orderRand()->select()->toArray();
+            foreach ($list as $v) {
+                PluginModel::addScanLog($v['id'], __METHOD__, 0);
+                $arr = parse_url($v['url']);
+                if (in_array_strpos($arr['path'], ['.js', '.css', '.json', '.png', '.jpg', '.jpeg', '.gif', '.mp3', '.mp4'])) {
+                    PluginModel::addScanLog($v['id'], __METHOD__, 3,2);
+                    addlog("此URL地址不是普通HTML文本:{$v['url']}");
+                    continue;
+                }
+                $result = curl_get_url_head($v['url']);
+                if ($result['code'] != '200') {
+                    PluginModel::addScanLog($v['id'], __METHOD__, 3,2);
+                    addlog("此URL地址状态码不是200:{$v['url']}");
+                    continue;
+                }
+                $content = curl_get($v['url']);
+                $data = [];
+                $preg_phone = '/^1[345789]\d{9}$/ims';
+                preg_match_all($preg_phone, $content, $phone);
+                if (preg_match_all($preg_phone, $content, $phone)) {
+                    $data['phone'] = json_encode($phone[0]);
+                }
 
-            $id_card_reg = '/^[1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$/';
-            if (preg_match_all($id_card_reg, $content, $id_card)) {
-                $data['id_card'] = json_encode($id_card[0]);
-            }
+                $id_card_reg = '/^[1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$/';
+                if (preg_match_all($id_card_reg, $content, $id_card)) {
+                    $data['id_card'] = json_encode($id_card[0]);
+                }
 
-            $email_reg = '/^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/';
-            if (preg_match_all($email_reg, $content, $email)) {
-                $data['email'] = json_encode($email[0]);
-            }
+                $email_reg = '/^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/';
+                if (preg_match_all($email_reg, $content, $email)) {
+                    $data['email'] = json_encode($email[0]);
+                }
 
-            $icp_reg = '/^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/';
-            if (preg_match_all($preg_phone, $icp_reg, $icp)) {
-                $data['icp'] = json_encode($icp[0]);
-            }
+                $icp_reg = '/^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/';
+                if (preg_match_all($preg_phone, $icp_reg, $icp)) {
+                    $data['icp'] = json_encode($icp[0]);
+                }
 
-            if ($data) {
-                Db::name('urls')->where('id', $v['id'])->update($data);
+                if ($data) {
+                    Db::name('urls')->where('id', $v['id'])->update($data);
+                }
+                PluginModel::addScanLog($v['id'], __METHOD__, 3,1);
             }
-            PluginModel::addScanLog($v['id'], __METHOD__, 3, 1);
-        }
 
     }
 }

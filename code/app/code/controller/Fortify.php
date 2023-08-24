@@ -65,7 +65,7 @@ class Fortify extends Common
         //获取列表数据
         //$list = $fortifyApi->order('id', 'desc')->limit($pageSize)->page($page)->select()->toArray();
         foreach ($list as &$value) {
-            $value['Source'] = json_decode($value['Source'], true);
+            $value['Source'] =  is_json($value['Source']) ? json_decode($value['Source'], true) : $value['Source'];
             $value['Primary'] = json_decode($value['Primary'], true);
         }
         // 获取分页显示
@@ -115,7 +115,7 @@ class Fortify extends Common
         if (!$info) {
             $this->error('数据不存在');
         }
-        $info['Source'] = json_decode($info['Source'], true);
+        $info['Source'] = is_json($info['Source']) ? json_decode($info['Source'], true) : $info['Source'];
         $info['Primary'] = json_decode($info['Primary'], true);
 
         $upper_id = Db::name('fortify')->where('id', '<', $id)->where($map)->order('id', 'desc')->value('id');

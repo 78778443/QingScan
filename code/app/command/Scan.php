@@ -1,41 +1,171 @@
-php think scan xray -vvv
-php think scan awvs -vvv
-php think scan rad -vvv
-php think scan host -vvv
-php think scan port -vvv
-php think scan nmap -vvv
-php think scan subdomain -vvv
-php think scan cve -vvv
-php think scan google -vvv
-php think scan jietu -vvv
-php think scan upadteRegion -vvv
-php think scan whatweb -vvv
-php think scan subdomainScan -vvv
-php think scan hydra -vvv
-php think scan sqlmapScan -vvv
-php think scan fofa -vvv
-php think scan dirmapScan -vvv
-php think scan getNotice -vvv
-php think scan reptile -vvv
-php think scan backup -vvv
-php think scan whatwebPocTest -vvv
-php think scan wafw00fScan -vvv
-php think scan nucleiScan -vvv
-php think scan vulmapPocTest -vvv
-php think scan crawlergoScan -vvv
-php think scan dismapScan -vvv
-php think scan fortify -vvv
-php think scan semgrep -vvv
-php think scan getProjectComposer -vvv
-php think scan code_python -vvv
-php think scan code_java -vvv
-php think scan code_webshell_scan -vvv
-php think scan mobsfscan -vvv
-php think scan murphysecScan -vvv
-php think scan unauthorizeScan -vvv
-php think scan deleteDir -vvv
-php think scan domainFindIp -vvv
-php think scan scanWebPort -vvv
-php think scan domainFindUrl -vvv
-php think scan ip_location -vvv
-php think scan finger
+<?php
+declare (strict_types=1);
+
+namespace app\command;
+
+use app\asm\model\Finger;
+use app\asm\model\IpModel;
+use app\code\model\CodeCheckModel;
+use app\code\model\CodeJavaModel;
+use app\code\model\CodeModel;
+use app\code\model\CodeWebshellModel;
+use app\code\model\MurphysecModel;
+use app\model\AppModel;
+use app\model\ConfigModel;
+use app\model\CveModel;
+use app\model\GithubKeywordMonitorModel;
+use app\model\GithubNoticeModel;
+use app\model\GoogleModel;
+use app\model\HostModel;
+use app\model\HostPortModel;
+use app\model\HydraModel;
+use app\model\MobsfscanModel;
+use app\model\OneForAllModel;
+use app\model\PluginModel;
+use app\model\ProcessSafeModel;
+use app\model\ProxyModel;
+use app\model\PythonLibraryModel;
+use app\model\UnauthorizedModel;
+use app\model\UrlsModel;
+use app\model\WebScanModel;
+use app\qnr\model\iastModel;
+use app\webscan\model\AppDirmapModel;
+use app\webscan\model\AppWafw00fModel;
+use app\webscan\model\AwvsModel;
+use app\webscan\model\XrayModel;
+use think\console\Command;
+use think\console\Input;
+use think\console\input\Argument;
+use think\console\Output;
+
+class Scan extends Command
+{
+    protected function configure()
+    {
+        // 指令配置
+        $this->setName('scan')
+            ->addArgument("func", Argument::OPTIONAL, "扫描的内容")
+            ->addArgument("custom", Argument::OPTIONAL, "自定义工具名")
+            ->addArgument("scan_type", Argument::OPTIONAL, "自定义工具扫描类型")
+            ->addArgument("custom_store", Argument::OPTIONAL, "自定义工具结果分析")
+            ->setDescription('the scan command');
+    }
+
+    protected function execute(Input $input, Output $output)
+    {
+        $func = trim($input->getArgument('func'));
+        if ($func == "safe") {
+            ProcessSafeModel::safe();
+        } elseif ($func == 'plugin_safe') {
+            PluginModel::safe();
+        } elseif ($func == "xray") {
+            WebScanModel::xray();
+        } elseif ($func == "awvs") {
+            AwvsModel::awvsScan();
+        } elseif ($func == "rad") {
+            WebScanModel::rad();
+        } elseif ($func == "host") {
+            HostModel::autoAddHost();
+        } elseif ($func == "port") {
+            HostPortModel::scanHostPort();
+        } elseif ($func == "nmap") {
+            HostPortModel::NmapPortScan();
+        } elseif ($func == "subdomain") {
+            AppModel::fofaSubdomain();
+        } elseif ($func == "temp") {
+            XrayModel::temp();
+        } elseif ($func == "cve") {
+            CveModel::cveScan();
+        } elseif ($func == 'google') {
+            GoogleModel::getBaseInfo();
+        } elseif ($func == 'jietu') {
+            GoogleModel::jietu();
+        } elseif ($func == 'upadteRegion') {
+            HostPortModel::upadteRegion();
+        } elseif ($func == 'whatweb') {
+            AppModel::whatweb();
+        } elseif ($func == 'subdomainScan') {
+            OneForAllModel::subdomainScan();
+        } elseif ($func == 'hydra') {
+            HydraModel::sshScan();
+        } elseif ($func == 'sqlmapScan') {
+            UrlsModel::sqlmapScan();
+        } elseif ($func == 'fofa') {
+            CveModel::fofaSearch();
+        } elseif ($func == 'dirmapScan') {
+            AppDirmapModel::dirmapScan();
+        } elseif ($func == 'getNotice') {
+            GithubNoticeModel::getNotice();
+        } elseif ($func == 'reptile') {
+            UrlsModel::reptile();
+        } elseif ($func == 'backup') {
+            ConfigModel::backup();
+        } elseif ($func == 'giteeProject') {
+            CodeModel::giteeProject();
+        } elseif ($func == 'freeAgent') {
+            ProxyModel::freeAgent();
+        } elseif ($func == 'github_keyword_monitor') {
+            GithubKeywordMonitorModel::keywordMonitor();
+        } elseif ($func == 'whatwebPocTest') {
+            AppModel::whatwebPocTest();
+        } elseif ($func == 'xrayAgentResult') {
+            WebScanModel::xrayAgentResult();
+        } elseif ($func == 'startXrayAgent') {
+            WebScanModel::startXrayAgent();
+        } elseif ($func == 'wafw00fScan') {
+            AppWafw00fModel::wafw00fScan();
+        } elseif ($func == 'nucleiScan') {
+            WebScanModel::nucleiScan();
+        } elseif ($func == 'vulmapPocTest') {
+            WebScanModel::vulmapPocTest();
+        } elseif ($func == 'crawlergoScan') {
+            WebScanModel::crawlergoScan();
+        } elseif ($func == 'dismapScan') {
+            WebScanModel::dismapScan();
+        } elseif ($func == "fortify") {
+            CodeCheckModel::fortifyScan();
+        } elseif ($func == "kunlun") {
+            CodeCheckModel::kunLunScan();
+        } elseif ($func == "semgrep") {
+            CodeCheckModel::semgrep();
+        } elseif ($func == 'getProjectComposer') {
+            CodeModel::code_php();
+        } elseif ($func == 'code_python') {
+            PythonLibraryModel::code_python();
+        } elseif ($func == 'code_java') {
+            CodeJavaModel::code_java();
+        } elseif ($func == 'code_webshell_scan') {
+            CodeWebshellModel::code_webshell_scan();
+        } elseif ($func == 'mobsfscan') {
+            MobsfscanModel::mobsfscan();
+        } elseif ($func == 'murphysecScan') {
+            MurphysecModel::murphysec_scan();
+        } elseif ($func == 'unauthorizeScan') {
+            UnauthorizedModel::unauthorizeScan();
+        } elseif ($func == 'deleteDir') {
+            PluginModel::deleteCodeDir();
+        } elseif ($func == 'custom') {
+            $custom = trim($input->getArgument('custom'));
+            $scanType = $input->getArgument('scan_type');
+            $scanType = array_search($scanType, ['app', 'host', 'code', 'url']);
+            PluginModel::custom_event($custom, $scanType);
+        } elseif ($func == 'custom_store') {
+            $className = 'app\model\\' . trim($input->getArgument('custom')) . 'PluginsModel';
+            $funcName = $input->getArgument('scan_type');
+            $className::$funcName();
+        } elseif ($func == 'domainFindIp') {
+            HostPortModel::domainFindIp();
+        } elseif ($func == 'scanWebPort') {
+            HostPortModel::scanWebPort();
+        } elseif ($func == 'domainFindUrl') {
+            HostPortModel::domainFindUrl();
+        } elseif ($func == 'ip_location') {
+            IpModel::ip_location();
+        } elseif ($func == 'finger') {
+            $finger = new Finger();
+            $finger->start();
+        } elseif ($func == 'iast_detail') {
+            iastModel::updateDetail();
+        }
+    }
+}

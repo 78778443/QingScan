@@ -269,31 +269,31 @@ class HostPortModel extends BaseModel
 
     public static function NmapPortScan()
     {
-        $taskList = Db::table('asm_host_port')->where(['service' => null])->orderRand()->limit(10)->select()->toArray();
-        foreach ($taskList as $value) {
-            if (!self::checkToolAuth(1, $value['app_id'], 'nmap')) {
-                continue;
-            }
-            PluginModel::addScanLog($value['id'], __METHOD__, 1, 1);
-            $result = [];
-            $cmd = "nmap -sS -Pn -T4  -p {$value['port']} {$value['host']} | grep open | grep -v Discovered |grep -v grep";
-            echo $cmd . PHP_EOL;
-            execLog($cmd, $result);
-
-            foreach ($result as $item) {
-                $item = str_replace("  ", " ", $item);
-                $aaa = explode(" ", $item);
-                if (count($aaa) != 3) {
+            $taskList = Db::table('asm_host_port')->where(['service' => null])->orderRand()->limit(10)->select()->toArray();
+            foreach ($taskList as $value) {
+                if (!self::checkToolAuth(1, $value['app_id'], 'nmap')) {
                     continue;
                 }
+                PluginModel::addScanLog($value['id'], __METHOD__, 1, 1);
+                $result = [];
+                $cmd = "nmap -sS -Pn -T4  -p {$value['port']} {$value['host']} | grep open | grep -v Discovered |grep -v grep";
+                echo $cmd . PHP_EOL;
+                execLog($cmd, $result);
 
-                $data = ['service' => $aaa[2]];
+                foreach ($result as $item) {
+                    $item = str_replace("  ", " ", $item);
+                    $aaa = explode(" ", $item);
+                    if (count($aaa) != 3) {
+                        continue;
+                    }
 
-                $where = ['host' => $value['host'], 'port' => $value['port']];
-                Db::table('asm_host_port')->where($where)->update($data);
+                    $data = ['service' => $aaa[2]];
+
+                    $where = ['host' => $value['host'], 'port' => $value['port']];
+                    Db::table('asm_host_port')->where($where)->update($data);
+                }
+                PluginModel::addScanLog($value['id'], __METHOD__, 1, 1);
             }
-            PluginModel::addScanLog($value['id'], __METHOD__, 1, 1);
-        }
 
     }
 
@@ -302,26 +302,26 @@ class HostPortModel extends BaseModel
     {
         $portStr = "21,22,23,25,53,80,81,110,111,123,135,137,139,161,389,443,445,465,500,515,520,523,548,623,636,873,902,1080,1099,1433,1521,1604,1645,1701,1883,1900,2049,2181,2375,2379,2425,3128,3306,3389,4730,5060,5222,5351,5353,5432,5555,5601,5672,5683,5900,5938,5984,6000,6379,7001,7077,8000,8001,8080,8081,8443,8545,8686,8888,9000,9001,9042,9092,9100,9200,9418,9999,11211,27017,37777,50000,50070,61616";
 
-        $endTime = date('Y-m-d', time() - 86400 * 15);
-        $hostLit = Db::table('asm_host')->whereTime('port_scan_time', '<=', $endTime)->limit(5)->orderRand()->select()->toArray();
-        foreach ($hostLit as $val) {
-            if (!self::checkToolAuth(1, $val['app_id'], 'masscan')) {
-                continue;
+            $endTime = date('Y-m-d', time() - 86400 * 15);
+            $hostLit = Db::table('asm_host')->whereTime('port_scan_time', '<=', $endTime)->limit(5)->orderRand()->select()->toArray();
+            foreach ($hostLit as $val) {
+                if (!self::checkToolAuth(1, $val['app_id'], 'masscan')) {
+                    continue;
+                }
+                PluginModel::addScanLog($val['id'], __METHOD__, 1, 0);
+                self::scanTime('host', $val['id'], 'port_scan_time');
+                $host = gethostbyname($val['host']);
+                $cmd = "masscan --ports {$portStr} {$host}  --max-rate 2000 |grep Discovered";
+                execLog($cmd, $result);
+                foreach ($result as $value) {
+                    $aaa = explode(" ", $value);
+                    $typeArr = explode("/", $aaa[3]);
+                    $data = ['host' => $aaa[5], 'type' => $typeArr[1], 'port' => $typeArr[0], 'user_id' => $val['user_id'], 'app_id' => $val['app_id']];
+                    addlog(["发现主机开放端口", $data]);
+                    Db::table('asm_host_port')->extra("IGNORE")->insert($data);
+                }
+                PluginModel::addScanLog($val['id'], __METHOD__, 1, 1);
             }
-            PluginModel::addScanLog($val['id'], __METHOD__, 1, 0);
-            self::scanTime('host', $val['id'], 'port_scan_time');
-            $host = gethostbyname($val['host']);
-            $cmd = "masscan --ports {$portStr} {$host}  --max-rate 2000 |grep Discovered";
-            execLog($cmd, $result);
-            foreach ($result as $value) {
-                $aaa = explode(" ", $value);
-                $typeArr = explode("/", $aaa[3]);
-                $data = ['host' => $aaa[5], 'type' => $typeArr[1], 'port' => $typeArr[0], 'user_id' => $val['user_id'], 'app_id' => $val['app_id']];
-                addlog(["发现主机开放端口", $data]);
-                Db::table('asm_host_port')->extra("IGNORE")->insert($data);
-            }
-            PluginModel::addScanLog($val['id'], __METHOD__, 1, 1);
-        }
 
     }
 
@@ -381,33 +381,34 @@ class HostPortModel extends BaseModel
     // 更新ip区域以及运营商信息
     public static function upadteRegion()
     {
-        $obj = Db::table('asm_host')->whereTime('ip_scan_time', '<=', date('Y-m-d H:i:s', time() - (86400 * 15)));
-        $list = $obj->where('is_delete', 0)->limit(10)->orderRand()->select()->toArray();
-        foreach ($list as $v) {
-            PluginModel::addScanLog($v['id'], __METHOD__, 1, 0);
-            $result = get_ip_lookup($v['host']);
-            if (!isset($result['data'])) {
-                PluginModel::addScanLog($v['id'], __METHOD__, 1, 2);
-                addlog(["未获取此IP{$v['host']}信息"]);
-                self::updateScanTime($v['id']);
-                continue;
+            $obj = Db::table('asm_host')->whereTime('ip_scan_time', '<=', date('Y-m-d H:i:s', time() - (86400 * 15)));
+            $list = $obj->where('is_delete', 0)->limit(10)->orderRand()->select()->toArray();
+            foreach ($list as $v) {
+                PluginModel::addScanLog($v['id'], __METHOD__, 1, 0);
+                $result = get_ip_lookup($v['host']);
+                if (!isset($result['data'])) {
+                    PluginModel::addScanLog($v['id'], __METHOD__, 1, 2);
+                    addlog(["未获取此IP{$v['host']}信息"]);
+                    self::updateScanTime($v['id']);
+                    continue;
+                }
+
+                $result = $result['data'];
+                if ($result) {
+                    $ids[] = $v['id'];
+
+                    $v['country'] = isset($result['country']) ? $result['country'] : '';
+                    $v['region'] = $result['region'];
+                    $v['city'] = $result['city'];
+                    $v['area'] = $result['area'];
+                    $v['isp'] = $result['isp'];
+                    $v['ip_scan_time'] = date('Y-m-d H:i:s', time());
+                    Db::table('asm_host')->save($v);
+                }
+                PluginModel::addScanLog($v['id'], __METHOD__, 1, 1);
             }
 
-            $result = $result['data'];
-            if ($result) {
-                $ids[] = $v['id'];
-
-                $v['country'] = isset($result['country']) ? $result['country'] : '';
-                $v['region'] = $result['region'];
-                $v['city'] = $result['city'];
-                $v['area'] = $result['area'];
-                $v['isp'] = $result['isp'];
-                $v['ip_scan_time'] = date('Y-m-d H:i:s', time());
-                Db::table('asm_host')->save($v);
-            }
-            PluginModel::addScanLog($v['id'], __METHOD__, 1, 1);
-        }
-        addlog(["更新IP信息完成，休息30秒..."]);
+            addlog(["更新IP信息完成，休息30秒..."]);
     }
 
     public static function updateScanTime($id)

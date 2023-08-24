@@ -214,7 +214,7 @@ class FortifyModel extends BaseModel
 //        $cmd .= " -no-default-rules  -rules  {$fortifyPath}/Core/config/rules/core_php.bin";
             systemLog($cmd);
         }else{
-            systemLog(["fortify扫描异常,文件{$outPath}.fpr不存在"]);
+            addlog(["fortify扫描异常,文件{$outPath}.fpr不存在"]);
         }
         if (file_exists("{$outPath}.xml") == false) {
             $cmd = $base . "./ReportGenerator  -format xml -f {$outPath}.xml -source {$outPath}.fpr -template DeveloperWorkbook.xml";

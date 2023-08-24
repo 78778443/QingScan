@@ -28,6 +28,7 @@ class Finger extends Model
             unset($data['id']);
             unset($data['url']);
             $data['status'] = intval($data['status']);
+
             echo $url . '------' . $data['title'] . '------';
             echo Db::table('asm_urls')->strict(false)->where(['id' => $item['id']])->update($data);
             echo PHP_EOL;
@@ -78,6 +79,9 @@ class Finger extends Model
             }
             $result = file_get_contents($path . $v);
             $info = json_decode($result, true)[0];
+            foreach ($info as $key => $val) {
+                if (is_string($val)) $info[$key] = json_encode($val, 256);
+            }
             Db::name('asm_finger')->extra('IGNORE')->insert($info);
         }
         return $info;

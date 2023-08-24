@@ -348,53 +348,53 @@ class CodeModel extends BaseModel
     {
         $codePath = "./data/codeCheck";
 
-        $where[] = ['project_type', 'in', [1, 6]];
-        $list = self::getCodeStayScanList('composer_scan_time', $where);
-        foreach ($list as $k => $v) {
-            PluginModel::addScanLog($v['id'], __METHOD__, 2);
-            self::scanTime('code', $v['id'], 'composer_scan_time');
+            $where[] = ['project_type','in',[1,6]];
+            $list = self::getCodeStayScanList('composer_scan_time',$where);
+            foreach ($list as $k => $v) {
+                PluginModel::addScanLog($v['id'], __METHOD__, 2);
+                self::scanTime('code', $v['id'], 'composer_scan_time');
 
-            $value = $v;
-            $prName = cleanString($value['name']);
-            $codeUrl = $value['ssh_url'];
-            $filepath = "./data/codeCheck/{$prName}";
-            if (!file_exists($filepath)) {
-                downCode($codePath, $prName, $codeUrl, $value['is_private'], $value['username'], $value['password'], $value['private_key']);
-            }
-            $fileArr = getFilePath($filepath, 'composer.lock');
-            if (!$fileArr) {
-                PluginModel::addScanLog($v['id'], __METHOD__, 2, 2);
-                addlog("扫描composer依赖失败,composer.lock 依赖文件不存在:{$filepath}");
-                continue;
-            }
-
-            foreach ($fileArr as $value) {
-                $json = file_get_contents($value['file']);
-                if (empty($json)) {
+                $value = $v;
+                $prName = cleanString($value['name']);
+                $codeUrl = $value['ssh_url'];
+                $filepath = "./data/codeCheck/{$prName}";
+                if (!file_exists($filepath)) {
+                    downCode($codePath, $prName, $codeUrl, $value['is_private'], $value['username'], $value['password'], $value['private_key']);
+                }
+                $fileArr = getFilePath($filepath, 'composer.lock');
+                if (!$fileArr) {
                     PluginModel::addScanLog($v['id'], __METHOD__, 2, 2);
-                    addlog("项目文件内容为空:{$value['file']}");
+                    addlog("扫描composer依赖失败,composer.lock 依赖文件不存在:{$filepath}");
                     continue;
                 }
-                $json = str_replace('"require-dev"', '"require_dev"', $json);
-                $json = str_replace('"notification-url"', '"notification_url"', $json);
-                $arr = json_decode($json, true);
-                $packages = $arr['packages'];
-                Db::name('code_composer')->where(['code_id' => $v['id']])->delete();
-                foreach ($packages as $val) {
-                    foreach ($val as &$temp) {
-                        $temp = is_string($temp) ? $temp : var_export($temp, true);
+
+                foreach ($fileArr as $value) {
+                    $json = file_get_contents($value['file']);
+                    if (empty($json)) {
+                        PluginModel::addScanLog($v['id'], __METHOD__, 2, 2);
+                        addlog("项目文件内容为空:{$value['file']}");
+                        continue;
                     }
+                    $json = str_replace('"require-dev"', '"require_dev"', $json);
+                    $json = str_replace('"notification-url"', '"notification_url"', $json);
+                    $arr = json_decode($json, true);
+                    $packages = $arr['packages'];
+                    Db::name('code_composer')->where(['code_id' => $v['id']])->delete();
+                    foreach ($packages as $val) {
+                        foreach ($val as &$temp) {
+                            $temp = is_string($temp) ? $temp : var_export($temp, true);
+                        }
 
-                    $val['user_id'] = $v['user_id'];
-                    $val['code_id'] = $v['id'];
-                    $val['create_time'] = date('Y-m-d H:i:s', time());
+                        $val['user_id'] = $v['user_id'];
+                        $val['code_id'] = $v['id'];
+                        $val['create_time'] = date('Y-m-d H:i:s', time());
 
-                    Db::name('code_composer')->insert($val);
-                    addlog("composer依赖扫描数据写入成功,内容为:" . json_encode($val));
+                        Db::name('code_composer')->insert($val);
+                        addlog("composer依赖扫描数据写入成功,内容为:" . json_encode($val));
+                    }
                 }
+                PluginModel::addScanLog($v['id'], __METHOD__, 2, 1);
             }
-            PluginModel::addScanLog($v['id'], __METHOD__, 2, 1);
-        }
 
     }
 

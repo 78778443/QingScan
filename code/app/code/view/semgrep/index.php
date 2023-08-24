@@ -34,10 +34,9 @@ $searchArr = [
             <tr>
                 <th width="80">
                     <label>
-                        <input type="checkbox" value="-1" onclick="quanxuan(this)">全选
+                        <input type="checkbox" value="-1" onclick="quanxuan(this)">ID
                     </label>
                 </th>
-                <th>ID</th>
                 <th>所属项目</th>
                 <th>漏洞类型</th>
                 <th>危险等级</th>
@@ -53,28 +52,15 @@ $searchArr = [
                     <td>
                         <label>
                             <input type="checkbox" class="ids" name="ids[]" value="<?php echo $value['id'] ?>">
-                        </label>
+                            <?php echo $value['id'] ?></label>
                     </td>
-                    <td><?php echo $value['id'] ?></td>
                     <td>
                         <a href="<?php echo url('code/index', ['id' => $value['code_id']]) ?>">
                             <?php echo isset($projectArr[$value['code_id']]) ? $projectArr[$value['code_id']]['name'] : '' ?></a>
                     </td>
-                    <td><?php echo str_replace('data.tools.semgrep.', "", $value['check_id']) ?></td>
+                    <td><dvi title="<?php echo $value['check_id'] ?>"><?php  $tmpArr = explode(".", $value['check_id']); echo end($tmpArr) ?></dvi></td>
                     <td><?php echo $value['extra_severity'] ?></td>
-                    <td>
-                        <?php
-                            $path = preg_replace("/\/data\/codeCheck\/[a-zA-Z0-9]*\//", "", $value['path']);
-                            if ($projectArr[$value['code_id']]['is_online'] == 1) {
-                                $url = getGitAddr($projectArr[$value['code_id']]['name'], $projectArr[$value['code_id']]['ssh_url'], $value['path'], $value['end_line']);
-                            } else {
-                                $url = url('code/get_code',['id'=>$value['id'],'type'=>2]);
-                            }
-                        ?>
-                        <a title="<?php echo htmlentities($value['extra_lines']) ?>" href="<?php echo $url ?>"
-                           target="_blank"><?php echo $path ?>:{$value['end_line']}
-                        </a>
-                    </td>
+                    <td><div title="<?php echo $value['path'] ?>"><?php echo basename($value['path']) ?></div></td>
                     <td><?php echo $value['create_time'] ?></td>
                     <td>
                         <select class="changCheckStatus form-select" data-id="<?php echo $value['id'] ?>">
@@ -94,9 +80,10 @@ $searchArr = [
             <?php } ?>
         </table>
     </div>
+    {include file='public/fenye' /}
 </div>
 
 <input type="hidden" id="to_examine_url" value="<?php echo url('to_examine/semgrep') ?>">
 {include file='public/to_examine' /}
-{include file='public/fenye' /}</div>
+
 {include file='public/footer' /}

@@ -23,6 +23,13 @@ class Login extends BaseController
             return redirect(url('index/index'));
         }
 
+
+        // 判断当前 URL 是否包含指定字符
+        if (strpos($_SERVER['HTTP_HOST'], 'corp') !== false) {
+            return redirect(url('qnr/login/index'));
+        }
+
+
         return View::fetch('user/login');
     }
 

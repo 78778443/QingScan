@@ -218,20 +218,15 @@ class CodeCheckModel extends BaseModel
     public static function fortifyScan()
     {
         $codePath = trim(`pwd`) . "/data/codeCheck";
-        $fortifyRetDir = "./data/fortify_result";
-
-        if (!file_exists($codePath)) {
-            mkdir($codePath, 0777, true);
-        }
-        if (!file_exists($fortifyRetDir)) {
-            mkdir($fortifyRetDir, 0777, true);
-        }
+        $fortifyRetDir = trim(`pwd`) . "/data/fortify_result";
+        if (!file_exists($codePath)) mkdir($codePath, 0777, true);
+        if (!file_exists($fortifyRetDir)) mkdir($fortifyRetDir, 0777, true);
 
         $list = self::getCodeStayScanList('scan_time');
 
         foreach ($list as $value) {
-
             if (empty($value['ssh_url'])) continue;
+            echo $value['ssh_url'] . PHP_EOL;
             PluginModel::addScanLog($value['id'], __METHOD__, 2, 0);
             self::scanTime('code', $value['id'], 'scan_time');
 
@@ -244,6 +239,7 @@ class CodeCheckModel extends BaseModel
                 downCode($codePath, $prName, $codeUrl, $value['is_private'], $value['username'], $value['password'], $value['private_key']);
             }
 
+            if (!file_exists($filepath)) continue;
             //2. 扫描代码
             FortifyModel::startScan($filepath, "{$fortifyRetDir}/{$prName}");
 
@@ -269,19 +265,65 @@ class CodeCheckModel extends BaseModel
 
     }
 
-    public static function semgrep()
+    public static function kunLunScan()
     {
         $codePath = "./data/codeCheck";
-        $fortifyRetDir = "./data/semgrep_result";
-
-        $list = self::getCodeStayScanList('semgrep_scan_time');
-        foreach ($list as $value) {
-            if (!self::checkToolAuth(2, $value['id'], 'semgrep')) {
-                continue;
+        //判断目录是否存在
+        if (!file_exists($codePath)) {
+            mkdir($codePath, 0777, true);
+        }
+        while (true) {
+            processSleep(1);
+            $list = self::getCodeStayScanList('kunlun_scan_time');
+            foreach ($list as $value) {
+                if (!self::checkToolAuth(2, $value['id'], 'kunlun')) {
+                    continue;
+                }
+                PluginModel::addScanLog($value['id'], __METHOD__, 2, 0);
+                $prName = cleanString($value['name']);
+                $codeUrl = $value['ssh_url'];
+                $filepath = "{$codePath}/{$prName}";
+                if (!file_exists($filepath)) {
+                    //1. 拉取代码
+                    downCode($codePath, $prName, $codeUrl, $value['is_private'], $value['username'], $value['password'], $value['private_key']);
+                }
+                //扫描代码
+                $result = KunlunModel::startScan($filepath);
+                if ($result) {
+                    self::scanTime('code', $value['id'], 'kunlun_scan_time');
+                    $scan_project_id = Db::connect('kunlun')->table("index_project")->where('code_id', 0)->where(
+                        'project_name', $prName
+                    )->value('id');
+                    if ($scan_project_id) {
+                        Db::connect('kunlun')->table("index_project")->where('code_id', 0)->where(
+                            'project_name', $prName
+                        )->update([
+                            'user_id' => $value['user_id'],
+                            'code_id' => $value['id'],
+                        ]);
+                        Db::connect('kunlun')->table("index_scanresulttask")->where('scan_project_id', $scan_project_id)->update([
+                            'user_id' => $value['user_id'],
+                            'code_id' => $value['id'],
+                        ]);
+                    }
+                    addlog(["kunlun扫描成功，相关关联数据已修改"]);
+                }
+                PluginModel::addScanLog($value['id'], __METHOD__, 2, 1);
             }
-            PluginModel::addScanLog($value['id'], __METHOD__, 2, 0);
+            sleep(30);
+        }
+    }
 
+    public static function semgrep()
+    {
+        $codePath = trim(`pwd`)."/data/codeCheck";
+        $fortifyRetDir = trim(`pwd`)."/data/semgrep_result";
+
+        $list = self::getCodeStayScanList('semgrep_scan_time', [], 10);
+        foreach ($list as $value) {
+            PluginModel::addScanLog($value['id'], __METHOD__, 2, 0);
             $prName = cleanString($value['name']);
+            if(empty($prName)) continue;
             $codeUrl = $value['ssh_url'];
             $filepath = "{$codePath}/{$prName}";
             if (!file_exists($filepath)) {
@@ -302,6 +344,7 @@ class CodeCheckModel extends BaseModel
             }
             PluginModel::addScanLog($value['id'], __METHOD__, 2, 1);
         }
+
 
     }
 }
