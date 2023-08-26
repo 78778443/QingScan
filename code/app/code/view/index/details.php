@@ -95,7 +95,7 @@
                 </tr>
                 </thead>
                 <?php foreach ($fortify as $value) {
-                    $value['Source'] = json_decode($value['Source'], true);
+                    $value['Source'] = json_decode(($value['Source'] === null) ? '[]' : $value['Source'], true);
                     $value['Primary'] = json_decode($value['Primary'], true);
                     ?>
                     <tr>

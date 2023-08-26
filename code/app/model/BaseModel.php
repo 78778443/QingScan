@@ -83,7 +83,8 @@ class BaseModel
     {
         $where[] = ['is_delete', '=', 0];
         $where[] = ['status', '=', 1];
-        return Db::name('code')->where($where)->limit($num)->orderRand()->select()->toArray();
+        $endTime = date('Y-m-d H:i:s', time() - 86400 * 7);
+        return Db::name('code')->where($where)->whereTime($filed, '>=', $endTime)->limit($num)->orderRand()->select()->toArray();
     }
 
     // 检查工具权限

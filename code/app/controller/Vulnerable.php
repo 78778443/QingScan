@@ -40,9 +40,7 @@ class Vulnerable extends Common
         if ($check_status !== null && in_array($check_status,[0,1,2])) {
             $where[] = ['check_status','=',$check_status];
         }
-        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
-            $where[] = ['user_id', '=', $this->userId];
-        }
+
         $pageSize = 25;
         $list = Db::table('vulnerable')->where($where)->order('id','desc')->paginate([
             'list_rows'=> $pageSize,//每页数量
@@ -85,9 +83,7 @@ class Vulnerable extends Common
             $this->error('参数不能为空');
         }
         $where[] = ['id','=',$id];
-        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
-            $where[] = ['user_id', '=', $this->userId];
-        }
+
         $info = Db::table('vulnerable')->where($where)->find();
         if (!$info) {
             $this->error('数据不存在');
@@ -175,9 +171,7 @@ class Vulnerable extends Common
             $this->error('参数错误');
         }
         $where[] = ['id','=',$id];
-        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
-            $where[] = ['user_id', '=', $this->userId];
-        }
+
         if ($request->isPost()) {
             $data['nature'] = $request->param('nature');
             $data['name'] = $request->param('name');
@@ -252,9 +246,7 @@ class Vulnerable extends Common
         }
         $this->addUserLog('缺陷列表',"删除缺陷列表数据[{$id}]");
         $where[] = ['id','=',$id];
-        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
-            $where[] = ['user_id', '=', $this->userId];
-        }
+
         if (Db::name('vulnerable')->where($where)->delete()) {
             return redirect($_SERVER['HTTP_REFERER']);
         } else {
@@ -275,9 +267,7 @@ class Vulnerable extends Common
         }
         $this->addUserLog('漏洞实例',"删除漏洞实例数据[{$id}]");
         $where[] = ['id','=',$id];
-        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
-            $where[] = ['user_id', '=', $this->userId];
-        }
+
         if (Db::name('pocsuite3')->where('id',$id)->delete()) {
             return redirect($_SERVER['HTTP_REFERER']);
         } else {

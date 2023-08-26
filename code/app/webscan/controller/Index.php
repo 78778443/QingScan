@@ -35,6 +35,7 @@ class Index extends Common
 
     public function index(Request $request)
     {
+        if (function_exists('addWebscanTarget')) addWebscanTarget();
         $pageSize = 15;
         $statusCode = $request->param('statuscode');
         $cms = base64_decode($_GET['cms'] ?? '');
@@ -46,10 +47,7 @@ class Index extends Common
         $where = $server ? array_merge($where, ['info.server' => $server]) : $where;
 
         $where1 = [];
-        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
-            $where = array_merge($where, ['user_id' => $this->userId]);
-            $where1[] = ['user_id', '=', $this->userId];
-        }
+
         $list = Db::table('app')->LeftJoin('app_info info', 'app.id = info.app_id')->where($where)->paginate([
             'list_rows' => $pageSize,//每页数量
             'query' => $request->param(),
@@ -79,6 +77,8 @@ class Index extends Common
                 $v['status'] = '暂停';
             }
             // 数据统计
+
+            $v['name'] = parse_url($v['url'])['host'];
             $v['oneforall_num'] = Db::table('one_for_all')->where('app_id', $v['id'])->where($where1)->count('id');
             $v['dirmap_num'] = Db::table('app_dirmap')->where('app_id', $v['id'])->where($where1)->count('id');
             $v['sqlmap_num'] = Db::table('urls_sqlmap')->where('app_id', $v['id'])->where($where1)->count('id');
@@ -106,8 +106,8 @@ class Index extends Common
         }
         $urlArr = $this->processUrls($request->param('url'));
         $tools = $request->param('tools');
-        foreach ($urlArr as $url){
-            $this->addTarget($url,$tools);
+        foreach ($urlArr as $url) {
+            $this->addTarget($url, $tools);
         }
 
         return redirect(url('index/index'));
@@ -125,7 +125,7 @@ class Index extends Common
                 $url = "http://{$url}/";
             }
 
-            if(filter_var($url, FILTER_VALIDATE_URL) === false) continue;
+            if (filter_var($url, FILTER_VALIDATE_URL) === false) continue;
             $urls[] = $url;
         }
 
@@ -224,9 +224,7 @@ class Index extends Common
             'vulmap_scan_time' => '2000-01-01 00:00:00',
         );
         $where[] = ['id', '=', $id];
-        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
-            $where[] = ['user_id', '=', $this->userId];
-        }
+
         $data['info'] = Db::name('app')->where($where)->find();
         if (!$data['info']) {
             $this->error('黑盒数据不存在');
@@ -266,9 +264,7 @@ class Index extends Common
             return $this->apiReturn(0, [], '请选择要重新扫描的数据');
         }
         $where[] = ['id', 'in', $ids];
-        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
-            $where[] = ['user_id', '=', $this->userId];
-        }
+
         $data['info'] = Db::name('app')->where($where)->find();
         if (!$data['info']) {
             return $this->apiReturn(0, [], '黑盒数据不存在');
@@ -287,9 +283,7 @@ class Index extends Common
     {
         $id = $request->param('id', '', 'intval');
         $where[] = ['id', '=', $id];
-        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
-            $where[] = ['user_id', '=', $this->userId];
-        }
+
         $info = Db::name('app')->where($where)->find();
         if (!$info) {
             $this->error('黑盒数据不存在');
@@ -421,9 +415,7 @@ class Index extends Common
         }
         $where[] = ['id', 'in', $ids];
         $map[] = ['app_id', 'in', $ids];
-        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
-            $where[] = ['user_id', '=', $this->userId];
-        }
+
         $data['info'] = Db::name('app')->where($where)->find();
         if (!$data['info']) {
             return $this->apiReturn(0, [], '黑盒数据不存在');
@@ -460,7 +452,7 @@ class Index extends Common
         $id = $request->param('id', '0', 'intval');
         $map[] = ['id', '=', $id];
 
-        
+
         $data['info'] = Db::name('app')->where(['id' => $id])->find();
         if (!empty($data)) {
             $urlInfo = parse_url($data['info']['url']);
@@ -504,7 +496,7 @@ class Index extends Common
             return $this->apiReturn(0, [], '请先选择要删除的数据');
         }
         $map[] = ['app_id', 'in', $ids];
-        
+
         $data['info'] = Db::name('app')->where('id', 'in', $ids)->find();
         if (!empty($data)) {
             $urlInfo = parse_url($data['info']['url']);
@@ -548,9 +540,7 @@ class Index extends Common
         $id = $request->param('id', '', 'intval');
         $where[] = ['id', '=', $id];
         $where[] = ['is_delete', '=', 0];
-        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
-            $where[] = ['user_id', '=', $this->userId];
-        }
+
         $info = Db::name('app')->where($where)->field('id,user_id,xray_agent_port')->find();
         if (!$info) {
             return $this->apiReturn(0, [], '数据不存在');

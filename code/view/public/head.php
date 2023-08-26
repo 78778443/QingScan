@@ -1,6 +1,6 @@
 <html>
 <head>
-    <title><?php echo $title ?? '' ?></title>
+    <title><?php echo $title ?? 'QunarSec' ?></title>
     <link rel="shortcut icon" href="/static/favicon.svg" type="image/x-icon"/>
     <script src="/static/js/jquery.min.js"></script>
     <link href="/static/bootstrap-5.1.3/css/bootstrap.min.css" rel="stylesheet">
@@ -24,7 +24,7 @@
                 <li class="nav-item"><a class="nav-link" id="webscan" href="/webscan/index.html" aria-expanded="false">网站扫描</a>
                 </li>
                 <li class="nav-item"><a class="nav-link" id="codeaudit" href="/code/index.html">代码审计 </a></li>
-                <li class="nav-item"><a class="nav-link" id="cveuse" href="/pocs_file/index.html">CVE利用 </a></li>
+                <li class="nav-item"><a class="nav-link" id="cveuse" href="/pocs_file/index.html">CVE验证 </a></li>
                 <li class="nav-item"><a class="nav-link" id="asm" href="/asm/domain/index.html">资产发现 </a></li>
                 <li class="nav-item  dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="dropdown08" data-bs-toggle="dropdown"

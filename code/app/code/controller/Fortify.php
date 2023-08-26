@@ -34,10 +34,7 @@ class Fortify extends Common
             $where = array_merge($where, ['check_status' => $check_status]);
         }
         $map[] = ['is_delete', '=', 0];
-        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
-            $where = array_merge($where, ['user_id' => $this->userId]);
-            $map[] = ['user_id', '=', $this->userId];
-        }
+
 
         $fortifyApi = Db::table('fortify')->where($where)->order('id', 'desc');;
         $fortifyApi = $fortifyApi->where("Folder != 'Low'");
@@ -53,7 +50,7 @@ class Fortify extends Common
         $projectArr = array_column($projectArr, null, 'id');
         //获取文件分组
         $fileList = Db::table('fortify')->where("Folder != 'Low'")->where($map)->field('Primary_filename')->group('Primary_filename')->select()->toArray();
-        $fileList = array_column($fileList, 'Primary_filename');
+        $fileList = array_map('basename', array_column($fileList, 'Primary_filename'));
         //查询项目列表
         $fortifyProjectList = Db::table('fortify')->where($map)->where("Folder != 'Low'")->field('code_id')->group('code_id')->select()->toArray();
         $fortifyProjectList = array_column($fortifyProjectList, 'code_id');
@@ -107,10 +104,7 @@ class Fortify extends Common
         }
         $where[] = ['id', '=', $id];
         $map = [];
-        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
-            $where[] = ['user_id', '=', $this->userId];
-            $map[] = ['user_id', '=', $this->userId];
-        }
+
         $info = Db::table('fortify')->where($where)->find();
         if (!$info) {
             $this->error('数据不存在');

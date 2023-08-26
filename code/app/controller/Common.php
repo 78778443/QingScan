@@ -51,7 +51,7 @@ class Common extends BaseController
     private function is_auth($name)
     {
 
-        if (in_array($this->username, explode(',', env('admins','admin')))) return true;
+        if (in_array($this->username, explode(',', env('admins')))) return true;
 
         //管理员和开放地址,不鉴定权限
         $rules = Db::name('auth_group')->where('auth_group_id', $this->auth_group_id)->value('rules');
@@ -99,9 +99,7 @@ class Common extends BaseController
     public function getMyAppList()
     {
         $where[] = ['is_delete', '=', 0];
-        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
-            $where[] = ['user_id', '=', $this->userId];
-        }
+
         //查询项目数据
         $projectArr = Db::table('app')->where($where)->field('id,name')->select()->toArray();
         $projectList = array_column($projectArr, 'name', 'id');
@@ -111,9 +109,7 @@ class Common extends BaseController
     public function getMyCodeList()
     {
         $where[] = ['is_delete', '=', 0];
-        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
-            $where[] = ['user_id', '=', $this->userId];
-        }
+
         //查询项目数据
         $projectArr = Db::table('code')->where($where)->field('id,name')->select()->toArray();
         return array_column($projectArr, 'name', 'id');

@@ -18,9 +18,7 @@ class CodeJava extends Common
         if (!empty($search)) {
             $where[] = ['name','like',"%{$search}%"];
         }
-        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
-            $where[] = ['user_id', '=', $this->userId];
-        }
+
         $code_id = $request->param('code_id');
         if ($code_id) {
             $where[] = ['code_id','=',$code_id];
@@ -43,9 +41,7 @@ class CodeJava extends Common
     {
         $id = $request->param('id');
         $where[] = ['id','=',$id];
-        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
-            $where[] = ['user_id', '=', $this->userId];
-        }
+
         if (Db::name('code_java')->where('id',$id)->delete()) {
             return redirect($_SERVER['HTTP_REFERER']);
         } else {

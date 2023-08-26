@@ -100,21 +100,11 @@ class Scan extends Command
             UrlsModel::reptile();
         } elseif ($func == 'backup') {
             ConfigModel::backup();
-        } elseif ($func == 'giteeProject') {
-            CodeModel::giteeProject();
-        } elseif ($func == 'freeAgent') {
-            ProxyModel::freeAgent();
-        } elseif ($func == 'github_keyword_monitor') {
-            GithubKeywordMonitorModel::keywordMonitor();
         } elseif ($func == 'whatwebPocTest') {
             AppModel::whatwebPocTest();
-        } elseif ($func == 'xrayAgentResult') {
-            WebScanModel::xrayAgentResult();
-        } elseif ($func == 'startXrayAgent') {
-            WebScanModel::startXrayAgent();
         } elseif ($func == 'wafw00fScan') {
             AppWafw00fModel::wafw00fScan();
-        } elseif ($func == 'nucleiScan') {
+        } elseif ($func == 'nuclei') {
             WebScanModel::nucleiScan();
         } elseif ($func == 'vulmapPocTest') {
             WebScanModel::vulmapPocTest();

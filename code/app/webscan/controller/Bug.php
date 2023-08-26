@@ -42,9 +42,7 @@ class Bug extends Common
         if ($check_status !== null && in_array($check_status, [0, 1, 2])) {
             $where[] = ['check_status', '=', $check_status];
         }
-        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
-            $where[] = ['user_id', '=', $this->userId];
-        }
+
         $list = Db::table('awvs_vuln')->where($where)->paginate([
             'list_rows' => $pageSize,//每页数量
             'query' => $request->param(),

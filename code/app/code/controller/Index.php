@@ -24,54 +24,15 @@ class Index extends Common
     ];
 
 
-    function getRecentActiveRepositories($gitLabUrl, $accessToken)
-    {
-        $apiEndpoint = $gitLabUrl . '/api/v4/projects?order_by=last_activity_at&sort=desc';
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $apiEndpoint);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array('PRIVATE-TOKEN: ' . $accessToken));
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        $response = curl_exec($ch);
-        if (curl_errno($ch)) {
-            return false;
-        }
-        curl_close($ch);
-        $projects = json_decode($response, true);
-        if (is_array($projects)) {
-            $repositories = array();
-            foreach ($projects as $project) {
-                $projectId = $project['id'];
-                $projectName = $project['name'];
-                $lastActivity = $project['last_activity_at'];
-                $repositoryHttpUrl = rtrim($gitLabUrl, '/') . '/' . $project['namespace']['path'] . '/' . $projectName . '.git';
-
-                $repositories[] = $repositoryHttpUrl;
-            }
-            return $repositories;
-        } else {
-            return false;
-        }
-    }
-
     public function index(Request $request)
     {
-        //如果配置了token,自动抓取最近活跃的仓库
-        if (env('gitlab.token') && Cache::has('getGitLab') == false) {
-            $gitlabList = $this->getRecentActiveRepositories(env('gitlab.url'), env('gitlab.token'));
-            foreach ($gitlabList as $url) {
-                $this->_add_one_code($url, array_keys($this->tools));
-            }
-            Cache::set('getGitLab', 1, (2 * 3600));
-        }
+        if (function_exists('getGitlabProject')) getGitlabProject();
 
 
         $pageSize = 25;
         $where[] = ['is_delete', '=', 0];
         $map = [];
-        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
-            $where[] = ['user_id', '=', $this->userId];
-            $map[] = ['user_id', '=', $this->userId];
-        }
+
         $search = $request->param('search');
         if (!empty($search)) {
             $where[] = ['name', 'like', "%{$search}%"];
@@ -117,9 +78,7 @@ class Index extends Common
         }
         $where[] = ['id', 'in', $ids];
         $map[] = ['app_id', 'in', $ids];
-        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
-            $where[] = ['user_id', '=', $this->userId];
-        }
+
         $data['info'] = Db::name('code')->where($where)->find();
         if (!$data['info']) {
             return $this->apiReturn(0, [], '白盒审计项目不存在');
@@ -138,7 +97,7 @@ class Index extends Common
         $id = $request->param('id');
         $map[] = ['id', '=', $id];
 
-        
+
         if (!Db::name('code')->where($map)->count()) {
             $this->error('数据不存在');
         }
@@ -171,11 +130,8 @@ class Index extends Common
         $where[] = ['code_id', '=', $codeId];
         $map[] = ['id', '=', $codeId];
 
-        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
-            $map[] = ['user_id', '=', $this->userId];
-            $where[] = ['user_id', '=', $this->userId];
-        }
         $data['info'] = Db::name('code')->where($map)->find();
+
         if ($data['info']['is_online'] == 2) { // 本地
             $data['info']['ssh_url'] = '本地';
             $data['info']['pulling_mode'] = '本地';
@@ -205,7 +161,7 @@ class Index extends Common
     {
         $id = $request->param('id');
         $map[] = ['id', '=', $id];
-        
+
         if (Db::name('code')->where($map)->delete()) {
             Db::table('fortify')->where(['code_id' => $id])->delete();
             Db::table('semgrep')->where(['code_id' => $id])->delete();
@@ -234,10 +190,7 @@ class Index extends Common
         }
         $map[] = ['code_id', 'in', $ids];
         $where[] = ['id', 'in', $ids];
-        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
-            $where[] = ['user_id', '=', $this->userId];
-            $map[] = ['user_id', '=', $this->userId];
-        }
+
         if (Db::name('code')->where($where)->delete()) {
             Db::table('fortify')->where($map)->delete();
             Db::table('semgrep')->where($map)->delete();
@@ -265,10 +218,7 @@ class Index extends Common
         }
         $map[] = ['code_id', 'in', $ids];
         $where[] = ['id', 'in', $ids];
-        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
-            $where[] = ['user_id', '=', $this->userId];
-            $map[] = ['user_id', '=', $this->userId];
-        }
+
         $array = [
             'scan_time' => '2000-01-01 00:00:00',
             'sonar_scan_time' => '2000-01-01 00:00:00',
@@ -324,10 +274,7 @@ class Index extends Common
             $where = array_merge($where, ['check_status' => $check_status]);
         }
         $map[] = ['is_delete', '=', 0];
-        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
-            $where = array_merge($where, ['user_id' => $this->userId]);
-            $map[] = ['user_id', '=', $this->userId];
-        }
+
 
         $fortifyApi = Db::table('fortify')->where($where)->order('id', 'desc');;
         $fortifyApi = $fortifyApi->where("Folder != 'Low'");
@@ -396,10 +343,7 @@ class Index extends Common
         }
         $where[] = ['id', '=', $id];
         $map = [];
-        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
-            $where[] = ['user_id', '=', $this->userId];
-            $map[] = ['user_id', '=', $this->userId];
-        }
+
         $info = Db::table('fortify')->where($where)->find();
         if (!$info) {
             $this->error('数据不存在');
@@ -426,7 +370,7 @@ class Index extends Common
     {
         $id = $request->param('id');
         $map[] = ['id', '=', $id];
-        
+
         if (Db::name('fortify')->where($map)->update(['is_delete' => 1])) {
             return redirect($_SERVER['HTTP_REFERER']);
         } else {
@@ -442,7 +386,7 @@ class Index extends Common
             return $this->apiReturn(0, [], '请先选择要删除的数据');
         }
         $map[] = ['id', 'in', $ids];
-        
+
         if (Db::name('fortify')->where($map)->update(['is_delete' => 1])) {
             return $this->apiReturn(1, [], '批量删除成功');
         } else {
@@ -458,10 +402,7 @@ class Index extends Common
         }
         $where[] = ['id', '=', $id];
         $map = [];
-        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
-            $where[] = ['user_id', '=', $this->userId];
-            $map[] = ['user_id', '=', $this->userId];
-        }
+
         $info = Db::table('semgrep')->where($where)->find();
         if (!$info) {
             $this->error('数据不存在');
@@ -506,10 +447,7 @@ class Index extends Common
             $where[] = ['check_status', '=', $check_status];
         }
         $map = [];
-        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
-            $where[] = ['user_id', '=', $this->userId];
-            $map[] = ['user_id', '=', $this->userId];
-        }
+
         $semgrepApi = Db::connect('kunlun')->table("index_scanresulttask");
 
         $list = $semgrepApi->where($where)->order('id', 'desc')->paginate($pageSize);
@@ -542,10 +480,7 @@ class Index extends Common
         }
         $where[] = ['id', '=', $id];
         $map = [];
-        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
-            $where[] = ['user_id', '=', $this->userId];
-            $map[] = ['user_id', '=', $this->userId];
-        }
+
         $semgrepApi = Db::connect('kunlun')->table("index_scanresulttask");
         $info = $semgrepApi->where($where)->find();
         if (!$info) {
@@ -565,7 +500,7 @@ class Index extends Common
     {
         $id = $request->param('id');
         $map[] = ['id', '=', $id];
-        
+
         if (Db::connect('kunlun')->table("index_scanresulttask")->where($map)->update(['is_delete' => 1])) {
             return redirect($_SERVER['HTTP_REFERER']);
         } else {
@@ -607,10 +542,7 @@ class Index extends Common
         if (!empty($search)) {
             $where[] = ['check_id', 'like', "%{$search}%"];
         }
-        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
-            $where[] = ['user_id', '=', $this->userId];
-            $map[] = ['user_id', '=', $this->userId];
-        }
+
         $list = Db::table('semgrep')->where($where)->order('id', 'desc')->paginate(['list_rows' => $pageSize, 'query' => $request->param()]);
         $data['list'] = $list->items();
         $data['page'] = $list->render();
@@ -631,7 +563,7 @@ class Index extends Common
     {
         $id = $request->param('id');
         $map[] = ['id', '=', $id];
-        
+
         if (Db::name('semgrep')->where($map)->update(['is_delete' => 1])) {
             return redirect($_SERVER['HTTP_REFERER']);
         } else {
@@ -647,7 +579,7 @@ class Index extends Common
             return $this->apiReturn(0, [], '请先选择要删除的数据');
         }
         $map[] = ['id', 'in', $ids];
-        
+
         if (Db::name('semgrep')->where($map)->update(['is_delete' => 1])) {
             return $this->apiReturn(1, [], '批量删除成功');
         } else {
@@ -798,16 +730,7 @@ class Index extends Common
     {
         $data['ssh_url'] = $ssh_url;
         $data['name'] = getGitProjectName($ssh_url);
-
-        $project_id = CodeModel::addData($data);
-        if ($tools) return false;
-        $project_tools_data = [];
-        foreach ($tools as $v) {
-            $project_tools_data[] = ['type' => 2, 'project_id' => $project_id, 'tools_name' => $v];
-        }
-        Db::name('project_tools')->where('project_id', $project_id)->where('type', 2)->delete();
-        Db::name('project_tools')->insertAll($project_tools_data);
-
+        CodeModel::addData($data);
     }
 
     public function _add(Request $request)
@@ -1105,7 +1028,7 @@ class Index extends Common
         $id = $request->param('id');
         $map[] = ['id', '=', $id];
         $tools_name = $request->param('tools_name');
-        
+
         if (!Db::name('code')->where($map)->count()) {
             $this->error('数据不存在');
         }

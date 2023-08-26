@@ -64,7 +64,7 @@
                                 <?php echo $value['id'] ?></label>
                          </td>
                         <td class="ellipsis-type">
-                            <a href="{$value['url']}" title="{$value['url']}" target="_blank">{$value['name']} </a>
+                            <a href="<?=$value['url']??''?>" title="<?=$value['url']??''?>" target="_blank"><?=$value['name']??''?> </a>
                         </td>
                         <td>
                             <?php echo $value['awvs_num'] + $value['xray_num'] + $value['sqlmap_num'] + $value['vulmap_num'] ?>

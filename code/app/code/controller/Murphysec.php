@@ -53,10 +53,7 @@ class Murphysec extends Common
             $where[] = ['name|version|source|authors','like',"%{$search}%"];
         }
         $map = [];
-        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
-            $where[] = ['user_id', '=', $this->userId];
-            $map[] = ['user_id', '=', $this->userId];
-        }
+
         $code_id = $request->param('code_id');
         if ($code_id) {
             $where[] = ['code_id','=',$code_id];
@@ -100,9 +97,7 @@ class Murphysec extends Common
     {
         $id = $request->param('id');
         $where[] = ['id','=',$id];
-        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
-            $where[] = ['user_id', '=', $this->userId];
-        }
+
         if (Db::name('murphysec')->where($where)->delete()) {
             Db::name('murphysec_vuln')->where('murphysec_id',$id)->delete();
             return redirect($_SERVER['HTTP_REFERER']);

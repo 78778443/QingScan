@@ -42,10 +42,7 @@ class Semgrep extends Common
         if (!empty($search)) {
             $where[] = ['check_id', 'like', "%{$search}%"];
         }
-        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
-            $where[] = ['user_id', '=', $this->userId];
-            $map[] = ['user_id', '=', $this->userId];
-        }
+
         $list = Db::table('semgrep')->where($where)->order('id', 'desc')->paginate(['list_rows' => $pageSize, 'query' => $request->param()]);
         $data['list'] = $list->items();
         $data['page'] = $list->render();
@@ -72,10 +69,7 @@ class Semgrep extends Common
         }
         $where[] = ['id', '=', $id];
         $map = [];
-        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
-            $where[] = ['user_id', '=', $this->userId];
-            $map[] = ['user_id', '=', $this->userId];
-        }
+
         $info = Db::table('semgrep')->where($where)->find();
         if (!$info) {
             $this->error('数据不存在');

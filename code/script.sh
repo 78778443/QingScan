@@ -38,11 +38,13 @@ while true; do
   php think scan murphysecScan -vvv
   php think scan unauthorizeScan -vvv
   php think scan deleteDir -vvv
-  php think scan domainFindIp -vvv
-  php think scan scanWebPort -vvv
-  php think scan domainFindUrl -vvv
-  php think scan ip_location -vvv
-  php think scan finger
-  echo '休息15秒'
-  sleep 15
+    php think scan domainFindIp -vvv
+    php think scan scanWebPort -vvv
+    php think scan domainFindUrl -vvv
+    php think scan ip_location -vvv
+    php think scan finger -vvv
+    php think scan semgrep -vvv
+
+    echo '休息15秒'
+    sleep 15;
 done

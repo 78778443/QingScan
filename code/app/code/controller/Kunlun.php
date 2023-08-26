@@ -43,10 +43,7 @@ class Kunlun extends Common
             $where[] = ['check_status', '=', $check_status];
         }
         $map = [];
-        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
-            $where[] = ['user_id', '=', $this->userId];
-            $map[] = ['user_id', '=', $this->userId];
-        }
+
         $semgrepApi = $this->db->table("index_scanresulttask");
 
         //->order('id', 'desc')
@@ -73,10 +70,7 @@ class Kunlun extends Common
         }
         $where[] = ['id', '=', $id];
         $map = [];
-        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
-            $where[] = ['user_id', '=', $this->userId];
-            $map[] = ['user_id', '=', $this->userId];
-        }
+
         $semgrepApi = $this->db->table("index_scanresulttask");
         $info = $semgrepApi->where($where)->find();
         if (!$info) {

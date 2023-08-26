@@ -20,28 +20,13 @@
                 SemGrep </a>
         </li>
         <li>
-            <a class="btn btn-sm btn-outline-secondary" href="/code/mobsfscan/index.html">
-                mobsfscan </a>
-        </li>
-        <li>
             <a class="btn btn-sm btn-outline-secondary" href="/code/murphysec/index.html">
-                murphysec </a>
+                成份分析 </a>
         </li>
-        <li>
-            <a class="btn btn-sm btn-outline-secondary" href="/code/code_python/index.html">
-                python依赖库 </a>
-        </li>
-        <li>
-            <a class="btn btn-sm btn-outline-secondary" href="/code/code_composer/index.html">
-                composer </a>
-        </li>
-        <li>
-            <a class="btn btn-sm btn-outline-secondary" href="/code/code_java/index.html">
-                java依赖库 </a>
-        </li>
+
         <li>
             <a class="btn btn-sm btn-outline-secondary" href="/code/code_webshell/index.html">
-                河马(WebShell) </a>
+                WebShell </a>
         </li>
     </ul>
 </div>

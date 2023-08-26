@@ -13,7 +13,7 @@
                 <a class="btn btn-sm btn-outline-secondary" href="/pocs_file/index.html">POC脚本 </a>
             </li>
             <li>
-                <a class="btn btn-sm btn-outline-secondary" href="/vul_target/index.html">收集目标 </a>
+                <a class="btn btn-sm btn-outline-secondary" href="/vul_target/index.html">目标 </a>
             </li>
             <li>
                 <a class="btn btn-sm btn-outline-secondary" href="/vulnerable/pocsuite.html">漏洞实例 </a>
@@ -23,11 +23,11 @@
             </li>
             <li>
                 <a class="btn btn-sm btn-outline-secondary" href="/github_notice/index.html">
-                    github-CVE</a>
+                    githubCVE</a>
             </li>
         </ul>
 </div>
 
 <script type="text/javascript">
-        $("#cveuse").addClass("nav-active");
+    $("#cveuse").addClass("nav-active");
 </script>

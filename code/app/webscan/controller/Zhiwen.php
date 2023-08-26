@@ -14,9 +14,7 @@ class Zhiwen extends Common
     public function index(Request $request){
         $pageSize = 20;
         $where = [];
-        /*if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
-            $where[] = ['user_id', '=', $this->userId];
-        }*/
+        /**/
         $search = $request->param('search');
         if (!empty($search)) {
             $where[] = ['filters|keyword|supplier|tags|title','like',"%{$search}%"];

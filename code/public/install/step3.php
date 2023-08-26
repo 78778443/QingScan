@@ -29,6 +29,9 @@ use think\facade\Db;
                     // 检查数据库参数是否正确，修改系统配置文件
                     writingConf();
 
+                    //更新python配置
+                    setPythonConfig();
+
                     try {
                         //从SQL文件中提取SQL语句
                         $sqlArr = getSQLArr();
@@ -50,6 +53,18 @@ use think\facade\Db;
     </html>
 
 <?php
+function setPythonConfig(){
+    $filename = '/data/tools/reptile/config.yaml';
+    $arr = yaml_parse_file($filename);
+    if ($arr) {
+        $arr['mysql']['host'] = $_POST['DB_HOST'];
+        $arr['mysql']['port'] = (int)($_POST['DB_PORT']);
+        $arr['mysql']['username'] = (string)$_POST['DB_USER'];
+        $arr['mysql']['password'] = (string)$_POST['DB_PASS'];
+        $arr['mysql']['database'] = (string)$_POST['DB_NAME'];
+        yaml_emit_file($filename, $arr);
+    }
+}
 
 
 function batchExecuteSql($sqlArr)
@@ -127,7 +142,7 @@ function writingConf()
         echo "window.history.back();";
         echo "</script>";
     }
-    $config = require('../../config/database_example.php');
+    $config = require('../../config/database.php');
     $config['connections']['mysql']['hostname'] = $_POST['DB_HOST'];
     $config['connections']['mysql']['hostport'] = $_POST['DB_PORT'];
     $config['connections']['mysql']['username'] = $_POST['DB_USER'];
@@ -135,6 +150,12 @@ function writingConf()
     $config['connections']['mysql']['database'] = $_POST['DB_NAME'];
     $config['connections']['mysql']['charset'] = $_POST['DB_CHARSET'];
 
+    /*$config['connections']['kunlun']['hostname'] = $_POST['DB_HOST'];
+    $config['connections']['kunlun']['hostport'] = $_POST['DB_PORT'];
+    $config['connections']['kunlun']['username'] = $_POST['DB_USER'];
+    $config['connections']['kunlun']['password'] = $_POST['DB_PASS'];
+    $config['connections']['kunlun']['database'] = 'kunlun';
+    $config['connections']['kunlun']['charset'] = $_POST['DB_CHARSET'];*/
 
     $database = "<?php \n";
     $database .= 'return ' . var_export($config, true) . ';';

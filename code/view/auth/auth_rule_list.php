@@ -1,8 +1,7 @@
 {include file='public/head' /}
 <?php
 $dengjiArr = ['Low', 'Medium', 'High', 'Critical'];
-?>
-<?php
+
 $searchArr = [
     'action' => $_SERVER['REQUEST_URI'],
     'method' => 'get',

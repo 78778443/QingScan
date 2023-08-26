@@ -13,10 +13,7 @@ class Mobsfscan extends Common
         $where = [];
         $map = [];
         $pageSize = 20;
-        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
-            $where[] = ['user_id', '=', $this->userId];
-            $map[] = ['user_id', '=', $this->userId];
-        }
+
         $list = Db::table('mobsfscan')->where($where)->order('id', 'desc')->paginate(['list_rows' => $pageSize, 'query' => $request->param()]);
         $data['list'] = $list->items();
         foreach ($data['list'] as &$v) {
@@ -39,9 +36,7 @@ class Mobsfscan extends Common
     {
         $id = $request->param('id');
         $where[] = ['id','=',$id];
-        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
-            $where[] = ['user_id', '=', $this->userId];
-        }
+
         if (Db::name('mobsfscan')->where('id',$id)->delete()) {
             return redirect($_SERVER['HTTP_REFERER']);
         } else {

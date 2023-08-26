@@ -76,7 +76,7 @@
                             <div class="col-md-4">
                                 <dl>
                                     <dt>参数来源：</dt>
-                                    <dd class="text-gray"><?php echo $Source['FilePath'] ?></dd>
+                                    <dd class="text-gray" title="$Source['FilePath']"><?php echo basename($Source['FilePath']) ?></dd>
                                 </dl>
                                 <dl>
                                     <dt>行号：</dt>

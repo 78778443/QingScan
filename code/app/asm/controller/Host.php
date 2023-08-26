@@ -20,9 +20,7 @@ class Host extends Common
         if ($domain) {
             $where[] = ['domain','=',$domain];
         }
-        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
-            $where[] = ['user_id', '=', $this->userId];
-        }
+
         $app_id = $request->param('app_id');
         if (!empty($app_id)) {
             $where[] = ['app_id','=',$app_id];

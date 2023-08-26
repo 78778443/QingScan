@@ -21,10 +21,7 @@ class CodeWebshell extends Common
             $where[] = ['code_id','=',$code_id];
         }
         $map = [];
-        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
-            $where[] = ['user_id', '=', $this->userId];
-            $map[] = ['user_id', '=', $this->userId];
-        }
+
         $list = Db::table('code_webshell')->where($where)->order("id", 'desc')->paginate([
             'list_rows'=> $pageSize,//每页数量
             'query' => $request->param(),
@@ -44,9 +41,7 @@ class CodeWebshell extends Common
     {
         $id = $request->param('id');
         $where[] = ['id','=',$id];
-        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
-            $where[] = ['user_id', '=', $this->userId];
-        }
+
         if (Db::name('code_webshell')->where('id',$id)->delete()) {
             return redirect($_SERVER['HTTP_REFERER']);
         } else {

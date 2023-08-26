@@ -13,9 +13,7 @@ class Vulmap extends Common
     {
         $pageSize = 20;
         $where = [];
-        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
-            $where[] = ['user_id', '=', $this->userId];
-        }
+
         $search = $request->param('search');
         if (!empty($search)) {
             $where[] = ['author|host|port','like',"%{$search}%"];

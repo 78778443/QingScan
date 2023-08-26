@@ -44,7 +44,7 @@
 
         <li>
             <a class="btn btn-sm btn-outline-secondary" href="/webscan/whatweb/index.html">
-                whatWeb列表 </a>
+                whatWeb</a>
         </li>
         <li>
             <a class="btn btn-sm btn-outline-secondary" href="/webscan/unauthorized/index.html">

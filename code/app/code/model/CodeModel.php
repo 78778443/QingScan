@@ -300,10 +300,6 @@ class CodeModel extends BaseModel
             ->group('code_id')->select()->toArray();
         $data['fortifyNum'] = array_column($tempArr, 'num', 'code_id');
 
-        /*$tempArr = Db::connect('kunlun')->table("index_scanresulttask")->whereIn('code_id', $codeIdStr)
-            ->field('code_id,count(code_id) as num')
-            ->group('code_id')->select()->toArray();
-        $data['kunlunNum'] = array_column($tempArr, 'num', 'code_id');*/
         $data['kunlunNum'] = 0;
 
         $tempArr = Db::table('semgrep')->whereIn('code_id', $codeIdStr)
@@ -340,6 +336,7 @@ class CodeModel extends BaseModel
             ->field('code_id,count(code_id) as num')
             ->group('code_id')->select()->toArray();
         $data['javaNum'] = array_column($tempArr, 'num', 'code_id');
+
 
         return $data;
     }

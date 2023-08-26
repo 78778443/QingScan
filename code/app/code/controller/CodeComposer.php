@@ -18,9 +18,7 @@ class CodeComposer extends Common
         if (!empty($search)) {
             $where[] = ['name|version|source|authors','like',"%{$search}%"];
         }
-        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
-            $where[] = ['user_id', '=', $this->userId];
-        }
+
         $code_id = $request->param('code_id');
         if ($code_id) {
             $where[] = ['code_id','=',$code_id];

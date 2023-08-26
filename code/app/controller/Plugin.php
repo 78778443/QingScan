@@ -33,9 +33,7 @@ class Plugin extends Common
         if ($search) {
             $where[] = ['name','like',"%{$search}%"];
         }
-        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
-            $where[] = ['user_id', '=', $this->userId];
-        }
+
         $list = Db::table('plugin')->where($where)->order("id", 'desc')->paginate([
             'list_rows'=> $pageSize,//每页数量
             'query' => $request->param(),
@@ -76,9 +74,7 @@ class Plugin extends Common
         $id = $request->param('id');
         $where[] = ['id','=',$id];
         $where[] = ['is_delete','=',0];
-        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
-            $where[] = ['user_id', '=', $this->userId];
-        }
+
         $info = Db::name('plugin')->where($where)->find();
         if (!$info) {
             $this->error('数据不存在');
