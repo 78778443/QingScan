@@ -60,7 +60,7 @@
     <div class="col-4">
         <div class="tuchu" style="width:100%;height:400px" id="divContainer">
             <h2 class="text-center"><?=env('website')?> 捐赠公示</h2>
-            <table class="table  table-hover table-sm">
+            <table class="table  table-hover table-sm table-borderless">
                 <tr>
                     <th>昵称</th>
                     <th>时间</th>

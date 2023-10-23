@@ -19,8 +19,8 @@ $dengjiArr = ['Low', 'Medium', 'High', 'Critical'];
 </div>
 <div class="row tuchu">
     <div class="col-md-12 ">
-        <table class="table  table-hover table-sm">
-            <thead>
+        <table class="table  table-hover table-sm table-borderless">
+            <thead class="table-light">
             <tr>
                 <th>ID</th>
                 <th>名称</th>

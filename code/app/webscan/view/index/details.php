@@ -91,15 +91,14 @@ $typeArr = [
         <a href="<?php echo url('urls/index', ['app_id' => $info['id']]) ?>"
            class="btn btn-sm btn-outline-secondary" style="float: right">more</a>
         </span>
-        <table class="table  table-hover table-sm">
-            <thead>
+        <table class="table  table-hover table-sm table-borderless">
+            <thead class="table-light">
             <tr style="color:#ccc;">
                 <th>ID</th>
                 <th>URL</th>
                 <th>APP</th>
                 <th>ICP</th>
                 <th>邮箱</th>
-                <th>sqlmap</th>
                 <th>创建时间</th>
             </tr>
             </thead>
@@ -112,10 +111,7 @@ $typeArr = [
                         <a href="<?php echo U('urls/index', ['app_id' => $value['app_id']]) ?>"><?php echo isset($appArr[$value['app_id']]) ? $appArr[$value['app_id']] : '' ?></a>
                     </td>
                     <td><?php echo $value['icp'] ?></td>
-                    <td><?php echo $value['email'] ?></td>
-                    <td><?php
-                        echo ($value['sqlmap_scan_time'] == "2000-01-01 00:00:00") ? "未扫描" : ((strtotime($value['sqlmap_scan_time']) > time()) ? '扫描失败' : $value['sqlmap_scan_time'])
-                        ?></td>
+                    <td><?php echo $value['email'] ?? ''?></td>
                     <td><?php echo $value['create_time'] ?></td>
                 </tr>
             <?php } ?>
@@ -136,7 +132,7 @@ $typeArr = [
                class="btn btn-sm btn-outline-secondary" style="float: right">more</a>
         </span>
         <table class="table  table-hover table-sm" style="color:#ccc;">
-            <thead>
+            <thead class="table-light">
             <tr>
                 <th>ID</th>
                 <th>url</th>
@@ -168,7 +164,7 @@ $typeArr = [
                class="btn btn-sm btn-outline-secondary" style="float: right">more</a>
         </span>
         <table class="table  table-hover table-sm" style="color:#ccc;">
-            <thead>
+            <thead class="table-light">
             <tr>
                 <th>ID</th>
                 <th>severity</th>
@@ -207,7 +203,7 @@ $typeArr = [
                class="btn btn-sm btn-outline-secondary" style="float: right">more</a>
         </span>
         <table class="table  table-hover table-sm" style="color:#ccc;">
-            <thead>
+            <thead class="table-light">
             <tr>
                 <th>ID</th>
                 <th>name</th>
@@ -241,7 +237,7 @@ $typeArr = [
                class="btn btn-sm btn-outline-secondary" style="float: right">more</a>
         </span>
         <table class="table  table-hover table-sm" style="color:#ccc;">
-            <thead>
+            <thead class="table-light">
             <tr>
                 <th>ID</th>
                 <th>漏洞类型</th>
@@ -272,7 +268,7 @@ $typeArr = [
                class="btn btn-sm btn-outline-secondary" style="float: right">ReScan</a>
         </span>
         <table class="table  table-hover table-sm" style="color:#ccc;">
-            <thead>
+            <thead class="table-light">
             <tr>
                 <th>app_id</th>
                 <th>cms</th>
@@ -318,7 +314,7 @@ $typeArr = [
                class="btn btn-sm btn-outline-secondary" style="float: right">more</a>
         </span>
         <table class="table  table-hover table-sm" style="color:#ccc;">
-            <thead>
+            <thead class="table-light">
             <tr>
                 <th>ID</th>
                 <th>target</th>
@@ -356,7 +352,7 @@ $typeArr = [
                class="btn btn-sm btn-outline-secondary" style="float: right">more</a>
         </span>
         <table class="table  table-hover table-sm" style="color:#ccc;">
-            <thead>
+            <thead class="table-light">
             <tr>
                 <th>ID</th>
                 <th>urls_id</th>
@@ -398,7 +394,7 @@ $typeArr = [
                class="btn btn-sm btn-outline-secondary" style="float: right">more</a>
         </span>
         <table class="table  table-hover table-sm" style="color:#ccc;">
-            <thead>
+            <thead class="table-light">
             <tr>
                 <th>ID</th>
                 <th>域名</th>
@@ -436,7 +432,7 @@ $typeArr = [
                class="btn btn-sm btn-outline-secondary" style="float: right">more</a>
         </span>
         <table class="table  table-hover table-sm" style="color:#ccc;">
-            <thead>
+            <thead class="table-light">
             <tr>
                 <th>ID</th>
                 <th>host</th>
@@ -472,7 +468,7 @@ $typeArr = [
                class="btn btn-sm btn-outline-secondary" style="float: right">more</a>
         </span>
         <table class="table  table-hover table-sm" style="color:#ccc;">
-            <thead>
+            <thead class="table-light">
             <tr>
                 <th>ID</th>
                 <th>code</th>
@@ -509,7 +505,7 @@ $typeArr = [
                class="btn btn-sm btn-outline-secondary" style="float: right">more</a>
         </span>
         <table class="table  table-hover table-sm" style="color:#ccc;">
-            <thead>
+            <thead class="table-light">
             <tr>
                 <th>id</th>
                 <th>port</th>
@@ -559,7 +555,7 @@ $typeArr = [
                class="btn btn-sm btn-outline-secondary" style="float: right">more</a>
         </span>
         <table class="table  table-hover table-sm" style="color:#ccc;">
-            <thead>
+            <thead class="table-light">
             <tr>
                 <th>ID</th>
                 <th>app_id</th>
@@ -616,7 +612,7 @@ $typeArr = [
                class="btn btn-sm btn-outline-secondary" style="float: right">more</a>
         </span>
         <table class="table  table-hover table-sm" style="color:#ccc;">
-            <thead>
+            <thead class="table-light">
             <tr>
                 <th>ID</th>
                 <th>app_id</th>
@@ -668,7 +664,7 @@ $typeArr = [
                class="btn btn-sm btn-outline-secondary" style="float: right">ReScan</a>
         </span>
         <table class="table  table-hover table-sm" style="color:#ccc;">
-            <thead>
+            <thead class="table-light">
             <tr>
                 <th>ID</th>
                 <th>result</th>
@@ -700,7 +696,7 @@ $typeArr = [
                class="btn btn-sm btn-outline-secondary" style="float: right">more</a>
         </span>
         <table class="table  table-hover table-sm" style="color:#ccc;">
-            <thead>
+            <thead class="table-light">
             <tr>
                 <th>ID</th>
                 <th>插件名称</th>
@@ -731,7 +727,7 @@ $typeArr = [
                class="btn btn-sm btn-outline-secondary" style="float: right">more</a>
         </span>
         <table class="table  table-hover table-sm" style="color:#ccc;">
-            <thead>
+            <thead class="table-light">
             <tr>
                 <th>ID</th>
                 <th>关键词名称</th>

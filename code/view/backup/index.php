@@ -21,8 +21,8 @@ $searchArr = [
 <div class="col-md-12 ">
     <div class="row tuchu">
         <div class="col-md-12 ">
-            <table class="table  table-hover table-sm">
-                <thead>
+            <table class="table  table-hover table-sm table-borderless">
+                <thead class="table-light">
                 <tr>
                     <th>编号</th>
                     <th>文件名</th>

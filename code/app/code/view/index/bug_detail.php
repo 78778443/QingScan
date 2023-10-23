@@ -6,8 +6,8 @@
 
         <div class="col-md-9 ">
             <div class=" row tuchu">
-                <table class="table  table-hover table-sm">
-                    <thead>
+                <table class="table  table-hover table-sm table-borderless">
+                    <thead class="table-light">
                     <tr>
                         <th style="width:150px;">项目信息</th>
                         <th>项目内容</th>
@@ -37,8 +37,8 @@
             </div>
             <?php if (!empty($Source)) { ?>
                 <div class=" row tuchu">
-                    <table class="table  table-hover table-sm">
-                        <thead>
+                    <table class="table  table-hover table-sm table-borderless">
+                        <thead class="table-light">
                         <tr>
                             <th style="width:150px;">检测项</th>
                             <th>污染源信息</th>
@@ -83,8 +83,8 @@
                 </div>
             <?php } ?>
             <div class=" row tuchu">
-                <table class="table  table-hover table-sm">
-                    <thead>
+                <table class="table  table-hover table-sm table-borderless">
+                    <thead class="table-light">
                     <tr>
                         <th style="width:150px;">检测项</th>
                         <th>执行点信息</th>

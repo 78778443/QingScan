@@ -10,10 +10,10 @@ class WebScanModel extends BaseModel
 {
     public static function rad()
     {
-        $path = "cd ./extend/tools/rad/ && ";
+        $path = "cd " . trim(`pwd`) . "/extend/tools/rad/ && ";
         //判断rad运行环境是否安装
         if (file_exists("/usr/bin/google-chrome") == false) {
-            addlog("RAD 运行依赖环境不存在，请安装chrome环境~");
+            echo "RAD 运行依赖环境不存在，请安装chrome环境~";
             return false;
         }
 
@@ -21,12 +21,10 @@ class WebScanModel extends BaseModel
         $where[] = ['is_delete', '=', 0];
         $where[] = ['status', '=', 1];
         $list = self::getAppStayScanList('crawler_time');
-        $count = Db::table('app')->whereTime('crawler_time', '<=', $endTime)->where($where)->count('id');
+        $count = count($list);
         print("开始执行rad扫描任务,{$count} 个项目等待扫描..." . PHP_EOL);
         foreach ($list as $value) {
-            if (!self::checkToolAuth(1, $value['id'], 'rad')) {
-                continue;
-            }
+
 
             PluginModel::addScanLog($value['id'], __METHOD__, 0);
             self::scanTime('app', $value['id'], 'crawler_time');
@@ -40,38 +38,10 @@ class WebScanModel extends BaseModel
                 addlog(["清理老文件", $pathArr['tool_result']]);
                 @unlink($pathArr['tool_result']);
             }
-            /*if (file_exists($pathArr['cmd_result'])) {
-                addlog(["清理老文件", $pathArr['cmd_result']]);
-                @unlink($pathArr['cmd_result']);
-            }*/
 
-            $filename = './extend/tools/rad/rad_config.yaml';
-            if (!$value['is_intranet']) {   // 不是内网
-                if (file_exists($filename)) {
-                    // 设置代理
-                    $arr = @yaml_parse_file($filename);
-                    if ($arr) {
-                        $proxyArr = Db::name('proxy')->where('status', 1)->limit(3)->orderRand()->select();
-                        $proxy = '';
-                        foreach ($proxyArr as $v) {
-                            $result = testAgent($v['host'], $v['port']);
-                            if ($result == 200) {
-                                $proxy = 'http://' . $v['host'] . ":{$v['port']}";
-                                break;
-                            }
-                        }
-                        if (!empty($proxy)) {
-                            $arr['proxy'] = $proxy;
-                            yaml_emit_file($filename, $arr);
-                        }
-                    }
-                }
-            } else {
-                @unlink($filename);
-            }
 
             $cmd = "{$path} ./rad_linux_amd64 -t  \"{$url}\" -json {$pathArr['tool_result']}";
-            addlog(["开始执行抓取URL地址命令", $cmd]);
+            echo "开始执行抓取URL地址命令:" . $cmd . PHP_EOL;
 
             $result = [];
             execLog($cmd, $result);
@@ -82,35 +52,30 @@ class WebScanModel extends BaseModel
                 continue;
             }
 
-            /*if (!file_exists($pathArr['cmd_result'])) {
-                addlog(["文件不存在", $pathArr['cmd_result']]);
-                continue;
-            }*/
             $urlList = json_decode(file_get_contents($pathArr['tool_result']), true);
             foreach ($urlList as $val) {
                 $val['URL'] = rtrim($val['URL'], '/');
                 $arr = parse_url($val['URL']);
                 $blackExt = ['.js', '.css', '.png', '.jpg', '.jpeg', '.gif', '.mp3', '.mp4', '.ico', '.bmp', '.wmv', '.avi', '.psd'];
-                //if (!isset($arr['query']) or (isset($arr['path']) && in_array_strpos($arr['path'], $blackExt)) or (strpos($arr['query'], '=') === false)) {
                 if (isset($arr['path']) && in_array_strpos(strtolower($arr['path']), $blackExt) || in_array_strpos(strtolower($val['URL']), $blackExt)) {
                     addlog(["rad扫描跳过无意义URL", $val['URL']]);
                     continue;
                 }
-                if (!Db::name('urls')->where('hash', md5($val['URL']))->count()) {
-                    $newData = [
-                        'app_id' => $id,
-                        'method' => $val['Method'],
-                        'url' => $val['URL'],
-                        'status' => 1,
-                        'hash' => md5($val['URL']),
-                        'crawl_status' => 1,
-                        'scan_status' => 0,
-                        'header' => isset($val['Header']) ? json_encode($val['Header']) : "",
-                        'user_id' => $user_id
-                    ];
-                    Db::name('urls')->insert($newData);
-                    addlog(["rad扫描数据写入成功", json_encode($newData)]);
-                }
+
+                $newData = [
+                    'app_id' => $id,
+                    'method' => $val['Method'],
+                    'url' => $val['URL'],
+                    'status' => 1,
+                    'hash' => md5($val['URL']),
+                    'crawl_status' => 1,
+                    'scan_status' => 0,
+                    'header' => isset($val['Header']) ? json_encode($val['Header']) : "",
+                    'user_id' => $user_id
+                ];
+                Db::name('asm_urls')->extra('IGNORE')->insert($newData);
+                addlog(["rad扫描数据写入成功", json_encode($newData)]);
+
             }
             PluginModel::addScanLog($value['id'], __METHOD__, 0, 1, 1, ['content' => $urlList]);
         }

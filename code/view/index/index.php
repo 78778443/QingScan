@@ -15,19 +15,25 @@
     <?php foreach ($data as $key => $value) { ?>
         <div class="col-md-6">
             <div class="row tuchu " style="min-height:300px;border-radius: 10px;">
-                <span style="color:#999;font-size:21px;">{$value['name']}: <span class="btn btn-sm btn-outline-info">{$value['value']}</span></span>
-                <?php foreach ($value['subInfo'] as $subVaule) { ?>
-                    <div class="col-md-4">
-                        <div style="font-size: 21px;">
-                            <span style="width:100px;color:#999;" class="badge   text-right">{$subVaule['name']}</span>:
-                            <a style="width:70px;" class="btn btn-sm btn-outline-secondary" href="{$subVaule['href']}">{$subVaule['value']}</a>
-                        </div>
-                    </div>
-                <?php } ?>
-
+                <div id="main<?= $key ?>"></div>
+                <script type="text/javascript">
+                    // 基于准备好的dom，初始化echarts实例
+                    var myChart<?=$key?> = echarts.init(document.getElementById('main<?=$key?>'));
+                    // 指定图表的配置项和数据
+                    var option<?=$key?> = {
+                        title: {text: '<?=$value['name']?>'},
+                        tooltip: {},
+                        xAxis: {data: <?= json_encode(array_column($value['subInfo'], 'name'), 256) ?>},
+                        yAxis: {},
+                        series: [{type: 'bar', data: <?= json_encode(array_column($value['subInfo'], 'value'), 256) ?>}]
+                    };
+                    // 使用刚指定的配置项和数据显示图表。
+                    myChart<?=$key?>.setOption(option<?=$key?>);
+                </script>
             </div>
         </div>
     <?php } ?>
+
 </div>
 
 {include file='public/footer' /}
@@ -38,7 +44,7 @@
         dataType: "json",
         success: function (res) {
             if (res.code == 1) {
-                if(confirm(res.msg)){
+                if (confirm(res.msg)) {
                     window.location.href = "<?php echo url('config/system_update')?>"
                 }
             }

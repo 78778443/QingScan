@@ -81,8 +81,8 @@
                 <a href="<?php echo url('fortify/index', ['code_id' => $info['id']]) ?>"
                    class="btn btn-sm btn-outline-secondary" style="float: right">查看更多</a>
             </span>
-            <table class="table  table-hover table-sm">
-                <thead>
+            <table class="table  table-hover table-sm table-borderless">
+                <thead class="table-light">
                 <tr>
                     <th>ID</th>
                     <th>漏洞类型</th>
@@ -166,8 +166,8 @@
                 <a href="<?php echo url('semgrep/index', ['code_id' => $info['id']]) ?>"
                    class="btn btn-sm btn-outline-secondary" style="float: right">查看更多</a>
             </span>
-            <table class="table  table-hover table-sm">
-                <thead>
+            <table class="table  table-hover table-sm table-borderless">
+                <thead class="table-light">
                 <tr>
                     <th>ID</th>
                     <th>漏洞类型</th>
@@ -231,8 +231,8 @@
                 <a href="<?php echo url('mobsfscan/index', ['code_id' => $info['id']]) ?>"
                    class="btn btn-sm btn-outline-secondary" style="float: right">查看更多</a>
             </span>
-            <table class="table  table-hover table-sm">
-                <thead>
+            <table class="table  table-hover table-sm table-borderless">
+                <thead class="table-light">
                 <tr>
                     <th>ID</th>
                     <th>漏洞类型</th>
@@ -289,8 +289,8 @@
                 <a href="<?php echo url('murphysec/index', ['code_id' => $info['id']]) ?>"
                    class="btn btn-sm btn-outline-secondary" style="float: right">查看更多</a>
             </span>
-            <table class="table  table-hover table-sm">
-                <thead>
+            <table class="table  table-hover table-sm table-borderless">
+                <thead class="table-light">
                 <tr>
                     <th>ID</th>
                     <th>缺陷组件</th>
@@ -333,8 +333,8 @@
                 <a href="<?php echo url('code_webshell/index', ['code_id' => $info['id']]) ?>"
                    class="btn btn-sm btn-outline-secondary" style="float: right">查看更多</a>
             </span>
-            <table class="table  table-hover table-sm">
-                <thead>
+            <table class="table  table-hover table-sm table-borderless">
+                <thead class="table-light">
                 <tr>
                     <th>ID</th>
                     <th>类型</th>
@@ -377,8 +377,8 @@
                 <a href="<?php echo url('code_java/index', ['code_id' => $info['id']]) ?>"
                    class="btn btn-sm btn-outline-secondary" style="float: right">查看更多</a>
             </span>
-            <table class="table  table-hover table-sm">
-                <thead>
+            <table class="table  table-hover table-sm table-borderless">
+                <thead class="table-light">
                 <tr>
                     <th>ID</th>
                     <th>modelVersion</th>
@@ -415,8 +415,8 @@
                 <a href="<?php echo url('code_python/index', ['code_id' => $info['id']]) ?>"
                    class="btn btn-sm btn-outline-secondary" style="float: right">查看更多</a>
             </span>
-            <table class="table  table-hover table-sm">
-                <thead>
+            <table class="table  table-hover table-sm table-borderless">
+                <thead class="table-light">
                 <tr>
                     <th>ID</th>
                     <th>依赖库</th>
@@ -447,8 +447,8 @@
                 <a href="<?php echo url('code_composer/index', ['code_id' => $info['id']]) ?>"
                    class="btn btn-sm btn-outline-secondary" style="float: right">查看更多</a>
             </span>
-            <table class="table  table-hover table-sm">
-                <thead>
+            <table class="table  table-hover table-sm table-borderless">
+                <thead class="table-light">
                 <tr>
                     <th>ID</th>
                     <th>name</th>

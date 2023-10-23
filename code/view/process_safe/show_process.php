@@ -20,7 +20,7 @@ $searchArr = [
 {include file='public/search' /}
 <div class="col-md-12 ">
     <div class="row tuchu">
-        <table class="table  table-hover table-sm">
+        <table class="table  table-hover table-sm table-borderless">
             <tbody>
             <?php foreach ($info as $val) {
                 $arr = array_values(array_filter(explode('  ', $val)));

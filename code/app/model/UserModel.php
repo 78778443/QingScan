@@ -10,7 +10,7 @@ class UserModel extends BaseModel
     public static function Login($username, $password,$remember_password)
     {
         $where['username'] = $username;
-        $where['password'] = ucenter_md5($password . $username, config('app.UC_AUTH_KEY'));
+//        $where['password'] = ucenter_md5($password . $username, config('app.UC_AUTH_KEY'));
         $strUser = Db::name('user')
             ->where($where)
             ->field('id,username,nickname,status,created_at,auth_group_id,last_login_ip,last_login_time,url')

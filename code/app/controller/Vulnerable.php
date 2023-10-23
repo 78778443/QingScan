@@ -2,17 +2,19 @@
 
 namespace app\controller;
 
-use app\BaseController;
+use app\Request;
 use think\facade\Db;
 use think\facade\View;
-use think\Request;
 
 class Vulnerable extends Common
 {
 
     public function index(Request $request)
     {
-        $where[] = ['is_delete','=',0];
+
+        if(function_exists('autoVulnList')) autoVulnList();
+
+        $where = [];
         $search = $request->param('search','');
         if (!empty($search)) {
             $where[] = ['name|cve_num|cnvd_num','like',"%{$search}%"];
@@ -49,11 +51,6 @@ class Vulnerable extends Common
         $data = [];
         $data['list'] = $list->items();
         $data['page'] = $list->render();
-        $data['vul_level'] = Db::table('vulnerable')->where($where)->where('vul_level','<>','')->group('vul_level')->column('vul_level');
-        $data['product_field'] = Db::table('vulnerable')->where($where)->where('product_field','<>','')->group('product_field')->column('product_field');
-        $data['product_type'] = Db::table('vulnerable')->where($where)->where('product_type','<>','')->group('product_type')->column('product_type');
-        $data['product_cate'] = Db::table('vulnerable')->where($where)->where('product_cate','<>','')->group('product_cate')->column('product_cate');
-        $data['check_status_list'] = ['未审计','有效漏洞','无效漏洞'];
 
 
         return View::fetch('index', $data);

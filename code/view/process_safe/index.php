@@ -39,8 +39,8 @@ $searchArr = [
                        class="btn btn-sm btn-outline-secondary">禁用</a>
                 </div>
             </form>
-            <table class="table  table-hover table-sm">
-                <thead>
+            <table class="table  table-hover table-sm table-borderless">
+                <thead class="table-light">
                 <tr>
                     <th>
                         <label>

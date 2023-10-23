@@ -1,15 +1,16 @@
 {include file='public/head' /}
 
-
-<div class="col-md-1 " style="padding-right:0;">
+<nav class="col-md-1 col-lg-1 d-md-block bg-light sidebar" style="background-color: #ffffff;padding:0px;">
     {include file='public/whiteLeftMenu' /}
-</div>
+</nav>
 <div class="col-md-11 " style="padding-left:0;">
     <?php
+    $dengjiArr = ['Low', 'Medium', 'High', 'Critical'];
     $searchArr = [
         'action' => $_SERVER['REQUEST_URI'],
         'method' => 'get',
         'inputs' => [
+            ['type' => 'select', 'name' => 'Folder', 'options' => $dengjiArr, 'frist_option' => '危险等级'],
             ['type' => 'text', 'name' => 'search', 'placeholder' => "搜索"],
         ],
         'btnArr' => [
@@ -41,8 +42,8 @@
                            class="btn btn-sm btn-outline-danger">批量删除</a>
                     </div>
                 </form>
-                <table class="table  table-hover table-sm">
-                    <thead>
+                <table class="table  table-hover table-sm table-borderless">
+                    <thead class="table-light">
                     <tr>
                         <th>
                             <label>
@@ -119,10 +120,12 @@
         {include file='public/fenye' /}
 
     </div>
-</div>
+</main>
 {include file='index/tools' /}
 {include file='index/add_modal' /}
 {include file='public/footer' /}
+
+
 <script>
     function quanxuan(obj) {
         var child = $('.table').find('input[type="checkbox"]');

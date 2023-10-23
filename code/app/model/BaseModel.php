@@ -72,7 +72,7 @@ class BaseModel
     public static function getAppStayScanList($filed, $num = 1)
     {
         $endTime = date('Y-m-d', time() - 86400 * 15);
-        $where[] = [$filed, '<=', $endTime];
+//        $where[] = [$filed, '<=', $endTime];
         $where[] = ['is_delete', '=', 0];
         $where[] = ['status', '=', 1];
         return Db::name('app')->where($where)->field('id,name,url,username,password,user_id,is_intranet')->limit($num)->orderRand()->select()->toArray();
@@ -83,8 +83,8 @@ class BaseModel
     {
         $where[] = ['is_delete', '=', 0];
         $where[] = ['status', '=', 1];
-        $endTime = date('Y-m-d H:i:s', time() - 86400 * 7);
-        return Db::name('code')->where($where)->whereTime($filed, '>=', $endTime)->limit($num)->orderRand()->select()->toArray();
+//        $endTime = date('Y-m-d H:i:s', time() - 86400 * 7);
+        return Db::name('code')->where($where)->limit($num)->orderRand()->select()->toArray();
     }
 
     // 检查工具权限

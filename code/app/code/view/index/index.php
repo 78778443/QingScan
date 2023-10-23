@@ -37,8 +37,8 @@
     </div>
     <div class="col-md-10 ">
         <div class=" row tuchu">
-            <table class="table  table-hover table-sm">
-                <thead>
+            <table class="table  table-hover table-sm table-borderless">
+                <thead class="table-light">
                 <tr>
                     <th>ID</th>
                     <th>项目ID</th>

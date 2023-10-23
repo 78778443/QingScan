@@ -22,8 +22,8 @@ $searchArr = [
 
             {include file='public/batch_del' /}
 
-            <table class="table  table-hover table-sm">
-                <thead>
+            <table class="table  table-hover table-sm table-borderless">
+                <thead class="table-light">
                 <tr>
                     <th width="80">
                         <label>

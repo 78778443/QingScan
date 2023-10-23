@@ -90,8 +90,8 @@ $show_level = [
             <a href="<?php echo url('fortify/index', ['code_id' => $info['id']]) ?>"
                class="btn btn-sm btn-outline-secondary" style="float: right">查看更多</a>
         </h4>
-        <table class="table  table-hover table-sm">
-            <thead>
+        <table class="table  table-hover table-sm table-borderless">
+            <thead class="table-light">
             <tr>
                 <th>ID</th>
                 <th>漏洞类型</th>
@@ -173,8 +173,8 @@ $show_level = [
             <a href="<?php echo url('kunlun/index', ['code_id' => $info['id']]) ?>"
                class="btn btn-sm btn-outline-secondary" style="float: right">查看更多</a>
         </h4>
-        <table class="table  table-hover table-sm">
-            <thead>
+        <table class="table  table-hover table-sm table-borderless">
+            <thead class="table-light">
             <tr>
                 <th>ID</th>
                 <th> CVI ID</th>
@@ -223,8 +223,8 @@ $show_level = [
             <a href="<?php echo url('semgrep/index', ['code_id' => $info['id']]) ?>"
                class="btn btn-sm btn-outline-secondary" style="float: right">查看更多</a>
         </h4>
-        <table class="table  table-hover table-sm">
-            <thead>
+        <table class="table  table-hover table-sm table-borderless">
+            <thead class="table-light">
             <tr>
                 <th>ID</th>
                 <th>漏洞类型</th>
@@ -287,8 +287,8 @@ $show_level = [
             <a href="<?php echo url('mobsfscan/index', ['code_id' => $info['id']]) ?>"
                class="btn btn-sm btn-outline-secondary" style="float: right">查看更多</a>
         </h4>
-        <table class="table  table-hover table-sm">
-            <thead>
+        <table class="table  table-hover table-sm table-borderless">
+            <thead class="table-light">
             <tr>
                 <th>ID</th>
                 <th>漏洞类型</th>
@@ -345,8 +345,8 @@ $show_level = [
             <a href="<?php echo url('murphysec/index', ['code_id' => $info['id']]) ?>"
                class="btn btn-sm btn-outline-secondary" style="float: right">查看更多</a>
         </h4>
-        <table class="table  table-hover table-sm">
-            <thead>
+        <table class="table  table-hover table-sm table-borderless">
+            <thead class="table-light">
             <tr>
                 <th>ID</th>
                 <th>缺陷组件</th>
@@ -388,8 +388,8 @@ $show_level = [
             <a href="<?php echo url('code_webshell/index', ['code_id' => $info['id']]) ?>"
                class="btn btn-sm btn-outline-secondary" style="float: right">查看更多</a>
         </h4>
-        <table class="table  table-hover table-sm">
-            <thead>
+        <table class="table  table-hover table-sm table-borderless">
+            <thead class="table-light">
             <tr>
                 <th>ID</th>
                 <th>类型</th>
@@ -433,8 +433,8 @@ $show_level = [
             <a href="<?php echo url('code_java/index', ['code_id' => $info['id']]) ?>"
                class="btn btn-sm btn-outline-secondary" style="float: right">查看更多</a>
         </h4>
-        <table class="table  table-hover table-sm">
-            <thead>
+        <table class="table  table-hover table-sm table-borderless">
+            <thead class="table-light">
             <tr>
                 <th>ID</th>
                 <th>项目名称</th>
@@ -474,8 +474,8 @@ $show_level = [
             <a href="<?php echo url('code_python/index', ['code_id' => $info['id']]) ?>"
                class="btn btn-sm btn-outline-secondary" style="float: right">查看更多</a>
         </h4>
-        <table class="table  table-hover table-sm">
-            <thead>
+        <table class="table  table-hover table-sm table-borderless">
+            <thead class="table-light">
             <tr>
                 <th>ID</th>
                 <th>项目名称</th>
@@ -508,8 +508,8 @@ $show_level = [
             <a href="<?php echo url('code_composer/index', ['code_id' => $info['id']]) ?>"
                class="btn btn-sm btn-outline-secondary" style="float: right">查看更多</a>
         </h4>
-        <table class="table  table-hover table-sm">
-            <thead>
+        <table class="table  table-hover table-sm table-borderless">
+            <thead class="table-light">
             <tr>
                 <th>ID</th>
                 <th>项目名称</th>

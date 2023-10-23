@@ -4,8 +4,8 @@
 <div class="row tuchu">
     <div class="col-md-12 ">
         <?php if (!empty($list)) { ?>
-            <table class="table  table-hover table-sm">
-                <thead>
+            <table class="table  table-hover table-sm table-borderless">
+                <thead class="table-light">
                 <tr>
                     <?php
                     $keys = array_keys($list[0]);

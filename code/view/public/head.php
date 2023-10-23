@@ -8,27 +8,33 @@
     <script src="/static/bootstrap-5.1.3/js/bootstrap.min.js"></script>
 </head>
 <body style="background-color: #eeeeee; ">
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary" style="padding: 0px;">
 
     <div class="container">
-            <img class="navbar-brand" style="height: 40px;width: 40px;" src="/static/images/logo.svg">
 
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample08"
-                aria-controls="navbarsExample08" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
         <div class="collapse navbar-collapse" id="navbarsExample08">
             <ul class="navbar-nav me-auto">
                 <li class="nav-item "><a class="nav-link" id="home" aria-current="page"
-                                         href="/index/index.html">主页</a></li>
-                <li class="nav-item"><a class="nav-link" id="webscan" href="/webscan/index.html" aria-expanded="false">网站扫描</a>
+                                         href="/index/index.html">
+                        <img src="/icon/home.svg" style="width:21px;">
+                        主页</a></li>
+                <li class="nav-item"><a class="nav-link" id="webscan" href="/webscan/index.html" aria-expanded="false">
+                        <img src="/icon/webscan.svg" style="width:21px;">
+                        网站扫描</a>
                 </li>
-                <li class="nav-item"><a class="nav-link" id="codeaudit" href="/code/index.html">代码审计 </a></li>
-                <li class="nav-item"><a class="nav-link" id="cveuse" href="/pocs_file/index.html">CVE验证 </a></li>
-                <li class="nav-item"><a class="nav-link" id="asm" href="/asm/domain/index.html">资产发现 </a></li>
+                <li class="nav-item"><a class="nav-link" id="codeaudit" href="/code/index.html">
+                        <img src="/icon/code.svg" style="width:21px;">代码审计 </a></li>
+                <li class="nav-item"><a class="nav-link" id="cveuse" href="/vulnerable/index.html">
+                        <img src="/icon/cve.svg" style="width:21px;">
+                        0Day </a></li>
+                <li class="nav-item"><a class="nav-link" id="asm" href="/asm/domain/index.html">
+                        <img src="/icon/asm.svg" style="width:21px;">
+                        资产发现 </a></li>
                 <li class="nav-item  dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="dropdown08" data-bs-toggle="dropdown"
-                       aria-expanded="false">系统管理</a>
+                       aria-expanded="false">
+                        <img src="/icon/setting.svg" style="width:21px;">
+                        系统管理</a>
                     <ul class="dropdown-menu" aria-labelledby="dropdown08" style="z-index: 999999;">
                         <li>
                             <a class="dropdown-item" href="/auth/user_list.html" style="">
@@ -59,9 +65,12 @@
             <div class="text-end">
                 <ul class="nav navbar-nav navbar-right hidden-sm">
                     <li class="nav-item dropdown ">
-                        <a href="#" class="nav-link dropdown-toggle" id="dropdown08" data-bs-toggle="dropdown"
-                           aria-expanded="false"><?php echo $userInfo['nickname'] ?>
-                            <span class="caret"></span></a>
+                        <a href="#" class="nav-link dropdown-toggle1" id="dropdown08" data-bs-toggle="dropdown"
+                           aria-expanded="false">
+                            <img class="navbar-brand"
+                                 style="height: 40px;width: 40px;margin: 0px;border: white solid 2px;border-radius: 40px;padding: 0px;"
+                                 src="/static/images/user-face.jpg">
+                        </a>
                         <ul class="dropdown-menu" aria-labelledby="dropdown08">
                             <li>
                                 <a class="dropdown-item" href="{:url('/auth/user_info')}">
@@ -85,5 +94,7 @@
         </div>
     </div>
 </nav>
+
 <div class="container-fluid">
-    <div class="row">
+    <div class="row" >
+

@@ -1,12 +1,6 @@
 </div>
 </div>
-<footer class="footer navbar-fixed-bottom">
-    <div class=" footer-bottom">
-        <ul class="list-inline text-center">
-            <li style="color:#ccc;">温馨提示: 请在获得授权下再进行扫描</li>
-        </ul>
-    </div>
-</footer>
+
 <script>
     function quanxuan(obj) {
         var child = $('.table').find('.ids');
@@ -31,20 +25,20 @@
 
     // Function to add 'active' class to A links containing the path
     function addActiveClassToLinks(path) {
-        $('#leftMenu a').each(function() {
+        $('#leftMenu a').each(function () {
             if ($(this).attr('href').indexOf(path) !== -1) {
                 $(this).addClass('active');
             }
         });
     }
 
-    $(document).ready(function() {
+    $(document).ready(function () {
         // 获取所有具有 auto-height-textarea 类的 textarea 元素
         var textareas = document.getElementsByClassName("auto-height-textarea");
 
         // 为每个 textarea 添加 input 事件监听器
-        Array.from(textareas).forEach(function(textarea) {
-            textarea.addEventListener("input", function() {
+        Array.from(textareas).forEach(function (textarea) {
+            textarea.addEventListener("input", function () {
                 // 自动调整高度
                 this.style.height = "auto";
                 this.style.height = this.scrollHeight + "px";

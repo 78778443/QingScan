@@ -65,8 +65,8 @@
         <h4 class="text-center">
             RAD(URL爬虫)
         </h4>
-        <table class="table  table-hover table-sm">
-            <thead>
+        <table class="table  table-hover table-sm table-borderless">
+            <thead class="table-light">
             <tr>
                 <th>ID</th>
                 <th>URL</th>
@@ -104,8 +104,8 @@
         <h4 class="text-center">
             crawlergo(URL爬虫扫描)
         </h4>
-        <table class="table  table-hover table-sm">
-            <thead>
+        <table class="table  table-hover table-sm table-borderless">
+            <thead class="table-light">
             <tr>
                 <th>ID</th>
                 <th>url</th>
@@ -131,8 +131,8 @@
         <h4 class="text-center">
             AWVS(综合扫描)
         </h4>
-        <table class="table  table-hover table-sm">
-            <thead>
+        <table class="table  table-hover table-sm table-borderless">
+            <thead class="table-light">
             <tr>
                 <th>ID</th>
                 <th>severity</th>
@@ -165,8 +165,8 @@
         <h4 class="text-center">
             nuclei(POC扫描)
         </h4>
-        <table class="table  table-hover table-sm">
-            <thead>
+        <table class="table  table-hover table-sm table-borderless">
+            <thead class="table-light">
             <tr>
                 <th>ID</th>
                 <th>name</th>
@@ -194,8 +194,8 @@
         <h4 class="text-center">
             XRAY(黑盒+POC)
         </h4>
-        <table class="table  table-hover table-sm">
-            <thead>
+        <table class="table  table-hover table-sm table-borderless">
+            <thead class="table-light">
             <tr>
                 <th>ID</th>
                 <th>漏洞类型</th>
@@ -222,8 +222,8 @@
         <h4 class="text-center">
             app信息
         </h4>
-        <table class="table  table-hover table-sm">
-            <thead>
+        <table class="table  table-hover table-sm table-borderless">
+            <thead class="table-light">
             <tr>
                 <th>app_id</th>
                 <th>cms</th>
@@ -263,8 +263,8 @@
 
     <div class="col-auto  tuchu_col">
         <h4 class="text-center"> whatweb（指纹识别）</h4>
-        <table class="table  table-hover table-sm">
-            <thead>
+        <table class="table  table-hover table-sm table-borderless">
+            <thead class="table-light">
             <tr>
                 <th>ID</th>
                 <th>target</th>
@@ -294,8 +294,8 @@
 
     <div class="col-auto  tuchu_col">
         <h4 class="text-center">sqlmap（SQL注入）</h4>
-        <table class="table  table-hover table-sm">
-            <thead>
+        <table class="table  table-hover table-sm table-borderless">
+            <thead class="table-light">
             <tr>
                 <th>ID</th>
                 <th>urls_id</th>
@@ -329,8 +329,8 @@
 
     <div class="col-auto  tuchu_col">
         <h4 class="text-center">oneforall（子域名）</h4>
-        <table class="table  table-hover table-sm">
-            <thead>
+        <table class="table  table-hover table-sm table-borderless">
+            <thead class="table-light">
             <tr>
                 <th>ID</th>
                 <th>域名</th>
@@ -358,8 +358,8 @@
 
     <div class="col-auto  tuchu_col">
         <h4 class="text-center">hydra（主机暴力破解）</h4>
-        <table class="table  table-hover table-sm">
-            <thead>
+        <table class="table  table-hover table-sm table-borderless">
+            <thead class="table-light">
             <tr>
                 <th>ID</th>
                 <th>host</th>
@@ -387,8 +387,8 @@
 
     <div class="col-auto  tuchu_col">
         <h4 class="text-center"> dirmap（扫后台）</h4>
-        <table class="table  table-hover table-sm">
-            <thead>
+        <table class="table  table-hover table-sm table-borderless">
+            <thead class="table-light">
             <tr>
                 <th>ID</th>
                 <th>code</th>
@@ -417,8 +417,8 @@
     </div>
     <div class="col-auto  tuchu_col">
         <h4 class="text-center">Nmap列表</h4>
-        <table class="table  table-hover table-sm">
-            <thead>
+        <table class="table  table-hover table-sm table-borderless">
+            <thead class="table-light">
             <tr>
                 <th>id</th>
                 <th>port</th>
@@ -462,8 +462,8 @@
 
     <div class="col-auto  tuchu_col">
         <h4 class="text-center">vulmap信息</h4>
-        <table class="table  table-hover table-sm">
-            <thead>
+        <table class="table  table-hover table-sm table-borderless">
+            <thead class="table-light">
             <tr>
                 <th>ID</th>
                 <th>app_id</th>
@@ -512,8 +512,8 @@
     </div>
     <div class="col-auto  tuchu_col">
         <h4 class="text-center">主机列表</h4>
-        <table class="table  table-hover table-sm">
-            <thead>
+        <table class="table  table-hover table-sm table-borderless">
+            <thead class="table-light">
             <tr>
                 <th>ID</th>
                 <th>app_id</th>
@@ -563,8 +563,8 @@
 
     <div class="col-auto  tuchu_col">
         <h4 class="text-center">DisMap（CMS指纹识别）</h4>
-        <table class="table  table-hover table-sm">
-            <thead>
+        <table class="table  table-hover table-sm table-borderless">
+            <thead class="table-light">
             <tr>
                 <th>ID</th>
                 <th>result</th>

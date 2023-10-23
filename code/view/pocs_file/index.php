@@ -31,8 +31,8 @@
             <!--            <div class="col-md-1"></div>-->
             <div class="col-md-12 ">
                 {include file='public/batch_del' /}
-                <table class="table  table-hover table-sm">
-                    <thead>
+                <table class="table  table-hover table-sm table-borderless">
+                    <thead class="table-light">
                     <tr>
                         <th width="100">
                             <label>

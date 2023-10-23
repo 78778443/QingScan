@@ -75,7 +75,7 @@ class Index extends Common
                 "name" => "网站扫描",
                 "value" => $appCount,
                 "subInfo" => [
-                    ["name" => "rad", "value" => $urlsCount, "href" => url('urls/index')],
+
                     ["name" => "xray", "value" => $xrayCount, "href" => url('xray/index')],
                     ["name" => "sqlmap", "value" => $sqlmapCount, "href" => url('sqlmap/index')],
                     ["name" => "awvs", "value" => $awvsCount, "href" => url('bug/awvs')],
@@ -83,13 +83,16 @@ class Index extends Common
                     ["name" => "nuclei", "value" => $nucleiCount, "href" => url('app_nuclei/index')],
                     ["name" => "dirmap", "value" => $dirmapCount, "href" => url('dirmap/index')],
                     ["name" => "whatweb", "value" => $whatwebCount, "href" => url('whatweb/index')],
-                    ["name" => "oneforall", "value" => $oneforallCount, "href" => url('one_for_all/index')],
+
                 ]
             ],
             [
                 "name" => "资产探测",
                 "value" => $hostCount,
                 "subInfo" => [
+                    ["name" => "主机", "value" => $hostCount, "href" => url('host_port/index')],
+                    ["name" => "子域名", "value" => $oneforallCount, "href" => url('one_for_all/index')],
+                    ["name" => "URL", "value" => $urlsCount, "href" => url('urls/index')],
                     ["name" => "port", "value" => $portCount, "href" => url('host_port/index')],
                     ["name" => "中间件", "value" => $serviceCount, "href" => url('host_port/index')],
                     ["name" => "未授权漏洞", "value" => $unauthorizedCount, "href" => url('unauthorized/index')],
@@ -102,11 +105,8 @@ class Index extends Common
                     ["name" => "fortify", "value" => $fortifyCount, "href" => url('code/bug_list')],
                     ["name" => "semgrep", "value" => $semgrepCount, "href" => url('code/semgrep_list')],
                     ["name" => "mobsfscan", "value" => $mobsfscanCount, "href" => url('mobsfscan/index')],
-                    ["name" => "murphysec", "value" => $murphysecCount, "href" => url('murphysec/index')],
+                    ["name" => "软件依赖", "value" => $murphysecCount, "href" => url('murphysec/index')],
                     ["name" => "webshell", "value" => $hemaCount, "href" => url('code_webshell/index')],
-                    ["name" => "php", "value" => $phpCount, "href" => url('code_composer/index')],
-                    ["name" => "python", "value" => $pythonCount, "href" => url('code_python/index')],
-                    ["name" => "java", "value" => $javaCount, "href" => url('code_java/index')],
                 ]
             ]
             , [
@@ -115,7 +115,7 @@ class Index extends Common
                 "subInfo" => [
                     ["name" => "漏洞情报", "value" => $vulnerableCount, "href" => url('vulnerable/index')],
                     ["name" => "Poc脚本", "value" => $pocsCount, "href" => url('pocs_file/index')],
-                    ["name" => "可疑目标", "value" => $targetCount, "href" => url('vul_target/index')],
+                    ["name" => "漏洞数量", "value" => $targetCount, "href" => url('vul_target/index')],
                 ]
             ]
         ];
