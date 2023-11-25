@@ -15,7 +15,7 @@ function getFileType(array $fileList)
     $typeList = [];
     foreach ($fileList as $val) {
         $fileInfo = pathinfo($val);
-        if(!isset($fileInfo['extension'])){
+        if (!isset($fileInfo['extension'])) {
             continue;
         }
         $typeList[$fileInfo['extension']] = $fileInfo['extension'];
@@ -628,7 +628,12 @@ function ucenter_md5($str, $key = 'lyj0p2wtexiax32ijn23pantnyzdayu32hui3dlayuan1
 function think_decrypt($data, $key = '')
 {
     $key = md5(empty($key) ? config('app.UC_AUTH_KEY') : $key);
-    $data = str_replace(array('-', '_'), array('+', '/'), $data);
+    if (is_string($data)) {
+        $data = str_replace(array('-', '_'), array('+', '/'), $data);
+    } else {
+        $data = '';
+    }
+
     $mod4 = strlen($data) % 4;
     if ($mod4) {
         $data .= substr('====', $mod4);

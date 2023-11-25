@@ -75,37 +75,6 @@ class Common extends BaseController
                 $this->menudata = Db::name('auth_rule')->where($map)->field('auth_rule_id,href,title,icon_url,pid,level')->order('sort asc')->select();
             }
             $menu_list = \Leftnav::menuList($this->menudata);
-            /*$map = "href = '{$href}' and menu_status = 1 and is_delete = 0";
-            $count = Db::name('auth_rule')->where($map)->count('auth_rule_id');
-            if ($count > 1) {
-                $map .= ' and level >= 1';
-            }
-            $str_auth_rule = Db::name('auth_rule')->where($map)->field('auth_rule_id,href,title,icon_url,pid,level')->find();
-            if ($str_auth_rule) {
-                if ($str_auth_rule['level'] == 3) {
-                    $auth_rule = Db::name('auth_rule')->where("auth_rule_id = {$str_auth_rule['pid']}")->field('href')->find();
-                    $href = strtolower($auth_rule['href']);
-                }
-            } else {
-                if (request()->isAjax()) {
-                    exit(json_encode(['code' => 1, 'msg' => '菜单不存在'],JSON_UNESCAPED_UNICODE));x
-                } else {
-                    $this->error('菜单不存在');
-                }
-            }
-            if ($str_auth_rule['level'] == 2 || $str_auth_rule['level'] == 3) {
-                if ($str_auth_rule['level'] == 2) {
-                    $map = "auth_rule_id = {$str_auth_rule['pid']} and is_delete = 0 and level = 1";
-                } else {
-                    $map = "auth_rule_id = {$str_auth_rule['pid']} and is_delete = 0 and level = 2";
-
-                    $auth_rule = Db::name('auth_rule')->where($map)->field('pid')->find();
-
-                    $map = "auth_rule_id = {$auth_rule['pid']} and is_delete = 0 and level = 1";
-                }
-                $auth_rule = Db::name('auth_rule')->where($map)->field('href')->find();
-                View::assign('parent_href',$auth_rule['href']);
-            }*/
             View::assign('menu_list',$menu_list);
         }
         View::assign('href',$href);
