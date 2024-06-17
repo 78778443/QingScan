@@ -27,8 +27,6 @@ function formatTimestampWithinRange($timestamp, $years = 3)
 }
 
 
-
-
 function formatJson($json)
 {
     if (is_json($json) === false) return $json;
@@ -293,8 +291,8 @@ function addlog($content, $out = false)
     $endTime = date('Y-m-d', time() - 86400 * 5);
     Db::table('log')->whereTime('create_time', '<=', $endTime)->delete();
 
-    if ($out or is_cli()) {
-//        echo var_export($content, true) . PHP_EOL;
+    if ($out) {
+        echo var_export($content, true) . PHP_EOL;
     }
 }
 
@@ -337,7 +335,7 @@ function downCode($codePath, $prName, $codeUrl, $is_private = 0, $username = '',
 {
     if (!file_exists($codePath)) mkdir($codePath, 0777, true);
     if (function_exists("addBasicAuthToURL")) {
-        $codeUrl = addBasicAuthToURL($codeUrl,env('gitlab.username'),env('gitlab.password'));
+        $codeUrl = addBasicAuthToURL($codeUrl, env('gitlab.username'), env('gitlab.password'));
     }
 
     if (!file_exists("{$codePath}/{$prName}")) {
@@ -379,7 +377,7 @@ function systemLog($shell, $showRet = true)
     addlog($remark);
     //记录日志
     exec($shell, $output);
-    addlog(["命令执行结果", $shell, $output]);
+    addlog(["命令执行结果:" . $shell => $output]);
     if ($output && $showRet) {
         echo implode("\n", $output) . PHP_EOL;
     }

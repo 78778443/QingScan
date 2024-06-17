@@ -10,8 +10,8 @@
 namespace app\model;
 
 
-use Requests;
 use think\facade\Db;
+use WpOrg\Requests\Requests;
 
 class CveModel extends BaseModel
 {
@@ -19,14 +19,14 @@ class CveModel extends BaseModel
 
     public static function cveScan()
     {
-            $endTime = date('Y-m-d', time() - 86400 * 15);
-            $where = ['is_poc' => 1];
-            $hostLit = Db::table('vulnerable')->where($where)->whereNotNull('fofa_con')->whereTime('scan_time', '<=', $endTime)->orderRand()->limit(5)->select()->toArray();
-            foreach ($hostLit as $val) {
-                self::cve($val);
-                Db::table('asm_host')->where(['id' => $val['id']])->save(['scan_time' => date('Y-m-d H:i:s')]);
-            }
-            print_r("本轮CVE扫描完成，休息10秒...");
+        $endTime = date('Y-m-d', time() - 86400 * 15);
+        $where = [];
+        $hostLit = Db::table('vulnerable')->where($where)->orderRand()->limit(5)->select()->toArray();
+        foreach ($hostLit as $val) {
+            self::cve($val);
+            Db::table('asm_host')->where(['id' => $val['id']])->save(['scan_time' => date('Y-m-d H:i:s')]);
+        }
+        print_r("本轮CVE扫描完成，休息10秒...");
 
     }
 
@@ -65,23 +65,27 @@ class CveModel extends BaseModel
             return false;
         }
 
-            $endTime = date('Y-m-d', time() - 86400 * 15);
-            $cveList = Db::table('vulnerable')->whereNotNull('fofa_con')->whereTime('scan_time', '<=', $endTime)->orderRand()->limit(2)->select()->toArray();
 
-            foreach ($cveList as $val) {
-                $keywords = $val['fofa_con'];
-                $str = urlencode(base64_encode($keywords));
-                $list = Requests::get("https://fofa.so/api/v1/search/all?email={$user}&key={$token}&qbase64=" . $str);
-                $list = json_decode($list->body, true)['results'] ?? [];
+        $where = ['tool' => 'asm_domain_fofa', 'status' => 0];
+        $list = Db::table('task_scan')->where($where)->limit(10)->select()->toArray();
+        foreach ($list as $task) {
+            Db::table('task_scan')->where(['id' => $task['id']])->update(['status' => 1]);
+            $val = json_decode($task['ext_info'], true);
 
-                foreach ($list as $temp) {
-                    $info = ['addr' => $temp[0], 'ip' => $temp[1], 'port' => $temp[2], 'query' => $keywords, 'vul_id' => $val['id'],'user_id'=>$val['user_id']];
-                    Db::table('vul_target')->extra("IGNORE")->insert($info);
-                }
-                Db::table('vulnerable')->where(['id' => $val['id']])->save(['target_scan_time' => date('Y-m-d H:i:s')]);
+            $keywords = "domain=\"{$val['domain']}\"";
+            $str = urlencode(base64_encode($keywords));
+            $url = "https://fofa.info/api/v1/search/all?email={$user}&key={$token}&qbase64=" . $str;
 
+            $list = Requests::get($url);
+            $list = json_decode($list->body, true)['results'] ?? [];
+
+            foreach ($list as $temp) {
+                $info = ['addr' => $temp[0], 'ip' => $temp[1], 'port' => $temp[2], 'query' => $keywords, 'vul_id' => $val['id']];
+                Db::table('vul_target')->extra("IGNORE")->insert($info);
             }
-            addlog("收集缺陷目标一轮，休息15秒...");
+            Db::table('vulnerable')->where(['id' => $val['id']])->save(['target_scan_time' => date('Y-m-d H:i:s')]);
+
+        }
 
 
     }

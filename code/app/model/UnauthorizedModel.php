@@ -25,7 +25,7 @@ class UnauthorizedModel extends BaseModel
                 }
 
                 PluginModel::addScanLog($v['id'], __METHOD__, 1);
-                self::scanTime('host',$v['id'],'unauthorize_scan_time');
+                
 
                 $cmd = "cd {$file_path}  && python3 ./Scanunauthorized_2.0.py";
                 systemLog($cmd);

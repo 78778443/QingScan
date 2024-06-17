@@ -17,7 +17,7 @@ class CodeWebshellModel extends BaseModel
                     continue;
                 }
 
-                self::scanTime('code',$v['id'],'webshell_scan_time');
+                
                 PluginModel::addScanLog($v['id'], __METHOD__, 2);
                 $codePath = "./data/codeCheck/";
                 $value = $v;

@@ -37,6 +37,9 @@
 </div>
 
 {include file='public/footer' /}
+<script type="text/javascript">
+    $("#home").addClass("nav-active");
+</script>
 <script>
     $.ajax({
         type: "get",

@@ -58,16 +58,7 @@ class CodeCheckModel extends BaseModel
     }
 
 
-    public static function getCrawlerInfo($crawlerId)
-    {
 
-        //查询具体数据,并刷新缓存
-        $result = self::getList(['id' => $crawlerId]);
-
-
-        return $result[0] ?? false;
-
-    }
 
     /**
      * 获取APP的URL地址
@@ -222,13 +213,16 @@ class CodeCheckModel extends BaseModel
         if (!file_exists($codePath)) mkdir($codePath, 0777, true);
         if (!file_exists($fortifyRetDir)) mkdir($fortifyRetDir, 0777, true);
 
-        $list = self::getCodeStayScanList('scan_time');
+        $where = ['tool' => 'code_fortify', 'status' => 0];
+        $list = Db::table('task_scan')->where($where)->limit(10)->select()->toArray();
+        foreach ($list as $task) {
+            Db::table('task_scan')->where(['id' => $task['id']])->update(['status' => 1]);
+            $value = json_decode($task['ext_info'], true);
 
-        foreach ($list as $value) {
             if (empty($value['ssh_url'])) continue;
             echo $value['ssh_url'] . PHP_EOL;
             PluginModel::addScanLog($value['id'], __METHOD__, 2, 0);
-            self::scanTime('code', $value['id'], 'scan_time');
+            
 
             $prName = cleanString($value['name']);
             $codeUrl = $value['ssh_url'];
@@ -256,7 +250,7 @@ class CodeCheckModel extends BaseModel
 
             //5. 更新
             if (file_exists("{$fortifyRetDir}/{$prName}.xml")) {
-                self::scanTime('code', $value['id'], 'scan_time');
+                
             }
             PluginModel::addScanLog($value['id'], __METHOD__, 2, 1);
         }
@@ -290,7 +284,7 @@ class CodeCheckModel extends BaseModel
                 //扫描代码
                 $result = KunlunModel::startScan($filepath);
                 if ($result) {
-                    self::scanTime('code', $value['id'], 'kunlun_scan_time');
+                    
                     $scan_project_id = Db::connect('kunlun')->table("index_project")->where('code_id', 0)->where(
                         'project_name', $prName
                     )->value('id');
@@ -319,8 +313,12 @@ class CodeCheckModel extends BaseModel
         $codePath = trim(`pwd`)."/data/codeCheck";
         $fortifyRetDir = trim(`pwd`)."/data/semgrep_result";
 
-        $list = self::getCodeStayScanList('semgrep_scan_time', [], 10);
-        foreach ($list as $value) {
+        $where = ['tool' => 'code_semgrep', 'status' => 0];
+        $list = Db::table('task_scan')->where($where)->limit(10)->select()->toArray();
+        foreach ($list as $task) {
+            Db::table('task_scan')->where(['id' => $task['id']])->update(['status' => 1]);
+            $value = json_decode($task['ext_info'], true);
+
             PluginModel::addScanLog($value['id'], __METHOD__, 2, 0);
             $prName = cleanString($value['name']);
             if(empty($prName)) continue;
@@ -340,7 +338,7 @@ class CodeCheckModel extends BaseModel
 
             //5. 更新
             if (file_exists($outJson)) {
-                self::scanTime('code', $value['id'], 'semgrep_scan_time');
+                
             }
             PluginModel::addScanLog($value['id'], __METHOD__, 2, 1);
         }

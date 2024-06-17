@@ -1,8 +1,8 @@
 {include file='public/head' /}
-<div class="col-md-1 " style="padding-right:0;">
+<div class="col-md-1 " style="padding-right: 0;" >
     {include file='public/blackLeftMenu' /}
 </div>
-<div class="col-md-11 " style="padding-left:0;">
+<div class="col-md-11 " style="padding:0;">
 <?php
 $dengjiArr = ['Low', 'Medium', 'High', 'Critical'];
 ?>

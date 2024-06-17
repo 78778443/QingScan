@@ -60,16 +60,7 @@ class ConfigModel extends BaseModel
     }
 
 
-    public static function getCrawlerInfo($crawlerId)
-    {
 
-        //查询具体数据,并刷新缓存
-        $result = self::getList(['id' => $crawlerId]);
-
-
-        return $result[0] ?? false;
-
-    }
 
     /**
      * @param  $where

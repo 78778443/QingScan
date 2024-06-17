@@ -1,8 +1,8 @@
 {include file='public/head' /}
-<div class="col-md-1 " style="padding-right:0;">
+<div class="col-md-1 " style="padding-right: 0;" >
     {include file='public/whiteLeftMenu' /}
 </div>
-<div class="col-md-11 " style="padding-left:0;">
+<div class="col-md-11 " style="padding:0;">
 <?php
 $searchArr = [
     'action' => $_SERVER['REQUEST_URI'],

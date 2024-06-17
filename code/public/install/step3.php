@@ -37,7 +37,7 @@ use think\facade\Db;
                         $sqlArr = getSQLArr();
                         //批量执行SQL语句
                         batchExecuteSql($sqlArr);
-                    }catch (Exception $e){
+                    } catch (Exception $e) {
                         echo $e->getMessage();
                         exit();
                     }
@@ -53,7 +53,8 @@ use think\facade\Db;
     </html>
 
 <?php
-function setPythonConfig(){
+function setPythonConfig()
+{
     $filename = '/data/tools/reptile/config.yaml';
     $arr = yaml_parse_file($filename);
     if ($arr) {
@@ -68,7 +69,8 @@ function setPythonConfig(){
 
 
 function batchExecuteSql($sqlArr)
-{;
+{
+    ;
     foreach ($sqlArr as $sql) {
         $result = Db::execute($sql);
         if ($result === 0) {
@@ -84,12 +86,13 @@ function batchExecuteSql($sqlArr)
 
 function addOldData()
 {
+    $userName = $_POST['username'];
     $str = $_POST['password'] . $_POST['username'];
-    $password = '' === $str ? '' : md5(md5(sha1($str) . 'xt1l3a21uo0tu2oxtds3wWte23dsxix2d3in7yuhui32yuapatmdsnnzdazh1612ongxxin2z') . '###xt');;
+    $password = ('' === $str) ? '' : md5(md5(sha1($str) . 'xt1l3a21uo0tu2oxtds3wWte23dsxix2d3in7yuhui32yuapatmdsnnzdazh1612ongxxin2z') . '###xt');;
 
     //导入最新的数据格式
-    $sql = "UPDATE user SET username=?,password=? where id = 1";
-    $result = Db::name('user')->where('id',1)->update(['username'=>$_POST['username'],'password'=>$password,'update_time'=>time()]);
+    $data = ['username' => $_POST['username'], 'password' => $password, 'update_time' => time(), 'id' => 1, 'status' => 1];
+    $result = Db::name('user')->insert($data);
     if ($result) {
         echo " <a class=\"btn btn-lg btn-outline-info\" href='/' >导入数据成功!,进入首页</a>";
         file_put_contents('install.lock', '');
@@ -101,12 +104,12 @@ function addOldData()
         unset($fileNameList[count($fileNameList) - 1]);
         if (!empty($fileNameList)) {
             $filepath = $fileNameList[0];
-            $filename = substr($filepath,strripos($filepath,'/')+1,strlen($filepath));
-            $newVersion = substr($filename,0,strripos($filename,'.'));
-            file_put_contents($sqlPath.'/update.lock',$newVersion);
+            $filename = substr($filepath, strripos($filepath, '/') + 1, strlen($filepath));
+            $newVersion = substr($filename, 0, strripos($filename, '.'));
+            file_put_contents($sqlPath . '/update.lock', $newVersion);
         }
     } else {
-        echo "<h2 style='color: red'> 数据导入失败:</h2><code>{$sql}</code><br>";
+        echo "<h2 style='color: red'> 添加新用户失败<br>";
     }
 }
 
@@ -125,7 +128,7 @@ function getSqlArr()
     //匹配添加字段语句
     $zhengze = "/ALTER TABLE.*;/Us";
     preg_match_all($zhengze, $str, $filed);
-    $arr = array_merge($shanbiao[0], $jianbiao[0], $charu[0],$filed[0]);
+    $arr = array_merge($shanbiao[0], $jianbiao[0], $charu[0], $filed[0]);
     array_unshift($arr, "SET FOREIGN_KEY_CHECKS = 0;");
     array_push($arr, "SET FOREIGN_KEY_CHECKS = 1;");
 
@@ -134,7 +137,7 @@ function getSqlArr()
 
 function writingConf()
 {
-    $link = mysqli_connect($_POST['DB_HOST'], $_POST['DB_USER'], $_POST['DB_PASS'],$_POST['DB_NAME'],$_POST['DB_PORT']);
+    $link = mysqli_connect($_POST['DB_HOST'], $_POST['DB_USER'], $_POST['DB_PASS'], $_POST['DB_NAME'], $_POST['DB_PORT']);
     if (!$link) {
         $error = mysqli_connect_errno();
         echo "<script>";

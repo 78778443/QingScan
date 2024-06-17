@@ -37,47 +37,7 @@ $typeArr = [
             </div>
         <?php } ?>
 
-        <div class="col-md-12" style="margin-bottom:10px;">
-            <span style="font-size:18px;color:#ccc;">扫描概述</span>
-        </div>
-        <div class="col-md-3">
-            <span style="float: right"><span style="color:#ccc">RAD:</span> <?php echo $info['crawler_time'] ?></span>
-        </div>
-        <div class="col-md-3">
-            <span style="float: right"><span style="color:#ccc">whatweb:</span> <?php echo $info['whatweb_scan_time'] ?></span>
-        </div>
-        <div class="col-md-3">
-            <span style="float: right"><span
-                        style="color:#ccc">oneforall:</span> <?php echo $info['subdomain_scan_time'] ?></span>
-        </div>
-        <div class="col-md-3">
-            <span style="float: right"><span style="color:#ccc">基本信息: </span><?php echo $info['screenshot_time'] ?></span>
-        </div>
-        <div class="col-md-3">
-            <span style="float: right"><span style="color:#ccc">xray：</span><?php echo $info['xray_scan_time'] ?></span>
-        </div>
-        <div class="col-md-3">
-            <span style="float: right"><span
-                        style="color:#ccc">dirmap:</span> <?php echo $info['dirmap_scan_time'] ?></span></div>
-        <div class="col-md-3">
-            <span style="float: right"><span
-                        style="color:#ccc">DisMap:</span> <?php echo $info['dismap_scan_time'] ?></span>
-        </div>
-        <div class="col-md-3">
-            <span style="float: right"><span
-                        style="color:#ccc">Crawlergo:</span> <?php echo $info['crawlergo_scan_time'] ?></span>
-        </div>
-        <div class="col-md-3">
-            <span style="float: right"><span
-                        style="color:#ccc">Vulmap:</span> <?php echo $info['vulmap_scan_time'] ?></span>
-        </div>
-        <div class="col-md-3">
-            <span style="float: right"><span
-                        style="color:#ccc">awvs:</span> <?php echo $info['awvs_scan_time'] ?></span></div>
-        <div class="col-md-3">
-            <span style="float: right"><span
-                        style="color:#ccc">子域名: </span><?php echo $info['subdomain_time'] ?></span></div>
-    </div>
+
 </div>
 
 

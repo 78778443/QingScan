@@ -1,6 +1,6 @@
 <html>
 <head>
-    <title>白盒项目扫描结果 QunarSec</title>
+    <title>白盒项目扫描结果 Sec</title>
     <link rel="shortcut icon" href="/static/favicon.svg" type="image/x-icon"/>
     <script src="/static/js/jquery.min.js"></script>
     <!--    <script src="/static/js/bootstrap.min.js"></script>-->

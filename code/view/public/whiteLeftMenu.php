@@ -2,17 +2,16 @@
     #leftMenu li {
         padding-right: 5px;
         margin-bottom: 5px;
-        text-align: left;
+        text-align: right;
     }
 </style>
 
 <!-- 左侧菜单栏内容 -->
-<div class="position-sticky" id="leftMenu">
-        <div style="height:32px;"></div>
-    <ul class="nav flex-column">
-        <li style="background-color: #f0ad4e;">
-            <a class="btn btn-sm btn-outline-secondary" href="/code/index.html">
-                项目管理 </a>
+<div class="tuchu" style="padding-right:0;padding-left:0;margin-left:0;">
+    <ul id="leftMenu" style="list-style: none;padding-left:0px;">
+        <li>
+            <a class="btn btn-sm btn-outline-secondary" style="" href="/code/index.html">
+                仓库管理 </a>
         </li>
         <li>
             <a class="btn btn-sm btn-outline-secondary" href="/code/fortify/index.html">

@@ -14,7 +14,6 @@ class Domain extends Common
 
     public function index(Request $request)
     {
-        if (function_exists('startGetDomain')) startGetDomain();
 
         $pageSize = 20;
         $where = [];
@@ -31,8 +30,6 @@ class Domain extends Common
     }
 
 
-
-
     public function _add(Request $request)
     {
         $lines = explode("\n", $request->param('url'));
@@ -40,6 +37,18 @@ class Domain extends Common
         DomainModel::insertTarget($lines);
 
         return redirect('/asm/domain/index');
+    }
+
+
+    public function _addTarget(Request $request)
+    {
+        $id = $request->param('id');
+        $info = Db::table('asm_domain')->find($id);
+
+        $data = ['url' => "http://{$info['domain']}", 'name' => $info['domain'], 'status' => 1];
+        Db::table('app')->insert($data);
+
+        return redirect($_SERVER['HTTP_REFERER']);
     }
 
 

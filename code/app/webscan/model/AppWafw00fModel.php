@@ -20,7 +20,7 @@ class AppWafw00fModel extends BaseModel
                 }
 
                 PluginModel::addScanLog($v['id'], __METHOD__, 0);
-                self::scanTime('app', $v['id'], 'wafw00f_scan_time');
+                
 
                 $cmd = "cd {$tools} && python3 main.py {$v['url']} -o result.json";
                 systemLog($cmd);

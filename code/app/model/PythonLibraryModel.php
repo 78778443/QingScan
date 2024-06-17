@@ -15,7 +15,7 @@ class PythonLibraryModel extends BaseModel
             $list = self::getCodeStayScanList('python_scan_time',$where);
             foreach ($list as $k => $v) {
                 PluginModel::addScanLog($v['id'], __METHOD__, 2);
-                self::scanTime('code', $v['id'], 'python_scan_time');
+                
 
                 $value = $v;
                 $prName = cleanString($value['name']);

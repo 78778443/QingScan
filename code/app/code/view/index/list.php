@@ -1,9 +1,9 @@
 {include file='public/head' /}
 
-<nav class="col-md-1 col-lg-1 d-md-block bg-light sidebar" style="background-color: #ffffff;padding:0px;">
+<div class="col-md-1 " style="padding-right: 0;" >
     {include file='public/whiteLeftMenu' /}
-</nav>
-<div class="col-md-11 " style="padding-left:0;">
+</div>
+<div class="col-md-11 " style="padding: 0" >
     <?php
     $dengjiArr = ['Low', 'Medium', 'High', 'Critical'];
     $searchArr = [
@@ -60,7 +60,7 @@
                         <th style="width: 200px">操作</th>
                     </tr>
                     </thead>
-                    <?php foreach ($list as $value) { ?>
+                    <?php foreach($list as $value) { ?>
                         <tr>
                             <td>
                                 <label>
@@ -120,7 +120,7 @@
         {include file='public/fenye' /}
 
     </div>
-</main>
+</div>
 {include file='index/tools' /}
 {include file='index/add_modal' /}
 {include file='public/footer' /}

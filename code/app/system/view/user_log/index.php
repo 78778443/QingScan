@@ -1,4 +1,8 @@
 {include file='public/head' /}
+<div class="col-md-1 " style="padding-right: 0;" >
+    {include file='public/systemLeftMenu' /}
+</div>
+<div class="col-md-11 " style="padding:0;">
 <?php
 $searchArr = [
     'action' => url('user_log/index'),
@@ -18,7 +22,7 @@ $searchArr = [
 {include file='public/search' /}
 <div class="row tuchu">
     <!--            <div class="col-md-1"></div>-->
-    <div class="col-md-12 ">
+
         <table class="table  table-hover table-sm table-borderless">
             <thead class="table-light">
             <tr>
@@ -41,7 +45,9 @@ $searchArr = [
                 </tr>
             <?php } ?>
         </table>
+    {include file='public/fenye' /}
     </div>
+
 </div>
-{include file='public/fenye' /}
+
 {include file='public/footer' /}

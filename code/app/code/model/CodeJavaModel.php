@@ -18,7 +18,7 @@ class CodeJavaModel extends BaseModel
 
             foreach ($list as $k => $v) {
                 PluginModel::addScanLog($v['id'], __METHOD__, 2);
-                self::scanTime('code', $v['id'], 'java_scan_time');
+                
 
                 $value = $v;
                 $prName = cleanString($value['name']);

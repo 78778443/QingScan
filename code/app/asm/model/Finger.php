@@ -15,15 +15,16 @@ class Finger extends Model
     // 设置当前模型对应的完整数据表名称
     protected $table = 'asm_finger';
 
-    public function start()
+    public static function start()
     {
-        //子域名
-        $urlList = Db::table('asm_urls')->orderRand()->limit(50)->select()->toArray();
+        $where = ['tool' => 'scan_app_finger', 'status' => 0];
+        $list = Db::table('task_scan')->where($where)->limit(10)->select()->toArray();
+        foreach ($list as $task) {
+            Db::table('task_scan')->where(['id' => $task['id']])->update(['status' => 1]);
+            $item = json_decode($task['ext_info'], true);
 
-        //转IP
-        foreach ($urlList as $item) {
             $url = $item['url'];
-            $data = $this->fingerScan($url);
+            $data = self::fingerScan($url);
             $data = array_change_key_case($data, CASE_LOWER);
             unset($data['id']);
             unset($data['url']);
@@ -35,7 +36,7 @@ class Finger extends Model
         }
     }
 
-    public function autoInstall($toolPath)
+    public static function autoInstall($toolPath)
     {
         // 判断工具是否安装
         if (!file_exists($toolPath)) {
@@ -50,10 +51,10 @@ class Finger extends Model
         }
     }
 
-    public function fingerScan($url)
+    public static function fingerScan($url)
     {
         $toolPath = app()->getRootPath() . "extend/tools/Finger";
-        $this->autoInstall($toolPath);
+        self::autoInstall($toolPath);
 
         $parsedUrl = parse_url($url);
         $baseUrl = $parsedUrl['scheme'] . '://' . $parsedUrl['host'];

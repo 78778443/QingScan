@@ -25,7 +25,7 @@
     "topthink/think-orm": "^2.0",
     "topthink/think-view": "^1.0",
     "xaboy/form-builder": "~2.0",
-    "rmccue/requests": "^1.8",
+    "rmccue/requests": "*",
     "jeremykendall/php-domain-parser": "^6.1",
     "wamkj/thinkphp6.0-databackup": "^1.0",
     "phpoffice/phpspreadsheet": "^1.20",

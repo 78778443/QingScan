@@ -1,3 +1,0 @@
-code/runtime/*
-code/.env
-code/data/

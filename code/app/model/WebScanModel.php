@@ -12,23 +12,17 @@ class WebScanModel extends BaseModel
     {
         $path = "cd " . trim(`pwd`) . "/extend/tools/rad/ && ";
         //判断rad运行环境是否安装
-        if (file_exists("/usr/bin/google-chrome") == false) {
-            echo "RAD 运行依赖环境不存在，请安装chrome环境~";
-            return false;
-        }
+        $radPath = trim(`pwd`) . '/extend/tools/rad/';
+        if (!file_exists($radPath)) die("工具RAD不存在：{$radPath}");
+        if (!file_exists("/usr/bin/google-chrome")) die("RAD 运行依赖环境不存在，请安装chrome环境~");
 
-        $endTime = date('Y-m-d', time() - 86400 * 15);
-        $where[] = ['is_delete', '=', 0];
-        $where[] = ['status', '=', 1];
-        $list = self::getAppStayScanList('crawler_time');
-        $count = count($list);
-        print("开始执行rad扫描任务,{$count} 个项目等待扫描..." . PHP_EOL);
-        foreach ($list as $value) {
+        $where = ['tool' => 'scan_app_rad', 'status' => 0];
+        $list = Db::table('task_scan')->where($where)->limit(10)->select()->toArray();
 
-
+        foreach ($list as $task) {
+            Db::table('task_scan')->where(['id' => $task['id']])->update(['status' => 1]);
+            $value = json_decode($task['ext_info'], true);
             PluginModel::addScanLog($value['id'], __METHOD__, 0);
-            self::scanTime('app', $value['id'], 'crawler_time');
-
             $url = $value['url'];
             $id = $value['id'];
             $user_id = $value['user_id'];
@@ -83,114 +77,82 @@ class WebScanModel extends BaseModel
 
     }
 
-    public static function editXrayYaml($filename)
-    {
-        $arr = @yaml_parse_file($filename);
-        if ($arr) {
-            $arr['http']['proxy_rule'][0]['match'] = '*';
-            $proxyArr = Db::name('proxy')->where('status', 1)->limit(3)->orderRand()->select()->toArray();
-            $proxy = [];
-            foreach ($proxyArr as $v) {
-                $result = testAgent($v['host'], $v['port']);
-                if ($result == 200) {
-                    $proxy[] = 'http://' . $v['host'] . ":{$v['port']}";
-                }
-            }
-            $arr['http']['proxy_rule'][0]['servers'] = [];
-            if ($proxy) {
-                $weight = random_split(10, count($proxy));
-                foreach ($proxy as $k => $v) {
-                    $arr['http']['proxy_rule'][0]['servers'][] = [
-                        'addr' => $v,
-                        'weight' => $weight[$k],
-                    ];
-                }
-            }
-            yaml_emit_file($filename, $arr);
-        }
-    }
 
     public static function xray()
     {
-        processSleep(1);
-        $endTime = date('Y-m-d', time() - 86400 * 15);
-        $where[] = ['is_delete', '=', 0];
-        $where[] = ['status', '=', 1];
-        $list = self::getAppStayScanList('xray_scan_time');
-        $count = Db::table('app')->whereTime('xray_scan_time', '<=', $endTime)->where($where)->count('id');
-        print("开始执行xray漏洞扫描任务,{$count} 个项目等待扫描..." . PHP_EOL);
-        foreach ($list as $val) {
-            if (!self::checkToolAuth(1, $val['id'], 'xray')) {
-                continue;
-            }
+        //检查工具是否存在
+
+        $xrayPath = trim(`pwd`) . '/extend/tools/xray/';
+        if (!file_exists($xrayPath)) die("工具XRAY不存在：{$xrayPath}");
+
+        $where = ['tool' => 'scan_app_xray', 'status' => 0];
+        $list = Db::table('task_scan')->where($where)->limit(10)->select()->toArray();
+        foreach ($list as $task) {
+            Db::table('task_scan')->where(['id' => $task['id']])->update(['status' => 1]);
+            $val = json_decode($task['ext_info'], true);
 
             PluginModel::addScanLog($val['id'], __METHOD__, 0);
-            self::scanTime('app', $val['id'], 'xray_scan_time');
 
-            $url = $val['url'];
-            $id = $val['id'];
-            $user_id = $val['user_id'];
             $path = "cd ./extend/tools/xray/ && ";
-            $pathArr = getSavePath($url, "xray", $id);
+            $pathArr = getSavePath($val['url'], "xray", $val['id']);
 
             //初始化清理目录
             if (file_exists($pathArr['tool_result'])) unlink($pathArr['tool_result']);
             if (file_exists($pathArr['cmd_result'])) unlink($pathArr['cmd_result']);
 
 
-            if (file_exists($pathArr['tool_result']) == false) {
-                // 设置代理
-                $filename = './extend/tools/xray/config.yaml';
-                if (!$val['is_intranet']) {  // 不是内网
-                    if (file_exists($filename)) self::editXrayYaml($filename);
-                } else {
-                    @unlink($filename);
-                }
-                $cmd = "{$path} ./xray_linux_amd64 webscan --url \"{$url}\"  --json-output  {$pathArr['tool_result']}";
+            if (file_exists($pathArr['tool_result'])) unlink($pathArr['tool_result']);
+            $cmd = "{$path} ./xray_linux_amd64 webscan --url \"{$val['url']}\"  --json-output  {$pathArr['tool_result']}";
 
-                $result = [];
-                execLog($cmd, $result);
-                $result = implode("\n", $result);
-                addlog(["xray漏洞扫描结束", $id, $url, $cmd, base64_encode($result)]);
-                $result = file_put_contents($pathArr['cmd_result'], $result);
-                if ($result == false) {
-                    addlog(["xray写入执行结果失败", base64_encode($pathArr['cmd_result'])]);
-                    PluginModel::addScanLog($val['id'], __METHOD__, 0, 2);
-                    continue;
-                }
-            } else {
-                addlog("xray文件已存在:{$pathArr['tool_result']}");
-            }
-            //如果结果文件不存在
-            if (file_exists($pathArr['tool_result']) == false) {
-                addlog("xray扫描结果文件不存在:{$pathArr['tool_result']},扫描URL失败: {$url}");
-                Db::table('app')->where(['id' => $id])->save(['xray_scan_time' => date('2048-m-d H:i:s')]);
+            $result = [];
+            execLog($cmd, $result);
+            $result = implode("\n", $result);
+            addlog(["xray漏洞扫描结束", $val['id'], $val['url'], $cmd, base64_encode($result)]);
+            $result = file_put_contents($pathArr['cmd_result'], $result);
+            if (!$result) {
+                addlog(["xray写入执行结果失败", base64_encode($pathArr['cmd_result'])]);
                 PluginModel::addScanLog($val['id'], __METHOD__, 0, 2);
                 continue;
             }
 
-            $data = json_decode(file_get_contents($pathArr['tool_result']), true);
-            $addr = [];
-            foreach ($data as $value) {
-                $newData = [
-                    'app_id' => $val['id'],
-                    'create_time' => substr($value['create_time'], 0, 10),
-                    'detail' => base64_encode($value['detail']),
-                    'plugin' => json_encode($value['plugin'], JSON_UNESCAPED_UNICODE),
-                    'target' => json_encode($value['target'], JSON_UNESCAPED_UNICODE),
-                    'url' => $value['detail']['addr'],
-                    'url_id' => $val['id'],
-                    'user_id' => $user_id,
-                    'poc' => $value['detail']['payload']
-                ];
-                $addr[] = $newData;
-                echo "xray添加漏洞结果:" . json_encode($newData, JSON_UNESCAPED_UNICODE) . PHP_EOL;
-                XrayModel::addXray($newData);
-            }
-            addlog(["xray扫描数据写入成功:" . json_encode($addr, JSON_UNESCAPED_UNICODE)]);
+            //获取文件内容
+            self::chuliXrayData($val);
             PluginModel::addScanLog($val['id'], __METHOD__, 0, 1);
         }
 
+    }
+
+    private static function chuliXrayData($val)
+    {
+        $pathArr = getSavePath($val['url'], "xray", $val['id']);
+        //如果结果文件不存在
+        if (!file_exists($pathArr['tool_result'])) {
+            addlog("xray扫描结果文件不存在:{$pathArr['tool_result']},扫描URL失败: {$val['url']}");
+            Db::table('app')->where(['id' => $val['id']])->save(['xray_scan_time' => date('2048-m-d H:i:s')]);
+            PluginModel::addScanLog($val['id'], __METHOD__, 0, 2);
+            return false;
+        }
+
+
+        $data = json_decode(file_get_contents($pathArr['tool_result']), true);
+        $addr = [];
+        foreach ($data as $value) {
+            $newData = [
+                'app_id' => $val['id'],
+                'create_time' => substr($value['create_time'], 0, 10),
+                'detail' => json_encode($value['detail'], 256),
+                'plugin' => json_encode($value['plugin'], 256),
+                'target' => json_encode($value['target'], 256),
+                'url' => $value['detail']['addr'],
+                'url_id' => $val['id'],
+                'user_id' => $val['user_id'],
+                'poc' => $value['detail']['payload']
+            ];
+            $addr[] = $newData;
+            echo "xray添加漏洞结果:" . json_encode($newData, 256) . PHP_EOL;
+            XrayModel::addXray($newData);
+        }
+        addlog(["xray扫描数据写入成功:" . json_encode($addr, 256)]);
     }
 
 
@@ -199,11 +161,14 @@ class WebScanModel extends BaseModel
         $agent = "./extend/tools/nuclei/";
         $filename = '/tmp/nuclei.json';
 
-        $list = self::getAppStayScanList('nuclei_scan_time');
+        $where = ['tool' => 'scan_app_nuclei', 'status' => 0];
+        $list = Db::table('task_scan')->where($where)->limit(10)->select()->toArray();
+        foreach ($list as $task) {
+            Db::table('task_scan')->where(['id' => $task['id']])->update(['status' => 1]);
+            $v = json_decode($task['ext_info'], true);
 
-        foreach ($list as $v) {
             PluginModel::addScanLog($v['id'], __METHOD__, 0);
-            self::scanTime('app', $v['id'], 'nuclei_scan_time');
+
 
             $cmd = "cd $agent && ./nuclei -u {$v['url']} -json -o {$filename}";
             systemLog($cmd);
@@ -275,14 +240,18 @@ class WebScanModel extends BaseModel
     {
         $agent = "./extend/tools/vulmap/";
 
-        $list = self::getAppStayScanList('vulmap_scan_time');
-        foreach ($list as $v) {
+        $where = ['tool' => 'scan_app_vulmap', 'status' => 0];
+        $list = Db::table('task_scan')->where($where)->limit(10)->select()->toArray();
+        foreach ($list as $task) {
+            Db::table('task_scan')->where(['id' => $task['id']])->update(['status' => 1]);
+            $v = json_decode($task['ext_info'], true);
+
             if (!self::checkToolAuth(1, $v['id'], 'vulmap')) {
                 continue;
             }
 
             PluginModel::addScanLog($v['id'], __METHOD__, 0);
-            self::scanTime('app', $v['id'], 'vulmap_scan_time');
+
 
             $filename = '/tmp/vulmap.json';
             @unlink($filename);
@@ -333,12 +302,10 @@ class WebScanModel extends BaseModel
         $tools = "./extend/tools/crawlergo/";
         $list = self::getAppStayScanList('crawlergo_scan_time');
         foreach ($list as $val) {
-            if (!self::checkToolAuth(1, $val['id'], 'crawlergo')) {
-                continue;
-            }
+
 
             PluginModel::addScanLog($val['id'], __METHOD__, 0);
-            self::scanTime('app', $val['id'], 'crawlergo_scan_time');
+
 
             $filename = $tools . 'crawlergo.json';
             @unlink($filename);
@@ -381,14 +348,17 @@ class WebScanModel extends BaseModel
         $tools = "./extend/tools/dismap/";
         $filename = $tools . 'dismap.txt';
 
-        $list = self::getAppStayScanList('dismap_scan_time');
-        foreach ($list as $v) {
+        $where = ['tool' => 'scan_app_dismap', 'status' => 0];
+        $list = Db::table('task_scan')->where($where)->limit(10)->select()->toArray();
+        foreach ($list as $task) {
+            Db::table('task_scan')->where(['id' => $task['id']])->update(['status' => 1]);
+            $v = json_decode($task['ext_info'], true);
             if (!self::checkToolAuth(1, $v['id'], 'dismap')) {
                 continue;
             }
 
             PluginModel::addScanLog($v['id'], __METHOD__, 0);
-            self::scanTime('app', $v['id'], 'dismap_scan_time');
+
 
             @unlink($filename);
             $cmd = "cd $tools && ./dismap -url {$v['url']} -output dismap.txt";

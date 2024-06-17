@@ -13,14 +13,14 @@ class IpModel extends BaseModel
 
     public static function ip_location()
     {
-        //子域名
-        $ipList = Db::table('asm_ip')
-            ->orderRand()
-            ->limit(1000)
-            ->column('ip');
-
         //转IP
-        foreach ($ipList as $ip) {
+        $where = ['tool' => 'asm_ip_info', 'status' => 0];
+        $list = Db::table('task_scan')->where($where)->limit(10)->select()->toArray();
+        foreach ($list as $task) {
+            Db::table('task_scan')->where(['id' => $task['id']])->update(['status' => 1]);
+            $val = json_decode($task['ext_info'], true);
+
+            $ip = $val['ip'];
             $data = [];
             if (!isIPv4($ip)) continue;
             $ip2region = new \Ip2Region();
@@ -38,8 +38,6 @@ class IpModel extends BaseModel
             }
 
             Db::table('asm_ip_port')->where(['ip' => $ip])->update($data);
-
-
         }
     }
 }

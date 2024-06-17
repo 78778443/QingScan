@@ -1,8 +1,8 @@
 {include file='public/head' /}
-<div class="col-md-1 " style="padding-right:0;">
+<div class="col-md-1 " style="padding-right: 0;" >
     {include file='public/blackLeftMenu' /}
 </div>
-<div class="col-md-11 " style="padding-left:0;">
+<div class="col-md-11 " style="padding:0;">
     <?php
     $searchArr = [
         'action' => url('index/index'),
@@ -47,7 +47,7 @@
                         <label>
                             <input type="checkbox" value="-1" onclick="quanxuan(this)">
                             ID</label>
-                     </th>
+                    </th>
                     <th>名称</th>
                     <th>漏洞</th>
                     <th>资产</th>
@@ -62,9 +62,10 @@
                             <label>
                                 <input type="checkbox" class="ids" name="ids[]" value="<?php echo $value['id'] ?>">
                                 <?php echo $value['id'] ?></label>
-                         </td>
+                        </td>
                         <td class="ellipsis-type">
-                            <a href="<?=$value['url']??''?>" title="<?=$value['url']??''?>" target="_blank"><?=$value['name']??''?> </a>
+                            <a href="<?= $value['url'] ?? '' ?>" title="<?= $value['url'] ?? '' ?>"
+                               target="_blank"><?= $value['name'] ?? '' ?> </a>
                         </td>
                         <td>
                             <?php echo $value['awvs_num'] + $value['xray_num'] + $value['sqlmap_num'] + $value['vulmap_num'] ?>
@@ -93,23 +94,6 @@
     {include file='index/set_modal' /}
 
     <script>
-        function start_agent(id) {
-            $.ajax({
-                type: "post",
-                url: "<?php echo url('start_agent')?>",
-                data: {id: id},
-                dataType: "json",
-                success: function (data) {
-                    alert(data.msg)
-                    if (data.code) {
-                        window.setTimeout(function () {
-                            location.reload();
-                        }, 1000);
-                    }
-                }
-            });
-        }
-
         function suspend_scan(status) {
             var child = $('.table').find('input[type="checkbox"]');
             var ids = ''
@@ -159,7 +143,9 @@
                 dataType: "json",
                 success: function (data) {
                     alert(data.msg)
-                    window.setTimeout(function () {location.reload();}, 1000)
+                    window.setTimeout(function () {
+                        location.reload();
+                    }, 1000)
                 }
             });
         }

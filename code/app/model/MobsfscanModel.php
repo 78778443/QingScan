@@ -22,7 +22,7 @@ class MobsfscanModel extends BaseModel
             foreach ($list as $k=>$v) {
                 $v['name'] = cleanString($v['name']);
                 PluginModel::addScanLog($v['id'], __METHOD__, 2);
-                self::scanTime('code', $v['id'], 'mobsfscan_scan_time');
+                
 
                 $filename .= $v['name'].'.json';
 

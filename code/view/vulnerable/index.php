@@ -1,9 +1,9 @@
 {include file='public/head' /}
 
-<div class="col-md-1 " style="padding-right:0;">
+<div class="col-md-1 " style="padding-right: 0;">
     {include file='public/vulLeftMenu' /}
 </div>
-<div class="col-md-11 " style="padding-left:0;">
+<div class="col-md-11 " style="padding:0;">
     <?php
     $dengjiArr = ['Low', 'Medium', 'High', 'Critical'];
     $searchArr = [
@@ -13,10 +13,7 @@
             ['type' => 'text', 'name' => 'search', 'placeholder' => "搜索的内容"],
         ],
         'btnArr' => [
-            ['text' => '添加', 'ext' => [
-                "href" => url('vulnerable/add'),
-                "class" => "btn btn-sm btn-outline-secondary"
-            ]]
+
         ]]; ?>
     {include file='public/search' /}
 

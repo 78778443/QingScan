@@ -1,8 +1,8 @@
 {include file='public/head' /}
-<div class="col-md-1 " style="padding-right:0;">
+<div class="col-md-1 " style="padding-right: 0;" >
     {include file='public/asmLeftMenu' /}
 </div>
-<div class="col-md-11 " style="padding-left:0;">
+<div class="col-md-11 " style="padding:0;">
     <?php
     $searchArr = [
         'action' => $_SERVER['REQUEST_URI'],
@@ -27,19 +27,23 @@
                 <thead class="table-light">
                 <tr>
                     <th>ID</th>
+                    <th>主机</th>
                     <th>域名</th>
-                    <!--<th>Nmap扫描时间</th>-->
+                    <th>主体信息</th>
                     <th>创建时间</th>
-                    <!--                    <td style="width: 70px">状态</td>-->
                     <th style="width: 200px">操作</th>
                 </tr>
                 </thead>
                 <?php foreach ($list as $value) { ?>
                     <tr>
                         <td><?php echo $value['id'] ?></td>
+                        <td><?php echo $value['host'] ?></td>
                         <td><?php echo $value['domain'] ?></td>
+                        <td><?php echo '-' ?></td>
                         <td><?php echo $value['create_time'] ?></td>
                         <td>
+                            <a href="{:URL('_addTarget',['id'=>$value['id']])}"
+                               class="btn btn-sm btn-outline-warning">添加扫描</a>
                             <a href="#" class="btn btn-sm btn-outline-danger">删除</a>
                         </td>
                     </tr>

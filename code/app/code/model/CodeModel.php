@@ -100,16 +100,7 @@ class CodeModel extends BaseModel
     }
 
 
-    public static function getCrawlerInfo($crawlerId)
-    {
 
-        //查询具体数据,并刷新缓存
-        $result = self::getList(['id' => $crawlerId]);
-
-
-        return $result[0] ?? false;
-
-    }
 
     /**
      * 获取APP的URL地址
@@ -349,7 +340,7 @@ class CodeModel extends BaseModel
             $list = self::getCodeStayScanList('composer_scan_time',$where);
             foreach ($list as $k => $v) {
                 PluginModel::addScanLog($v['id'], __METHOD__, 2);
-                self::scanTime('code', $v['id'], 'composer_scan_time');
+                
 
                 $value = $v;
                 $prName = cleanString($value['name']);

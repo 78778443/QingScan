@@ -1,7 +1,8 @@
 <?php
 
-namespace app\controller;
+namespace app\system\controller;
 
+use app\controller\Common;
 use think\facade\Db;
 use think\facade\View;
 use think\Request;
