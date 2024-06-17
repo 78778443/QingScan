@@ -821,16 +821,16 @@
         },
         {
             "name": "mpdf/mpdf",
-            "version": "v8.2.2",
+            "version": "v8.2.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mpdf/mpdf.git",
-                "reference": "596a87b876d7793be7be060a8ac13424de120dd5"
+                "reference": "9e3ff91606fed11cd58a130eabaaf60e56fdda88"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://mirrors.huaweicloud.com/repository/php/mpdf/mpdf/v8.2.2/mpdf-mpdf-v8.2.2.zip",
-                "reference": "596a87b876d7793be7be060a8ac13424de120dd5",
+                "url": "https://mirrors.huaweicloud.com/repository/php/mpdf/mpdf/v8.2.4/mpdf-mpdf-v8.2.4.zip",
+                "reference": "9e3ff91606fed11cd58a130eabaaf60e56fdda88",
                 "shasum": ""
             },
             "require": {
@@ -892,7 +892,7 @@
                     "type": "custom"
                 }
             ],
-            "time": "2023-11-07T13:52:14+00:00"
+            "time": "2024-06-14T16:06:41+00:00"
         },
         {
             "name": "mpdf/psr-http-message-shim",
@@ -978,16 +978,16 @@
         },
         {
             "name": "myclabs/deep-copy",
-            "version": "1.11.1",
+            "version": "1.12.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/myclabs/DeepCopy.git",
-                "reference": "7284c22080590fb39f2ffa3e9057f10a4ddd0e0c"
+                "reference": "3a6b9a42cd8f8771bd4295d13e1423fa7f3d942c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://mirrors.huaweicloud.com/repository/php/myclabs/deep-copy/1.11.1/myclabs-deep-copy-1.11.1.zip",
-                "reference": "7284c22080590fb39f2ffa3e9057f10a4ddd0e0c",
+                "url": "https://mirrors.huaweicloud.com/repository/php/myclabs/deep-copy/1.12.0/myclabs-deep-copy-1.12.0.zip",
+                "reference": "3a6b9a42cd8f8771bd4295d13e1423fa7f3d942c",
                 "shasum": ""
             },
             "require": {
@@ -995,11 +995,12 @@
             },
             "conflict": {
                 "doctrine/collections": "<1.6.8",
-                "doctrine/common": "<2.13.3 || >=3,<3.2.2"
+                "doctrine/common": "<2.13.3 || >=3 <3.2.2"
             },
             "require-dev": {
                 "doctrine/collections": "^1.6.8",
                 "doctrine/common": "^2.13.3 || ^3.2.2",
+                "phpspec/prophecy": "^1.10",
                 "phpunit/phpunit": "^7.5.20 || ^8.5.23 || ^9.5.13"
             },
             "type": "library",
@@ -1028,7 +1029,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-03-08T13:26:56+00:00"
+            "time": "2024-06-12T14:39:25+00:00"
         },
         {
             "name": "nyholm/psr7",
@@ -1166,16 +1167,16 @@
         },
         {
             "name": "overtrue/socialite",
-            "version": "4.10.0",
+            "version": "4.11.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/overtrue/socialite.git",
-                "reference": "5afc6f823a2bb6ce8cf0db20fd39a7f3e762152c"
+                "reference": "4929bbb9241818783c5954151ebbbef36d4953f4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://mirrors.huaweicloud.com/repository/php/overtrue/socialite/4.10.0/overtrue-socialite-4.10.0.zip",
-                "reference": "5afc6f823a2bb6ce8cf0db20fd39a7f3e762152c",
+                "url": "https://mirrors.huaweicloud.com/repository/php/overtrue/socialite/4.11.0/overtrue-socialite-4.11.0.zip",
+                "reference": "4929bbb9241818783c5954151ebbbef36d4953f4",
                 "shasum": ""
             },
             "require": {
@@ -1183,7 +1184,6 @@
                 "ext-openssl": "*",
                 "guzzlehttp/guzzle": "^7.0",
                 "php": ">=8.0.2",
-                "symfony/http-foundation": "^6.0",
                 "symfony/psr-http-message-bridge": "^2.1|^6.0"
             },
             "require-dev": {
@@ -1230,7 +1230,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-01-12T09:40:43+00:00"
+            "time": "2024-06-07T06:46:20+00:00"
         },
         {
             "name": "paragonie/random_compat",
@@ -1514,20 +1514,20 @@
         },
         {
             "name": "psr/http-factory",
-            "version": "1.0.2",
+            "version": "1.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-fig/http-factory.git",
-                "reference": "e616d01114759c4c489f93b099585439f795fe35"
+                "reference": "2b4765fddfe3b508ac62f829e852b1501d3f6e8a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://mirrors.huaweicloud.com/repository/php/psr/http-factory/1.0.2/psr-http-factory-1.0.2.zip",
-                "reference": "e616d01114759c4c489f93b099585439f795fe35",
+                "url": "https://mirrors.huaweicloud.com/repository/php/psr/http-factory/1.1.0/psr-http-factory-1.1.0.zip",
+                "reference": "2b4765fddfe3b508ac62f829e852b1501d3f6e8a",
                 "shasum": ""
             },
             "require": {
-                "php": ">=7.0.0",
+                "php": ">=7.1",
                 "psr/http-message": "^1.0 || ^2.0"
             },
             "type": "library",
@@ -1550,7 +1550,7 @@
                     "homepage": "https://www.php-fig.org/"
                 }
             ],
-            "description": "Common interfaces for PSR-7 HTTP message factories",
+            "description": "PSR-17: Common interfaces for PSR-7 HTTP message factories",
             "keywords": [
                 "factory",
                 "http",
@@ -1561,7 +1561,7 @@
                 "request",
                 "response"
             ],
-            "time": "2023-04-10T20:10:41+00:00"
+            "time": "2024-04-15T12:06:14+00:00"
         },
         {
             "name": "psr/http-message",
@@ -1746,16 +1746,16 @@
         },
         {
             "name": "rmccue/requests",
-            "version": "v2.0.10",
+            "version": "v2.0.11",
             "source": {
                 "type": "git",
                 "url": "https://github.com/WordPress/Requests.git",
-                "reference": "bcf1ac7fe8c0b2b18c1df6d24694cfc96b44b391"
+                "reference": "31435a468e2357e68df743f2527bda32556a0818"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://mirrors.huaweicloud.com/repository/php/rmccue/requests/v2.0.10/rmccue-requests-v2.0.10.zip",
-                "reference": "bcf1ac7fe8c0b2b18c1df6d24694cfc96b44b391",
+                "url": "https://mirrors.huaweicloud.com/repository/php/rmccue/requests/v2.0.11/rmccue-requests-v2.0.11.zip",
+                "reference": "31435a468e2357e68df743f2527bda32556a0818",
                 "shasum": ""
             },
             "require": {
@@ -1823,7 +1823,7 @@
                 "iri",
                 "sockets"
             ],
-            "time": "2024-01-08T11:14:32+00:00"
+            "time": "2024-03-25T10:48:46+00:00"
         },
         {
             "name": "setasign/fpdi",
@@ -1894,16 +1894,16 @@
         },
         {
             "name": "symfony/cache",
-            "version": "v5.4.36",
+            "version": "v5.4.40",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/cache.git",
-                "reference": "a30f316214d908cf5874f700f3f3fb29ceee91ba"
+                "reference": "89005bc368ca02ed0433c592e4d27670d0844a66"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://mirrors.huaweicloud.com/repository/php/symfony/cache/v5.4.36/symfony-cache-v5.4.36.zip",
-                "reference": "a30f316214d908cf5874f700f3f3fb29ceee91ba",
+                "url": "https://mirrors.huaweicloud.com/repository/php/symfony/cache/v5.4.40/symfony-cache-v5.4.40.zip",
+                "reference": "89005bc368ca02ed0433c592e4d27670d0844a66",
                 "shasum": ""
             },
             "require": {
@@ -1932,7 +1932,7 @@
                 "cache/integration-tests": "dev-master",
                 "doctrine/cache": "^1.6|^2.0",
                 "doctrine/dbal": "^2.13.1|^3|^4",
-                "predis/predis": "^1.1",
+                "predis/predis": "^1.1|^2.0",
                 "psr/simple-cache": "^1.0|^2.0",
                 "symfony/config": "^4.4|^5.0|^6.0",
                 "symfony/dependency-injection": "^4.4|^5.0|^6.0",
@@ -1983,20 +1983,20 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-02-19T13:08:14+00:00"
+            "time": "2024-05-31T14:33:22+00:00"
         },
         {
             "name": "symfony/cache-contracts",
-            "version": "v2.5.2",
+            "version": "v2.5.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/cache-contracts.git",
-                "reference": "64be4a7acb83b6f2bf6de9a02cee6dad41277ebc"
+                "reference": "fee6db04d913094e2fb55ff8e7db5685a8134463"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://mirrors.huaweicloud.com/repository/php/symfony/cache-contracts/v2.5.2/symfony-cache-contracts-v2.5.2.zip",
-                "reference": "64be4a7acb83b6f2bf6de9a02cee6dad41277ebc",
+                "url": "https://mirrors.huaweicloud.com/repository/php/symfony/cache-contracts/v2.5.3/symfony-cache-contracts-v2.5.3.zip",
+                "reference": "fee6db04d913094e2fb55ff8e7db5685a8134463",
                 "shasum": ""
             },
             "require": {
@@ -2058,20 +2058,20 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-01-02T09:53:40+00:00"
+            "time": "2024-01-23T13:51:25+00:00"
         },
         {
             "name": "symfony/deprecation-contracts",
-            "version": "v3.4.0",
+            "version": "v3.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/deprecation-contracts.git",
-                "reference": "7c3aff79d10325257a001fcf92d991f24fc967cf"
+                "reference": "0e0d29ce1f20deffb4ab1b016a7257c4f1e789a1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://mirrors.huaweicloud.com/repository/php/symfony/deprecation-contracts/v3.4.0/symfony-deprecation-contracts-v3.4.0.zip",
-                "reference": "7c3aff79d10325257a001fcf92d991f24fc967cf",
+                "url": "https://mirrors.huaweicloud.com/repository/php/symfony/deprecation-contracts/v3.5.0/symfony-deprecation-contracts-v3.5.0.zip",
+                "reference": "0e0d29ce1f20deffb4ab1b016a7257c4f1e789a1",
                 "shasum": ""
             },
             "require": {
@@ -2080,7 +2080,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-main": "3.4-dev"
+                    "dev-main": "3.5-dev"
                 },
                 "thanks": {
                     "name": "symfony/contracts",
@@ -2121,7 +2121,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-05-23T14:45:45+00:00"
+            "time": "2024-04-18T09:32:20+00:00"
         },
         {
             "name": "symfony/http-client",
@@ -2210,16 +2210,16 @@
         },
         {
             "name": "symfony/http-client-contracts",
-            "version": "v3.4.0",
+            "version": "v3.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/http-client-contracts.git",
-                "reference": "1ee70e699b41909c209a0c930f11034b93578654"
+                "reference": "20414d96f391677bf80078aa55baece78b82647d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://mirrors.huaweicloud.com/repository/php/symfony/http-client-contracts/v3.4.0/symfony-http-client-contracts-v3.4.0.zip",
-                "reference": "1ee70e699b41909c209a0c930f11034b93578654",
+                "url": "https://mirrors.huaweicloud.com/repository/php/symfony/http-client-contracts/v3.5.0/symfony-http-client-contracts-v3.5.0.zip",
+                "reference": "20414d96f391677bf80078aa55baece78b82647d",
                 "shasum": ""
             },
             "require": {
@@ -2228,7 +2228,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-main": "3.4-dev"
+                    "dev-main": "3.5-dev"
                 },
                 "thanks": {
                     "name": "symfony/contracts",
@@ -2280,7 +2280,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-07-30T20:28:31+00:00"
+            "time": "2024-04-18T09:32:20+00:00"
         },
         {
             "name": "symfony/http-foundation",
@@ -2355,16 +2355,16 @@
         },
         {
             "name": "symfony/mime",
-            "version": "v6.4.3",
+            "version": "v6.4.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/mime.git",
-                "reference": "5017e0a9398c77090b7694be46f20eb796262a34"
+                "reference": "618597ab8b78ac86d1c75a9d0b35540cda074f33"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://mirrors.huaweicloud.com/repository/php/symfony/mime/v6.4.3/symfony-mime-v6.4.3.zip",
-                "reference": "5017e0a9398c77090b7694be46f20eb796262a34",
+                "url": "https://mirrors.huaweicloud.com/repository/php/symfony/mime/v6.4.8/symfony-mime-v6.4.8.zip",
+                "reference": "618597ab8b78ac86d1c75a9d0b35540cda074f33",
                 "shasum": ""
             },
             "require": {
@@ -2385,6 +2385,7 @@
                 "league/html-to-markdown": "^5.0",
                 "phpdocumentor/reflection-docblock": "^3.0|^4.0|^5.0",
                 "symfony/dependency-injection": "^5.4|^6.0|^7.0",
+                "symfony/process": "^5.4|^6.4|^7.0",
                 "symfony/property-access": "^5.4|^6.0|^7.0",
                 "symfony/property-info": "^5.4|^6.0|^7.0",
                 "symfony/serializer": "^6.3.2|^7.0"
@@ -2431,7 +2432,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-01-30T08:32:12+00:00"
+            "time": "2024-06-01T07:50:16+00:00"
         },
         {
             "name": "symfony/polyfill-ctype",
@@ -3032,16 +3033,16 @@
         },
         {
             "name": "symfony/psr-http-message-bridge",
-            "version": "v6.4.3",
+            "version": "v6.4.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/psr-http-message-bridge.git",
-                "reference": "49cfb0223ec64379f7154214dcc1f7c46f3c7a47"
+                "reference": "23a162bd446b93948a2c2f6909d80ad06195be10"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://mirrors.huaweicloud.com/repository/php/symfony/psr-http-message-bridge/v6.4.3/symfony-psr-http-message-bridge-v6.4.3.zip",
-                "reference": "49cfb0223ec64379f7154214dcc1f7c46f3c7a47",
+                "url": "https://mirrors.huaweicloud.com/repository/php/symfony/psr-http-message-bridge/v6.4.8/symfony-psr-http-message-bridge-v6.4.8.zip",
+                "reference": "23a162bd446b93948a2c2f6909d80ad06195be10",
                 "shasum": ""
             },
             "require": {
@@ -3107,25 +3108,26 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-01-23T14:51:35+00:00"
+            "time": "2024-05-31T14:51:39+00:00"
         },
         {
             "name": "symfony/service-contracts",
-            "version": "v3.4.1",
+            "version": "v3.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/service-contracts.git",
-                "reference": "fe07cbc8d837f60caf7018068e350cc5163681a0"
+                "reference": "bd1d9e59a81d8fa4acdcea3f617c581f7475a80f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://mirrors.huaweicloud.com/repository/php/symfony/service-contracts/v3.4.1/symfony-service-contracts-v3.4.1.zip",
-                "reference": "fe07cbc8d837f60caf7018068e350cc5163681a0",
+                "url": "https://mirrors.huaweicloud.com/repository/php/symfony/service-contracts/v3.5.0/symfony-service-contracts-v3.5.0.zip",
+                "reference": "bd1d9e59a81d8fa4acdcea3f617c581f7475a80f",
                 "shasum": ""
             },
             "require": {
                 "php": ">=8.1",
-                "psr/container": "^1.1|^2.0"
+                "psr/container": "^1.1|^2.0",
+                "symfony/deprecation-contracts": "^2.5|^3"
             },
             "conflict": {
                 "ext-psr": "<1.1|>=2"
@@ -3133,7 +3135,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-main": "3.4-dev"
+                    "dev-main": "3.5-dev"
                 },
                 "thanks": {
                     "name": "symfony/contracts",
@@ -3185,20 +3187,20 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-12-26T14:02:43+00:00"
+            "time": "2024-04-18T09:32:20+00:00"
         },
         {
             "name": "symfony/var-exporter",
-            "version": "v6.4.4",
+            "version": "v6.4.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/var-exporter.git",
-                "reference": "0bd342e24aef49fc82a21bd4eedd3e665d177e5b"
+                "reference": "792ca836f99b340f2e9ca9497c7953948c49a504"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://mirrors.huaweicloud.com/repository/php/symfony/var-exporter/v6.4.4/symfony-var-exporter-v6.4.4.zip",
-                "reference": "0bd342e24aef49fc82a21bd4eedd3e665d177e5b",
+                "url": "https://mirrors.huaweicloud.com/repository/php/symfony/var-exporter/v6.4.8/symfony-var-exporter-v6.4.8.zip",
+                "reference": "792ca836f99b340f2e9ca9497c7953948c49a504",
                 "shasum": ""
             },
             "require": {
@@ -3206,6 +3208,8 @@
                 "symfony/deprecation-contracts": "^2.5|^3"
             },
             "require-dev": {
+                "symfony/property-access": "^6.4|^7.0",
+                "symfony/serializer": "^6.4|^7.0",
                 "symfony/var-dumper": "^5.4|^6.0|^7.0"
             },
             "type": "library",
@@ -3256,20 +3260,20 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-02-26T08:37:45+00:00"
+            "time": "2024-05-31T14:49:08+00:00"
         },
         {
             "name": "symfony/yaml",
-            "version": "v6.4.3",
+            "version": "v6.4.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/yaml.git",
-                "reference": "d75715985f0f94f978e3a8fa42533e10db921b90"
+                "reference": "52903de178d542850f6f341ba92995d3d63e60c9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://mirrors.huaweicloud.com/repository/php/symfony/yaml/v6.4.3/symfony-yaml-v6.4.3.zip",
-                "reference": "d75715985f0f94f978e3a8fa42533e10db921b90",
+                "url": "https://mirrors.huaweicloud.com/repository/php/symfony/yaml/v6.4.8/symfony-yaml-v6.4.8.zip",
+                "reference": "52903de178d542850f6f341ba92995d3d63e60c9",
                 "shasum": ""
             },
             "require": {
@@ -3324,7 +3328,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-01-23T14:51:35+00:00"
+            "time": "2024-05-31T14:49:08+00:00"
         },
         {
             "name": "thenorthmemory/xml",
@@ -3640,16 +3644,16 @@
         },
         {
             "name": "w7corp/easywechat",
-            "version": "6.15.0",
+            "version": "6.15.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/w7corp/easywechat.git",
-                "reference": "1a6d898053905f77834d8bb547613de072cdbc48"
+                "reference": "8902917ceeaa20354301e533ff3725f0044c04ca"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://mirrors.huaweicloud.com/repository/php/w7corp/easywechat/6.15.0/w7corp-easywechat-6.15.0.zip",
-                "reference": "1a6d898053905f77834d8bb547613de072cdbc48",
+                "url": "https://mirrors.huaweicloud.com/repository/php/w7corp/easywechat/6.15.1/w7corp-easywechat-6.15.1.zip",
+                "reference": "8902917ceeaa20354301e533ff3725f0044c04ca",
                 "shasum": ""
             },
             "require": {
@@ -3730,7 +3734,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-01-22T01:17:07+00:00"
+            "time": "2024-03-29T12:23:19+00:00"
         },
         {
             "name": "wamkj/thinkphp6.0-databackup",
@@ -3821,16 +3825,16 @@
         },
         {
             "name": "zoujingli/ip2region",
-            "version": "v2.0.4",
+            "version": "v2.0.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zoujingli/ip2region.git",
-                "reference": "21ed5393a93ea62c277d91ee739b2373d60bf16d"
+                "reference": "95d9064c057b978f8985b67389693ecd31f48c7f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://mirrors.huaweicloud.com/repository/php/zoujingli/ip2region/v2.0.4/zoujingli-ip2region-v2.0.4.zip",
-                "reference": "21ed5393a93ea62c277d91ee739b2373d60bf16d",
+                "url": "https://mirrors.huaweicloud.com/repository/php/zoujingli/ip2region/v2.0.5/zoujingli-ip2region-v2.0.5.zip",
+                "reference": "95d9064c057b978f8985b67389693ecd31f48c7f",
                 "shasum": ""
             },
             "require": {
@@ -3858,7 +3862,7 @@
             "keywords": [
                 "Ip2Region"
             ],
-            "time": "2023-03-28T02:20:00+00:00"
+            "time": "2024-03-21T12:09:30+00:00"
         }
     ],
     "packages-dev": [
