@@ -1,10 +1,4 @@
-<style>
-    #leftMenu li {
-        padding-right: 5px;
-        margin-bottom: 5px;
-        text-align: right;
-    }
-</style>
+{include file='public/LeftMenuStyle' /}
 <div class="tuchu" style="padding-right:0;padding-left:0;margin-left:0;">
     <ul id="leftMenu" style="list-style: none;padding-left:0px;">
         <li>

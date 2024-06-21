@@ -23,44 +23,44 @@ SET FOREIGN_KEY_CHECKS = 0;
 DROP TABLE IF EXISTS `tool_fofa`;
 CREATE TABLE `tool_fofa`  (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `ip` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `ip` varchar(45) CHARACTER SET utf8mb4  NULL DEFAULT NULL,
   `port` int(11) NULL DEFAULT NULL,
-  `protocol` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `country_code` varchar(2) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `country_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `region` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `city` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `protocol` varchar(10) CHARACTER SET utf8mb4  NULL DEFAULT NULL,
+  `country_code` varchar(2) CHARACTER SET utf8mb4  NULL DEFAULT NULL,
+  `country_name` varchar(255) CHARACTER SET utf8mb4  NULL DEFAULT NULL,
+  `region` varchar(255) CHARACTER SET utf8mb4  NULL DEFAULT NULL,
+  `city` varchar(255) CHARACTER SET utf8mb4  NULL DEFAULT NULL,
   `longitude` decimal(10, 6) NULL DEFAULT NULL,
   `latitude` decimal(10, 6) NULL DEFAULT NULL,
   `as_number` int(11) NULL DEFAULT NULL,
-  `as_organization` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `host` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `domain` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `os` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `server` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `icp` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `title` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,
-  `jarm` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `header` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,
-  `banner` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,
-  `cert` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,
-  `base_protocol` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `link` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,
-  `certs_issuer_org` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `certs_issuer_cn` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `certs_subject_org` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `certs_subject_cn` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `tls_ja3s` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `tls_version` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `product` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,
-  `product_category` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,
-  `version` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `as_organization` varchar(255) CHARACTER SET utf8mb4  NULL DEFAULT NULL,
+  `host` varchar(100) CHARACTER SET utf8mb4  NULL DEFAULT NULL,
+  `domain` varchar(255) CHARACTER SET utf8mb4  NULL DEFAULT NULL,
+  `os` varchar(255) CHARACTER SET utf8mb4  NULL DEFAULT NULL,
+  `server` varchar(255) CHARACTER SET utf8mb4  NULL DEFAULT NULL,
+  `icp` varchar(255) CHARACTER SET utf8mb4  NULL DEFAULT NULL,
+  `title` text CHARACTER SET utf8mb4  NULL,
+  `jarm` varchar(255) CHARACTER SET utf8mb4  NULL DEFAULT NULL,
+  `header` text CHARACTER SET utf8mb4  NULL,
+  `banner` text CHARACTER SET utf8mb4  NULL,
+  `cert` text CHARACTER SET utf8mb4  NULL,
+  `base_protocol` varchar(10) CHARACTER SET utf8mb4  NULL DEFAULT NULL,
+  `link` text CHARACTER SET utf8mb4  NULL,
+  `certs_issuer_org` varchar(255) CHARACTER SET utf8mb4  NULL DEFAULT NULL,
+  `certs_issuer_cn` varchar(255) CHARACTER SET utf8mb4  NULL DEFAULT NULL,
+  `certs_subject_org` varchar(255) CHARACTER SET utf8mb4  NULL DEFAULT NULL,
+  `certs_subject_cn` varchar(255) CHARACTER SET utf8mb4  NULL DEFAULT NULL,
+  `tls_ja3s` varchar(255) CHARACTER SET utf8mb4  NULL DEFAULT NULL,
+  `tls_version` varchar(10) CHARACTER SET utf8mb4  NULL DEFAULT NULL,
+  `product` text CHARACTER SET utf8mb4  NULL,
+  `product_category` text CHARACTER SET utf8mb4  NULL,
+  `version` varchar(255) CHARACTER SET utf8mb4  NULL DEFAULT NULL,
   `last_update_time` datetime NULL DEFAULT NULL,
-  `cname` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `cname` varchar(255) CHARACTER SET utf8mb4  NULL DEFAULT NULL,
   `create_time` datetime NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `un_ip_port`(`ip`, `port`, `host`) USING BTREE
-) ENGINE = MyISAM AUTO_INCREMENT = 13251 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = MyISAM AUTO_INCREMENT = 13251 CHARACTER SET = utf8mb4  ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for fortify
@@ -128,17 +128,17 @@ CREATE TABLE `asm_urls`  (
 DROP TABLE IF EXISTS `task_scan`;
 CREATE TABLE `task_scan`  (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `tool` varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `tool` varchar(40) CHARACTER SET utf8mb4  NULL DEFAULT NULL,
   `target` int(11) NULL DEFAULT NULL,
   `status` int(10) NULL DEFAULT 0,
   `create_time` datetime NULL DEFAULT CURRENT_TIMESTAMP,
   `update_time` datetime NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-  `task_version` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `ext_info` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,
-  `target_table` varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `task_version` varchar(20) CHARACTER SET utf8mb4  NULL DEFAULT NULL,
+  `ext_info` text CHARACTER SET utf8mb4  NULL,
+  `target_table` varchar(40) CHARACTER SET utf8mb4  NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `un_version`(`tool`, `target`, `task_version`, `target_table`) USING BTREE
-) ENGINE = MyISAM AUTO_INCREMENT = 6068 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = MyISAM AUTO_INCREMENT = 6068 CHARACTER SET = utf8mb4  ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for asm_ip
@@ -188,33 +188,33 @@ CREATE TABLE `asm_domain`  (
 DROP TABLE IF EXISTS `vulnerable`;
 CREATE TABLE `vulnerable`  (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `tophant_id` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `vuln_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `risk_level` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `vuln_auth_status` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `vuln_dx_code` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `vuln_cve_code` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `vuln_nvd_code` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `vuln_cnvd_code` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `vuln_cnnvd_code` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `vuln_component_names` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,
-  `vuln_company_names` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,
-  `reject_result` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,
+  `tophant_id` varchar(20) CHARACTER SET utf8mb4  NOT NULL,
+  `vuln_name` varchar(255) CHARACTER SET utf8mb4  NULL DEFAULT NULL,
+  `risk_level` varchar(20) CHARACTER SET utf8mb4  NULL DEFAULT NULL,
+  `vuln_auth_status` varchar(20) CHARACTER SET utf8mb4  NULL DEFAULT NULL,
+  `vuln_dx_code` varchar(20) CHARACTER SET utf8mb4  NULL DEFAULT NULL,
+  `vuln_cve_code` varchar(20) CHARACTER SET utf8mb4  NULL DEFAULT NULL,
+  `vuln_nvd_code` varchar(20) CHARACTER SET utf8mb4  NULL DEFAULT NULL,
+  `vuln_cnvd_code` varchar(20) CHARACTER SET utf8mb4  NULL DEFAULT NULL,
+  `vuln_cnnvd_code` varchar(20) CHARACTER SET utf8mb4  NULL DEFAULT NULL,
+  `vuln_component_names` text CHARACTER SET utf8mb4  NULL,
+  `vuln_company_names` text CHARACTER SET utf8mb4  NULL,
+  `reject_result` text CHARACTER SET utf8mb4  NULL,
   `publish_time` datetime NULL DEFAULT NULL,
   `publish_update_time` datetime NULL DEFAULT NULL,
   `collect_time` datetime NULL DEFAULT NULL,
-  `publish_source` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `ref_info` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,
-  `publish_status` varchar(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `auth_commit_user_id` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `publish_source` varchar(20) CHARACTER SET utf8mb4  NULL DEFAULT NULL,
+  `ref_info` text CHARACTER SET utf8mb4  NULL,
+  `publish_status` varchar(1) CHARACTER SET utf8mb4  NULL DEFAULT NULL,
+  `auth_commit_user_id` varchar(20) CHARACTER SET utf8mb4  NULL DEFAULT NULL,
   `last_update_time` datetime NULL DEFAULT NULL,
-  `publish_user_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `cwes` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,
+  `publish_user_name` varchar(255) CHARACTER SET utf8mb4  NULL DEFAULT NULL,
+  `cwes` text CHARACTER SET utf8mb4  NULL,
   `read_num` int(11) NULL DEFAULT NULL,
   `modify_time` datetime NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `un_topid`(`tophant_id`) USING BTREE
-) ENGINE = MyISAM AUTO_INCREMENT = 389 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = MyISAM AUTO_INCREMENT = 389 CHARACTER SET = utf8mb4  ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for auth_rule
@@ -1400,10 +1400,10 @@ CREATE TABLE `asm_discover`  (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `create_time` datetime NULL DEFAULT CURRENT_TIMESTAMP,
   `update_time` datetime NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-  `keyword` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `type` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `keyword` varchar(255) CHARACTER SET utf8mb4  NULL DEFAULT NULL,
+  `type` varchar(20) CHARACTER SET utf8mb4  NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = MyISAM AUTO_INCREMENT = 16 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '自动发现资产' ROW_FORMAT = Dynamic;
+) ENGINE = MyISAM AUTO_INCREMENT = 16 CHARACTER SET = utf8mb4  COMMENT = '自动发现资产' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for tool_dirsearch

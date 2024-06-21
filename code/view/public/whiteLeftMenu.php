@@ -1,10 +1,4 @@
-<style>
-    #leftMenu li {
-        padding-right: 5px;
-        margin-bottom: 5px;
-        text-align: right;
-    }
-</style>
+{include file='public/LeftMenuStyle' /}
 
 <!-- 左侧菜单栏内容 -->
 <div class="tuchu" style="padding-right:0;padding-left:0;margin-left:0;">

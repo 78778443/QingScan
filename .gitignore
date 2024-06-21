@@ -2,3 +2,4 @@ code/runtime/
 code/.env
 .idea/
 code/data/
+/test/
