@@ -9,6 +9,7 @@
 
 namespace app\model;
 
+use think\facade\Cache;
 use think\facade\Db;
 
 class TaskModel extends BaseModel
@@ -46,15 +47,18 @@ class TaskModel extends BaseModel
             $targets = Db::table($tableName)->orderRand()->limit(1000)->select()->toArray();
             foreach ($targets as $item) {
                 foreach ($toolLists as $tool) {
+                    $unKey = "{$tableName}|{$tool}|{$item['id']}";
+                    if (Cache::has($unKey)) continue;
+
                     $version = self::generateTaskByHours($item['create_time'], 15 * 24);
                     $data = ['tool' => $tool, 'target_table' => $tableName, 'target' => $item['id'],
                         'task_version' => $version, 'ext_info' => json_encode($item)];
-                    $count = Db::table('task_scan')->extra('IGNORE')->strict(false)->insert($data);
-                    if ($count) echo "{$tableName}_{$tool}_{$item['id']}_" . $count . PHP_EOL;
+                    $count = Db::table('task_scan')->extra('IGNORE')->strict(false)->insertGetId($data);
+                    if ($count) echo "{$unKey}" . $count . PHP_EOL;
+                    Cache::set($unKey, $count, 86400 * 15);
                 }
             }
         }
-
     }
 
     private static function generateTaskByHours($createTime, $hours)
