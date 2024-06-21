@@ -16,8 +16,9 @@ QingScan 是一款聚合扫描器，本身不生产安全扫描功能，但会�
 1. 安装PHP扩展和项目依赖
 
 ```bash
-apt install php php-xml php-gd php-mysqli php-dom
-cd code && composer install  
+apt install php php-xml php-gd php-mysqli php-dom php-cli php-zip unzip php-curl composer
+
+cd QingScan/code && composer install  
 ```
 
 2. 用PHP启动项目web页面
@@ -31,7 +32,7 @@ php think run -p 80
 4. 访问web页面
 
 ```bash
-curl http://127.0.0.1/
+http://127.0.0.1/
 ```
  
 5. 启动调用脚本
