@@ -20,7 +20,7 @@ services:
       --default-authentication-plugin=mysql_native_password
       --init-file=/docker-entrypoint-initdb.d/init.sql
   qingscan:
-    image: registry.cn-chengdu.aliyuncs.com/qingscan/qingscan:latest
+    image: registry.cn-beijing.aliyuncs.com/daxia/qingscan:latest
     container_name: qingscan
     links:
       - mysqlserver:mysql_addr
@@ -39,4 +39,4 @@ services:
     restart: always
     stdin_open: true
     tty: true
-    command: /bin/bash -c "cd /root/QingScan/code && git pull && ./script.sh"
+    command: /bin/bash -c "cd /root/QingScan/code && git stash && git pull && git stash apply && ./script.sh"
