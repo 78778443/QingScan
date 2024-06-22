@@ -2,7 +2,7 @@ version: "3.2"
 services:
   mysql_server:
     image: mysql:8.0
-    privileged: true
+#    privileged: true
     container_name: mysqlser
     environment:
       - MYSQL_DATABASE=QingScan
