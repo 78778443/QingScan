@@ -3,9 +3,9 @@
     <title><?php echo $title ?? 'QingScan' ?></title>
     <link rel="shortcut icon" href="/static/favicon.svg" type="image/x-icon"/>
     <script src="/static/js/jquery.min.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/bootstrap-5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <link href="/static/css/qingscan.css" rel="stylesheet">
-    <script src="/static/bootstrap-5.1.3/js/bootstrap.min.js"></script>
+    <script src="/static/bootstrap-5.3.0/js/bootstrap.min.js"></script>
 </head>
 <body style="background-color: #eeeeee; ">
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary" style="padding: 0px;">

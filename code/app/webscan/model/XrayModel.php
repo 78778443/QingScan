@@ -20,21 +20,10 @@ class XrayModel extends BaseModel
 
     public static $tableName = "xray";
 
-
-    public static function temp()
-    {
-        $data = file_get_contents("/mnt/d/MyCode/work/auto_scan_bug/tools/xray/xray-crawler-testphp.json");
-        $data = json_decode($data, true);
-        foreach ($data[0] as &$value){
-            $value = json_encode($value);
-        }
-        Db::table('xray')->insert($data[0]);
-    }
-
     /**
      * @param  $where
-     * @param  int   $limit
-     * @param  array $otherParam
+     * @param int $limit
+     * @param array $otherParam
      * @return mixed
      */
     private static function getList($where, int $limit = 15, int $page = 1, array $otherParam = [])
@@ -68,7 +57,7 @@ class XrayModel extends BaseModel
     /**
      * 获取单条记录
      *
-     * @param  int $id
+     * @param int $id
      * @return array
      */
     public static function getInfo(int $id)
@@ -92,9 +81,9 @@ class XrayModel extends BaseModel
     }
 
     /**
-     * @param  int    $id
-     * @param  string $url
-     * @param  string $callUrl
+     * @param int $id
+     * @param string $url
+     * @param string $callUrl
      * @throws Exception
      */
     public static function sendTask(int $id, string $url)
@@ -121,6 +110,21 @@ class XrayModel extends BaseModel
 
         $channel->close();
         $connection->close();
+
+    }
+
+
+    public static function autoDownTool($toolPath)
+    {
+        if (file_exists($toolPath)) {
+            return true;
+        }
+        $dirName = dirname($toolPath);
+        !file_exists($dirName) && mkdir($dirName, 0777, true);
+
+        $cmd = "cd {$dirName} && git clone --depth=1 https://gitee.com/songboy/xray.git  && chmod -R 777 xray";
+        echo "正在下载工具 $cmd " . PHP_EOL;
+        exec($cmd);
 
     }
 }

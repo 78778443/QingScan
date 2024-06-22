@@ -1,0 +1,41 @@
+version: "3.2"
+services:
+  mysqlserver:
+    image: mysql:8.0
+    container_name: mysqlser
+    environment:
+      - MYSQL_DATABASE=QingScan
+      - MYSQL_ROOT_PASSWORD=root
+      - TZ=Asia/Shanghai
+    ports:
+      - "33306:3306"
+    volumes:
+      - ./qingscan.sql:/docker-entrypoint-initdb.d/init.sql
+    restart: always
+    command:
+      --wait_timeout=31536000
+      --interactive_timeout=31536000
+      --max_connections=1000
+      --default-authentication-plugin=mysql_native_password
+      --init-file=/docker-entrypoint-initdb.d/init.sql
+  qingscan:
+    image: daxia/qingscan:latest
+    container_name: qingscan
+    links:
+      - mysqlserver:mysql_addr
+    volumes:
+      - type: bind
+        source: "./"
+        target: "/root/files"
+#      - type: bind
+#        source: "/mnt/d/mycode/QingScan"
+#        target: "/root/QingScan"
+#      - type: bind
+#        source: "/mnt/d/mycode/QingScan/code/.env"
+#        target: "/root/QingScan/code/.env"
+    ports:
+      - "8000:8000"
+    restart: always
+    stdin_open: true
+    tty: true
+    command: /bin/bash -c "cd /root/QingScan/code && php think run "

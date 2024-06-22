@@ -281,7 +281,7 @@ function addlog($content, $out = false)
     $content1 = $content;
 
     $dataArr = [
-        'app' => env('website'),
+        'app' => env('website','QingScan'),
         'content' => is_array($content1) ? var_export($content1, true) : $content1,
     ];
 

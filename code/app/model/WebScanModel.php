@@ -83,6 +83,7 @@ class WebScanModel extends BaseModel
         //检查工具是否存在
 
         $xrayPath = trim(`pwd`) . '/extend/tools/xray/';
+        if (!file_exists($xrayPath)) XrayModel::autoDownTool($xrayPath);
         if (!file_exists($xrayPath)) die("工具XRAY不存在：{$xrayPath}");
 
         $where = ['tool' => 'scan_app_xray', 'status' => 0];
