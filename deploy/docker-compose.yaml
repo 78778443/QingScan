@@ -2,6 +2,7 @@ version: "3.2"
 services:
   mysqlserver:
     image: mysql:8.0
+    privileged: true
     container_name: mysqlser
     environment:
       - MYSQL_DATABASE=QingScan
@@ -19,7 +20,7 @@ services:
       --default-authentication-plugin=mysql_native_password
       --init-file=/docker-entrypoint-initdb.d/init.sql
   qingscan:
-    image: daxia/qingscan:latest
+    image: registry.cn-chengdu.aliyuncs.com/qingscan/qingscan:latest
     container_name: qingscan
     links:
       - mysqlserver:mysql_addr
@@ -38,4 +39,4 @@ services:
     restart: always
     stdin_open: true
     tty: true
-    command: /bin/bash -c "cd /root/QingScan/code && php think run "
+    command: /bin/bash -c "cd /root/QingScan/code && git pull && ./script.sh"
