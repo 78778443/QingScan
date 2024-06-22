@@ -13,7 +13,7 @@
 
  Date: 17/06/2024 22:37:38
 */
-
+USE QingScan;
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
