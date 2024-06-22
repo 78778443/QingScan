@@ -58,6 +58,14 @@ class Bug extends Common
         return View::fetch('awvs_list', $data);
     }
 
+    public function awvs_detail(Request $request)
+    {
+        $id = $request->param('id');
+        $data['detail'] = Db::table('awvs_vuln')->where('id', $id)->find();
+        return View::fetch('awvs_detail', $data);
+
+    }
+
     public function awvs_del(Request $request)
     {
         $id = $request->param('id');
