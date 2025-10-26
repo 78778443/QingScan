@@ -281,7 +281,7 @@ function addlog($content, $out = false)
     $content1 = $content;
 
     $dataArr = [
-        'app' => env('website','QingScan'),
+        'app' => env('website', 'QingScan'),
         'content' => is_array($content1) ? var_export($content1, true) : $content1,
     ];
 
@@ -290,6 +290,32 @@ function addlog($content, $out = false)
     //删除5天前的日志
     $endTime = date('Y-m-d', time() - 86400 * 5);
     Db::table('log')->whereTime('create_time', '<=', $endTime)->delete();
+
+    if ($out) {
+        echo var_export($content, true) . PHP_EOL;
+    }
+}
+
+
+function addFilelog($content, $out = false)
+{
+    $content1 = $content;
+
+    $dataArr = [
+        'app' => env('website', 'QingScan'),
+        'content' => is_array($content1) ? var_export($content1, true) : $content1,
+        'datetime' => date('Y-m-d H:i:s')
+    ];
+
+    $dataArr['content'] = substr($dataArr['content'], 0, 4999);
+    $logPath = env('log_path', 'runtime/log/') . date('Y-m-d') . '.log';
+
+    //检测日志文件目录是否存在
+    if (!is_dir(dirname($logPath))) {
+        mkdir(dirname($logPath), 0777, true);
+    }
+    file_put_contents($logPath, json_encode($dataArr, JSON_UNESCAPED_UNICODE) . PHP_EOL, FILE_APPEND);
+
 
     if ($out) {
         echo var_export($content, true) . PHP_EOL;

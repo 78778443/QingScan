@@ -15,6 +15,7 @@ use app\model\HostPortModel;
 use app\model\HydraModel;
 use app\model\OneForAllModel;
 use app\model\TaskModel;
+use app\model\ToolsCheckModel;
 use app\model\UrlsModel;
 use app\model\WebScanModel;
 use app\webscan\model\AppDirmapModel;
@@ -23,6 +24,7 @@ use think\console\Command;
 use think\console\Input;
 use think\console\input\Argument;
 use think\console\Output;
+use Throwable;
 
 class Scan extends Command
 {
@@ -40,36 +42,73 @@ class Scan extends Command
     protected function execute(Input $input, Output $output): void
     {
         $func = trim($input->getArgument('func'));
-        //生成扫描任务
-        if ($func == "create_task") TaskModel::autoAddTask();
-        if ($func == "start_task") TaskModel::startTask();
+        
+        // 定义扫描任务映射关系
+        $scanTasks = [
+            // 生成扫描任务
+            "create_task" => [TaskModel::class, 'autoAddTask'],
+            "start_task" => [TaskModel::class, 'startTask'],
 
-        //asm扫描
-        if ($func == "asm_discover_fofa") Fofa::discover();
-        if ($func == 'asm_domain_oneforall') OneForAllModel::subdomainScan();
-        if ($func == 'asm_domain_fofa') CveModel::fofaSearch();
-        if ($func == 'asm_ip_info') IpModel::ip_location();
-        if ($func == "asm_ip_nmap") HostPortModel::NmapPortScan();
+            // asm扫描
+            "asm_discover_fofa" => [Fofa::class, 'discover', 'fofa'],
+            "asm_domain_oneforall" => [OneForAllModel::class, 'subdomainScan', 'oneforall'],
+            "asm_domain_fofa" => [CveModel::class, 'fofaSearch', 'fofa'],
+            "asm_ip_info" => [IpModel::class, 'ip_location'],
+            "asm_ip_nmap" => [HostPortModel::class, 'NmapPortScan', 'nmap'],
+            "nmap" => [HostPortModel::class, 'NmapPortScan', 'nmap'],
 
-        //web扫描，默认扫描app表
-        if ($func == 'scan_app_finger') Finger::start();
-        if ($func == 'scan_app_dirmap') AppDirmapModel::dirmapScan();
-        if ($func == 'scan_app_nuclei') WebScanModel::nucleiScan();
-        if ($func == 'scan_app_vulmap') WebScanModel::vulmapPocTest();
-        if ($func == 'scan_app_dismap') WebScanModel::dismapScan();
-        if ($func == "scan_app_xray") WebScanModel::xray();
-        if ($func == "scan_app_awvs") AwvsModel::awvsScan();
-        if ($func == "scan_app_rad") WebScanModel::rad();
-        if ($func == 'scan_app_jietu') GoogleModel::jietu();
-        if ($func == 'scan_app_whatweb') AppModel::whatweb();
-        if ($func == 'scan_app_google') GoogleModel::getBaseInfo();
-        if ($func == 'scan_ip_hydra') HydraModel::sshScan();
-        if ($func == 'scan_url_sqlmap') UrlsModel::sqlmapScan();
+            // web扫描，默认扫描app表
+            "scan_app_finger" => [Finger::class, 'start'],
+            "scan_app_dirmap" => [AppDirmapModel::class, 'dirmapScan', 'dirmap'],
+            "scan_app_nuclei" => [WebScanModel::class, 'nucleiScan', 'nuclei'],
+            "scan_app_vulmap" => [WebScanModel::class, 'vulmapPocTest', 'vulmap'],
+            "scan_app_dismap" => [WebScanModel::class, 'dismapScan', 'dismap'],
+            "scan_app_xray" => [WebScanModel::class, 'xray', 'xray'],
+            "scan_app_awvs" => [AwvsModel::class, 'awvsScan', 'awvs'],
+            "scan_app_rad" => [WebScanModel::class, 'rad', 'rad'],
+            "scan_app_jietu" => [GoogleModel::class, 'jietu'],
+            "scan_app_whatweb" => [AppModel::class, 'whatweb', 'whatweb'],
+            "scan_app_google" => [GoogleModel::class, 'getBaseInfo'],
+            "scan_ip_hydra" => [HydraModel::class, 'sshScan', 'hydra'],
+            "scan_url_sqlmap" => [UrlsModel::class, 'sqlmapScan', 'sqlmap'],
 
-        //代码扫描
-        if ($func == "code_fortify") CodeCheckModel::fortifyScan();
-        if ($func == "code_semgrep") CodeCheckModel::semgrep();
-        if ($func == 'code_murphysec') MurphysecModel::murphysec_scan();
-        if ($func == 'code_codeql') MurphysecModel::murphysec_scan();
+            // 代码扫描
+            "code_fortify" => [CodeCheckModel::class, 'fortifyScan', 'fortify'],
+            "code_semgrep" => [CodeCheckModel::class, 'semgrep', 'semgrep'],
+            "code_murphysec" => [MurphysecModel::class, 'murphysec_scan', 'murphysec'],
+            "code_codeql" => [MurphysecModel::class, 'murphysec_scan', 'codeql'],
+        ];
+
+        // 执行对应的任务
+        if (isset($scanTasks[$func])) {
+            $task = $scanTasks[$func];
+            try {
+                // 检查是否需要进行工具检查
+                if (isset($task[2])) {
+                    $output->writeln("正在检查 {$task[2]} 工具环境...");
+                    if (!ToolsCheckModel::checkToolInstalled($task[2])) {
+                        $output->writeln("工具 {$task[2]} 未安装或配置不正确，跳过执行");
+                        return;
+                    } else {
+                        $output->writeln("工具 {$task[2]} 环境检查通过");
+                    }
+                }
+                
+                // 调用对应的执行方法
+                $output->writeln("开始执行任务: {$func}");
+                call_user_func([$task[0], $task[1]]);
+                $output->writeln("任务执行完成: {$func}");
+            } catch (Throwable $e) {
+                $output->writeln("执行任务时发生错误: " . $e->getMessage());
+                $output->writeln("错误位置: " . $e->getFile() . ":" . $e->getLine());
+            }
+        } else {
+            // 如果没有匹配的任务，输出帮助信息
+            $output->writeln("未找到指定的任务: {$func}");
+            $output->writeln("可用的任务列表:");
+            foreach (array_keys($scanTasks) as $taskName) {
+                $output->writeln("  - {$taskName}");
+            }
+        }
     }
 }
