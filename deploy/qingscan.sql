@@ -1484,4 +1484,18 @@ CREATE TABLE `asm_ip_domain`  (
   UNIQUE INDEX `un_ip`(`ip`, `sub_domain`) USING BTREE
 ) ENGINE = MyISAM AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
 
+
+
+CREATE TABLE `codeql` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `project_id` int(11) NOT NULL DEFAULT '0' COMMENT '项目ID',
+  `codeFlows` longtext COLLATE utf8mb4_bin COMMENT '代码流信息',
+  `locations` longtext COLLATE utf8mb4_bin COMMENT '位置信息',
+  `prompt` text COLLATE utf8mb4_bin COMMENT '提示信息',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `idx_project_id` (`project_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin ROW_FORMAT=COMPACT;
+
 SET FOREIGN_KEY_CHECKS = 1;

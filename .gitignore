@@ -3,3 +3,4 @@ code/.env
 .idea/
 code/data/
 /test/
+code/public/icon/*
