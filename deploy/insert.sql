@@ -1,0 +1,1 @@
+INSERT INTO  `user` (`id`, `username`, `password`, `salt`, `nickname`, `auth_group_id`, `created_at`, `last_login_ip`, `last_login_time`, `status`, `update_time`, `is_delete`, `sex`, `phone`, `dd_token`, `email`, `token`, `url`) VALUES (3, 'admin', '2111', '', '', 0, 0, '', 0, 1, 0, 0, 0, '', '', '', '', '');

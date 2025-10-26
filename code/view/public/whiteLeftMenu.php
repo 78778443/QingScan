@@ -8,6 +8,10 @@
                 仓库管理 </a>
         </li>
         <li>
+            <a class="btn btn-sm btn-outline-secondary" href="/code/code_ql/index.html">
+                CodeQl </a>
+        </li>
+        <li>
             <a class="btn btn-sm btn-outline-secondary" href="/code/fortify/index.html">
                 Fortify </a>
         </li>

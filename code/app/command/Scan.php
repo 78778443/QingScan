@@ -70,5 +70,6 @@ class Scan extends Command
         if ($func == "code_fortify") CodeCheckModel::fortifyScan();
         if ($func == "code_semgrep") CodeCheckModel::semgrep();
         if ($func == 'code_murphysec') MurphysecModel::murphysec_scan();
+        if ($func == 'code_codeql') MurphysecModel::murphysec_scan();
     }
 }
