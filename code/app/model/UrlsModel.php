@@ -21,39 +21,6 @@ class UrlsModel extends BaseModel
     public static $tableName = 'urls';
 
 
-    /**
-     * @param int $id
-     * @param string $url
-     * @param string $callUrl
-     * @throws Exception
-     */
-    public static function sendTask(int $id, string $url)
-    {
-        $rabbitConf = getRabbitMq();
-        $connection = new AMQPStreamConnection($rabbitConf['host'], $rabbitConf['port'], $rabbitConf['user'], $rabbitConf['password'], $rabbitConf['vhost']);
-        $channel = $connection->channel();
-
-        $queueName = "rad";
-        $channel->queue_declare($queueName, false, false, false, false);
-
-        //发送任务到节点
-        $data = [
-            'id' => $id,
-            'url' => $url
-        ];
-
-        $sendData = json_encode($data);
-
-        $msg = new AMQPMessage($sendData);
-        $result = $channel->basic_publish($msg, '', $queueName);
-
-        addlog(['发送爬虫任务', $id, $url, $data]);
-
-
-        $channel->close();
-        $connection->close();
-
-    }
 
     /**
      * @param  $where
@@ -85,6 +52,11 @@ class UrlsModel extends BaseModel
     public static function sqlmapScan()
     {
         $tools = './extend/tools/sqlmap/';
+        //判断目录是否存在
+        if (!is_dir($tools)) {
+            addlog(["sqlmap目录不存在", $tools],true);
+            return;
+        }
         $file_path = $tools . 'result/';
 
         $where = ['tool' => 'scan_url_sqlmap', 'status' => 0];

@@ -101,9 +101,6 @@ class Index extends Common
 
     public function _add(Request $request)
     {
-        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
-            $data['user_id'] = $this->userId;
-        }
         $urlArr = $this->processUrls($request->param('url'));
         $tools = $request->param('tools');
         foreach ($urlArr as $url) {
@@ -161,11 +158,6 @@ class Index extends Common
         $where[] = ['app_id', '=', $app_id];
         $map[] = ['id', '=', $app_id];
         $where1 = [];
-        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
-            //$where[] = ['user_id','=',$this->userId];
-            $map[] = ['user_id', '=', $this->userId];
-            $where1[] = ['user_id', '=', $this->userId];
-        }
         $data['info'] = Db::name('app')->where($map)->find();
         if (!$data['info']) {
             return $this->error('数据不存在');

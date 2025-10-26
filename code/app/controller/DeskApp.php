@@ -32,11 +32,7 @@ class DeskApp extends BaseController
         $where[] = ['app_id', '=', $app_id];
         $map[] = ['id', '=', $app_id];
         $where1 = [];
-        if ($this->auth_group_id != 5 && !in_array($this->userId, config('app.ADMINISTRATOR'))) {
-            //$where[] = ['user_id','=',$this->userId];
-            $map[] = ['user_id', '=', $this->userId];
-            $where1[] = ['user_id', '=', $this->userId];
-        }
+
         $data['info'] = Db::name('app')->where($map)->find();
         $data['whatweb'] = Db::table('app_whatweb')->where($where)->where($where1)->order("id", 'desc')->limit(0, 15)->select()->toArray();
         $data['oneforall'] = Db::table('one_for_all')->where($where)->order("id", 'desc')->limit(0, 15)->select()->toArray();
