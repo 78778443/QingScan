@@ -5,6 +5,7 @@
 return [
     // 指令定义
     'commands' => [
-        'scan' => 'app\command\Scan'
+        'scan' => 'app\command\Scan',
+        'install' => 'app\command\Install'
     ],
 ];

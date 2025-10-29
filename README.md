@@ -14,6 +14,7 @@ QingScan 是一款聚合扫描器，本身不生产安全扫描功能，但会�
 ## 安装教程
 
 需要再Ubuntu22.04系统下安装，其他系统请自行安装
+
 1. 安装PHP扩展和项目依赖
 
 ```bash
@@ -40,6 +41,23 @@ http://127.0.0.1/
 
 ```bash
 ./script.sh
+```
+
+### 工具安装
+
+QingScan 提供了两种方式来安装所需的扫描工具：
+
+#### 方法一：使用PHP命令安装（推荐）
+
+```bash
+# 查看可安装的工具列表
+php think install list
+
+# 安装所有工具
+php think install all
+
+# 安装指定工具
+php think install nmap
 ```
 
 ## 技术支持
