@@ -82,12 +82,15 @@ class Scan extends Command
         // 执行对应的任务
         if (isset($scanTasks[$func])) {
             $task = $scanTasks[$func];
+            
             try {
                 // 检查是否需要进行工具检查
                 if (isset($task[2])) {
                     $output->writeln("正在检查 {$task[2]} 工具环境...");
                     if (!ToolsCheckModel::checkToolInstalled($task[2])) {
-                        $output->writeln("工具 {$task[2]} 未安装或配置不正确，跳过执行");
+                        $output->writeln("<error>工具 {$task[2]} 未安装或配置不正确</error>");
+                        $output->writeln("<info>安装引导:</info>");
+                        $output->writeln(ToolsCheckModel::getToolInstallGuide($task[2]));
                         return;
                     } else {
                         $output->writeln("工具 {$task[2]} 环境检查通过");
@@ -99,13 +102,13 @@ class Scan extends Command
                 call_user_func([$task[0], $task[1]]);
                 $output->writeln("任务执行完成: {$func}");
             } catch (Throwable $e) {
-                $output->writeln("执行任务时发生错误: " . $e->getMessage());
-                $output->writeln("错误位置: " . $e->getFile() . ":" . $e->getLine());
+                $output->writeln("<error>执行任务时发生错误: " . $e->getMessage() . "</error>");
+                $output->writeln("<error>错误位置: " . $e->getFile() . ":" . $e->getLine() . "</error>");
             }
         } else {
             // 如果没有匹配的任务，输出帮助信息
-            $output->writeln("未找到指定的任务: {$func}");
-            $output->writeln("可用的任务列表:");
+            $output->writeln("<error>未找到指定的任务: {$func}</error>");
+            $output->writeln("<info>可用的任务列表:</info>");
             foreach (array_keys($scanTasks) as $taskName) {
                 $output->writeln("  - {$taskName}");
             }
