@@ -24,7 +24,6 @@ class target extends Command
     protected function configure()
     {
         $this->setName('scan')
-            ->addOption('init', 'i', Option::VALUE_NONE, '初始化工具到数据库')
             ->addOption('list', 'l', Option::VALUE_NONE, '列出可用工具')
             ->addOption('target', 't', Option::VALUE_OPTIONAL, '扫描目标URL/IP')
             ->addOption('scan', 's', Option::VALUE_OPTIONAL, '指定扫描工具')
@@ -37,11 +36,6 @@ class target extends Command
     protected function execute(Input $input, Output $output)
     {
         try {
-            // 初始化工具
-            if ($input->getOption('init')) {
-                return $this->initTools($output);
-            }
-
             // 列出工具
             if ($input->getOption('list')) {
                 return $this->listTools($output);
@@ -76,9 +70,8 @@ class target extends Command
             $output->writeln($this->getHelp());
             $output->writeln('');
             $output->writeln('使用示例:');
-            $output->writeln('  php think scan --init              初始化工具');
             $output->writeln('  php think scan --list              列出可用工具');
-            $output->writeln('  php think scan -t "http://example.com?id=1" -s sqlmap');
+            $output->writeln('  php think scan -t "http://example.com?id=1" -s <工具名>');
             $output->writeln('  php think scan --tasks             查看任务列表');
             $output->writeln('  php think scan --results [任务ID]  查看扫描结果');
             $output->writeln('  php think scan --analyze [任务ID]  执行LLM分析');
@@ -91,45 +84,6 @@ class target extends Command
         return 0;
     }
 
-    /**
-     * 初始化工具到数据库
-     */
-    protected function initTools(Output $output): int
-    {
-        $output->writeln('========== 初始化工具 ==========');
-
-        $tools = [
-            [
-                'tool_name' => 'sqlmap',
-                'tool_label' => 'SQLMap',
-                'tool_type' => 'sql_inject',
-                'command' => 'sqlmap -u {target} --batch',
-                'description' => 'SQL注入检测工具'
-            ],
-            [
-                'tool_name' => 'xray',
-                'tool_label' => 'XRay',
-                'tool_type' => 'vuln_scan',
-                'command' => 'xray webscan --url {target} --html-output',
-                'description' => '通用漏洞扫描工具'
-            ]
-        ];
-
-        $count = 0;
-        foreach ($tools as $tool) {
-            $exists = ScanTool::where('tool_name', $tool['tool_name'])->find();
-            if (!$exists) {
-                ScanTool::create($tool);
-                $output->writeln("  + {$tool['tool_label']} ({$tool['tool_name']})");
-                $count++;
-            } else {
-                $output->writeln("  = {$tool['tool_label']} 已存在");
-            }
-        }
-
-        $output->writeln("初始化完成，新增 {$count} 个工具");
-        return 0;
-    }
 
     /**
      * 列出可用工具
@@ -141,7 +95,7 @@ class target extends Command
         $tools = ScanTool::where('is_enabled', 1)->select();
 
         if ($tools->isEmpty()) {
-            $output->writeln('暂无工具，请先执行 --init 初始化');
+            $output->writeln('暂无工具，请先添加工具');
             return 0;
         }
 
@@ -178,14 +132,18 @@ class target extends Command
         // Step 2: 获取工具
         $output->writeln('[Step 2] 获取工具...');
         if (!$toolName) {
-            $toolName = 'sqlmap'; // 默认工具
-            $output->writeln("  未指定工具，使用默认: sqlmap");
-        }
-
-        $tool = ScanTool::getByName($toolName);
-        if (!$tool) {
-            $output->error("  工具 {$toolName} 不存在");
-            return 1;
+            $tool = ScanTool::getDefaultTool();
+            if (!$tool) {
+                $output->error("  没有可用的工具，请先添加工具");
+                return 1;
+            }
+            $output->writeln("  未指定工具，使用默认: {$tool->tool_name}");
+        } else {
+            $tool = ScanTool::getByName($toolName);
+            if (!$tool) {
+                $output->error("  工具 {$toolName} 不存在");
+                return 1;
+            }
         }
         $output->writeln("  工具: {$tool->tool_label} ({$tool->tool_name}) - {$tool->description}");
         $output->writeln('');
@@ -243,8 +201,8 @@ class target extends Command
         $rawOutput = implode("\n", $outputLines);
 
         foreach ($outputLines as $line) {
-            // 解析输出并存储结果
-            $parsed = $this->parseToolOutput($line, $tool);
+            // 解析输出并存储结果（使用数据库配置的解析规则）
+            $parsed = $tool->parseOutput($line);
             if ($parsed) {
                 ScanResult::addResult($taskId, $parsed);
                 $resultCount++;
@@ -284,44 +242,6 @@ class target extends Command
         ]);
 
         return ['count' => 1, 'output' => "模拟扫描: {$tool->tool_label} 工具未安装"];
-    }
-
-    /**
-     * 解析工具输出
-     */
-    protected function parseToolOutput(string $line, ScanTool $tool): ?array
-    {
-        // SQLMap 输出解析
-        if ($tool->tool_name === 'sqlmap') {
-            if (stripos($line, 'injectable') !== false) {
-                return [
-                    'vuln_level' => 'high',
-                    'vuln_type' => 'sql_injection',
-                    'vuln_detail' => $line
-                ];
-            }
-            if (stripos($line, 'Parameter') !== false && stripos($line, 'vulnerable') !== false) {
-                return [
-                    'vuln_level' => 'critical',
-                    'vuln_type' => 'sql_injection',
-                    'vuln_detail' => $line
-                ];
-            }
-        }
-
-        // XRay 输出解析
-        if ($tool->tool_name === 'xray') {
-            if (preg_match('/"plugin"\s*:\s*"([^"]+)"/', $line, $matches)) {
-                $plugin = $matches[1];
-                return [
-                    'vuln_level' => 'high',
-                    'vuln_type' => $plugin,
-                    'vuln_detail' => $line
-                ];
-            }
-        }
-
-        return null;
     }
 
     /**
