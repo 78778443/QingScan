@@ -1,0 +1,76 @@
+version: '3.8'
+
+services:
+  # 扫描工具容器
+  tools:
+    build:
+      context: ./tools
+      dockerfile: Dockerfile
+    container_name: qingscan-tools
+    hostname: qingscan-tools
+    volumes:
+      - tools-data:/opt/qingscan/tools
+    networks:
+      - qingscan-network
+    restart: unless-stopped
+    environment:
+      - TZ=Asia/Shanghai
+
+  # Go API 服务
+  api:
+    build:
+      context: ../../
+      dockerfile: deploy/go/Dockerfile
+    container_name: qingscan-api
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./config.yaml:/app/config.yaml:ro
+      - tools-data:/opt/qingscan/tools:ro
+      - static-data:/app/static
+    environment:
+      - TZ=Asia/Shanghai
+    depends_on:
+      - tools
+      - redis
+    networks:
+      - qingscan-network
+    restart: unless-stopped
+
+  # Redis 队列
+  redis:
+    image: redis:7-alpine
+    container_name: qingscan-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - qingscan-network
+    restart: unless-stopped
+
+  # MySQL 数据库
+  mysql:
+    image: mysql:8.0
+    container_name: qingscan-mysql
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root123
+      MYSQL_DATABASE: qingscan
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    networks:
+      - qingscan-network
+    restart: unless-stopped
+
+networks:
+  qingscan-network:
+    driver: bridge
+
+volumes:
+  tools-data:
+  static-data:
+  redis-data:
+  mysql-data:

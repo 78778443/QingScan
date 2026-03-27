@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录 - QingScan</title>
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .login-container {
+            background: #fff;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            width: 400px;
+        }
+        .login-container h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .btn-login {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+        }
+        .error-msg {
+            color: #dc3545;
+            margin-top: 10px;
+            text-align: center;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h2>QingScan 登录</h2>
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="username">用户名</label>
+                <input type="text" class="form-control" id="username" name="username" required>
+            </div>
+            <div class="form-group">
+                <label for="password">密码</label>
+                <input type="password" class="form-control" id="password" name="password" required>
+            </div>
+            <button type="submit" class="btn btn-primary btn-login">登录</button>
+            <div class="error-msg" id="errorMsg"></div>
+        </form>
+        <div style="text-align: center; margin-top: 20px;">
+            <small>默认账号: admin / 2111</small>
+        </div>
+    </div>
+
+    <script src="/static/js/jquery.min.js"></script>
+    <script>
+        $('#loginForm').on('submit', function(e) {
+            e.preventDefault();
+
+            $.ajax({
+                url: '/api/login',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    username: $('#username').val(),
+                    password: $('#password').val()
+                }),
+                success: function(res) {
+                    if(res.code === 0) {
+                        // 保存token
+                        localStorage.setItem('token', res.data.token);
+                        localStorage.setItem('user', JSON.stringify(res.data.user));
+                        // 跳转首页
+                        window.location.href = '/';
+                    } else {
+                        $('#errorMsg').text(res.msg).show();
+                    }
+                },
+                error: function() {
+                    $('#errorMsg').text('登录失败，请稍后重试').show();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
