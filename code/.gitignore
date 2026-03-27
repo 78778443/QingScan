@@ -1,6 +1,0 @@
-/.idea
-/.vscode
-/vendor
-*.log
-.env
-/app/company/
