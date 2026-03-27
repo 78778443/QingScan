@@ -70,6 +70,12 @@ func autoMigrate() error {
 		&model.App{},
 		&model.Plugin{},
 		&model.ToolConfig{},
+		// 新增表
+		&model.ScanTool{},
+		&model.ScanTarget{},
+		&model.ScanTask{},
+		&model.ScanResult{},
+		&model.LLMAnalysis{},
 	)
 }
 

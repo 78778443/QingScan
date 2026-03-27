@@ -7,6 +7,9 @@ import (
 	"log"
 	"os"
 
+	"qingscan/internal/config"
+	"qingscan/internal/database"
+	"qingscan/internal/result"
 	"qingscan/internal/scanner"
 )
 
@@ -17,6 +20,7 @@ var (
 	toolsPath  = flag.String("p", "/opt/qingscan/tools", "工具目录路径")
 	list       = flag.Bool("list", false, "列出所有可用的扫描器")
 	check      = flag.String("check", "", "检查指定扫描器是否可用")
+	save       = flag.Bool("save", false, "保存结果到数据库")
 
 	// 扫描选项
 	optLevel     = flag.Int("level", 2, "SQLMap扫描级别")
@@ -56,6 +60,32 @@ func main() {
 		log.SetOutput(os.NewFile(0, ""))
 	}
 
+	// 初始化数据库（如果需要保存结果）
+	var dbInitialized bool
+	if *save {
+		cfg, err := config.Load(".")
+		if err != nil {
+			log.Printf("警告: 配置加载失败，将使用默认配置: %v", err)
+			cfg = &config.Config{
+				Database: config.DatabaseConfig{
+					Host:     "127.0.0.1",
+					Port:     3306,
+					User:     "root",
+					Password: "root",
+					DBName:   "qingscan_test",
+					MaxIdle:  10,
+					MaxOpen:  100,
+				},
+			}
+		}
+		if err := database.Init(&cfg.Database); err != nil {
+			log.Printf("警告: 数据库连接失败，将不保存结果到数据库: %v", err)
+		} else {
+			dbInitialized = true
+			log.Println("数据库连接成功")
+		}
+	}
+
 	// 注册所有扫描器
 	scanner.RegisterAllScanners(*toolsPath)
 
@@ -78,7 +108,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	runScan()
+	runScan(dbInitialized)
 }
 
 func listScanners() {
@@ -116,7 +146,7 @@ func checkScanner(name string) {
 	fmt.Println("  状态: 可用")
 }
 
-func runScan() {
+func runScan(dbInitialized bool) {
 	m := scanner.GetScanManager()
 	s := m.Get(*scannerName)
 
@@ -138,14 +168,19 @@ func runScan() {
 	options := buildOptions()
 
 	// 运行扫描
-	result, err := s.Run(*target, options)
+	scanResult, err := s.Run(*target, options)
 	if err != nil {
 		fmt.Printf("扫描错误: %v\n", err)
 		os.Exit(1)
 	}
 
+	// 保存结果到数据库
+	if *save && dbInitialized {
+		saveToDatabase(scanResult)
+	}
+
 	// 输出结果
-	outputResult(result)
+	outputResult(scanResult)
 }
 
 func buildOptions() map[string]interface{} {
@@ -210,4 +245,37 @@ func outputResult(result *scanner.ScanResult) {
 			fmt.Println(string(data))
 		}
 	}
+}
+
+// saveToDatabase 保存扫描结果到数据库
+func saveToDatabase(scanResult *scanner.ScanResult) {
+	db := database.GetDB()
+	if db == nil {
+		log.Println("数据库未初始化")
+		return
+	}
+
+	// 创建结果服务
+	rs := result.NewResultService(db)
+
+	// 转换结果为字符串
+	var outputStr string
+	if scanResult.Results != nil {
+		switch v := scanResult.Results.(type) {
+		case string:
+			outputStr = v
+		default:
+			data, _ := json.Marshal(v)
+			outputStr = string(data)
+		}
+	}
+
+	// 保存结果
+	count, err := rs.SaveScanResult(0, scanResult.Scanner, scanResult.Target, outputStr)
+	if err != nil {
+		log.Printf("保存结果失败: %v", err)
+		return
+	}
+
+	log.Printf("成功保存 %d 条结果到数据库", count)
 }

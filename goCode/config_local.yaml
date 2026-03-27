@@ -1,0 +1,29 @@
+server:
+  port: 8080
+  mode: debug
+  read_timeout: 60s
+  write_timeout: 60s
+
+database:
+  host: 127.0.0.1
+  port: 3306
+  user: root
+  password: root
+  dbname: qingscan_test
+  max_idle: 10
+  max_open: 100
+
+redis:
+  host: 127.0.0.1
+  port: 6379
+  password: ""
+  db: 0
+
+jwt:
+  secret: qingscan-secret-key-change-in-production
+  expire_time: 24h
+
+scanner:
+  tools_path: /opt/qingscan/tools
+  output_dir: /var/qingscan/output
+  max_procs: 10

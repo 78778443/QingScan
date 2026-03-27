@@ -5,30 +5,66 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
-	"regexp"
+	"path/filepath"
 	"strings"
 	"time"
 
 	"github.com/hibiken/asynq"
 	"gorm.io/gorm"
 
-	"qingscan/internal/model"
+	"qingscan/internal/config"
 	"qingscan/internal/queue"
 	"qingscan/internal/repository"
+	"qingscan/internal/result"
 	"qingscan/internal/scanner"
 )
 
 // TaskProcessor 任务处理器
 type TaskProcessor struct {
-	taskRepo *repository.TaskRepository
-	db       *gorm.DB
+	taskRepo        *repository.TaskRepository
+	db              *gorm.DB
+	containerRunner *scanner.ContainerRunner
+	toolConfigs     []*config.ToolConfig
+	toolsPath       string
+	resultService   *result.ResultService
 }
 
 // NewTaskProcessor 创建任务处理器
-func NewTaskProcessor(taskRepo *repository.TaskRepository, db *gorm.DB) *TaskProcessor {
+func NewTaskProcessor(taskRepo *repository.TaskRepository, db *gorm.DB, toolsPath string) *TaskProcessor {
+	// 初始化容器运行器
+	containerRunner := scanner.NewContainerRunner(toolsPath)
+
+	// 初始化结果服务
+	resultService := result.NewResultService(db)
+
+	// 加载工具配置
+	var toolConfigs []*config.ToolConfig
+	configDir := filepath.Join(toolsPath, "..", "config", "tools")
+	imagesDir := filepath.Join(toolsPath, "images")
+
+	loader := config.NewToolLoader(configDir, toolsPath, imagesDir)
+	if tools, err := loader.LoadTools(); err == nil {
+		toolConfigs = tools
+		log.Printf("Loaded %d tool configs", len(toolConfigs))
+	} else {
+		log.Printf("Failed to load tool configs: %v", err)
+	}
+
+	// 加载工具镜像（容器模式）
+	if len(toolConfigs) > 0 {
+		results := containerRunner.LoadToolImages(toolConfigs)
+		for toolName, err := range results {
+			log.Printf("Failed to load tool %s: %v", toolName, err)
+		}
+	}
+
 	return &TaskProcessor{
-		taskRepo: taskRepo,
-		db:       db,
+		taskRepo:        taskRepo,
+		db:              db,
+		containerRunner: containerRunner,
+		toolConfigs:     toolConfigs,
+		toolsPath:       toolsPath,
+		resultService:   resultService,
 	}
 }
 
@@ -42,6 +78,36 @@ func (p *TaskProcessor) RegisterHandlers(mux *asynq.ServeMux) {
 	mux.HandleFunc("scan:web", p.handleWebScan)
 	// 注册代码扫描任务
 	mux.HandleFunc("scan:code", p.handleCodeScan)
+}
+
+// GetToolConfig 根据工具名称获取配置
+func (p *TaskProcessor) GetToolConfig(toolName string) *config.ToolConfig {
+	for _, tc := range p.toolConfigs {
+		if tc.Name == toolName {
+			return tc
+		}
+	}
+	return nil
+}
+
+// RunTool 运行工具（自动选择容器或本地模式）
+func (p *TaskProcessor) RunTool(toolName, target string, options map[string]interface{}) (*scanner.ScanResult, error) {
+	// 优先从配置获取工具配置
+	toolConfig := p.GetToolConfig(toolName)
+
+	if toolConfig != nil {
+		// 使用容器运行器（支持容器和本地模式）
+		return p.containerRunner.RunTool(toolConfig, target, options)
+	}
+
+	// 回退到旧的 ScanManager 方式（兼容旧代码）
+	scanner.RegisterAllScanners(p.toolsPath)
+	scanManager := scanner.GetScanManager()
+	scannerObj := scanManager.Get(toolName)
+	if scannerObj == nil {
+		return nil, fmt.Errorf("scanner not found: %s", toolName)
+	}
+	return scannerObj.Run(target, options)
 }
 
 // handleScanTask 处理扫描任务
@@ -90,37 +156,24 @@ func (p *TaskProcessor) handleHostScanTask(payload *queue.TaskPayload) error {
 	// 更新进度
 	queue.UpdateTaskProgress(payload.TaskID, 10, 0)
 
-	// 工具路径
-	toolsPath := "/opt/qingscan/tools"
-
-	// 注册扫描器
-	scanner.RegisterAllScanners(toolsPath)
-	scanManager := scanner.GetScanManager()
-
-	// 检查 nmap 是否可用
-	nmapScanner := scanManager.Get("nmap")
-	if nmapScanner == nil {
-		log.Printf("Nmap scanner not found, using default path")
-		nmapScanner = scanner.NewNmapScanner(toolsPath + "/nmap")
-		scanManager.Register(nmapScanner)
-	}
-
 	// 更新进度
 	queue.UpdateTaskProgress(payload.TaskID, 30, 0)
 
-	// 运行 nmap 扫描
+	// 运行 nmap 扫描（自动选择容器或本地模式）
 	options := map[string]interface{}{
-		"ports":          "1-1000",
+		"ports":           "1-1000",
 		"service_version": true,
 	}
 
-	result, err := scanManager.RunScan("nmap", payload.Target, options)
+	result, err := p.RunTool("nmap", payload.Target, options)
 	if err != nil {
 		log.Printf("Nmap scan failed: %v", err)
 	} else if result.Success {
-		log.Printf("Nmap scan completed: %d ports found", len(result.Results.(string)))
-		// 保存端口结果到数据库
-		p.savePortResults(payload.TaskID, payload.Target, result.Results.(string))
+		if resultStr, ok := result.Results.(string); ok {
+			log.Printf("Nmap scan completed: %d chars output", len(resultStr))
+			// 保存端口结果到数据库
+			p.savePortResults(payload.TaskID, payload.Target, resultStr)
+		}
 	}
 
 	queue.UpdateTaskProgress(payload.TaskID, 100, 0)
@@ -130,81 +183,20 @@ func (p *TaskProcessor) handleHostScanTask(payload *queue.TaskPayload) error {
 
 // savePortResults 保存端口扫描结果到数据库
 func (p *TaskProcessor) savePortResults(taskID uint, host, result string) {
-	// 查找或创建主机记录
-	var h model.Host
-	query := p.db.Where("ip = ?", host)
-	if err := query.First(&h).Error; err != nil {
-		// 创建新主机
-		h = model.Host{
-			IP:     host,
-			Status: 1,
-		}
-		p.db.Create(&h)
+	// 使用统一结果服务解析并保存
+	count, err := p.resultService.SaveScanResult(taskID, "nmap", host, result)
+	if err != nil {
+		log.Printf("Save nmap results failed: %v", err)
+	} else {
+		log.Printf("Saved %d nmap results", count)
 	}
-
-	// 解析 nmap 文本输出，提取端口信息
-	// 格式示例：22/tcp   open  ssh
-	portRegex := regexp.MustCompile(`(\d+)/(tcp|udp)\s+(\w+)\s+(.*)`)
-	lines := strings.Split(result, "\n")
-	savedCount := 0
-
-	for _, line := range lines {
-		matches := portRegex.FindStringSubmatch(line)
-		if len(matches) < 5 {
-			continue
-		}
-
-		portNum := matches[1]
-		protocol := matches[2]
-		state := matches[3]
-		service := matches[4]
-
-		// 检查是否已存在
-		var existing model.Port
-		query := p.db.Where("host = ? AND port = ? AND protocol = ?", host, portNum, protocol)
-		if err := query.First(&existing).Error; err == nil {
-			continue
-		}
-
-		// 创建端口记录
-		port := model.Port{
-			HostID:   h.ID,
-			Host:     host,
-			Port:     portNum,
-			Protocol: protocol,
-			State:    state,
-			Service:  strings.Fields(service)[0],
-		}
-
-		if len(strings.Fields(service)) > 1 {
-			port.Version = strings.Join(strings.Fields(service)[1:], " ")
-		}
-
-		if err := p.db.Create(&port).Error; err != nil {
-			log.Printf("Failed to save port: %v", err)
-		} else {
-			savedCount++
-		}
-	}
-
-	// 更新主机的端口数量
-	p.db.Model(&h).Update("port_count", savedCount)
-
-	log.Printf("Saved %d ports to database for host %s", savedCount, host)
 }
 
 // handleWebScanTask 处理Web扫描任务
 func (p *TaskProcessor) handleWebScanTask(payload *queue.TaskPayload) error {
 	queue.UpdateTaskProgress(payload.TaskID, 10, 0)
 
-	// 工具路径
-	toolsPath := "/opt/qingscan/tools"
-
-	// 注册扫描器
-	scanner.RegisterAllScanners(toolsPath)
-	scanManager := scanner.GetScanManager()
-
-	// 根据配置的扫描工具执行扫描
+	// 根据配置的扫描工具执行扫描（自动选择容器或本地模式）
 	tools := strings.Split(payload.Tools, ",")
 	resultCount := 0
 
@@ -221,12 +213,14 @@ func (p *TaskProcessor) handleWebScanTask(payload *queue.TaskPayload) error {
 			options := map[string]interface{}{
 				"severity": "critical,high,medium,low",
 			}
-			result, err := scanManager.RunScan("nuclei", payload.Target, options)
+			result, err := p.RunTool("nuclei", payload.Target, options)
 			if err != nil {
 				log.Printf("Nuclei scan failed: %v", err)
 			} else if result.Success {
 				log.Printf("Nuclei scan completed")
-				p.saveVulnResults(payload.TaskID, "nuclei", result.Results.(string))
+				if resultStr, ok := result.Results.(string); ok {
+					p.saveVulnResults(payload.TaskID, "nuclei", resultStr)
+				}
 				resultCount++
 			}
 
@@ -234,7 +228,7 @@ func (p *TaskProcessor) handleWebScanTask(payload *queue.TaskPayload) error {
 			options := map[string]interface{}{
 				"threads": 10,
 			}
-			result, err := scanManager.RunScan("dirmap", payload.Target, options)
+			result, err := p.RunTool("dirmap", payload.Target, options)
 			if err != nil {
 				log.Printf("Dirmap scan failed: %v", err)
 			} else if result.Success {
@@ -252,12 +246,14 @@ func (p *TaskProcessor) handleWebScanTask(payload *queue.TaskPayload) error {
 		options := map[string]interface{}{
 			"severity": "critical,high,medium,low",
 		}
-		result, err := scanManager.RunScan("nuclei", payload.Target, options)
+		result, err := p.RunTool("nuclei", payload.Target, options)
 		if err != nil {
 			log.Printf("Nuclei scan failed: %v", err)
 		} else if result.Success {
 			log.Printf("Nuclei scan completed")
-			p.saveVulnResults(payload.TaskID, "nuclei", result.Results.(string))
+			if resultStr, ok := result.Results.(string); ok {
+				p.saveVulnResults(payload.TaskID, "nuclei", resultStr)
+			}
 			resultCount++
 		}
 	}
@@ -269,79 +265,68 @@ func (p *TaskProcessor) handleWebScanTask(payload *queue.TaskPayload) error {
 
 // saveVulnResults 保存漏洞扫描结果到数据库
 func (p *TaskProcessor) saveVulnResults(taskID uint, tool, result string) {
-	// 解析 nuclei JSON 结果
-	lines := strings.Split(result, "\n")
-	savedCount := 0
-
-	for _, line := range lines {
-		line = strings.TrimSpace(line)
-		if line == "" || (!strings.HasPrefix(line, "{") && !strings.HasPrefix(line, "[")) {
-			continue
-		}
-
-		var vulnData struct {
-			Info struct {
-				Name        string `json:"name"`
-				Severity    string `json:"severity"`
-				Description string `json:"description"`
-			} `json:"info"`
-			MatchedAt string `json:"matched-at"`
-			Extractor string `json:"extractor"`
-			Template  string `json:"template"`
-			Type      string `json:"type"`
-		}
-
-		if err := json.Unmarshal([]byte(line), &vulnData); err != nil {
-			continue
-		}
-
-		if vulnData.Info.Name == "" {
-			continue
-		}
-
-		// 检查是否已存在
-		var existing model.Vulnerability
-		query := p.db.Where("name = ? AND target = ?", vulnData.Info.Name, vulnData.MatchedAt)
-		if err := query.First(&existing).Error; err == nil {
-			// 已存在，跳过
-			continue
-		}
-
-		// 创建漏洞记录
-		vuln := model.Vulnerability{
-			Name:        vulnData.Info.Name,
-			Target:      vulnData.MatchedAt,
-			Type:        vulnData.Type,
-			Severity:    vulnData.Info.Severity,
-			Status:      0,
-			Tool:        tool,
-			Poc:         vulnData.Template,
-			Description: vulnData.Info.Description,
-		}
-
-		if err := p.db.Create(&vuln).Error; err != nil {
-			log.Printf("Failed to save vulnerability: %v", err)
-		} else {
-			savedCount++
-		}
+	// 使用统一结果服务解析并保存
+	count, err := p.resultService.SaveScanResult(taskID, tool, "", result)
+	if err != nil {
+		log.Printf("Save %s results failed: %v", tool, err)
+	} else {
+		log.Printf("Saved %d %s results", count, tool)
 	}
-
-	log.Printf("Saved %d vulnerabilities to database for task %d", savedCount, taskID)
 }
 
 // handleCodeScanTask 处理代码扫描任务
 func (p *TaskProcessor) handleCodeScanTask(payload *queue.TaskPayload) error {
 	queue.UpdateTaskProgress(payload.TaskID, 10, 0)
 
-	// TODO: 调用实际的扫描器执行扫描
-	// 1. semgrep 代码扫描
-	// 2. codeql 代码分析
-	// 3. fortify 代码审计
+	// 根据配置的扫描工具执行扫描（自动选择容器或本地模式）
+	tools := strings.Split(payload.Tools, ",")
+	resultCount := 0
 
-	queue.UpdateTaskProgress(payload.TaskID, 50, 0)
+	for _, tool := range tools {
+		tool = strings.TrimSpace(tool)
+		if tool == "" {
+			continue
+		}
 
-	// 保存扫描结果
-	// ...
+		queue.UpdateTaskProgress(payload.TaskID, 30, 0)
+
+		// 根据不同工具设置不同选项
+		var options map[string]interface{}
+		switch tool {
+		case "semgrep":
+			options = map[string]interface{}{
+				"mode": "auto",
+			}
+		case "codeql":
+			options = map[string]interface{}{}
+		case "fortify":
+			options = map[string]interface{}{}
+		default:
+			options = map[string]interface{}{}
+		}
+
+		result, err := p.RunTool(tool, payload.Target, options)
+		if err != nil {
+			log.Printf("%s scan failed: %v", tool, err)
+		} else if result.Success {
+			log.Printf("%s scan completed", tool)
+			resultCount++
+		}
+	}
+
+	// 如果没有指定工具，默认运行 semgrep
+	if len(tools) == 0 || (len(tools) == 1 && tools[0] == "") {
+		options := map[string]interface{}{
+			"mode": "auto",
+		}
+		result, err := p.RunTool("semgrep", payload.Target, options)
+		if err != nil {
+			log.Printf("Semgrep scan failed: %v", err)
+		} else if result.Success {
+			log.Printf("Semgrep scan completed")
+			resultCount++
+		}
+	}
 
 	queue.UpdateTaskProgress(payload.TaskID, 100, 0)
 

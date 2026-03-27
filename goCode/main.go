@@ -75,7 +75,7 @@ func main() {
 		// 启动 worker 处理器
 		db := database.GetDB()
 		taskRepo := repository.NewTaskRepository(db)
-		taskProcessor := worker.NewTaskProcessor(taskRepo, db)
+		taskProcessor := worker.NewTaskProcessor(taskRepo, db, cfg.Scanner.ToolsPath)
 
 		// 注册任务处理器
 		taskProcessor.RegisterHandlers(queue.AsynqMux)
