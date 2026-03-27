@@ -63,10 +63,18 @@ var App *Config
 
 func Load(path string) (*Config, error) {
 	viper.SetConfigType("yaml")
-	viper.SetConfigName("config")
-	viper.AddConfigPath(path)
-	viper.AddConfigPath(".")
-	viper.AddConfigPath("/etc/qingscan/")
+
+	// 如果 path 是文件，直接使用
+	if len(path) > 0 && (path[len(path)-1] == '/' || path[len(path)-1] == '.') {
+		// path 是目录
+		viper.SetConfigName("config")
+		viper.AddConfigPath(path)
+		viper.AddConfigPath(".")
+		viper.AddConfigPath("/etc/qingscan/")
+	} else {
+		// path 是文件路径
+		viper.SetConfigFile(path)
+	}
 
 	if err := viper.ReadInConfig(); err != nil {
 		return nil, err
