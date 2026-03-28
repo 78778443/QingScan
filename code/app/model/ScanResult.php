@@ -37,9 +37,13 @@ class ScanResult extends Model
             'task_id' => $taskId,
             'vuln_level' => $data['vuln_level'] ?? self::LEVEL_INFO,
             'vuln_type' => $data['vuln_type'] ?? null,
+            'vuln_title' => $data['vuln_title'] ?? null,
             'vuln_detail' => $data['vuln_detail'] ?? null,
             'vuln_url' => $data['vuln_url'] ?? null,
-            'is_fixed' => 0
+            'vuln_request' => $data['vuln_request'] ?? null,
+            'vuln_response' => $data['vuln_response'] ?? null,
+            'vuln_evidence' => $data['vuln_evidence'] ?? null,
+            'is_fixed' => 0,
         ]);
     }
 

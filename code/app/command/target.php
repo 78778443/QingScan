@@ -28,6 +28,7 @@ class target extends Command
             ->addOption('target', 't', Option::VALUE_OPTIONAL, '扫描目标URL/IP')
             ->addOption('scan', 's', Option::VALUE_OPTIONAL, '指定扫描工具')
             ->addOption('tasks', null, Option::VALUE_NONE, '查看任务列表')
+            ->addOption('status', null, Option::VALUE_OPTIONAL, '查看任务状态(可选指定任务ID)')
             ->addOption('results', 'r', Option::VALUE_OPTIONAL, '查看扫描结果(可选指定任务ID)')
             ->addOption('analyze', 'a', Option::VALUE_OPTIONAL, '执行LLM分析(可选指定任务ID)')
             ->setDescription('安全扫描工具平台');
@@ -53,6 +54,13 @@ class target extends Command
                 return $this->listTasks($output);
             }
 
+            // 查看任务状态
+            $argv = $_SERVER['argv'] ?? [];
+            if (in_array('--status', $argv)) {
+                $taskId = $input->getOption('status');
+                return $this->showStatus($taskId, $output);
+            }
+
             // 查看结果 - 通过检查参数是否存在
             $argv = $_SERVER['argv'] ?? [];
             if (in_array('--results', $argv) || in_array('-r', $argv)) {
@@ -73,6 +81,7 @@ class target extends Command
             $output->writeln('  php think scan --list              列出可用工具');
             $output->writeln('  php think scan -t "http://example.com?id=1" -s <工具名>');
             $output->writeln('  php think scan --tasks             查看任务列表');
+            $output->writeln('  php think scan --status <任务ID>   查看任务状态');
             $output->writeln('  php think scan --results [任务ID]  查看扫描结果');
             $output->writeln('  php think scan --analyze [任务ID]  执行LLM分析');
 
@@ -116,7 +125,7 @@ class target extends Command
     }
 
     /**
-     * 执行扫描工作流
+     * 执行扫描工作流（回调模式）
      */
     protected function runScan(string $target, ?string $toolName, Output $output): int
     {
@@ -154,20 +163,43 @@ class target extends Command
         $output->writeln("  任务ID: {$task->id}");
         $output->writeln('');
 
-        // Step 4: 执行扫描
-        $output->writeln('[Step 4] 执行扫描...');
-        $task->start();
+        // Step 4: 启动异步扫描（回调模式）
+        $output->writeln('[Step 4] 启动异步扫描...');
 
-        $scanResult = $this->executeToolScan($tool, $target, $task->id, $output);
+        // 检查是否配置了回调模式的脚本
+        if (!empty($tool->start_command) && !empty($tool->script_code)) {
+            // 使用新的回调模式
+            $runner = new \app\service\TaskRunner();
+            $started = $runner->start($task->id);
 
-        $task->complete($scanResult['count'], $scanResult['output']);
-        $output->writeln("  扫描完成，发现 {$scanResult['count']} 个结果");
-        $output->writeln('');
+            if (!$started) {
+                $output->error("  任务启动失败");
+                $task->fail('任务启动失败');
+                return 1;
+            }
 
-        // Step 5: LLM分析
-        $output->writeln('[Step 5] LLM分析...');
-        $this->performLlmAnalysis($task->id, $output);
-        $output->writeln('');
+            $output->writeln("  任务已启动，等待插件回调...");
+            $output->writeln("  任务ID: {$task->id}");
+            $output->writeln('');
+            $output->writeln('使用以下命令查询结果:');
+            $output->writeln("  php think scan --results {$task->id}");
+            $output->writeln("  php think scan --status {$task->id}");
+        } else {
+            // 兼容旧模式：同步执行
+            $output->writeln("  使用同步模式执行...");
+            $task->start();
+
+            $scanResult = $this->executeToolScan($tool, $target, $task->id, $output);
+
+            $task->complete($scanResult['count'], $scanResult['output']);
+            $output->writeln("  扫描完成，发现 {$scanResult['count']} 个结果");
+            $output->writeln('');
+
+            // Step 5: LLM分析
+            $output->writeln('[Step 5] LLM分析...');
+            $this->performLlmAnalysis($task->id, $output);
+            $output->writeln('');
+        }
 
         $output->writeln('========== 工作流完成 ==========');
         return 0;
@@ -329,30 +361,82 @@ class target extends Command
             return 0;
         }
 
-        $statusColors = [
-            'pending' => 'yellow',
-            'running' => 'blue',
-            'success' => 'green',
-            'failed' => 'red'
+        $statusLabels = [
+            'pending' => '等待中',
+            'running' => '运行中',
+            'success' => '成功',
+            'failed' => '失败'
         ];
 
         foreach ($tasks as $task) {
-            $status = $task->task_status;
+            $status = $statusLabels[$task->task_status] ?? $task->task_status;
             $target = $task->target ? $task->target->target : 'N/A';
             $tool = $task->tool ? $task->tool->tool_label : 'N/A';
+            $progress = $task->progress ?? 0;
 
             $output->writeln(sprintf(
-                "  #%d | %-8s | %-10s | %s | 结果: %d",
+                "  #%d | %-6s | %3d%% | %-10s | %s | 结果: %d",
                 $task->id,
                 $status,
+                $progress,
                 $tool,
-                mb_substr($target, 0, 40),
+                mb_substr($target, 0, 30),
                 $task->result_count
             ));
         }
 
         $output->writeln('');
         $output->writeln("共 {$tasks->count()} 个任务");
+        return 0;
+    }
+
+    /**
+     * 查看任务状态
+     */
+    protected function showStatus(?string $taskId, Output $output): int
+    {
+        $output->writeln('========== 任务状态 ==========');
+
+        if (!$taskId) {
+            $output->error('请指定任务ID: php think scan --status <任务ID>');
+            return 1;
+        }
+
+        $task = ScanTask::with(['target', 'tool'])->find((int)$taskId);
+        if (!$task) {
+            $output->error("任务 #{$taskId} 不存在");
+            return 1;
+        }
+
+        $statusLabels = [
+            'pending' => '等待中',
+            'running' => '运行中',
+            'success' => '成功',
+            'failed' => '失败'
+        ];
+
+        $status = $statusLabels[$task->task_status] ?? $task->task_status;
+        $target = $task->target ? $task->target->target : 'N/A';
+        $tool = $task->tool ? $task->tool->tool_name : 'N/A';
+
+        $output->writeln("  任务ID:     {$task->id}");
+        $output->writeln("  状态:       {$status}");
+        $output->writeln("  进度:       " . ($task->progress ?? 0) . "%");
+        $output->writeln("  目标:       {$target}");
+        $output->writeln("  工具:       {$tool}");
+        $output->writeln("  结果数:     {$task->result_count}");
+        $output->writeln("  消息:       " . ($task->message ?? '-'));
+        $output->writeln("  开始时间:   " . ($task->start_time ?? '-'));
+        $output->writeln("  结束时间:   " . ($task->end_time ?? '-'));
+
+        // 如果任务完成，显示结果统计
+        if ($task->task_status === 'success') {
+            $counts = ScanResult::countByLevel($task->id);
+            $output->writeln('');
+            $output->writeln('  结果统计:');
+            $output->writeln("    严重: {$counts['critical']}  高危: {$counts['high']}  中危: {$counts['medium']}  低危: {$counts['low']}  信息: {$counts['info']}");
+        }
+
         return 0;
     }
 

@@ -15,3 +15,12 @@ Route::get('think', function () {
 });
 
 Route::get('hello/:name', 'index/hello');
+
+// 回调接口（供插件调用）
+Route::post('api/callback/status', 'callback/status');
+Route::post('api/callback/result', 'callback/result');
+
+// 任务接口
+Route::post('api/task/create', 'task/create');
+Route::get('api/task/status', 'task/status');
+Route::get('api/task/results', 'task/results');

@@ -59,7 +59,8 @@ class ScanTask extends Model
         return self::create([
             'target_id' => $targetId,
             'tool_id' => $toolId,
-            'task_status' => self::STATUS_PENDING
+            'task_status' => self::STATUS_PENDING,
+            'progress' => 0,
         ]);
     }
 
@@ -70,6 +71,19 @@ class ScanTask extends Model
     {
         $this->task_status = self::STATUS_RUNNING;
         $this->start_time = date('Y-m-d H:i:s');
+        $this->progress = 0;
+        $this->save();
+    }
+
+    /**
+     * 更新进度
+     */
+    public function updateProgress(int $progress, string $message = ''): void
+    {
+        $this->progress = min(100, max(0, $progress));
+        if ($message) {
+            $this->message = $message;
+        }
         $this->save();
     }
 
@@ -82,16 +96,20 @@ class ScanTask extends Model
         $this->end_time = date('Y-m-d H:i:s');
         $this->result_count = $resultCount;
         $this->tool_output = $toolOutput;
+        $this->progress = 100;
         $this->save();
     }
 
     /**
      * 任务失败
      */
-    public function fail(): void
+    public function fail(string $message = ''): void
     {
         $this->task_status = self::STATUS_FAILED;
         $this->end_time = date('Y-m-d H:i:s');
+        if ($message) {
+            $this->message = $message;
+        }
         $this->save();
     }
 }
