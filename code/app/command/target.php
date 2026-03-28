@@ -166,9 +166,9 @@ class target extends Command
         // Step 4: 启动异步扫描（回调模式）
         $output->writeln('[Step 4] 启动异步扫描...');
 
-        // 检查是否配置了回调模式的脚本
-        if (!empty($tool->start_command) && !empty($tool->script_code)) {
-            // 使用新的回调模式
+        // 检查是否配置了启动命令（支持Docker模式和脚本模式）
+        if (!empty($tool->start_command)) {
+            // 使用回调模式
             $runner = new \app\service\TaskRunner();
             $started = $runner->start($task->id);
 

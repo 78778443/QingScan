@@ -28,7 +28,7 @@ class TaskRunner
         }
 
         $tool = ScanTool::find($task->tool_id);
-        if (!$tool || empty($tool->start_command) || empty($tool->script_code)) {
+        if (!$tool || empty($tool->start_command)) {
             return false;
         }
 
@@ -37,22 +37,30 @@ class TaskRunner
             return false;
         }
 
-        // 创建脚本目录
-        $scriptDir = $this->scriptBaseDir . '/task_' . $taskId;
-        if (!is_dir($scriptDir)) {
-            mkdir($scriptDir, 0755, true);
-        }
-
-        // 解码脚本代码（数据库存储的是base64编码）
-        $scriptCode = base64_decode($tool->script_code);
-
-        // 写入脚本到磁盘
-        $scriptPath = $scriptDir . '/runner.py';
-        file_put_contents($scriptPath, $scriptCode);
-        chmod($scriptPath, 0755);
-
         // 构建回调URL
         $callbackUrl = $this->getCallbackUrl();
+
+        // 判断模式：有script_code是脚本模式，否则是命令模式(Docker等)
+        $scriptPath = '';
+        $workingDir = '/tmp';
+
+        if (!empty($tool->script_code)) {
+            // 脚本模式：写入脚本到磁盘
+            $scriptDir = $this->scriptBaseDir . '/task_' . $taskId;
+            if (!is_dir($scriptDir)) {
+                mkdir($scriptDir, 0755, true);
+            }
+
+            // 解码脚本代码（数据库存储的是base64编码）
+            $scriptCode = base64_decode($tool->script_code);
+
+            // 写入脚本到磁盘
+            $scriptPath = $scriptDir . '/runner.py';
+            file_put_contents($scriptPath, $scriptCode);
+            chmod($scriptPath, 0755);
+
+            $workingDir = $scriptDir;
+        }
 
         // 构建启动命令
         $command = $this->buildCommand($tool->start_command, [
@@ -66,7 +74,7 @@ class TaskRunner
         $task->start();
 
         // 后台执行命令
-        $this->executeAsync($command, $scriptDir);
+        $this->executeAsync($command, $workingDir);
 
         return true;
     }
