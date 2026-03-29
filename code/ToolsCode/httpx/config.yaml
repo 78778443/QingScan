@@ -1,0 +1,6 @@
+name: httpx
+label: Httpx
+description: HTTP探测工具
+image: daxia/qingscan-httpx:latest
+command: docker run --rm --network qingscan-net {image} --task-id={task_id} --callback={callback_url} --target={target}
+enabled: true

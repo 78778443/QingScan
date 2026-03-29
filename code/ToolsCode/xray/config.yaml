@@ -1,0 +1,6 @@
+name: xray
+label: Xray
+description: 被动安全扫描
+image: daxia/qingscan-xray:latest
+command: docker run --rm --network qingscan-net {image} --task-id={task_id} --callback={callback_url} --target={target}
+enabled: true

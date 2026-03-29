@@ -1,0 +1,6 @@
+name: nuclei
+label: Nuclei
+description: 漏洞扫描模板引擎
+image: daxia/qingscan-nuclei:latest
+command: docker run --rm --network qingscan-net {image} --task-id={task_id} --callback={callback_url} --target={target}
+enabled: true

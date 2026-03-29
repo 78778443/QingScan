@@ -1,0 +1,21 @@
+services:
+  web:
+    build: .
+    ports:
+      - "8888:80"
+    depends_on:
+      - mysql
+    networks:
+      - sqli-net
+
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - sqli-net
+
+networks:
+  sqli-net:

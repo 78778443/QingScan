@@ -1,0 +1,9 @@
+{
+    "tool_name": "sqlmap",
+    "tool_label": "SQLMap",
+    "description": "SQL注入检测工具",
+    "start_command": "docker run --rm --network host qingscan/sqlmap:latest --task-id={task_id} --callback={callback_url} --target={target}",
+    "script_code": null,
+    "is_enabled": 1,
+    "remark": "Docker封装版本，平台无需关心内部实现"
+}

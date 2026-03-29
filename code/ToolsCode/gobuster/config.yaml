@@ -1,0 +1,6 @@
+name: gobuster
+label: Gobuster
+description: 目录爆破工具
+image: daxia/qingscan-gobuster:latest
+command: docker run --rm --network qingscan-net {image} --task-id={task_id} --callback={callback_url} --target={target}
+enabled: true

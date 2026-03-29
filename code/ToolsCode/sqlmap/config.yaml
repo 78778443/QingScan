@@ -1,0 +1,6 @@
+name: sqlmap
+label: SQLMap
+description: SQL注入检测工具
+image: daxia/qingscan-sqlmap:latest
+command: docker run --rm --network qingscan-net {image} --task-id={task_id} --callback={callback_url} --target={target}
+enabled: true

@@ -1,0 +1,6 @@
+name: afrog
+label: Afrog
+description: 漏洞扫描工具
+image: daxia/qingscan-afrog:latest
+command: docker run --rm --network qingscan-net {image} --task-id={task_id} --callback={callback_url} --target={target}
+enabled: true

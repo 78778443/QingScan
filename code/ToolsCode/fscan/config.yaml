@@ -1,0 +1,6 @@
+name: fscan
+label: Fscan
+description: 综合扫描工具
+image: daxia/qingscan-fscan:latest
+command: docker run --rm --network qingscan-net {image} --task-id={task_id} --callback={callback_url} --target={target}
+enabled: true

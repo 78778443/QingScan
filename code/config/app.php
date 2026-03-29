@@ -28,6 +28,6 @@ return [
     // 显示错误信息
     'show_error_msg'   => false,
 
-    // 回调基础URL（供插件回调使用）
-    'callback_base_url' => 'http://127.0.0.1:8080',
+    // 回调基础URL（供插件回调使用，从环境变量读取）
+    'callback_base_url' => env('callback_base_url', 'http://localhost'),
 ];

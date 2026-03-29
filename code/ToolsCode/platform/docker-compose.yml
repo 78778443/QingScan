@@ -1,0 +1,77 @@
+services:
+  # PHP平台
+  php:
+    image: php:8.2-apache
+    container_name: qingscan_php_local
+    ports:
+      - "8082:80"
+    volumes:
+      - ../../code:/var/www/html
+      - ./apache.conf:/etc/apache2/sites-available/000-default.conf
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /usr/bin/docker:/usr/bin/docker
+    working_dir: /var/www/html
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - qingscan-net
+    command: >
+      bash -c "docker-php-ext-install pdo pdo_mysql mysqli &&
+               a2enmod rewrite &&
+               apache2-foreground"
+
+  # 平台数据库
+  mysql:
+    image: mysql:8.0
+    container_name: qingscan_mysql_local
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: qingscan
+    ports:
+      - "3307:3306"
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - qingscan-net
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # 靶场Web
+  target:
+    image: php:7.4-apache
+    container_name: sqli_target_local
+    ports:
+      - "8889:80"
+    volumes:
+      - ./vuln.php:/var/www/html/vuln.php
+    depends_on:
+      target-mysql:
+        condition: service_healthy
+    networks:
+      - qingscan-net
+    command: >
+      bash -c "docker-php-ext-install mysqli && apache2-foreground"
+
+  # 靶场数据库
+  target-mysql:
+    image: mysql:8.0
+    container_name: sqli_target_mysql_local
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: test
+    volumes:
+      - ./target-init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - qingscan-net
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+networks:
+  qingscan-net:

@@ -103,11 +103,13 @@ class TaskRunner
      */
     protected function executeAsync(string $command, string $workingDir): void
     {
-        // 构建后台执行命令
+        // 构建后台执行命令，保存日志
+        $logFile = '/tmp/scan_task.log';
         $fullCommand = sprintf(
-            'cd %s && nohup %s > /dev/null 2>&1 &',
+            'cd %s && nohup %s >> %s 2>&1 &',
             escapeshellarg($workingDir),
-            $command
+            $command,
+            $logFile
         );
 
         // 执行
