@@ -56,14 +56,21 @@ class WorkOrder extends Common
             'fixed_confirmed' => '已修复确认'
         ];
         
-        // 工单类型
-        $work_order_type = [
+        // 工单类型 - 从数据库中动态获取
+        $work_order_type_map = [
             'vul_fix' => '漏洞修复',
             'asset_add' => '资产添加',
             'asset_delete' => '资产删除',
             'other' => '其他'
         ];
-        
+        $type_list = Db::table('asm_work_order')->distinct(true)->column('type');
+        $work_order_type = [];
+        foreach ($type_list as $t) {
+            if (!empty($t)) {
+                $work_order_type[$t] = $work_order_type_map[$t] ?? $t;
+            }
+        }
+
         // 计算分页显示信息
         $total = $work_order_page->total();
         $currentPage = $work_order_page->currentPage();
