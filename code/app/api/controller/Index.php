@@ -53,10 +53,6 @@ class Index extends BaseController
             '命令执行' => ['command', 'exec', 'system', 'eval', 'backtick', 'code-execution'],
             '文件包含' => ['inclusion', 'include', 'require'],
             'SSRF' => ['ssrf'],
-            '反序列化' => ['unserialize'],
-            '文件上传' => ['upload'],
-            '硬编码凭据' => ['hardcoded', 'password'],
-            '变量覆盖' => ['overwrite', 'parse_str'],
         ];
         $auditTypeCounts = [];
         $auditRows = Db::table('scan_code_audit')->field('rule_id,count(id) as cnt')->group('rule_id')->select()->toArray();
@@ -71,11 +67,12 @@ class Index extends BaseController
                     }
                 }
             }
+            // 未匹配的其他风险（反序列化/上传/硬编码等）仅计入审计总量
             if (!$matched) {
-                $auditTypeCounts['其他'] = ($auditTypeCounts['其他'] ?? 0) + (int)$ar['cnt'];
+                // 不单独展示
             }
         }
-        // 白盒审计子项：始终展示全部分类（无数据时值为 0）
+        // 白盒审计子项：最多 6 项（审计总量 + 5 个分类，无数据时值为 0）
         $auditSubInfo = [["name" => "审计总量", "value" => $semgrepCount, "href" => "/code"]];
         foreach (array_keys($auditTypeMap) as $label) {
             $auditSubInfo[] = ["name" => $label, "value" => $auditTypeCounts[$label] ?? 0, "href" => "/code"];
