@@ -5,15 +5,7 @@ INSERT INTO  `user` (`id`, `username`, `password`, `salt`, `nickname`, `auth_gro
 -- 系统配置项示例数据
 -- 这些是QingScan系统中常用的配置项，您可以根据实际情况修改值
 INSERT INTO `system_config` (`name`, `key`, `value`) VALUES
--- FOFA配置（网络空间资产搜索引擎）
-('FOFA账号邮箱', 'fofa_email', 'your_email@example.com'),
-('FOFA API密钥', 'fofa_key', 'your_fofa_api_key'),
-('FOFA用户名', 'fofa_user', 'your_fofa_username'),
-('FOFA令牌', 'fofa_token', 'your_fofa_token'),
 
--- AWVS配置（Web应用漏洞扫描器）
-('AWVS服务器地址', 'awvs_url', 'http://your-awvs-server:3443'),
-('AWVS API令牌', 'awvs_token', 'your_awvs_api_token'),
 
 -- 邮箱配置（用于系统通知）
 ('SMTP服务器', 'smtp_server', 'smtp.example.com'),

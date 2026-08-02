@@ -562,17 +562,6 @@ CREATE TABLE `asm_work_order` (
 DROP TABLE IF EXISTS `auth_group`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `auth_group` (
-  `auth_group_id` int unsigned NOT NULL AUTO_INCREMENT COMMENT '用户组表',
-  `title` char(100) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT '' COMMENT 'title:用户组中文名称',
-  `status` tinyint(1) NOT NULL DEFAULT '1' COMMENT '为1正常，为0禁用',
-  `rules` text CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci COMMENT 'rules：用户组拥有的规则id， 多个规则","隔开',
-  `update_time` int NOT NULL DEFAULT '0' COMMENT '修改时间',
-  `is_delete` tinyint(1) NOT NULL DEFAULT '0',
-  `created_at` int NOT NULL DEFAULT '0' COMMENT '添加时间',
-  PRIMARY KEY (`auth_group_id`) USING BTREE
-) ENGINE=MyISAM AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb3 ROW_FORMAT=DYNAMIC;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `auth_rule`
@@ -581,23 +570,6 @@ CREATE TABLE `auth_group` (
 DROP TABLE IF EXISTS `auth_rule`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `auth_rule` (
-  `auth_rule_id` int unsigned NOT NULL AUTO_INCREMENT COMMENT '自增id',
-  `href` char(127) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT '' COMMENT '地址   控制器/方法',
-  `title` char(20) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT '' COMMENT '名称',
-  `is_delete` tinyint(1) NOT NULL DEFAULT '0' COMMENT '删除状态  1删除  0正常',
-  `is_open_auth` tinyint NOT NULL DEFAULT '1' COMMENT '是否验证权限',
-  `pid` int NOT NULL DEFAULT '0' COMMENT '父栏目ID',
-  `sort` int NOT NULL DEFAULT '0' COMMENT '排序',
-  `created_at` int NOT NULL DEFAULT '0' COMMENT '添加时间',
-  `menu_status` tinyint(1) NOT NULL DEFAULT '1' COMMENT '菜单状态  1显示  0隐藏',
-  `update_time` int NOT NULL DEFAULT '0' COMMENT '更新时间',
-  `level` tinyint NOT NULL DEFAULT '1' COMMENT '等级  1顶级，一级，2.二级，3.三级',
-  `delete_time` int NOT NULL DEFAULT '0',
-  `icon_url` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT '' COMMENT '图标样式',
-  PRIMARY KEY (`auth_rule_id`) USING BTREE
-) ENGINE=MyISAM AUTO_INCREMENT=2553 DEFAULT CHARSET=utf8mb3 ROW_FORMAT=DYNAMIC COMMENT='权限列表';
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `awvs_app`

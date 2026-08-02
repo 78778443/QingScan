@@ -5,7 +5,6 @@ namespace app\controller;
 
 
 use app\BaseController;
-use app\model\AuthRuleModel;
 use app\model\UserLogModel;
 use think\exception\HttpResponseException;
 use think\facade\Cookie;
@@ -39,41 +38,9 @@ class Common extends BaseController
         $this->userId = $this->userInfo ? $this->userInfo['id'] : 0;
         $this->username = $this->userInfo ? $this->userInfo['username'] : '';
         $this->auth_group_id = $this->userInfo['auth_group_id'];
-        // 添加到rule表
-        $href = cc_format(Request::controller() . '/' . Request::action());
-        $data = ['href' => $href, 'title' => '未知', 'pid' => 43, 'level' => 3, 'created_at' => time()];
-        Db::name('auth_rule')->extra('IGNORE')->insert($data);
-
-        if (!$this->is_auth($href)) {
-            die('权限不足,请联系管理员开通权限');
-        }
-
-        View::assign('href', $href);
         View::assign('title', env('website'));
     }
 
-    // 权限判断
-    private function is_auth($name)
-    {
-
-        if (in_array($this->username, explode(',', env('admins')))) return true;
-
-        //管理员和开放地址,不鉴定权限
-        $rules = Db::name('auth_group')->where('auth_group_id', $this->auth_group_id)->value('rules');
-
-        if (Db::name('auth_rule')->where('href', $name)->value('is_open_auth') == 0) return true;
-//var_dump(Db::name('auth_rule')->where('href', $name)->value('is_open_auth'));die;
-        //其他地址需要鉴定权限
-        $user_auth_rule = Db::name('auth_rule')->where('auth_rule_id', 'in', "({$rules})")->field('title,href,is_open_auth')->select()->toArray();
-        $is_auth = false;
-        foreach ($user_auth_rule as $v) {
-            if (strtolower($name) == strtolower($v['href'])) {
-                $is_auth = true;
-            }
-        }
-        return $is_auth;
-
-    }
 
     /**
      * 判断用户是否登录

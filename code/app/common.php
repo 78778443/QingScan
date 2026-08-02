@@ -573,30 +573,6 @@ function getGaoDeCity($ip)
     return $data;
 }
 
-function getBaiduCity($ip)
-{
-    $cacheName = "./tmp/{$ip}.json";
-    if (file_exists($cacheName)) {
-        return json_decode(file_get_contents($cacheName), true);
-    }
-    $ak = \app\model\ConfigModel::value('baidu_ak');
-    $url = "http://api.map.baidu.com/location/ip?ip={$ip}&ak={$ak}&coor=bd09ll";
-
-    $result = BaseModel::curlExec($url, 'GET', $url);
-    $result_arr = json_decode($result, true)['content'];
-
-    $data['lng_log'] = "{$result_arr['point']['x']},{$result_arr['point']['y']}";
-    $data['province'] = is_string($result_arr['address']) ? $result_arr['address'] : '';
-    $data['city'] = $result_arr['address_detail']['city'];
-    $data['detail'] = $result;
-    $data['client_ip'] = $ip;
-    $data['isp'] = getIspByIp($ip);
-
-    file_put_contents($cacheName, json_encode($data));
-
-    return $data;
-}
-
 function getIspByIp($ip)
 {
     $url = "http://ip.taobao.com//service/getIpInfo.php?ip={$ip}";
@@ -1356,30 +1332,6 @@ function getScanStatus($appId, $pluginName, $scanType = 0)
         return "$pluginName 任务在{$result[1]['create_time']}扫描失败:{$result[1]['content']}";
     } elseif (count($result) == 2 && $result[1]['log_type'] == 1) {
         return "$pluginName 任务在{$result[1]['create_time']}扫描成功，但无有效结果:{$result[1]['content']}";
-    } else {
-//        var_dump($result);exit;
-
-    }
-}
-
-function getProcessNum()
-{
-    //获取PHP进程ID
-    $cmd = "ps -ef | grep 'php think' | grep -v 'grep --color=auto' | awk {'print $2'}";
-    exec($cmd, $phpProcess);
-    //获取排除PHP的进程PID
-    $cmd = "ps -ef | grep -v 'php think'  | grep 'sh -c' | grep -v '0.0.0.0:8000' | awk {'print  $3'}";
-    exec($cmd, $subProcess);
-
-    //判断这些PID时候在PHP进程ID里面
-    $result = [];
-    foreach ($subProcess as $process) {
-        if (in_array($process, $phpProcess)) {
-            $result[] = $process;
-        }
-    }
-    //返回数量
-    return count($result);
 }
 
 function is_json($string)
@@ -1410,28 +1362,6 @@ function isIPv4($ip)
     return true;
 }
 
-function processSleep($time)
-{
-    $array = debug_backtrace();
-    $list = [];
-    foreach ($array as $arrInfo) {
-        if (isset($arrInfo['class'])) {
-            $list[] = $arrInfo['function'];
-        }
-    }
-    sleep(rand(1, 10));
-    //获取最大的同时运行进程数
-    $num = ConfigModel::value('maxProcesses');
-    $num = empty($num) ? 4 : $num;
-
-    if (getProcessNum() <= $num) {
-        return true;
-    } else {
-        addlog("{$list[0]} 进程数量已到最大值 {$num},将休息30秒后运行");
-        echo "{$list[0]} 进程数量已到最大值: {$num},将休息30秒后运行";
-        sleep($time);
-        processSleep(30);
-    }
 }
 
 function download($filepath, $filename)
