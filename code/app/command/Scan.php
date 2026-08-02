@@ -39,12 +39,10 @@ class Scan extends Command
             ->setDescription('the scan command');
     }
 
-    protected function execute(Input $input, Output $output): void
+    /** 扫描任务映射关系（手动执行与常驻调度器共用） */
+    public static function getScanTasks(): array
     {
-        $func = trim($input->getArgument('func'));
-        
-        // 定义扫描任务映射关系
-        $scanTasks = [
+        return [
             // 生成扫描任务
             "create_task" => [TaskModel::class, 'autoAddTask'],
             "start_task" => [TaskModel::class, 'startTask'],
@@ -78,6 +76,12 @@ class Scan extends Command
             "code_murphysec" => [MurphysecModel::class, 'murphysec_scan', 'murphysec'],
             "code_codeql" => [MurphysecModel::class, 'murphysec_scan', 'codeql'],
         ];
+    }
+
+    protected function execute(Input $input, Output $output): void
+    {
+        $func = trim($input->getArgument('func'));
+        $scanTasks = self::getScanTasks();
 
         // 执行对应的任务
         if (isset($scanTasks[$func])) {

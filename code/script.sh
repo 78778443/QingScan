@@ -1,9 +1,6 @@
 #!/bin/bash
+# 启动 QingScan：Web 服务 + 常驻扫描调度器
 php think run &
-sleep 30
-# 死循环执行命令
-while true; do
-  php think scan create_task -vvv
-  php think scan start_task -vvv
-
-done
+sleep 5
+# 常驻扫描调度器：自动生成并执行扫描任务
+php think schedule
