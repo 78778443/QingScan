@@ -126,7 +126,7 @@ class Common extends BaseController
     {
         $ids = $request->param('ids');
         $check_status = $request->param('check_status');
-        $this->addUserLog('mobsfscan', "批量审核数据[$ids]");
+        $this->addUserLog('audit', "批量审核数据[$ids]");
         if (!$ids) {
             return $this->apiReturn(0, [], '请先选择要审核的数据');
         }

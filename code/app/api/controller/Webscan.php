@@ -48,7 +48,6 @@ class Webscan extends BaseController
                 $tables = [
                     'web_vuln' => ['scan_vuln', ['source' => 'web_vuln']],
                     'sql_inject' => ['urls_sqlmap', []],
-                    'awvs' => ['awvs_vuln', []],
                     'vul_verify' => ['scan_vuln', ['source' => 'vul_verify']],
                     'gen_vuln' => ['scan_vuln', ['source' => 'gen_vuln']],
                     'dir_scan' => ['app_dirmap', []],
@@ -97,7 +96,6 @@ class Webscan extends BaseController
                 $row['is_waf'] = !empty($wafMap[$id]) ? '是' : '否';
                 $row['web_vuln_num'] = $counts['web_vuln'][$id] ?? 0;
                 $row['sql_inject_num'] = $counts['sql_inject'][$id] ?? 0;
-                $row['awvs_num'] = $counts['awvs'][$id] ?? 0;
                 $row['vul_verify_num'] = $counts['vul_verify'][$id] ?? 0;
                 $row['gen_vuln_num'] = $counts['gen_vuln'][$id] ?? 0;
                 $row['dir_scan_num'] = $counts['dir_scan'][$id] ?? 0;
@@ -260,11 +258,6 @@ class Webscan extends BaseController
                 $data = ['crawlergo_scan_time' => '2000-01-01 00:00:00'];
                 Db::table('app_crawlergo')->where(['app_id' => $id])->delete();
                 break;
-            case 'scan_app_awvs':
-                $data = ['awvs_scan_time' => '2000-01-01 00:00:00'];
-                Db::table('awvs_app')->where(['app_id' => $id])->delete();
-                Db::table('awvs_vuln')->where(['app_id' => $id])->delete();
-                break;
             case 'scan_app_web_info_extra':
                 $data = ['screenshot_time' => '2000-01-01 00:00:00'];
                 Db::table('app_info')->where(['app_id' => $id])->delete();
@@ -318,7 +311,6 @@ class Webscan extends BaseController
         }
         $array = [
             'crawler_time' => '2000-01-01 00:00:00',
-            'awvs_scan_time' => '2000-01-01 00:00:00',
             'subdomain_time' => '2000-01-01 00:00:00',
             'whatweb_scan_time' => '2000-01-01 00:00:00',
             'subdomain_scan_time' => '2000-01-01 00:00:00',
@@ -715,8 +707,6 @@ class Webscan extends BaseController
         Db::table('app_whatweb')->where($where)->delete();
         Db::table('app_whatweb_poc')->where($where)->delete();
         Db::table('app_xray_agent_port')->where($where)->delete();
-        Db::table('awvs_app')->where($where)->delete();
-        Db::table('awvs_vuln')->where($where)->delete();
         Db::table('host_hydra_scan_details')->where($where)->delete();
         Db::table('scan_subdomain')->where($where)->delete();
         Db::table('plugin_scan_log')->where($where)->delete();

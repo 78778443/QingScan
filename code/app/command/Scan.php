@@ -4,7 +4,6 @@ declare (strict_types=1);
 namespace app\command;
 
 use app\asm\model\WebInfo;
-use app\asm\model\Fofa;
 use app\asm\model\IpModel;
 use app\code\model\CodeCheckModel;
 use app\model\AppModel;

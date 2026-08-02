@@ -23,8 +23,6 @@ class Index extends BaseController
         $xrayCount = Db::table('scan_vuln')->where(['source' => 'web_vuln'])->count();
         // 黑盒sqlmap数量
         $sqlmapCount = Db::table('urls_sqlmap')->where($where)->count();
-        // 黑盒awvs数量
-        $awvsCount = Db::table('awvs_app')->where($where)->count();
         // 黑盒漏洞验证数量（统一漏洞表 scan_vuln，source=vul_verify）
         $vulmapCount = Db::table('scan_vuln')->where(['source' => 'vul_verify'])->count();
         // 黑盒通用漏洞数量（统一漏洞表 scan_vuln，source=gen_vuln）
@@ -32,9 +30,9 @@ class Index extends BaseController
         // 黑盒dirmap数量
         $dirmapCount = Db::table('app_dirmap')->where($where)->count();
         // 黑盒whatweb数量
-        $whatwebCount = Db::table('app_whatweb')->where($where)->count();
+        $fingerCount = Db::table('app_whatweb')->where($where)->count();
         // 子域名数量（scan_subdomain）
-        $oneforallCount = Db::table('scan_subdomain')->where($where)->count();
+        $subdomainCount = Db::table('scan_subdomain')->where($where)->count();
 
         // 资产探测
         $hostCount = Db::table('asm_host')->count();
@@ -48,16 +46,8 @@ class Index extends BaseController
         // 白盒统计
         $codeCount = Db::table('code')->count();
         $semgrepCount = Db::table('scan_code_audit')->count();
-        $fortifyCount = Db::table('fortify')->count();
-        $mobsfscanCount = Db::table('mobsfscan')->count();
-        $murphysecCount = Db::table('murphysec')->count();
-        $phpCount = Db::table('code_composer')->count();
-        $pythonCount = Db::table('code_python')->count();
-        $javaCount = Db::table('code_java')->count();
-        $hemaCount = Db::table('code_webshell')->count();
 
         // 漏洞信息库
-        $pocsuite3Count = Db::table('pocsuite3')->count();
         $vulnerableCount = Db::table('vulnerable')->count();
         $pocsCount = Db::table('pocs_file')->count();
         $targetCount = Db::table('vul_target')->count();
@@ -69,11 +59,10 @@ class Index extends BaseController
                 "subInfo" => [
                     ["name" => "Web漏洞", "value" => $xrayCount, "href" => "/webscan/web-vuln"],
                     ["name" => "SQL注入", "value" => $sqlmapCount, "href" => "/webscan/sql-inject"],
-                    ["name" => "awvs", "value" => $awvsCount, "href" => "/webscan/awvs"],
                     ["name" => "漏洞验证", "value" => $vulmapCount, "href" => "/webscan/vul-verify"],
                     ["name" => "通用漏洞", "value" => $nucleiCount, "href" => "/webscan/gen-vuln"],
                     ["name" => "目录扫描", "value" => $dirmapCount, "href" => "/webscan/dir-scan"],
-                    ["name" => "指纹识别", "value" => $whatwebCount, "href" => "/webscan/finger"],
+                    ["name" => "指纹识别", "value" => $fingerCount, "href" => "/webscan/finger"],
                 ]
             ],
             [
@@ -81,7 +70,7 @@ class Index extends BaseController
                 "value" => $hostCount,
                 "subInfo" => [
                     ["name" => "主机", "value" => $hostCount, "href" => "/asm/host"],
-                    ["name" => "子域名", "value" => $oneforallCount, "href" => "/asm/subdomain"],
+                    ["name" => "子域名", "value" => $subdomainCount, "href" => "/asm/subdomain"],
                     ["name" => "URL", "value" => $urlsCount, "href" => "/asm/url"],
                     ["name" => "端口", "value" => $portCount, "href" => "/asm/port"],
                     ["name" => "中间件", "value" => $serviceCount, "href" => "/asm/port"],
@@ -92,16 +81,12 @@ class Index extends BaseController
                 "name" => "白盒审计",
                 "value" => $codeCount,
                 "subInfo" => [
-                    ["name" => "代码审计", "value" => $fortifyCount, "href" => "/code"],
-                    ["name" => "规则扫描", "value" => $semgrepCount, "href" => "/code"],
-                    ["name" => "移动应用", "value" => $mobsfscanCount, "href" => "/code"],
-                    ["name" => "软件依赖", "value" => $murphysecCount, "href" => "/code"],
-                    ["name" => "webshell", "value" => $hemaCount, "href" => "/code"],
+                    ["name" => "代码审计", "value" => $semgrepCount, "href" => "/code"],
                 ]
             ],
             [
-                "name" => "专项利用",
-                "value" => $pocsuite3Count,
+                "name" => "漏洞情报",
+                "value" => $vulnerableCount,
                 "subInfo" => [
                     ["name" => "漏洞情报", "value" => $vulnerableCount, "href" => "/result/vulnerable"],
                     ["name" => "Poc脚本", "value" => $pocsCount, "href" => "/result/plugin"],
@@ -123,17 +108,19 @@ class Index extends BaseController
     public function tongji()
     {
         try {
-            // 漏洞类型分布
-            $folderCount = Db::table('fortify')->field('Folder as name,count(Folder) as value')->group('Folder')->select()->toArray();
+            // 代码审计规则统计（scan_code_audit 按规则分组）
+            $folderCount = Db::table('scan_code_audit')->field('rule_id as name,count(rule_id) as value')->group('rule_id')->select()->toArray();
+            array_multisort(array_column($folderCount, 'value'), SORT_DESC, $folderCount);
+            $folderCount = array_slice($folderCount, 0, 10);
 
-            // 漏洞统计
+            // 新增统计（最近 14/7/1 天）
             $shijianCount = [];
-            $shijianCount[] = ['name' => '14天', 'value' => Db::table('fortify')->whereTime('create_time', '>=', date('Y-m-d H:i:s', time() - 14 * 86400))->count('id')];
-            $shijianCount[] = ['name' => '7天', 'value' => Db::table('fortify')->whereTime('create_time', '>=', date('Y-m-d H:i:s', time() - 7 * 86400))->count('id')];
-            $shijianCount[] = ['name' => '24小时', 'value' => Db::table('fortify')->whereTime('create_time', '>=', date('Y-m-d H:i:s', time() - 1 * 86400))->count('id')];
+            $shijianCount[] = ['name' => '14天', 'value' => Db::table('scan_code_audit')->whereTime('create_time', '>=', date('Y-m-d H:i:s', time() - 14 * 86400))->count('id')];
+            $shijianCount[] = ['name' => '7天', 'value' => Db::table('scan_code_audit')->whereTime('create_time', '>=', date('Y-m-d H:i:s', time() - 7 * 86400))->count('id')];
+            $shijianCount[] = ['name' => '24小时', 'value' => Db::table('scan_code_audit')->whereTime('create_time', '>=', date('Y-m-d H:i:s', time() - 1 * 86400))->count('id')];
 
-            // 漏洞排行
-            $bugPaihang = Db::table('fortify')->field('Category as name,count(Category) as value')->where("Folder != 'Low'")->group('Category')->select()->toArray();
+            // 审计文件排行
+            $bugPaihang = Db::table('scan_code_audit')->field('file as name,count(file) as value')->where('severity', 'error')->group('file')->select()->toArray();
             array_multisort(array_column($bugPaihang, 'value'), SORT_DESC, $bugPaihang);
             $bugPaihang = array_slice($bugPaihang, 0, 10);
 
@@ -153,9 +140,9 @@ class Index extends BaseController
             $serviceCount = array_slice($serviceCount, 0, 10);
 
             $data = [
-                ['key' => 'folderCount', 'data' => $folderCount, 'title' => "危害等级"],
+                ['key' => 'folderCount', 'data' => $folderCount, 'title' => "审计规则"],
                 ['key' => 'shijianCount', 'data' => $shijianCount, 'title' => "新增统计"],
-                ['key' => 'bugPaihang', 'data' => $bugPaihang, 'title' => "漏洞分类"],
+                ['key' => 'bugPaihang', 'data' => $bugPaihang, 'title' => "高危文件"],
                 ['key' => 'portCount', 'data' => $portCount, 'title' => "端口统计"],
                 ['key' => 'hostCount', 'data' => $hostCount, 'title' => "主机统计"],
                 ['key' => 'serviceCount', 'data' => $serviceCount, 'title' => "服务统计"],

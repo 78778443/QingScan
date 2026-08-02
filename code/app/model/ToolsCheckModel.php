@@ -41,8 +41,6 @@ class ToolsCheckModel extends BaseModel
             'vul_verify' => 'checkVulVerify',
             'asset_finger' => 'checkAssetFinger',
             'finger' => 'checkFinger',
-            'awvs' => 'checkAwvs',
-            'fofa' => 'checkFofa',
             'subdomain' => 'checkSubdomain',
             'weak_pass' => 'checkWeakPass',
             'sql_inject' => 'checkSqlInject',
@@ -100,15 +98,6 @@ class ToolsCheckModel extends BaseModel
                 "安装命令 (CentOS/RHEL): sudo yum install whatweb\n" .
                 "或查看项目文档: docs/tools/whatweb.md",
 
-            'awvs' => "AWVS是一款商业Web应用漏洞扫描器。\n" .
-                "需要配置AWVS服务器地址和API密钥。\n" .
-                "请在系统配置中设置awvs_url和awvs_token参数。\n" .
-                "或查看项目文档: docs/tools/awvs.md",
-
-            'fofa' => "FOFA是一款网络空间资产搜索引擎。\n" .
-                "需要配置FOFA账号邮箱和API密钥。\n" .
-                "请在系统配置中设置fofa_email和fofa_key参数。\n" .
-                "或查看项目文档: docs/tools/fofa.md",
 
             'subdomain' => "子域名枚举（可选用 OneForAll 等外部收集工具）。\n" .
                 "安装文档请参考: https://github.com/shmilylty/OneForAll\n" .
@@ -275,51 +264,6 @@ class ToolsCheckModel extends BaseModel
         return true;
     }
 
-    /**
-     * 检查Awvs工具
-     * @return bool
-     */
-    private static function checkAwvs(): bool
-    {
-        // AWVS是远程API，检查配置是否存在
-        try {
-            $awvsUrl = Db::table('config')->where(['name' => 'awvs_url'])->value('value');
-            $awvsToken = Db::table('config')->where(['name' => 'awvs_token'])->value('value');
-
-            if (empty($awvsUrl) || empty($awvsToken)) {
-                self::log(["工具检查失败: AWVS 配置缺失"]);
-                return false;
-            }
-        } catch (\Exception $e) {
-            self::log(["工具检查失败: AWVS 配置查询异常", $e->getMessage()]);
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * 检查Fofa工具
-     * @return bool
-     */
-    private static function checkFofa(): bool
-    {
-        // FOFA是远程API，检查配置是否存在
-        try {
-            $fofaEmail = Db::table('config')->where(['name' => 'fofa_email'])->value('value');
-            $fofaKey = Db::table('config')->where(['name' => 'fofa_key'])->value('value');
-
-            if (empty($fofaEmail) || empty($fofaKey)) {
-                self::log(["工具检查失败: FOFA 配置缺失"]);
-                return false;
-            }
-        } catch (\Exception $e) {
-            self::log(["工具检查失败: FOFA 配置查询异常", $e->getMessage()]);
-            return false;
-        }
-
-        return true;
-    }
 
     /**
      * 检查子域名枚举工具（可选用外部收集工具）

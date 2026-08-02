@@ -209,7 +209,7 @@ class CodeCheckModel extends BaseModel
     public static function semgrep()
     {
         $codePath = trim(`pwd`)."/data/codeCheck";
-        $fortifyRetDir = trim(`pwd`)."/data/semgrep_result";
+        $auditRetDir = trim(`pwd`)."/data/semgrep_result";
 
         $where = ['tool' => 'code_audit', 'status' => 0];
         $list = Db::table('task_scan')->where($where)->limit(10)->select()->toArray();
@@ -228,7 +228,7 @@ class CodeCheckModel extends BaseModel
             }
 
             //2. 扫描代码
-            $outJson = "{$fortifyRetDir}/{$prName}.json";
+            $outJson = "{$auditRetDir}/{$prName}.json";
             CodeAuditModel::startScan($filepath, $outJson);
 
             //4. 存储结果

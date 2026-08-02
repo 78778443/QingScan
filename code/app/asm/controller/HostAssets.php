@@ -3,7 +3,6 @@
 namespace app\asm\controller;
 
 use app\asm\model\HostAssetsModel;
-use app\asm\model\HidsQingtengModel;
 use app\controller\Common;
 use think\facade\View;
 use think\facade\Db;
@@ -18,7 +17,6 @@ class HostAssets extends Common
         $keyword = Request::param('keyword', '');
         $cloud_platform = Request::param('cloud_platform', '');
         $status = Request::param('status', '');
-        $hids_installed = Request::param('hids_installed', '');
         
         // 构建查询条件
         $where = [];
@@ -30,9 +28,6 @@ class HostAssets extends Common
         }
         if (!empty($status)) {
             $where['status'] = $status;
-        }
-        if ($hids_installed !== '') {
-            $where['hids_installed'] = intval($hids_installed);
         }
         
         // 获取分页参数
@@ -54,18 +49,7 @@ class HostAssets extends Common
         
         // 平台类型
         $platforms = [
-            'baidu' => '百度云',
-            'huoshan' => '火山云',
-            'yidong' => '移动云',
-            'tianyi' => '天翼云',
-            'aliyun' => '阿里云',
             'idc' => '线下IDC'
-        ];
-        
-        // HIDS安装状态
-        $hids_status = [
-            '0' => '未安装',
-            '1' => '已安装'
         ];
         
         // 实例状态
@@ -94,135 +78,18 @@ class HostAssets extends Common
             'total' => $host_page->total(),
             'running_count' => Db::table('asm_host_assets')->where('status', 'in', ['RUNNING', 'Running', 'running'])->count(),
             'stopped_count' => Db::table('asm_host_assets')->where('status', 'in', ['STOPPED', 'Stopped', 'stopped', 'SHUTOFF'])->count(),
-            'hids_installed_count' => Db::table('asm_host_assets')->where('hids_installed', 1)->count(),
             'platforms' => $platforms,
-            'hids_status' => $hids_status,
             'instance_status' => $instance_status,
             'keyword' => $keyword,
             'cloud_platform' => $cloud_platform,
             'status' => $status,
-            'hids_installed' => $hids_installed
         ]);
         
         return redirect('/web/asm/host');
     }
     
     // HIDS列表
-    public function hids()
-    {
-        // 获取HIDS列表搜索条件
-        $keyword = Request::param('keyword', '');
-        
-        // 构建HIDS查询条件
-        $hids_where = [];
-        if (!empty($keyword)) {
-            $hids_where[] = ['ip_address', 'like', '%' . $keyword . '%'];
-        }
-        
-        // 获取HIDS分页参数
-        $limit = Request::param('limit', 20, 'intval');
-        
-        // 使用数据库查询的paginate方法获取带分页的数据
-        $hids_page = Db::table('asm_hids_qingteng')
-            ->where($hids_where)
-            ->order('created_time desc')
-            ->paginate([
-                'list_rows' => $limit,
-                'query' => Request::param()
-            ]);
-        
-        // 获取分页后的数据列表
-        $hids_list = $hids_page->items();
-        
-        // 解析原始JSON数据，提取需要的字段
-        foreach ($hids_list as &$hids_item) {
-            if (!empty($hids_item['original_json'])) {
-                $original_data = json_decode($hids_item['original_json'], true);
-                if ($original_data) {
-                    // 提取系统信息
-                    if (isset($original_data['system'])) {
-                        $hids_item['os_name'] = $original_data['system']['os_name'] ?? '';
-                        $hids_item['kernel_version'] = $original_data['system']['kernel_version'] ?? '';
-                        $hids_item['hostname'] = $original_data['system']['hostname'] ?? '';
-                    }
-                    
-                    // 提取在线状态（使用青藤云返回的state字段）
-                    $hids_item['online_status'] = (isset($original_data['state']) && strtoupper($original_data['state']) === 'ONLINE') ? '在线' : '离线';
-                    
-                    // 提取实例名称
-                    if (isset($original_data['instance_name'])) {
-                        $hids_item['instance_name'] = $original_data['instance_name'];
-                    }
-                    
-                    // 提取最后同步时间
-                    $hids_item['sync_time'] = $hids_item['updated_time'] ?? $hids_item['created_time'] ?? '';
-                }
-            }
-        }
-        
-        View::assign([
-            'hids_list' => $hids_list,
-            'page' => $hids_page,
-            'keyword' => $keyword
-        ]);
-        
-        return redirect('/web/asm/host');
-    }
-    
-    // HIDS详情页面
-    public function hidsDetail()
-    {
-        $id = Request::param('id', 0, 'intval');
-        
-        if (empty($id)) {
-            $this->error('参数错误');
-        }
-        
-        // 获取HIDS数据
-        $hids_data = HidsQingtengModel::getById($id);
-        
-        if (empty($hids_data)) {
-            $this->error('HIDS数据不存在');
-        }
-        
-        // 解析原始JSON数据
-        if (!empty($hids_data['original_json'])) {
-            $hids_data['original_data'] = json_decode($hids_data['original_json'], true);
-        } else {
-            $hids_data['original_data'] = [];
-        }
-        
-        View::assign('hids_data', $hids_data);
-        return redirect('/web/asm/host');
-    }
-    
-    // 更新HIDS状态
-    public function updateHidsStatus()
-    {
-        $id = Request::param('id', '', 'intval');
-        $hids_installed = Request::param('hids_installed', '', 'intval');
-        $hids_version = Request::param('hids_version', '', 'trim');
-        
-        if (empty($id)) {
-            return json(['code' => 0, 'msg' => '参数错误']);
-        }
-        
-        $data = [
-            'hids_installed' => $hids_installed,
-            'hids_version' => $hids_version,
-            'hids_last_check' => date('Y-m-d H:i:s')
-        ];
-        
-        $result = HostAssetsModel::updateHostAssets($id, $data);
-        
-        if ($result) {
-            return json(['code' => 1, 'msg' => '更新成功']);
-        } else {
-            return json(['code' => 0, 'msg' => '更新失败']);
-        }
-    }
-    
-    // 导入主机资产
+
     public function import()
     {
         return redirect('/web/asm/host');
@@ -233,13 +100,6 @@ class HostAssets extends Common
     {
         // 这里可以实现从CSV或其他格式导入线下IDC数据的功能
         return json(['code' => 1, 'msg' => '导入功能开发中']);
-    }
-    
-    // 同步云资产
-    public function syncCloudAssets()
-    {
-        // 这里可以实现从云平台API同步最新数据的功能
-        return json(['code' => 1, 'msg' => '同步功能开发中']);
     }
     
     // 查看主机资产详情
@@ -266,33 +126,7 @@ class HostAssets extends Common
         
         // 获取原始信息
         $original_data = [];
-        if ($host['cloud_platform'] == 'huoshan') {
-            // 获取火山云原始信息
-            $huoshan_data = Db::table('asm_cloud_huoshan')->where('resource_id', $host['instance_id'])->find();
-            if (!empty($huoshan_data['original_json'])) {
-                $original_data = json_decode($huoshan_data['original_json'], true);
-            }
-        } elseif ($host['cloud_platform'] == 'tianyi') {
-            // 获取天翼云原始信息
-            $tianyi_data = Db::table('asm_cloud_tianyi')->where('resource_id', $host['instance_id'])->find();
 
-            if (!empty($tianyi_data['original_json'])) {
-                $original_data = json_decode($tianyi_data['original_json'], true);
-            }
-        } elseif ($host['cloud_platform'] == 'aliyun') {
-            // 获取阿里云原始信息
-            $aliyun_data = Db::table('asm_cloud_aliyun')->where('resource_id', $host['instance_id'])->find();
-            if (!empty($aliyun_data['original_json'])) {
-                $original_data = json_decode($aliyun_data['original_json'], true);
-            }
-        } elseif ($host['cloud_platform'] == 'baidu') {
-            // 获取百度云原始信息
-            $baidu_data = Db::table('asm_cloud_baidu')->where('resource_id', $host['instance_id'])->find();
-            if (!empty($baidu_data['original_json'])) {
-                $original_data = json_decode($baidu_data['original_json'], true);
-            }
-        }
-        
         View::assign([
             'host' => $host,
             'original_data' => $original_data
@@ -337,7 +171,6 @@ class HostAssets extends Common
             'security_groups' => json_encode([]),
             'create_time' => date('Y-m-d H:i:s'),
             'update_time' => date('Y-m-d H:i:s'),
-            'hids_installed' => 0
         ];
         
         // 保存数据
