@@ -19,7 +19,6 @@ import {
   Ticket,
   Settings,
   LogOut,
-  ExternalLink,
   RefreshCw,
   type LucideIcon,
 } from 'lucide-react'
@@ -199,15 +198,6 @@ export default function AppLayout() {
             </button>
           </div>
           <div className="flex items-center justify-between px-1">
-            <a
-              href="http://127.0.0.1:8080/index/index"
-              target="_blank"
-              rel="noreferrer"
-              className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
-            >
-              <ExternalLink className="size-3.5" />
-              旧版界面
-            </a>
             <button
               type="button"
               className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
