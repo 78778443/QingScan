@@ -46,6 +46,14 @@ class Index extends BaseController
         $codeCount = Db::table('code')->count();
         $semgrepCount = Db::table('scan_code_audit')->count();
 
+        // 工单统计
+        $workOrderCount = Db::table('asm_work_order')->count();
+        $woPending = Db::table('asm_work_order')->where('status', 'pending_dispatch')->count();
+        $woDispatched = Db::table('asm_work_order')->where('status', 'dispatched')->count();
+        $woConfirmed = Db::table('asm_work_order')->where('status', 'confirmed')->count();
+        $woFixedUnconfirmed = Db::table('asm_work_order')->where('status', 'fixed_unconfirmed')->count();
+        $woFixed = Db::table('asm_work_order')->where('status', 'fixed_confirmed')->count();
+
         // 漏洞信息库
 
         $data = [
@@ -77,6 +85,17 @@ class Index extends BaseController
                 "value" => $codeCount,
                 "subInfo" => [
                     ["name" => "代码审计", "value" => $semgrepCount, "href" => "/code"],
+                ]
+            ],
+            [
+                "name" => "工单管理",
+                "value" => $workOrderCount,
+                "subInfo" => [
+                    ["name" => "待派发", "value" => $woPending, "href" => "/workorder"],
+                    ["name" => "已派发", "value" => $woDispatched, "href" => "/workorder"],
+                    ["name" => "已确认", "value" => $woConfirmed, "href" => "/workorder"],
+                    ["name" => "修复待确认", "value" => $woFixedUnconfirmed, "href" => "/workorder"],
+                    ["name" => "已修复", "value" => $woFixed, "href" => "/workorder"],
                 ]
             ],
         ];
