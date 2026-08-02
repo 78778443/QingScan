@@ -548,7 +548,7 @@ export default function Dashboard() {
     () => [
       { label: '资产总数', value: assetTotal },
       { label: '扫描记录', value: scanTotal },
-      { label: '扫描模块', value: 4 },
+      { label: '核心模块', value: 4 },
     ],
     [assetTotal, scanTotal],
   )
@@ -586,8 +586,10 @@ export default function Dashboard() {
         <ShieldCheck className="pointer-events-none absolute -right-4 -top-4 size-52 rotate-12 opacity-20" />
         <div className="relative z-10 flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
           <div>
-            <h2 className="text-2xl font-bold">欢迎使用 QingScan</h2>
-            <p className="mt-1 text-sm opacity-85">一站式安全扫描运营平台，资产 · 扫描 · 报告尽在掌握</p>
+            <h2 className="text-2xl font-bold">QingScan 安全运营平台</h2>
+            <p className="mt-1 text-sm opacity-85">
+              漏洞扫描 · 代码审计 · 资产清点 · 工单推进，一站式安全运营
+            </p>
           </div>
           <div className="flex items-center">
             {loading ? (
