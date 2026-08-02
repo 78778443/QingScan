@@ -46,6 +46,36 @@ class Index extends BaseController
         $codeCount = Db::table('code')->count();
         $semgrepCount = Db::table('scan_code_audit')->count();
 
+        // 代码审计按漏洞类型分类（rule_id 关键字归类）
+        $auditTypeMap = [
+            'SQL注入' => ['sql'],
+            'XSS' => ['xss'],
+            '命令执行' => ['command', 'exec', 'system', 'eval', 'backtick', 'code-execution'],
+            '文件包含' => ['inclusion', 'include', 'require'],
+            'SSRF' => ['ssrf'],
+            '反序列化' => ['unserialize'],
+            '文件上传' => ['upload'],
+            '硬编码凭据' => ['hardcoded', 'password'],
+            '变量覆盖' => ['overwrite', 'parse_str'],
+        ];
+        $auditTypeCounts = [];
+        $auditRows = Db::table('scan_code_audit')->field('rule_id,count(id) as cnt')->group('rule_id')->select()->toArray();
+        foreach ($auditRows as $ar) {
+            $matched = false;
+            foreach ($auditTypeMap as $label => $kws) {
+                foreach ($kws as $kw) {
+                    if (strpos($ar['rule_id'], $kw) !== false) {
+                        $auditTypeCounts[$label] = ($auditTypeCounts[$label] ?? 0) + (int)$ar['cnt'];
+                        $matched = true;
+                        break 2;
+                    }
+                }
+            }
+            if (!$matched) {
+                $auditTypeCounts['其他'] = ($auditTypeCounts['其他'] ?? 0) + (int)$ar['cnt'];
+            }
+        }
+
         // 工单统计
         $workOrderCount = Db::table('asm_work_order')->count();
         $woPending = Db::table('asm_work_order')->where('status', 'pending_dispatch')->count();
@@ -83,9 +113,10 @@ class Index extends BaseController
             [
                 "name" => "白盒审计",
                 "value" => $codeCount,
-                "subInfo" => [
-                    ["name" => "代码审计", "value" => $semgrepCount, "href" => "/code"],
-                ]
+                "subInfo" => array_merge(
+                    [["name" => "审计总量", "value" => $semgrepCount, "href" => "/code"]],
+                    array_map(fn($label, $cnt) => ["name" => $label, "value" => $cnt, "href" => "/code"], array_keys($auditTypeCounts), array_values($auditTypeCounts))
+                ),
             ],
             [
                 "name" => "工单管理",
