@@ -54,13 +54,45 @@ const STATUS_OPTIONS = [
   { value: '2', label: '已完成' },
 ]
 
+// 任务内部标识（task_scan.tool）→ 功能名
+const TOOL_LABELS: Record<string, string> = {
+  scan_app_xray: 'Web漏洞检测',
+  scan_app_nuclei: '通用漏洞扫描',
+  scan_app_vulmap: '漏洞验证',
+  scan_app_dirmap: '目录扫描',
+  scan_app_whatweb: '指纹识别',
+  scan_app_dismap: '资产指纹',
+  scan_app_finger: '指纹识别',
+  scan_app_rad: '爬虫抓取',
+  scan_app_crawlergo: '爬虫抓取',
+  scan_app_awvs: 'AWVS 扫描',
+  scan_url_sqlmap: 'SQL注入检测',
+  scan_ip_hydra: '弱口令爆破',
+  scan_app_jietu: '网站截图',
+  scan_app_google: '基础信息',
+  asm_domain_oneforall: '子域名枚举',
+  asm_ip_nmap: '端口扫描',
+  asm_ip_info: 'IP定位',
+  asm_domain_fofa: 'FOFA资产',
+  asm_discover_fofa: 'FOFA资产',
+  code_fortify: '代码审计',
+  code_semgrep: '规则扫描',
+  code_murphysec: '依赖检查',
+  code_codeql: '代码审计',
+}
+
+function toolLabel(v: unknown): string {
+  const raw = String(v ?? '')
+  return TOOL_LABELS[raw] ?? raw.replace(/^scan_(app|url|ip)_|^asm_|^code_/, '')
+}
+
 const columns: Column<Row>[] = [
   { key: 'id', header: 'ID', className: 'w-16' },
   {
     key: 'tool',
-    header: '工具',
+    header: '任务类型',
     render: (row) => (
-      <Badge className="bg-blue-500/15 text-blue-600 dark:text-blue-400">{str(row.tool)}</Badge>
+      <Badge className="bg-blue-500/15 text-blue-600 dark:text-blue-400">{toolLabel(row.tool)}</Badge>
     ),
   },
   { key: 'target_table', header: '目标类型' },
@@ -137,7 +169,7 @@ export default function Tasks() {
   const toolbar = (
     <div className="flex flex-wrap items-center gap-2 rounded-lg border bg-card p-3">
       <Input
-        placeholder="工具名称"
+        placeholder="任务类型"
         value={toolDraft}
         onChange={(e) => setToolDraft(e.target.value)}
         onKeyDown={(e) => {
@@ -178,7 +210,7 @@ export default function Tasks() {
     <div className="space-y-4">
       <div className="mb-4">
         <h1 className="text-lg font-semibold">扫描任务</h1>
-        <p className="text-xs text-muted-foreground">任务列表 - 扫描工具执行任务记录</p>
+        <p className="text-xs text-muted-foreground">任务列表 - 调度器自动执行记录</p>
       </div>
       <DataTable
         columns={columns}
