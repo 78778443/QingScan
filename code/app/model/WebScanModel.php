@@ -71,8 +71,6 @@ class WebScanModel extends BaseModel
 
             PluginModel::addScanLog($val['id'], __METHOD__, 0);
 
-            //hazard_level: 0=Low 1=Medium 2=High 3=Critical
-            $levelMap = ['low' => 0, 'medium' => 1, 'high' => 2, 'critical' => 3];
             $result = \app\scan\VulnScan::scan($val['url']);
             if (empty($result)) {
                 PluginModel::addScanLog($val['id'], __METHOD__, 0, 1);
@@ -81,31 +79,24 @@ class WebScanModel extends BaseModel
             }
 
             foreach ($result as $item) {
-                $targetJson = json_encode(['url' => $item['url']], JSON_UNESCAPED_UNICODE);
-                $detailJson = json_encode([
-                    'addr' => $item['url'],
-                    'payload' => $item['payload'],
-                    'description' => $item['description'],
-                ], JSON_UNESCAPED_UNICODE);
-                $pluginJson = json_encode([$item['name']], JSON_UNESCAPED_UNICODE);
-
-                //去重：同 app_id + plugin + target 不重复插入
-                if (Db::name('xray')->where(['app_id' => $val['id'], 'plugin' => $pluginJson, 'target' => $targetJson])->count()) {
+                //去重：同 app_id + url + name 不重复插入（scan_vuln）
+                if (Db::name('scan_vuln')->where(['app_id' => $val['id'], 'url' => $item['url'], 'name' => $item['name']])->count()) {
                     continue;
                 }
                 $newData = [
                     'app_id' => $val['id'],
-                    'create_time' => (string)time(),
-                    'detail' => $detailJson,
-                    'plugin' => $pluginJson,
-                    'target' => $targetJson,
-                    'check_status' => 0,
-                    'hazard_level' => $levelMap[$item['severity']] ?? 0,
-                    'url_source' => $val['url'],
-                    'is_delete' => 0,
                     'user_id' => $val['user_id'],
+                    'url' => $item['url'],
+                    'name' => $item['name'],
+                    'severity' => $item['severity'],
+                    'payload' => $item['payload'],
+                    'description' => $item['description'],
+                    'source' => 'xray',
+                    'check_status' => 0,
+                    'create_time' => date('Y-m-d H:i:s', time()),
+                    'is_delete' => 0,
                 ];
-                Db::name('xray')->insert($newData);
+                Db::name('scan_vuln')->insert($newData);
                 echo "xray添加漏洞结果:" . json_encode($newData, 256) . PHP_EOL;
             }
             addlog(["xray扫描数据写入成功:" . json_encode($result)]);
@@ -166,34 +157,25 @@ class WebScanModel extends BaseModel
                 continue;
             }
 
-            $host = parse_url($v['url'], PHP_URL_HOST) ?: $v['url'];
             foreach ($result as $item) {
-                //去重：同 app_id + name + matched_at 不重复插入
-                if (Db::name('app_nuclei')->where(['app_id' => $v['id'], 'name' => $item['name'], 'matched_at' => $item['url']])->count()) {
+                //去重：同 app_id + url + name 不重复插入（scan_vuln）
+                if (Db::name('scan_vuln')->where(['app_id' => $v['id'], 'url' => $item['url'], 'name' => $item['name']])->count()) {
                     continue;
                 }
                 $data = [
                     'app_id' => $v['id'],
                     'user_id' => $v['user_id'],
-                    'template' => $item['name'],
-                    'template_url' => $item['url'],
-                    'template_id' => $item['name'],
+                    'url' => $item['url'],
                     'name' => $item['name'],
-                    'author' => 'qingscan',
-                    'tags' => 'web',
-                    'description' => $item['description'],
-                    'reference' => '',
                     'severity' => $item['severity'],
-                    'type' => 'http',
-                    'host' => $host,
-                    'matched_at' => $item['url'],
-                    'extracted_results' => '',
-                    'ip' => '',
-                    'curl_command' => '',
-                    'status' => 1,
+                    'payload' => $item['payload'],
+                    'description' => $item['description'],
+                    'source' => 'nuclei',
+                    'check_status' => 0,
                     'create_time' => date('Y-m-d H:i:s', time()),
+                    'is_delete' => 0,
                 ];
-                Db::name('app_nuclei')->insert($data);
+                Db::name('scan_vuln')->insert($data);
             }
             addlog(["nuclei扫描数据写入成功:" . json_encode($result)]);
             PluginModel::addScanLog($v['id'], __METHOD__, 0, 1);
@@ -249,35 +231,27 @@ class WebScanModel extends BaseModel
                 continue;
             }
 
-            $urlInfo = parse_url($v['url']);
-            $host = $urlInfo['host'] ?? $v['url'];
-            $port = $urlInfo['port'] ?? (($urlInfo['scheme'] ?? '') === 'https' ? 443 : 80);
-
             foreach ($result as $item) {
-                //去重：同 app_id + url + plugin 不重复插入
-                if (Db::name('app_vulmap')->where(['app_id' => $v['id'], 'url' => $item['url'], 'plugin' => $item['name']])->count()) {
+                //去重：同 app_id + url + name 不重复插入（scan_vuln）
+                if (Db::name('scan_vuln')->where(['app_id' => $v['id'], 'url' => $item['url'], 'name' => $item['name']])->count()) {
                     continue;
                 }
                 $data = [
                     'app_id' => $v['id'],
                     'user_id' => $v['user_id'],
-                    'author' => 'qingscan',
-                    'description' => $item['description'],
-                    'host' => $host,
-                    'port' => (string)$port,
-                    'param' => '',
-                    'request' => $item['payload'],
-                    'payload' => $item['payload'],
-                    'response' => '',
                     'url' => $item['url'],
-                    'plugin' => $item['name'],
-                    'target' => json_encode(['url' => $item['url']]),
-                    'vuln_class' => $item['name'],
-                    'create_time' => time(),
+                    'name' => $item['name'],
+                    'severity' => $item['severity'],
+                    'payload' => $item['payload'],
+                    'description' => $item['description'],
+                    'source' => 'vulmap',
+                    'check_status' => 0,
+                    'create_time' => date('Y-m-d H:i:s', time()),
+                    'is_delete' => 0,
                 ];
-                if (!Db::name('app_vulmap')->insert($data)) {
-                    addlog(["app_vulmap数据写入失败:" . json_encode($data)]);
-                    PluginModel::addScanLog($v['id'], __METHOD__, 0, 2, 1, ['content' => 'app_vulmap数据写入失败']);
+                if (!Db::name('scan_vuln')->insert($data)) {
+                    addlog(["scan_vuln数据写入失败:" . json_encode($data)]);
+                    PluginModel::addScanLog($v['id'], __METHOD__, 0, 2, 1, ['content' => 'scan_vuln数据写入失败']);
                 }
             }
             PluginModel::addScanLog($v['id'], __METHOD__, 0, 1);

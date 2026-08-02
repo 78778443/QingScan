@@ -34,11 +34,13 @@ interface ToolConfig {
   title: string
   api: string
   showLevel: boolean
-  // 级别筛选值：展示名 → 接口值（nuclei 后端按 severity 精确匹配，需要小写）
+  // 级别筛选值：展示名 → 接口值（后端按 severity 精确匹配，存储为小写）
   levelApiValues: Record<string, string>
   showCheckStatus: boolean
   // 仅包含工具专属列；ID/目标/URL/时间/操作 由 buildColumns 统一拼装
   columns: Column<ScanRow>[]
+  // 详情弹窗展示的字段列表；缺省时展示行内全部字段
+  detailFields?: string[]
 }
 
 // ---------- 容错取值工具函数 ----------
@@ -77,11 +79,6 @@ function pretty(value: unknown): string {
 function normalizeSeverity(value: unknown): string {
   if (value === null || value === undefined || value === '') return ''
   const s = String(value)
-  if (/^\d+$/.test(s)) {
-    const idx = Number(s)
-    if (idx >= 0 && idx <= 3) return ['Low', 'Medium', 'High', 'Critical'][idx]
-    return s
-  }
   const lower = s.toLowerCase()
   for (const sev of ['Critical', 'High', 'Medium', 'Low']) {
     if (sev.toLowerCase() === lower) return sev
@@ -121,33 +118,6 @@ function CodeBadge({ value }: { value: unknown }) {
     else if (n >= 200) cls = 'bg-green-500/10 text-green-600'
   }
   return <Badge className={cls}>{s}</Badge>
-}
-
-// xray 的 plugin 为 JSON 字符串，容错解析后取 name
-function xrayPluginName(value: unknown): string {
-  if (typeof value !== 'string') {
-    const s = text(value)
-    return s ? truncate(s, 60) : '-'
-  }
-  const trimmed = value.trim()
-  if (!trimmed) return '-'
-  if (trimmed.startsWith('{') || trimmed.startsWith('[')) {
-    try {
-      const parsed = JSON.parse(trimmed) as unknown
-      if (Array.isArray(parsed)) {
-        return truncate(text(parsed[0]) || trimmed, 60)
-      }
-      if (parsed && typeof parsed === 'object') {
-        const p = parsed as Record<string, unknown>
-        const name = p.name ?? p.plugin ?? p.cve ?? p.category
-        if (name) return String(name)
-        return truncate(JSON.stringify(p), 60)
-      }
-    } catch {
-      // JSON 解析失败时按原样展示
-    }
-  }
-  return truncate(trimmed, 60)
 }
 
 // ---------- 通用单元格 ----------
@@ -217,79 +187,69 @@ function buildColumns(cfg: ToolConfig, openDetail: (row: ScanRow) => void): Colu
   ]
 }
 
-const TOOL_CONFIGS: Record<ToolKey, ToolConfig> = {
-  xray: {
-    key: 'xray',
-    title: 'Web漏洞检测',
-    api: '/api/webscan/xray_list',
+// xray / nuclei / vulmap 已统一到 scan_vuln 表，行字段一致，共用同一套列与详情字段
+const VULN_DETAIL_FIELDS = [
+  'url',
+  'name',
+  'severity',
+  'payload',
+  'description',
+  'source',
+  'check_status',
+  'create_time',
+]
+
+// 引擎内部标识 → 功能名（淡化工具名）
+const SOURCE_LABELS: Record<string, string> = {
+  xray: 'Web漏洞检测',
+  nuclei: '通用漏洞扫描',
+  vulmap: '漏洞验证',
+}
+
+function vulnColumns(): Column<ScanRow>[] {
+  return [
+    {
+      key: 'name',
+      header: '漏洞名称',
+      render: (r) => (
+        <span className="inline-block max-w-52 truncate align-middle" title={text(r.name)}>
+          {truncate(text(r.name), 50) || '-'}
+        </span>
+      ),
+    },
+    {
+      key: 'severity',
+      header: '严重级别',
+      render: (r) => <SeverityBadge value={r.severity} />,
+    },
+    {
+      key: 'payload',
+      header: 'Payload',
+      render: (r) => (
+        <span className="inline-block max-w-56 truncate align-middle font-mono text-muted-foreground" title={text(r.payload)}>
+          {truncate(text(r.payload), 60) || '-'}
+        </span>
+      ),
+    },
+  ]
+}
+
+function makeVulnConfig(key: 'xray' | 'nuclei' | 'vulmap', title: string, api: string): ToolConfig {
+  return {
+    key,
+    title,
+    api,
     showLevel: true,
-    levelApiValues: { Low: 'Low', Medium: 'Medium', High: 'High', Critical: 'Critical' },
-    showCheckStatus: true,
-    columns: [
-      {
-        key: 'plugin',
-        header: '漏洞名称',
-        render: (r) => (
-          <span className="inline-block max-w-52 truncate align-middle" title={text(r.plugin)}>
-            {xrayPluginName(r.plugin)}
-          </span>
-        ),
-      },
-      {
-        key: 'hazard_level',
-        header: '严重级别',
-        render: (r) => <SeverityBadge value={r.hazard_level} />,
-      },
-      {
-        key: 'payload',
-        header: 'Payload',
-        render: (r) => (
-          <span className="inline-block max-w-56 truncate align-middle font-mono text-muted-foreground" title={text(r.payload)}>
-            {truncate(text(r.payload), 60) || '-'}
-          </span>
-        ),
-      },
-      {
-        key: 'check_status',
-        header: '审核状态',
-        render: (r) => <CheckStatusBadge value={r.check_status} />,
-      },
-    ],
-  },
-  nuclei: {
-    key: 'nuclei',
-    title: '通用漏洞扫描',
-    api: '/api/webscan/nuclei_list',
-    showLevel: true,
-    // 后端按 severity 精确匹配（存储为小写）
     levelApiValues: { Low: 'low', Medium: 'medium', High: 'high', Critical: 'critical' },
-    showCheckStatus: false,
-    columns: [
-      {
-        key: 'name',
-        header: '漏洞名称',
-        render: (r) => (
-          <span className="inline-block max-w-52 truncate align-middle" title={text(r.vuln_name ?? r.name)}>
-            {truncate(text(r.vuln_name ?? r.name), 50) || '-'}
-          </span>
-        ),
-      },
-      {
-        key: 'severity',
-        header: '严重级别',
-        render: (r) => <SeverityBadge value={r.severity ?? r.level} />,
-      },
-      {
-        key: 'info',
-        header: '详情',
-        render: (r) => (
-          <span className="inline-block max-w-56 truncate align-middle text-muted-foreground" title={text(r.info)}>
-            {truncate(text(r.info), 60) || '-'}
-          </span>
-        ),
-      },
-    ],
-  },
+    showCheckStatus: true,
+    detailFields: VULN_DETAIL_FIELDS,
+    columns: vulnColumns(),
+  }
+}
+
+const TOOL_CONFIGS: Record<ToolKey, ToolConfig> = {
+  xray: makeVulnConfig('xray', 'Web漏洞检测', '/api/webscan/xray_list'),
+  nuclei: makeVulnConfig('nuclei', '通用漏洞扫描', '/api/webscan/nuclei_list'),
   sqlmap: {
     key: 'sqlmap',
     title: 'SQL注入检测',
@@ -327,39 +287,7 @@ const TOOL_CONFIGS: Record<ToolKey, ToolConfig> = {
       },
     ],
   },
-  vulmap: {
-    key: 'vulmap',
-    title: '漏洞验证',
-    api: '/api/webscan/vulmap_list',
-    showLevel: true,
-    levelApiValues: { Low: 'low', Medium: 'medium', High: 'high', Critical: 'critical' },
-    showCheckStatus: false,
-    columns: [
-      {
-        key: 'name',
-        header: '漏洞名称',
-        render: (r) => (
-          <span className="inline-block max-w-52 truncate align-middle" title={text(r.vuln_name ?? r.name)}>
-            {truncate(text(r.vuln_name ?? r.name), 50) || '-'}
-          </span>
-        ),
-      },
-      {
-        key: 'level',
-        header: '严重级别',
-        render: (r) => <SeverityBadge value={r.level ?? r.severity} />,
-      },
-      {
-        key: 'description',
-        header: '描述',
-        render: (r) => (
-          <span className="inline-block max-w-64 truncate align-middle text-muted-foreground" title={text(r.description ?? r.info)}>
-            {truncate(text(r.description ?? r.info), 80) || '-'}
-          </span>
-        ),
-      },
-    ],
-  },
+  vulmap: makeVulnConfig('vulmap', '漏洞验证', '/api/webscan/vulmap_list'),
   dirmap: {
     key: 'dirmap',
     title: '目录扫描',
@@ -549,10 +477,18 @@ export default function ScanResults() {
           </DialogHeader>
           <div className="divide-y divide-border">
             {detailRow &&
-              Object.entries(detailRow).map(([k, v]) => (
+              (config.detailFields ?? Object.keys(detailRow)).map((k) => (
                 <div key={k} className="flex gap-3 py-2.5">
                   <span className="w-36 shrink-0 break-all text-xs text-muted-foreground">{k}</span>
-                  <span className="min-w-0 break-all font-mono text-xs whitespace-pre-wrap">{pretty(v)}</span>
+                  <span className="min-w-0 break-all font-mono text-xs whitespace-pre-wrap">
+                    {k === 'check_status' ? (
+                      <CheckStatusBadge value={detailRow[k]} />
+                    ) : k === 'source' ? (
+                      SOURCE_LABELS[String(detailRow[k])] ?? pretty(detailRow[k])
+                    ) : (
+                      pretty(detailRow[k])
+                    )}
+                  </span>
                 </div>
               ))}
           </div>

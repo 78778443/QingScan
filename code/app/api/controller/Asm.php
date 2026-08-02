@@ -71,12 +71,12 @@ class Asm extends BaseController
     }
 
     /**
-     * 子域名列表（one_for_all 表）
-     * 筛选：keyword（subdomain/ip like）、app_id
+     * 子域名列表（scan_subdomain 表）
+     * 筛选：keyword（subdomain/ip like）、app_id；行内加 app_name（联 app 表）
      */
     public function subdomain_list()
     {
-        $query = Db::table('one_for_all');
+        $query = Db::table('scan_subdomain');
 
         $keyword = $this->request->param('keyword');
         if (!empty($keyword)) {
@@ -88,7 +88,18 @@ class Asm extends BaseController
         }
         $query->order('id', 'desc');
 
-        return $this->paginateJson($query);
+        return $this->paginateJson($query, 20, function ($items) {
+            $appIds = array_unique(array_filter(array_column($items, 'app_id')));
+            $nameMap = [];
+            if ($appIds) {
+                $rows = Db::table('app')->whereIn('id', $appIds)->field('id,name')->select()->toArray();
+                $nameMap = array_column($rows, 'name', 'id');
+            }
+            foreach ($items as &$row) {
+                $row['app_name'] = $nameMap[$row['app_id']] ?? '';
+            }
+            return $items;
+        });
     }
 
     /**

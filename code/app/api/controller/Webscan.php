@@ -334,32 +334,30 @@ class Webscan extends BaseController
     }
 
     /**
-     * xray 漏洞列表
-     * 筛选：search（url/plugin like）、app_id、level（hazard_level 0-3）、check_status
+     * xray 漏洞列表（scan_vuln 统一漏洞表，source=xray）
+     * 筛选：search（url/name like）、app_id、level/severity（low/medium/high/critical）、check_status
      */
     public function xray_list()
     {
-        $query = Db::table('xray');
+        $query = Db::table('scan_vuln')->where('source', '=', 'xray');
 
         $search = $this->request->param('search');
         if (!empty($search)) {
-            $query->where('url|plugin', 'like', "%{$search}%");
+            $query->where('url|name', 'like', "%{$search}%");
         }
         $app_id = $this->request->param('app_id');
         if (!empty($app_id)) {
             $query->where('app_id', '=', $app_id);
         }
         $level = $this->request->param('level');
+        if ($level === null || $level === '') {
+            // 兼容前端直接传 severity
+            $level = $this->request->param('severity');
+        }
         if ($level !== null && $level !== '' && $level != -1) {
-            if (is_numeric($level)) {
-                $query->where('hazard_level', '=', (int)$level);
-            } else {
-                // 兼容 Low/Medium/High/Critical 名称映射
-                $dengjiArr = ['Low', 'Medium', 'High', 'Critical'];
-                $idx = array_search($level, $dengjiArr);
-                if ($idx !== false) {
-                    $query->where('hazard_level', '=', $idx);
-                }
+            $severity = $this->parseSeverity($level);
+            if ($severity !== null) {
+                $query->where('severity', '=', $severity);
             }
         }
         $check_status = $this->request->param('check_status');
@@ -377,37 +375,41 @@ class Webscan extends BaseController
             }
             foreach ($items as &$row) {
                 $row['app_name'] = $nameMap[$row['app_id']] ?? '';
-                // xray 表无 url/poc 列：url 从 target JSON 提取，payload 从 detail JSON 提取
-                $targetArr = json_decode($row['target'] ?? '', true);
-                $detailArr = json_decode($row['detail'] ?? '', true);
-                $row['url'] = (is_array($targetArr) && !empty($targetArr['url']))
-                    ? $targetArr['url']
-                    : ($detailArr['addr'] ?? '');
-                $row['payload'] = $detailArr['payload'] ?? '';
             }
             return $items;
         });
     }
 
     /**
-     * nuclei 结果列表（app_nuclei 表，无 url 字段，search 匹配 name/host）
-     * 筛选：search、app_id、level（severity）
+     * nuclei 漏洞列表（scan_vuln 统一漏洞表，source=nuclei）
+     * 筛选：search（url/name like）、app_id、level/severity（low/medium/high/critical）、check_status
      */
     public function nuclei_list()
     {
-        $query = Db::table('app_nuclei');
+        $query = Db::table('scan_vuln')->where('source', '=', 'nuclei');
 
         $search = $this->request->param('search');
         if (!empty($search)) {
-            $query->where('name|host', 'like', "%{$search}%");
+            $query->where('url|name', 'like', "%{$search}%");
         }
         $app_id = $this->request->param('app_id');
         if (!empty($app_id)) {
             $query->where('app_id', '=', $app_id);
         }
         $level = $this->request->param('level');
-        if (!empty($level)) {
-            $query->where('severity', '=', $level);
+        if ($level === null || $level === '') {
+            // 兼容前端直接传 severity
+            $level = $this->request->param('severity');
+        }
+        if ($level !== null && $level !== '' && $level != -1) {
+            $severity = $this->parseSeverity($level);
+            if ($severity !== null) {
+                $query->where('severity', '=', $severity);
+            }
+        }
+        $check_status = $this->request->param('check_status');
+        if ($check_status !== null && $check_status !== '' && in_array((int)$check_status, [0, 1, 2])) {
+            $query->where('check_status', '=', (int)$check_status);
         }
         $query->order('id', 'desc');
 
@@ -480,20 +482,35 @@ class Webscan extends BaseController
     }
 
     /**
-     * vulmap 结果列表（app_vulmap 表）
-     * 筛选：search（author/host/port like）、app_id；行内加 app_name
+     * vulmap 漏洞列表（scan_vuln 统一漏洞表，source=vulmap）
+     * 筛选：search（url/name like）、app_id、level/severity（low/medium/high/critical）、check_status
      */
     public function vulmap_list()
     {
-        $query = Db::table('app_vulmap');
+        $query = Db::table('scan_vuln')->where('source', '=', 'vulmap');
 
         $search = $this->request->param('search');
         if (!empty($search)) {
-            $query->where('author|host|port', 'like', "%{$search}%");
+            $query->where('url|name', 'like', "%{$search}%");
         }
         $app_id = $this->request->param('app_id');
         if (!empty($app_id)) {
             $query->where('app_id', '=', $app_id);
+        }
+        $level = $this->request->param('level');
+        if ($level === null || $level === '') {
+            // 兼容前端直接传 severity
+            $level = $this->request->param('severity');
+        }
+        if ($level !== null && $level !== '' && $level != -1) {
+            $severity = $this->parseSeverity($level);
+            if ($severity !== null) {
+                $query->where('severity', '=', $severity);
+            }
+        }
+        $check_status = $this->request->param('check_status');
+        if ($check_status !== null && $check_status !== '' && in_array((int)$check_status, [0, 1, 2])) {
+            $query->where('check_status', '=', (int)$check_status);
         }
         $query->order('id', 'desc');
 
@@ -509,6 +526,23 @@ class Webscan extends BaseController
             }
             return $items;
         });
+    }
+
+    /**
+     * 将前端 level/severity 参数统一映射为 scan_vuln.severity 取值
+     * 兼容：low/medium/high/critical、Low/Medium/High/Critical、0-3 数字
+     */
+    private function parseSeverity($level)
+    {
+        $numMap = ['0' => 'low', '1' => 'medium', '2' => 'high', '3' => 'critical'];
+        $key = strtolower((string)$level);
+        if (isset($numMap[$key])) {
+            return $numMap[$key];
+        }
+        if (in_array($key, ['low', 'medium', 'high', 'critical'])) {
+            return $key;
+        }
+        return null;
     }
 
     /**

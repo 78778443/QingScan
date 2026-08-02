@@ -61,38 +61,48 @@ interface AppRow extends Record<string, unknown> {
   is_waf?: string
 }
 
-// 新增目标时可选的扫描工具
+// 新增目标时可选的扫描任务（value 为后端内部标识）
 const TOOL_OPTIONS = [
-  { label: 'Nuclei 模板扫描', value: 'nuclei' },
-  { label: 'Vulmap 漏洞检测', value: 'vulmap' },
-  { label: 'XRay 漏洞扫描', value: 'xray' },
-  { label: 'AWVS 漏洞扫描', value: 'awvs' },
-  { label: 'Sqlmap 注入检测', value: 'sqlmap' },
-  { label: 'Dirmap 目录扫描', value: 'dirmap' },
-  { label: 'WhatWeb 指纹识别', value: 'whatweb' },
-  { label: 'Rad 爬虫', value: 'rad' },
-  { label: 'OneForAll 子域名', value: 'oneforall' },
+  { label: '通用漏洞扫描', value: 'nuclei' },
+  { label: '漏洞验证', value: 'vulmap' },
+  { label: 'Web漏洞检测', value: 'xray' },
+  { label: 'AWVS 扫描', value: 'awvs' },
+  { label: 'SQL注入检测', value: 'sqlmap' },
+  { label: '目录扫描', value: 'dirmap' },
+  { label: '指纹识别', value: 'whatweb' },
+  { label: '爬虫抓取', value: 'rad' },
+  { label: '子域名枚举', value: 'oneforall' },
   { label: 'FOFA 资产', value: 'fofa' },
-  { label: 'Hydra 弱口令', value: 'hydra' },
+  { label: '弱口令爆破', value: 'hydra' },
 ]
 
-// 重新扫描工具（对应后端 app_rescan 的 tools_name）
+// 重新扫描任务（对应后端 app_rescan 的 tools_name）
 const RESCAN_TOOL_OPTIONS = [
-  { label: 'XRay 漏洞扫描', value: 'xray' },
-  { label: 'Nuclei 模板扫描', value: 'nucleiScan' },
-  { label: 'Vulmap PoC 检测', value: 'vulmapPocTest' },
-  { label: 'Sqlmap 注入检测', value: 'sqlmapScan' },
-  { label: 'Dirmap 目录扫描', value: 'dirmapScan' },
-  { label: 'WhatWeb 指纹识别', value: 'whatweb' },
-  { label: 'AWVS 漏洞扫描', value: 'awvsScan' },
-  { label: 'Rad 爬虫抓取', value: 'rad' },
-  { label: 'OneForAll 子域名', value: 'subdomainScan' },
-  { label: 'Hydra 弱口令', value: 'sshScan' },
+  { label: 'Web漏洞检测', value: 'xray' },
+  { label: '通用漏洞扫描', value: 'nucleiScan' },
+  { label: '漏洞验证', value: 'vulmapPocTest' },
+  { label: 'SQL注入检测', value: 'sqlmapScan' },
+  { label: '目录扫描', value: 'dirmapScan' },
+  { label: '指纹识别', value: 'whatweb' },
+  { label: 'AWVS 扫描', value: 'awvsScan' },
+  { label: '爬虫抓取', value: 'rad' },
+  { label: '子域名枚举', value: 'subdomainScan' },
+  { label: '弱口令爆破', value: 'sshScan' },
   { label: '基础信息获取', value: 'getBaseInfo' },
 ]
 
-// 工具结果计数展示顺序（后端返回 xray_num / sqlmap_num 等）
-const TOOL_COUNT_KEYS = ['xray', 'nuclei', 'vulmap', 'sqlmap', 'awvs', 'dirmap', 'whatweb', 'oneforall', 'rad']
+// 工具结果计数展示顺序与显示名（后端返回 xray_num / sqlmap_num 等内部标识）
+const TOOL_COUNT_KEYS: [string, string][] = [
+  ['xray', 'Web漏洞'],
+  ['nuclei', '通用漏洞'],
+  ['vulmap', '漏洞验证'],
+  ['sqlmap', 'SQL注入'],
+  ['awvs', 'AWVS'],
+  ['dirmap', '目录'],
+  ['whatweb', '指纹'],
+  ['oneforall', '子域名'],
+  ['rad', '爬虫'],
+]
 
 // ---------- 容错取值工具函数 ----------
 
@@ -403,13 +413,13 @@ export default function Targets() {
         key: 'tools',
         header: '工具结果',
         render: (row) => {
-          const counts = TOOL_COUNT_KEYS.filter((t) => getToolCount(row, t) > 0)
+          const counts = TOOL_COUNT_KEYS.filter(([t]) => getToolCount(row, t) > 0)
           if (counts.length === 0) return <span className="text-muted-foreground">-</span>
           return (
             <div className="flex max-w-72 flex-wrap gap-1">
-              {counts.map((t) => (
-                <Badge key={t} className="rounded-sm bg-primary/10 px-1.5 font-mono text-xs text-primary">
-                  {t}:{getToolCount(row, t)}
+              {counts.map(([t, label]) => (
+                <Badge key={t} className="rounded-sm bg-primary/10 px-1.5 text-xs text-primary">
+                  {label}:{getToolCount(row, t)}
                 </Badge>
               ))}
             </div>

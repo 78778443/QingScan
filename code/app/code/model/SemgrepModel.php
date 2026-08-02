@@ -33,21 +33,19 @@ class SemgrepModel extends BaseModel
         $num = count($data['results']);
         echo "在{$jsonPath}找到{$num}条结果" . PHP_EOL;
         foreach ($data['results'] as $v1) {
-            $data = [];
-            foreach ($v1 as $k2 => $v2) {
-                if (is_array($v2)) {
-                    foreach ($v2 as $k3 => $v3) {
-                        $data["{$k2}_{$k3}"] = is_string($v3) ? $v3 : json_encode($v3, JSON_UNESCAPED_UNICODE);
-                    }
-                } else {
-                    $data[$k2] = $v2;
-                }
-            }
-            $data['code_id'] = $codeId;
-            $data['user_id'] = $user_id;
-            $ret = Db::table('semgrep')->insert($data);
+            $row = [
+                'code_id'   => $codeId,
+                'user_id'   => $user_id,
+                'file'      => $v1['path'] ?? '',
+                'line'      => $v1['start']['line'] ?? 0,
+                'rule_id'   => $v1['check_id'] ?? '',
+                'message'   => $v1['extra']['message'] ?? '',
+                'severity'  => strtolower($v1['extra']['severity'] ?? 'warning'),
+                'is_delete' => 0,
+            ];
+            $ret = Db::table('scan_code_audit')->insert($row);
 
-            var_dump([$ret, $data]);
+            var_dump([$ret, $row]);
         }
     }
 }

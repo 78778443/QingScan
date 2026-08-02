@@ -158,30 +158,6 @@ CREATE TABLE `app_info` (
 DROP TABLE IF EXISTS `app_nuclei`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `app_nuclei` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `app_id` int NOT NULL,
-  `user_id` int NOT NULL,
-  `template` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT '',
-  `template_url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT '',
-  `template_id` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT '',
-  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT '',
-  `author` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT '' COMMENT '作者',
-  `tags` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT '' COMMENT '标签',
-  `description` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT '' COMMENT '描述',
-  `reference` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT '',
-  `severity` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT '',
-  `type` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT '' COMMENT '协议类型',
-  `host` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT '',
-  `matched_at` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT '',
-  `extracted_results` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT '',
-  `ip` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT '',
-  `create_time` datetime DEFAULT NULL,
-  `curl_command` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `status` tinyint(1) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=106 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin ROW_FORMAT=DYNAMIC;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `app_vulmap`
@@ -190,26 +166,6 @@ CREATE TABLE `app_nuclei` (
 DROP TABLE IF EXISTS `app_vulmap`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `app_vulmap` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `app_id` int NOT NULL,
-  `user_id` int NOT NULL,
-  `author` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '' COMMENT '作者',
-  `description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '' COMMENT '描述',
-  `host` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '' COMMENT '主机',
-  `port` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '' COMMENT '端口',
-  `param` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '' COMMENT '参数',
-  `request` text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin,
-  `payload` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '',
-  `response` text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin,
-  `url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '',
-  `plugin` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '' COMMENT '漏洞',
-  `target` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '',
-  `vuln_class` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '' COMMENT '漏洞名称',
-  `create_time` int NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin ROW_FORMAT=DYNAMIC COMMENT='漏洞扫描';
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `app_wafw00f`
@@ -1498,45 +1454,6 @@ CREATE TABLE `node` (
 DROP TABLE IF EXISTS `one_for_all`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `one_for_all` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `app_id` int NOT NULL DEFAULT '0',
-  `alive` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT '',
-  `request` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT '',
-  `resolve` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT '',
-  `url` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `subdomain` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `port` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT '',
-  `level` varchar(4) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT '',
-  `cname` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `ip` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `public` char(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT '',
-  `cdn` char(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT '',
-  `status` char(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT '',
-  `reason` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `banner` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `header` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `history` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `response` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `ip_times` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `cname_times` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `ttl` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `cidr` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `asn` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `org` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `addr` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `isp` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `resolver` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `module` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `source` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `elapse` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `find` char(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT '',
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `user_id` int NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin ROW_FORMAT=DYNAMIC;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `plugin`
@@ -1719,31 +1636,6 @@ CREATE TABLE `proxy` (
 DROP TABLE IF EXISTS `semgrep`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `semgrep` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `check_id` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `code_id` int DEFAULT NULL COMMENT '项目ID',
-  `create_time` datetime DEFAULT CURRENT_TIMESTAMP,
-  `end_col` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `end_line` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '代码行号',
-  `end_offset` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `extra_is_ignored` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `extra_lines` text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin,
-  `extra_message` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `extra_metadata` text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin,
-  `extra_metavars` text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin,
-  `extra_severity` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '危险等级',
-  `path` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '污染来源',
-  `start_col` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `start_line` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `start_offset` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `check_status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '审核状态',
-  `is_delete` tinyint(1) NOT NULL DEFAULT '0',
-  `user_id` int NOT NULL DEFAULT '0',
-  `update_time` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin ROW_FORMAT=DYNAMIC;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `svn_project`
@@ -2081,21 +1973,6 @@ CREATE TABLE `vulnerable` (
 DROP TABLE IF EXISTS `xray`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `xray` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `app_id` int DEFAULT NULL,
-  `create_time` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `detail` text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin,
-  `plugin` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `target` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `check_status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '审核状态',
-  `hazard_level` tinyint(1) NOT NULL DEFAULT '0' COMMENT '危险等级',
-  `url_source` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '' COMMENT 'url来源',
-  `is_delete` tinyint(1) NOT NULL DEFAULT '0',
-  `user_id` int NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin ROW_FORMAT=DYNAMIC;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `zhiwen`
@@ -2129,3 +2006,56 @@ SET @@SESSION.SQL_LOG_BIN = @MYSQLDUMP_TEMP_LOG_BIN;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 -- Dump completed on 2026-01-12 16:46:44
+
+-- ============================================
+-- 统一结果表（自研引擎写入）
+-- ============================================
+CREATE TABLE `scan_vuln` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `app_id` int NOT NULL DEFAULT '0' COMMENT '目标ID',
+  `user_id` int NOT NULL DEFAULT '0',
+  `url` varchar(512) NOT NULL DEFAULT '' COMMENT '漏洞URL',
+  `name` varchar(255) NOT NULL DEFAULT '' COMMENT '漏洞名称',
+  `severity` varchar(20) NOT NULL DEFAULT 'low' COMMENT '危害等级 low/medium/high/critical',
+  `payload` text COMMENT '检测载荷',
+  `description` text COMMENT '漏洞描述',
+  `source` varchar(50) NOT NULL DEFAULT '' COMMENT '检测引擎来源',
+  `check_status` tinyint NOT NULL DEFAULT '0' COMMENT '审核状态 0未审核 1已确认 2已修复',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `is_delete` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `idx_app` (`app_id`),
+  KEY `idx_severity` (`severity`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+CREATE TABLE `scan_subdomain` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `app_id` int NOT NULL DEFAULT '0',
+  `user_id` int NOT NULL DEFAULT '0',
+  `subdomain` varchar(255) NOT NULL DEFAULT '',
+  `ip` varchar(50) NOT NULL DEFAULT '',
+  `cname` varchar(255) DEFAULT NULL,
+  `level` tinyint NOT NULL DEFAULT '3',
+  `status` tinyint NOT NULL DEFAULT '1' COMMENT '1存活 0失效',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `idx_subdomain` (`subdomain`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+CREATE TABLE `scan_code_audit` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `code_id` int NOT NULL DEFAULT '0' COMMENT '代码项目ID',
+  `user_id` int NOT NULL DEFAULT '0',
+  `file` varchar(512) NOT NULL DEFAULT '' COMMENT '文件路径',
+  `line` int NOT NULL DEFAULT '0' COMMENT '行号',
+  `rule_id` varchar(100) NOT NULL DEFAULT '' COMMENT '规则标识',
+  `message` varchar(512) NOT NULL DEFAULT '' COMMENT '问题描述',
+  `severity` varchar(20) NOT NULL DEFAULT 'warning' COMMENT 'error/warning',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `is_delete` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `idx_code` (`code_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;

@@ -19,22 +19,22 @@ class Index extends BaseController
         $appCount = Db::table('app')->where($where)->count();
         // 黑盒rad数量
         $urlsCount = Db::table('asm_urls')->where($where)->count();
-        // 黑盒xray数量
-        $xrayCount = Db::table('xray')->where($where)->count();
+        // 黑盒xray数量（统一漏洞表 scan_vuln）
+        $xrayCount = Db::table('scan_vuln')->where(['source' => 'xray'])->count();
         // 黑盒sqlmap数量
         $sqlmapCount = Db::table('urls_sqlmap')->where($where)->count();
         // 黑盒awvs数量
         $awvsCount = Db::table('awvs_app')->where($where)->count();
-        // 黑盒vulmap数量
-        $vulmapCount = Db::table('app_vulmap')->where($where)->count();
-        // 黑盒nuclei数量
-        $nucleiCount = Db::table('app_nuclei')->where($where)->count();
+        // 黑盒vulmap数量（统一漏洞表 scan_vuln）
+        $vulmapCount = Db::table('scan_vuln')->where(['source' => 'vulmap'])->count();
+        // 黑盒nuclei数量（统一漏洞表 scan_vuln）
+        $nucleiCount = Db::table('scan_vuln')->where(['source' => 'nuclei'])->count();
         // 黑盒dirmap数量
         $dirmapCount = Db::table('app_dirmap')->where($where)->count();
         // 黑盒whatweb数量
         $whatwebCount = Db::table('app_whatweb')->where($where)->count();
-        // 黑盒one_for_all数量
-        $oneforallCount = Db::table('one_for_all')->where($where)->count();
+        // 子域名数量（scan_subdomain）
+        $oneforallCount = Db::table('scan_subdomain')->where($where)->count();
 
         // 资产探测
         $hostCount = Db::table('asm_host')->count();
@@ -47,7 +47,7 @@ class Index extends BaseController
 
         // 白盒统计
         $codeCount = Db::table('code')->count();
-        $semgrepCount = Db::table('semgrep')->count();
+        $semgrepCount = Db::table('scan_code_audit')->count();
         $fortifyCount = Db::table('fortify')->count();
         $mobsfscanCount = Db::table('mobsfscan')->count();
         $murphysecCount = Db::table('murphysec')->count();

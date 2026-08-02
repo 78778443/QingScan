@@ -43,18 +43,15 @@ class OneForAllModel extends BaseModel
                     $data[] = [
                         'app_id'    => $v['id'],
                         'user_id'   => $v['user_id'] ?? 0,
-                        'alive'     => '1',
-                        'resolve'   => $r['resolve'],
-                        'url'       => $r['url'],
                         'subdomain' => $r['subdomain'],
-                        'level'     => $r['level'],
-                        'cname'     => $r['cname'],
                         'ip'        => $r['ip'],
-                        'port'      => '',
+                        'cname'     => $r['cname'] ?? '',
+                        'level'     => $r['level'],
+                        'status'    => 1,
                     ];
                 }
                 if ($data) {
-                    Db::name('one_for_all')->extra('IGNORE')->insertAll($data);
+                    Db::name('scan_subdomain')->extra('IGNORE')->insertAll($data);
                 }
                 addlog(["内置PHP子域名引擎扫描数据写入成功:" . json_encode($data)]);
             } else {

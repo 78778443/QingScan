@@ -27,6 +27,14 @@ function PortStatusBadge({ value }: { value: unknown }) {
   return <Badge variant="outline">{raw === '' ? '-' : raw}</Badge>
 }
 
+// 子域名状态：1=存活(绿) / 0=失效(灰)
+function SubdomainStatusBadge({ value }: { value: unknown }) {
+  const raw = String(value ?? '').trim()
+  if (raw === '1') return <Badge className={severityColor('low')}>存活</Badge>
+  if (raw === '0') return <Badge variant="secondary">失效</Badge>
+  return <Badge variant="outline">{raw === '' ? '-' : raw}</Badge>
+}
+
 function StatusCodeBadge({ value }: { value: unknown }) {
   const n = Number(value)
   if (Number.isNaN(n) || value === '' || value === undefined || value === null) {
@@ -110,11 +118,15 @@ const kindConfig: Record<string, KindConfig> = {
     endpoint: 'subdomain_list',
     columns: [
       idCol,
-      { key: 'subdomain', header: '子域名' },
+      { key: 'subdomain', header: '子域名', className: 'max-w-64 truncate' },
       { key: 'ip', header: 'IP 地址' },
-      { key: 'port', header: '端口' },
-      { key: 'cdn', header: 'CDN' },
-      { key: 'title', header: '标题', className: 'max-w-64 truncate' },
+      { key: 'cname', header: 'CNAME', className: 'max-w-48 truncate' },
+      { key: 'level', header: '级别' },
+      {
+        key: 'status',
+        header: '状态',
+        render: (row) => <SubdomainStatusBadge value={row.status} />,
+      },
       timeCol,
     ],
   },
