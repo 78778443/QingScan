@@ -248,11 +248,11 @@ function makeVulnConfig(key: 'web-vuln' | 'gen-vuln' | 'vul-verify', title: stri
 }
 
 const TOOL_CONFIGS: Record<ToolKey, ToolConfig> = {
-  'web-vuln': makeVulnConfig('web-vuln', 'Web漏洞检测', '/api/webscan/web_vuln_list'),
-  'gen-vuln': makeVulnConfig('gen-vuln', '通用漏洞扫描', '/api/webscan/gen_vuln_list'),
+  'web-vuln': makeVulnConfig('web-vuln', 'Web漏洞', '/api/webscan/web_vuln_list'),
+  'gen-vuln': makeVulnConfig('gen-vuln', '通用漏洞', '/api/webscan/gen_vuln_list'),
   'sql-inject': {
     key: 'sql-inject',
-    title: 'SQL注入检测',
+    title: 'SQL注入',
     api: '/api/webscan/sql_inject_list',
     showLevel: false,
     levelApiValues: {},

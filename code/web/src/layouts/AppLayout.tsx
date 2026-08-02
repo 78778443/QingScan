@@ -49,9 +49,9 @@ const MENU: MenuGroup[] = [
   {
     title: '扫描结果',
     items: [
-      { label: 'Web漏洞检测', path: '/webscan/web-vuln', icon: Radar },
-      { label: '通用漏洞扫描', path: '/webscan/gen-vuln', icon: Shield },
-      { label: 'SQL注入检测', path: '/webscan/sql-inject', icon: Database },
+      { label: 'Web漏洞', path: '/webscan/web-vuln', icon: Radar },
+      { label: '通用漏洞', path: '/webscan/gen-vuln', icon: Shield },
+      { label: 'SQL注入', path: '/webscan/sql-inject', icon: Database },
       { label: '漏洞验证', path: '/webscan/vul-verify', icon: Bug },
       { label: '目录扫描', path: '/webscan/dir-scan', icon: FolderSearch },
       { label: '指纹识别', path: '/webscan/finger', icon: Globe },
@@ -79,9 +79,9 @@ const MENU: MenuGroup[] = [
 const TITLES: Record<string, string> = {
   '/': '控制台',
   '/webscan/targets': '网站扫描',
-  '/webscan/web-vuln': 'Web漏洞检测',
-  '/webscan/gen-vuln': '通用漏洞扫描',
-  '/webscan/sql-inject': 'SQL注入检测',
+  '/webscan/web-vuln': 'Web漏洞',
+  '/webscan/gen-vuln': '通用漏洞',
+  '/webscan/sql-inject': 'SQL注入',
   '/webscan/vul-verify': '漏洞验证',
   '/webscan/dir-scan': '目录扫描',
   '/webscan/finger': '指纹识别',
