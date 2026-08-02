@@ -14,7 +14,6 @@ class Result extends BaseController
     public function plugin_list()
     {
         $query = Db::table('plugin_scan_log')->alias('a')
-            ->leftJoin('plugin b', 'b.id = a.plugin_id')
             ->field('a.*,b.name,b.result_file');
 
         $search = $this->request->param('search');

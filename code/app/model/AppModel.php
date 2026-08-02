@@ -279,48 +279,6 @@ class AppModel extends BaseModel
 
     }
 
-    public static function whatwebPocTest()
-    {
-        ini_set('max_execution_time', 0);
-        while (true) {
-            processSleep(1);
-            $list = Db::name('scan_finger')->whereTime('poc_scan_time', '<=', date('Y-m-d H:i:s', time() - (86400 * 15)))->limit(1)->orderRand()->select()->toArray();
-            foreach ($list as $val) {
-
-                $whatwebArr = whatwebArr($val['plugins']);
-                foreach ($whatwebArr as $k => $v) {
-                    $where[] = ['product_name', '=', $k];
-                    $where[] = ['affect_ver', 'like', "%{$v}%"];
-                    $where[] = ['is_delete', '=', 0];
-                    $where[] = ['is_poc', '=', 1];
-                    $cve_num = Db::name('vulnerable')->where($where)->value('cve_num');
-                    if ($cve_num) { // 存在poc
-                        $pocfile = Db::name('pocs_file')->where('cve_num', $cve_num)->value('poc_file');
-                        $url = Db::name('app')->where('id', $val['app_id'])->value('url');
-                        if (strpos($pocfile, './extend/') === false) {
-                            $pocfile = './extend/' . $pocfile;
-                        }
-                        $cmd = "pocsuite -r {$pocfile} -u {$url} --verify";
-                        execLog($cmd, $output);
-                        addlog(["poc验证结束", $val['id'], $url, $cmd, json_encode($output)]);
-
-                        $data = [
-                            'whatweb_id' => $val['id'],
-                            'url' => $val['url'],
-                            'app_id' => $val['app_id'],
-                            'user_id' => $val['user_id'],
-                            'key' => $k,
-                            'value' => $v,
-                            'result' => json_encode($output),
-                            'output' => date('Y-m-d H:i:s', time())
-                        ];
-                        Db::name('scan_finger_poc')->insert($data);
-                    }
-                }
-            }
-            sleep(10);
-        }
-    }
 
     //获取项目列表
     public static function getAppName()

@@ -882,24 +882,6 @@ DROP TABLE IF EXISTS `one_for_all`;
 DROP TABLE IF EXISTS `plugin`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `plugin` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `user_id` int NOT NULL DEFAULT '0',
-  `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '' COMMENT '插件名称',
-  `cmd` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT '插件执行命令',
-  `result_file` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '结果文件存放位置',
-  `create_time` datetime DEFAULT '2000-01-01 00:00:00' COMMENT '添加时间',
-  `status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '0禁用  1启用',
-  `is_delete` tinyint(1) NOT NULL DEFAULT '0',
-  `result_type` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT '' COMMENT 'json、csv、txt',
-  `update_time` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-  `tool_path` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '工具存放位置',
-  `scan_type` int DEFAULT '0' COMMENT '0 app 1 host 2 code  3 url',
-  `type` tinyint(1) NOT NULL DEFAULT '1' COMMENT '1执行插件扫描   2结果分析',
-  PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE KEY `un_name` (`name`,`scan_type`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin ROW_FORMAT=DYNAMIC COMMENT='自定义插件';
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `plugin_scan_log`
@@ -942,19 +924,6 @@ DROP TABLE IF EXISTS `plugin_store`;
 DROP TABLE IF EXISTS `pocs_file`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `pocs_file` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `cve_num` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `create_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `status` tinyint(1) NOT NULL DEFAULT '1',
-  `tool` tinyint(1) NOT NULL DEFAULT '0' COMMENT '0 pocsuite3 1 xray 2 其他',
-  `content` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'POC内容',
-  `vul_id` int DEFAULT NULL,
-  PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE KEY `cve_poc` (`cve_num`,`name`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `pocsuite3`

@@ -48,7 +48,6 @@ class Index extends BaseController
 
         // 漏洞信息库
         $vulnerableCount = Db::table('vulnerable')->count();
-        $pocsCount = Db::table('pocs_file')->count();
         $targetCount = Db::table('vul_target')->count();
 
         $data = [
@@ -87,7 +86,6 @@ class Index extends BaseController
                 "value" => $vulnerableCount,
                 "subInfo" => [
                     ["name" => "漏洞情报", "value" => $vulnerableCount, "href" => "/result/vulnerable"],
-                    ["name" => "Poc脚本", "value" => $pocsCount, "href" => "/result/plugin"],
                     ["name" => "漏洞数量", "value" => $targetCount, "href" => "/webscan/targets"],
                 ]
             ]
