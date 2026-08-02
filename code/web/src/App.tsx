@@ -5,7 +5,6 @@ import Dashboard from '@/pages/Dashboard'
 import Targets from '@/pages/webscan/Targets'
 import ScanResults from '@/pages/webscan/ScanResults'
 import Assets from '@/pages/asm/Assets'
-import Tasks from '@/pages/task/Tasks'
 import CodeAudit from '@/pages/code/CodeAudit'
 import Workorders from '@/pages/workorder/Workorders'
 
@@ -18,7 +17,6 @@ export default function App() {
         <Route path="webscan/targets" element={<Targets />} />
         <Route path="webscan/:tool" element={<ScanResults />} />
         <Route path="asm/:kind" element={<Assets />} />
-        <Route path="task" element={<Tasks />} />
         <Route path="code" element={<CodeAudit />} />
         <Route path="workorder" element={<Workorders />} />
       </Route>

@@ -15,7 +15,6 @@ import {
   Network,
   Layers,
   Link,
-  ListTodo,
   Code2,
   Ticket,
   Settings,
@@ -69,7 +68,6 @@ const MENU: MenuGroup[] = [
       { label: 'URL资产', path: '/asm/url', icon: Link },
     ],
   },
-  { items: [{ label: '扫描任务', path: '/task', icon: ListTodo }] },
   {
     title: '安全运营',
     items: [
@@ -93,7 +91,6 @@ const TITLES: Record<string, string> = {
   '/asm/domain': '域名资产',
   '/asm/subdomain': '子域名',
   '/asm/url': 'URL资产',
-  '/task': '扫描任务',
   '/code': '代码审计',
   '/workorder': '工单管理',
 }

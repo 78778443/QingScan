@@ -99,11 +99,21 @@ const columns: Column<Row>[] = [
     key: 'target',
     header: '目标',
     className: 'max-w-56 truncate',
-    render: (row) => (
-      <span className="block max-w-56 truncate" title={str(row.target)}>
-        {str(row.target)}
-      </span>
-    ),
+    render: (row) => {
+      const ext = str(row.ext_info)
+      let target = str(row.target)
+      try {
+        const parsed = JSON.parse(ext)
+        if (parsed.url) target = String(parsed.url)
+        else if (parsed.ip) target = String(parsed.ip)
+        else if (parsed.host) target = String(parsed.host)
+      } catch { /* 忽略 */ }
+      return (
+        <span className="block max-w-56 truncate" title={target}>
+          {target}
+        </span>
+      )
+    },
   },
   {
     key: 'ext_info',
@@ -135,7 +145,7 @@ const columns: Column<Row>[] = [
   },
 ]
 
-export default function Tasks() {
+export default function TaskQueue() {
   const [page, setPage] = useState(1)
   const [tool, setTool] = useState('')
   const [status, setStatus] = useState('')
@@ -207,10 +217,6 @@ export default function Tasks() {
 
   return (
     <div className="space-y-4">
-      <div className="mb-4">
-        <h1 className="text-lg font-semibold">扫描任务</h1>
-        <p className="text-xs text-muted-foreground">任务列表 - 调度器自动执行记录</p>
-      </div>
       <DataTable
         columns={columns}
         rows={data?.rows ?? []}

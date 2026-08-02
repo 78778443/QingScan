@@ -43,6 +43,13 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from '@/components/ui/tabs'
+import TaskQueue from './TaskQueue'
 import { cn } from '@/lib/utils'
 
 // ---------- 类型与常量 ----------
@@ -545,6 +552,12 @@ export default function Targets() {
 
   return (
     <div className="space-y-4">
+      <Tabs defaultValue="targets">
+        <TabsList>
+          <TabsTrigger value="targets">目标管理</TabsTrigger>
+          <TabsTrigger value="queue">任务队列</TabsTrigger>
+        </TabsList>
+        <TabsContent value="targets" className="space-y-4">
       <DataTable<AppRow>
         columns={columns}
         rows={rows}
@@ -696,6 +709,11 @@ export default function Targets() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+        </TabsContent>
+        <TabsContent value="queue">
+          <TaskQueue />
+        </TabsContent>
+      </Tabs>
     </div>
   )
 }
