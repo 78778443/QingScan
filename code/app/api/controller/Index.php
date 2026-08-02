@@ -41,7 +41,6 @@ class Index extends BaseController
         // 服务数量
         $serviceCount = Db::table('asm_host_port')->group("service")->count();
         // 未授权漏洞
-        $unauthorizedCount = Db::table('host_unauthorized')->count();
 
         // 白盒统计
         $codeCount = Db::table('code')->count();
@@ -74,7 +73,6 @@ class Index extends BaseController
                     ["name" => "URL", "value" => $urlsCount, "href" => "/asm/url"],
                     ["name" => "端口", "value" => $portCount, "href" => "/asm/port"],
                     ["name" => "中间件", "value" => $serviceCount, "href" => "/asm/port"],
-                    ["name" => "未授权漏洞", "value" => $unauthorizedCount, "href" => "/result/unauthorized"],
                 ]
             ],
             [
