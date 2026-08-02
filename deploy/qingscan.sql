@@ -215,19 +215,6 @@ CREATE TABLE `app_whatweb` (
 DROP TABLE IF EXISTS `app_whatweb_poc`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `app_whatweb_poc` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `whatweb_id` int NOT NULL,
-  `url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '',
-  `app_id` int NOT NULL,
-  `key` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '',
-  `value` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '',
-  `result` text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin,
-  `create_time` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
-  `user_id` int NOT NULL,
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin ROW_FORMAT=DYNAMIC;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `app_xray_agent_port`
@@ -236,16 +223,6 @@ CREATE TABLE `app_whatweb_poc` (
 DROP TABLE IF EXISTS `app_xray_agent_port`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `app_xray_agent_port` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `app_id` int NOT NULL,
-  `xray_agent_prot` int NOT NULL COMMENT '代理端口',
-  `create_time` datetime DEFAULT '2000-01-01 00:00:00',
-  `start_up` int NOT NULL DEFAULT '0' COMMENT '是否已启动',
-  `is_get_result` int NOT NULL DEFAULT '0' COMMENT '是否已获取结果',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin ROW_FORMAT=DYNAMIC COMMENT='本地代理';
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `asm_cloud_aliyun`
@@ -254,24 +231,6 @@ CREATE TABLE `app_xray_agent_port` (
 DROP TABLE IF EXISTS `asm_cloud_aliyun`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `asm_cloud_aliyun` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `resource_id` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `resource_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `resource_type` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `region` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `status` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `public_ip` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `public_ips` json DEFAULT NULL,
-  `private_ip` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `private_ips` json DEFAULT NULL,
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `original_json` longtext COLLATE utf8mb4_unicode_ci,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `resource_id` (`resource_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=68 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `asm_cloud_baidu`
@@ -280,24 +239,6 @@ CREATE TABLE `asm_cloud_aliyun` (
 DROP TABLE IF EXISTS `asm_cloud_baidu`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `asm_cloud_baidu` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `resource_id` varchar(100) NOT NULL,
-  `resource_name` varchar(200) DEFAULT NULL,
-  `resource_type` varchar(50) DEFAULT NULL,
-  `region` varchar(50) DEFAULT NULL,
-  `status` varchar(50) DEFAULT NULL,
-  `public_ip` varchar(50) DEFAULT NULL,
-  `private_ip` varchar(50) DEFAULT NULL,
-  `public_ips` json DEFAULT NULL,
-  `private_ips` json DEFAULT NULL,
-  `create_time` datetime DEFAULT NULL,
-  `update_time` datetime DEFAULT NULL,
-  `original_json` json DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `uk_resource_id` (`resource_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=258 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `asm_cloud_huoshan`
@@ -306,24 +247,6 @@ CREATE TABLE `asm_cloud_baidu` (
 DROP TABLE IF EXISTS `asm_cloud_huoshan`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `asm_cloud_huoshan` (
-  `id` int NOT NULL AUTO_INCREMENT COMMENT '自增主键',
-  `resource_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '火山云资源ID',
-  `resource_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '资源名称',
-  `resource_type` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '资源类型',
-  `region` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '地域',
-  `status` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '资源状态',
-  `public_ip` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '公网IP',
-  `public_ips` json DEFAULT NULL COMMENT '公网IP列表（支持多个IP）',
-  `private_ip` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '私网IP',
-  `private_ips` json DEFAULT NULL COMMENT '私有IP列表（支持多个IP）',
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  `original_json` longtext COLLATE utf8mb4_general_ci COMMENT '原始API数据',
-  PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE KEY `un_resource_id` (`resource_id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=44 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `asm_cloud_tianyi`
@@ -332,25 +255,6 @@ CREATE TABLE `asm_cloud_huoshan` (
 DROP TABLE IF EXISTS `asm_cloud_tianyi`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `asm_cloud_tianyi` (
-  `id` int NOT NULL AUTO_INCREMENT COMMENT '自增主键',
-  `resource_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '天翼云资源ID',
-  `resource_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '资源名称',
-  `resource_type` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '资源类型',
-  `region` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '地域',
-  `status` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '资源状态',
-  `public_ip` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '公网IP',
-  `public_ips` json DEFAULT NULL COMMENT '公网IP列表（支持多个IP）',
-  `private_ip` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '私网IP',
-  `private_ips` json DEFAULT NULL COMMENT '私有IP列表（支持多个IP）',
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  `original_json` longtext COLLATE utf8mb4_general_ci COMMENT '原始API数据',
-  `team_id` varchar(20) COLLATE utf8mb4_general_ci DEFAULT 'A' COMMENT '团队标识',
-  PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE KEY `un_resource_id` (`resource_id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=153 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `asm_cloud_yidong`
@@ -359,24 +263,6 @@ CREATE TABLE `asm_cloud_tianyi` (
 DROP TABLE IF EXISTS `asm_cloud_yidong`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `asm_cloud_yidong` (
-  `id` int NOT NULL AUTO_INCREMENT COMMENT '主键ID',
-  `resource_id` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '资源ID',
-  `resource_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '资源名称',
-  `resource_type` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '资源类型',
-  `region` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '区域',
-  `status` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '状态',
-  `public_ip` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '公网IP',
-  `private_ip` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '内网IP',
-  `public_ips` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '公网IP列表',
-  `private_ips` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '内网IP列表',
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  `original_json` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '原始API数据',
-  PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE KEY `un_resource_id` (`resource_id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=271 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='移动云资源表';
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `asm_discover`
@@ -385,14 +271,6 @@ CREATE TABLE `asm_cloud_yidong` (
 DROP TABLE IF EXISTS `asm_discover`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `asm_discover` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `keyword` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
-  `app_id` int DEFAULT '0',
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin ROW_FORMAT=DYNAMIC;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `asm_domain`
@@ -415,29 +293,6 @@ CREATE TABLE `asm_domain` (
 DROP TABLE IF EXISTS `asm_hids_qingteng`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `asm_hids_qingteng` (
-  `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `host_id` int DEFAULT NULL COMMENT '主机ID，关联asm_host_assets表',
-  `instance_id` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '实例ID',
-  `hostname` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '主机名称',
-  `ip_address` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'IP地址',
-  `os_type` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '操作系统类型',
-  `os_version` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '操作系统版本',
-  `agent_status` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '代理状态',
-  `agent_version` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '代理版本',
-  `cpu_info` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'CPU信息',
-  `memory_info` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '内存信息',
-  `disk_info` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '磁盘信息',
-  `last_heartbeat` datetime DEFAULT NULL COMMENT '最后心跳时间',
-  `original_json` text COLLATE utf8mb4_unicode_ci COMMENT '原始JSON数据',
-  `created_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `updated_time` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  PRIMARY KEY (`id`),
-  KEY `idx_host_id` (`host_id`),
-  KEY `idx_instance_id` (`instance_id`),
-  KEY `idx_ip_address` (`ip_address`)
-) ENGINE=InnoDB AUTO_INCREMENT=238 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `asm_host`
@@ -608,12 +463,6 @@ CREATE TABLE `asm_ip_port` (
 DROP TABLE IF EXISTS `asm_sub_domain`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `asm_sub_domain` (
-  `id` int NOT NULL,
-  `domain` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `asm_urls`
@@ -664,48 +513,6 @@ CREATE TABLE `asm_urls` (
 DROP TABLE IF EXISTS `asm_vulnerability_qingteng`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `asm_vulnerability_qingteng` (
-  `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `result_id` varchar(50) NOT NULL COMMENT '结果ID',
-  `vul_id` varchar(50) NOT NULL COMMENT '青藤漏洞ID',
-  `vul_name` varchar(255) NOT NULL COMMENT '漏洞名称',
-  `severity` enum('SEVERITY_CRITICAL','SEVERITY_HIGH','SEVERITY_MEDIUM','SEVERITY_LOW') NOT NULL COMMENT '严重程度',
-  `title` varchar(255) NOT NULL COMMENT '漏洞标题',
-  `tags` json DEFAULT NULL COMMENT '标签',
-  `first_found_time` datetime DEFAULT NULL COMMENT '首次发现时间',
-  `last_found_time` datetime DEFAULT NULL COMMENT '最后发现时间',
-  `agent_id` varchar(50) DEFAULT '' COMMENT '代理ID',
-  `os_type` varchar(50) DEFAULT '' COMMENT '操作系统类型',
-  `hostname` varchar(100) DEFAULT '' COMMENT '主机名',
-  `ip` varchar(50) NOT NULL COMMENT 'IP地址',
-  `group_name` varchar(100) DEFAULT '' COMMENT '组名',
-  `agent_status` varchar(20) DEFAULT '' COMMENT '代理状态',
-  `charger_name` varchar(50) DEFAULT '' COMMENT '负责人',
-  `cve_id` varchar(50) DEFAULT '' COMMENT 'CVE编号',
-  `cwe_ids` json DEFAULT NULL COMMENT 'CWE编号',
-  `cnvd_id` varchar(50) DEFAULT '' COMMENT 'CNVD编号',
-  `cnnvd_id` varchar(50) DEFAULT '' COMMENT 'CNNVD编号',
-  `poc_types` json DEFAULT NULL COMMENT 'POC类型',
-  `exec_type` json DEFAULT NULL COMMENT '执行类型',
-  `run_level` varchar(20) DEFAULT '' COMMENT '运行级别',
-  `description` text COMMENT '漏洞描述',
-  `solution` text COMMENT '解决方案',
-  `status` enum('pending','processing','fixed','ignored') DEFAULT 'pending' COMMENT '处理状态',
-  `raw_data` json NOT NULL COMMENT '原生行信息',
-  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `idx_result_id` (`result_id`),
-  KEY `idx_vul_id` (`vul_id`),
-  KEY `idx_severity` (`severity`),
-  KEY `idx_status` (`status`),
-  KEY `idx_ip` (`ip`),
-  KEY `idx_hostname` (`hostname`),
-  KEY `idx_group_name` (`group_name`),
-  KEY `idx_first_found_time` (`first_found_time`),
-  KEY `idx_last_found_time` (`last_found_time`)
-) ENGINE=InnoDB AUTO_INCREMENT=101 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='青藤云主机漏洞列表';
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `asm_vulnerability_summary`
@@ -714,28 +521,6 @@ CREATE TABLE `asm_vulnerability_qingteng` (
 DROP TABLE IF EXISTS `asm_vulnerability_summary`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `asm_vulnerability_summary` (
-  `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `vul_name` varchar(255) NOT NULL COMMENT '漏洞名称',
-  `vul_type` varchar(50) NOT NULL COMMENT '漏洞类型',
-  `ip_address` varchar(50) NOT NULL COMMENT 'IP地址',
-  `port` varchar(20) NOT NULL COMMENT '端口号',
-  `severity` enum('critical','high','medium','low','info') NOT NULL COMMENT '严重程度',
-  `cve_id` varchar(50) DEFAULT '' COMMENT 'CVE编号',
-  `cnvd_id` varchar(50) DEFAULT '' COMMENT 'CNVD编号',
-  `description` text COMMENT '漏洞描述',
-  `solution` text COMMENT '解决方案',
-  `status` enum('pending','processing','fixed','ignored') DEFAULT 'pending' COMMENT '处理状态',
-  `source_table` varchar(50) NOT NULL COMMENT '来源表名',
-  `source_id` int unsigned NOT NULL COMMENT '来源表ID',
-  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  PRIMARY KEY (`id`),
-  KEY `idx_severity` (`severity`),
-  KEY `idx_status` (`status`),
-  KEY `idx_ip_address` (`ip_address`)
-) ENGINE=InnoDB AUTO_INCREMENT=51 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='漏洞汇总表';
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `asm_work_order`
@@ -821,22 +606,6 @@ CREATE TABLE `auth_rule` (
 DROP TABLE IF EXISTS `awvs_app`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `awvs_app` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `app_id` int DEFAULT NULL,
-  `address` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `criticality` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `fqdn` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `domain` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `target_id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `target_type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `user_id` int NOT NULL,
-  PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE KEY `un_target` (`target_id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin ROW_FORMAT=DYNAMIC;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `awvs_vuln`
@@ -845,45 +614,6 @@ CREATE TABLE `awvs_app` (
 DROP TABLE IF EXISTS `awvs_vuln`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `awvs_vuln` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `affects_detail` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `affects_url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `app` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `confidence` int DEFAULT NULL,
-  `criticality` int DEFAULT NULL,
-  `last_seen` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `loc_id` int DEFAULT NULL,
-  `severity` int DEFAULT NULL,
-  `status` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `tags` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `target_id` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `vt_created` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `vt_id` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `vt_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `vt_updated` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `vuln_id` bigint DEFAULT NULL,
-  `cvss2` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `cvss_score` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `details` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `highlights` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `impact` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `long_description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `recommendation` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `references` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `request` text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin,
-  `response_info` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `source` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `create_time` datetime DEFAULT CURRENT_TIMESTAMP,
-  `check_status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '审核状态',
-  `is_delete` tinyint(1) NOT NULL DEFAULT '0',
-  `user_id` int NOT NULL DEFAULT '0',
-  `app_id` int DEFAULT '0',
-  PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE KEY `un_vuln_id` (`vuln_id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin ROW_FORMAT=DYNAMIC;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `bug`
@@ -892,18 +622,6 @@ CREATE TABLE `awvs_vuln` (
 DROP TABLE IF EXISTS `bug`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `bug` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `status` tinyint DEFAULT '1',
-  `name` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `create_time` datetime DEFAULT CURRENT_TIMESTAMP,
-  `detail` text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin COMMENT '漏洞详情',
-  `category` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `host` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `check_status` tinyint(1) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin ROW_FORMAT=DYNAMIC;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `code`
@@ -951,20 +669,6 @@ CREATE TABLE `code` (
 DROP TABLE IF EXISTS `code_check`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `code_check` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `app_id` int DEFAULT '0',
-  `content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `status` tinyint DEFAULT '1',
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `files` text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin,
-  `author` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `project_hash` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `version` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `project_id` int DEFAULT NULL,
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin ROW_FORMAT=DYNAMIC;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `code_check_notice`
@@ -973,17 +677,6 @@ CREATE TABLE `code_check` (
 DROP TABLE IF EXISTS `code_check_notice`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `code_check_notice` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `check_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `end` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `extra` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `path` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `start` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `version` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `code_composer`
@@ -992,32 +685,6 @@ CREATE TABLE `code_check_notice` (
 DROP TABLE IF EXISTS `code_composer`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `code_composer` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(2048) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `version` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `source` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `dist` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `require` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `conflict` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `require_dev` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `suggest` varchar(2550) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `extra` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `autoload` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `notification_url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `license` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `authors` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `keywords` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `funding` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `time` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `code_id` int DEFAULT NULL,
-  `user_id` int DEFAULT NULL,
-  `create_time` datetime DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `code_hook`
@@ -1026,17 +693,6 @@ CREATE TABLE `code_composer` (
 DROP TABLE IF EXISTS `code_hook`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `code_hook` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `create_time` datetime DEFAULT NULL,
-  `update_time` datetime DEFAULT NULL,
-  `status` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `path` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `gitlab_id` int DEFAULT NULL,
-  `project` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `code_java`
@@ -1045,26 +701,6 @@ CREATE TABLE `code_hook` (
 DROP TABLE IF EXISTS `code_java`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `code_java` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `code_id` int NOT NULL,
-  `modelVersion` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `groupId` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `artifactId` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `version` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `modules` text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin,
-  `packaging` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `comment` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `url` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `properties` text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin,
-  `dependencies` text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin,
-  `build` text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin,
-  `create_time` datetime DEFAULT NULL,
-  `user_id` int NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin ROW_FORMAT=DYNAMIC;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `code_python`
@@ -1073,15 +709,6 @@ CREATE TABLE `code_java` (
 DROP TABLE IF EXISTS `code_python`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `code_python` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `code_id` int NOT NULL,
-  `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
-  `create_time` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
-  `user_id` int NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin ROW_FORMAT=DYNAMIC;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `code_webshell`
@@ -1090,17 +717,6 @@ CREATE TABLE `code_python` (
 DROP TABLE IF EXISTS `code_webshell`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `code_webshell` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `code_id` int NOT NULL,
-  `create_time` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
-  `check_status` int NOT NULL DEFAULT '0' COMMENT '审核状态',
-  `user_id` int NOT NULL DEFAULT '0',
-  `type` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '' COMMENT '类型',
-  `filename` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '' COMMENT '文件路径',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin ROW_FORMAT=DYNAMIC;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `codeql`
@@ -1109,23 +725,6 @@ CREATE TABLE `code_webshell` (
 DROP TABLE IF EXISTS `codeql`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `codeql` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `ruleId` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `message` text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin,
-  `locations` text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin,
-  `codeFlows` text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin,
-  `prompt` text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin,
-  `ai_message` text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin,
-  `code_id` int DEFAULT NULL COMMENT '项目ID',
-  `create_time` datetime DEFAULT CURRENT_TIMESTAMP,
-  `check_status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '审核状态',
-  `is_delete` tinyint(1) NOT NULL DEFAULT '0',
-  `user_id` int NOT NULL DEFAULT '0',
-  `update_time` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin ROW_FORMAT=DYNAMIC;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `codeql_rules`
@@ -1134,21 +733,6 @@ CREATE TABLE `codeql` (
 DROP TABLE IF EXISTS `codeql_rules`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `codeql_rules` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `ruleId` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '规则ID',
-  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '规则名称',
-  `fullDescription` text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin COMMENT '完整描述',
-  `shortDescription` text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin COMMENT '简短描述',
-  `help` text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin COMMENT '帮助信息',
-  `tags` text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin COMMENT '标签',
-  `security_severity` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '安全严重程度',
-  `problem_severity` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '问题严重程度',
-  `sub_severity` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '子严重程度',
-  PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE KEY `ruleId` (`ruleId`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin ROW_FORMAT=DYNAMIC;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `config`
@@ -1157,16 +741,6 @@ CREATE TABLE `codeql_rules` (
 DROP TABLE IF EXISTS `config`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `config` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '配置名称',
-  `status` tinyint DEFAULT '1' COMMENT '状态',
-  `type` tinyint DEFAULT '1' COMMENT '类型',
-  `data` text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin COMMENT '配置内容',
-  `create_time` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin ROW_FORMAT=DYNAMIC;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `fortify`
@@ -1175,29 +749,6 @@ CREATE TABLE `config` (
 DROP TABLE IF EXISTS `fortify`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `fortify` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `Category` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `Folder` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `Kingdom` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `Abstract` text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin,
-  `Friority` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `Primary` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin,
-  `Source` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin,
-  `code_id` int DEFAULT NULL,
-  `comment` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `check_status` int DEFAULT '0' COMMENT '0 未处理   1 有效漏洞  2 无效漏洞',
-  `Source_filename` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `Primary_filename` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `hash` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `is_delete` tinyint(1) NOT NULL DEFAULT '0',
-  `user_id` int NOT NULL DEFAULT '0',
-  `update_time` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
-  PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE KEY `un_hash` (`hash`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin ROW_FORMAT=DYNAMIC;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `github_keyword_monitor`
@@ -1206,17 +757,6 @@ CREATE TABLE `fortify` (
 DROP TABLE IF EXISTS `github_keyword_monitor`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `github_keyword_monitor` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `app_id` int NOT NULL DEFAULT '0',
-  `user_id` int NOT NULL DEFAULT '0',
-  `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '' COMMENT '关键字',
-  `create_time` datetime DEFAULT '2000-01-01 00:00:00',
-  `update_time` datetime DEFAULT '2000-01-01 00:00:00',
-  `scan_time` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin ROW_FORMAT=DYNAMIC COMMENT='github关键字设置';
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `github_keyword_monitor_notice`
@@ -1225,19 +765,6 @@ CREATE TABLE `github_keyword_monitor` (
 DROP TABLE IF EXISTS `github_keyword_monitor_notice`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `github_keyword_monitor_notice` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `parent_id` int NOT NULL DEFAULT '0' COMMENT '关键字表id',
-  `app_id` int NOT NULL DEFAULT '0',
-  `user_id` int NOT NULL DEFAULT '0',
-  `keyword` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '',
-  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '',
-  `path` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '',
-  `html_url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '',
-  `create_time` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin ROW_FORMAT=DYNAMIC COMMENT='github关键字监控结果';
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `github_notice`
@@ -1246,22 +773,6 @@ CREATE TABLE `github_keyword_monitor_notice` (
 DROP TABLE IF EXISTS `github_notice`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `github_notice` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '',
-  `level` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
-  `cve_id` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
-  `cwes` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
-  `cvss_score` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
-  `github_release_date` datetime DEFAULT NULL,
-  `references` text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin COMMENT '参考资料',
-  `desc` text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin,
-  `package` text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin,
-  `hash` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `create_time` datetime DEFAULT '2000-01-01 00:00:00',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin ROW_FORMAT=DYNAMIC;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `group`
@@ -1270,11 +781,6 @@ CREATE TABLE `github_notice` (
 DROP TABLE IF EXISTS `group`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `group` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin ROW_FORMAT=DYNAMIC;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `host_hydra_scan_details`
@@ -1303,19 +809,6 @@ CREATE TABLE `host_hydra_scan_details` (
 DROP TABLE IF EXISTS `host_unauthorized`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `host_unauthorized` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `host_id` int NOT NULL,
-  `ip` char(20) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL DEFAULT '',
-  `port` int NOT NULL DEFAULT '0',
-  `text` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '',
-  `user_id` int NOT NULL DEFAULT '0',
-  `is_delete` tinyint(1) NOT NULL DEFAULT '0',
-  `status` tinyint(1) NOT NULL DEFAULT '1',
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `log`
@@ -1341,15 +834,6 @@ CREATE TABLE `log` (
 DROP TABLE IF EXISTS `migrations`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `migrations` (
-  `version` bigint NOT NULL,
-  `migration_name` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `start_time` timestamp NULL DEFAULT NULL,
-  `end_time` timestamp NULL DEFAULT NULL,
-  `breakpoint` tinyint(1) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`version`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `mobsfscan`
@@ -1358,25 +842,6 @@ CREATE TABLE `migrations` (
 DROP TABLE IF EXISTS `mobsfscan`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `mobsfscan` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `code_id` int NOT NULL DEFAULT '0',
-  `user_id` int NOT NULL DEFAULT '0',
-  `type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '',
-  `files` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `cwe` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '',
-  `description` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '',
-  `input_case` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '',
-  `masvs` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '',
-  `owasp_mobile` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '',
-  `reference` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '',
-  `severity` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '',
-  `create_time` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
-  `check_status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '0未审核  1有效漏洞  2无效漏洞',
-  `update_time` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `murphysec`
@@ -1385,22 +850,6 @@ CREATE TABLE `mobsfscan` (
 DROP TABLE IF EXISTS `murphysec`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `murphysec` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `user_id` int NOT NULL DEFAULT '0',
-  `code_id` int DEFAULT '0',
-  `comp_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '缺陷组件名称',
-  `version` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '当前版本',
-  `min_fixed_version` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '最小修复版本',
-  `show_level` tinyint(1) NOT NULL COMMENT '修复建议等级 1强烈建议修复 2建议修复 3可选修复',
-  `language` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '语言',
-  `solutions` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '修复方案',
-  `repair_status` tinyint(1) NOT NULL DEFAULT '1' COMMENT '修复状态 1未修复 2已修复',
-  `create_time` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
-  `update_time` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `murphysec_vuln`
@@ -1409,26 +858,6 @@ CREATE TABLE `murphysec` (
 DROP TABLE IF EXISTS `murphysec_vuln`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `murphysec_vuln` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `user_id` int NOT NULL,
-  `code_id` int NOT NULL,
-  `murphysec_id` int NOT NULL,
-  `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '',
-  `cve_id` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT 'CVE编号',
-  `suggest_level` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '处置建议',
-  `poc` tinyint(1) NOT NULL DEFAULT '0',
-  `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '漏洞描述',
-  `affected_version` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '影响版本',
-  `min_fixed_version` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '最小修复版本',
-  `solutions` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '修复建议',
-  `influence` int NOT NULL DEFAULT '0' COMMENT '影响指数',
-  `level` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '漏洞级别',
-  `vuln_path` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `publish_time` int NOT NULL COMMENT '发布时间',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `node`
@@ -1437,15 +866,6 @@ CREATE TABLE `murphysec_vuln` (
 DROP TABLE IF EXISTS `node`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `node` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `userid` int NOT NULL DEFAULT '0',
-  `status` tinyint(1) NOT NULL DEFAULT '0',
-  `hostname` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '',
-  `create_time` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin ROW_FORMAT=DYNAMIC;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `one_for_all`
@@ -1514,18 +934,6 @@ CREATE TABLE `plugin_scan_log` (
 DROP TABLE IF EXISTS `plugin_store`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `plugin_store` (
-  `id` int unsigned NOT NULL AUTO_INCREMENT COMMENT '自增id',
-  `status` tinyint unsigned NOT NULL DEFAULT '1' COMMENT '状态 1 开启  0 禁用',
-  `create_time` datetime DEFAULT NULL COMMENT '插件安装时间',
-  `name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '插件标识名,英文字母(惟一)',
-  `title` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '插件名称',
-  `version` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '插件版本号',
-  `description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '插件描述',
-  `code` char(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '兑换码',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='插件表';
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `pocs_file`
@@ -1555,26 +963,6 @@ CREATE TABLE `pocs_file` (
 DROP TABLE IF EXISTS `pocsuite3`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `pocsuite3` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `ssv_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `cms` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `version` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `is_max` int DEFAULT '0',
-  `tel` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '电话号码',
-  `regaddress` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '公司注册地址',
-  `ip` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT 'IP地址',
-  `CompanyName` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '公司名字',
-  `SiteLicense` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `CompanyType` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `regcapital` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '注册资金',
-  `is_delete` tinyint(1) NOT NULL DEFAULT '0',
-  `user_id` int NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin ROW_FORMAT=DYNAMIC;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `process_safe`
@@ -1583,17 +971,6 @@ CREATE TABLE `pocsuite3` (
 DROP TABLE IF EXISTS `process_safe`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `process_safe` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `key` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `value` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `status` int NOT NULL DEFAULT '1' COMMENT '0 失效   1启用',
-  `note` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '描述',
-  `update_time` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-  `type` int DEFAULT '0' COMMENT '工具分类  0  黑盒扫描   1  白盒审计  2  专项扫描  3  系统其他',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=45 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin ROW_FORMAT=DYNAMIC;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `project_tools`
@@ -1619,15 +996,6 @@ CREATE TABLE `project_tools` (
 DROP TABLE IF EXISTS `proxy`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `proxy` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `host` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT 'ip地址',
-  `port` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT '端口号',
-  `status` int NOT NULL DEFAULT '1' COMMENT '1 有效  0 无效',
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin ROW_FORMAT=DYNAMIC COMMENT='代理表';
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `semgrep`
@@ -1644,14 +1012,6 @@ DROP TABLE IF EXISTS `semgrep`;
 DROP TABLE IF EXISTS `svn_project`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `svn_project` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `command` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `scan_time` datetime DEFAULT '2000-01-01 14:14:14',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `system_config`
@@ -1678,15 +1038,6 @@ CREATE TABLE `system_config` (
 DROP TABLE IF EXISTS `system_zanzhu`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `system_zanzhu` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `amount` float DEFAULT NULL,
-  `time` date DEFAULT NULL,
-  `message` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin ROW_FORMAT=DYNAMIC;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `task_host_scan`
@@ -1695,16 +1046,6 @@ CREATE TABLE `system_zanzhu` (
 DROP TABLE IF EXISTS `task_host_scan`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `task_host_scan` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `app_id` int DEFAULT NULL,
-  `url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `status` tinyint NOT NULL DEFAULT '0',
-  `create_time` datetime DEFAULT CURRENT_TIMESTAMP,
-  `update_time` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin ROW_FORMAT=DYNAMIC;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `task_scan`
@@ -1731,16 +1072,6 @@ CREATE TABLE `task_scan` (
 DROP TABLE IF EXISTS `task_url_crawler`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `task_url_crawler` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `app_id` int DEFAULT NULL,
-  `url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `status` tinyint NOT NULL DEFAULT '0',
-  `create_time` datetime DEFAULT CURRENT_TIMESTAMP,
-  `update_time` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin ROW_FORMAT=DYNAMIC;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `text`
@@ -1749,13 +1080,6 @@ CREATE TABLE `task_url_crawler` (
 DROP TABLE IF EXISTS `text`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `text` (
-  `hash` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `content` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`hash`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `tool_fofa`
@@ -1764,48 +1088,6 @@ CREATE TABLE `text` (
 DROP TABLE IF EXISTS `tool_fofa`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `tool_fofa` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `ip` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `port` int DEFAULT NULL,
-  `protocol` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `country` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `country_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `region` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `city` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `longitude` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `latitude` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `as_number` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `as_organization` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `host` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `domain` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `os` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `server` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `icp` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `jarm` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `header` text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin,
-  `banner` text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin,
-  `cert` text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin,
-  `base_protocol` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `link` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `certs_issuer_org` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `certs_issuer_cn` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `certs_subject_org` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `certs_subject_cn` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `tls_ja3s` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `tls_version` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `product` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `product_category` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `version` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `lastupdatetime` datetime DEFAULT NULL,
-  `cname` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  PRIMARY KEY (`id`) USING BTREE,
-  KEY `ip` (`ip`) USING BTREE,
-  KEY `domain` (`domain`) USING BTREE,
-  KEY `host` (`host`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin ROW_FORMAT=DYNAMIC;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `urls_sqlmap`
@@ -1981,19 +1263,6 @@ DROP TABLE IF EXISTS `xray`;
 DROP TABLE IF EXISTS `zhiwen`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `zhiwen` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `add_by` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `add_time` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `filters` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `keyword` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `md5` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `supplier` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `tags` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
-/*!40101 SET character_set_client = @saved_cs_client */;
 SET @@SESSION.SQL_LOG_BIN = @MYSQLDUMP_TEMP_LOG_BIN;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
