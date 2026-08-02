@@ -93,7 +93,7 @@ class WeakPassModel extends BaseModel
                     $data['user_id'] = $v['user_id'] ?? 0;
                     $dataAll[] = $data;
                 }
-                Db::name('host_hydra_scan_details')->insertAll($dataAll);
+                Db::name('scan_weak_pass')->insertAll($dataAll);
             }
             PluginModel::addScanLog($hostId, __METHOD__, 1, 1);
         }

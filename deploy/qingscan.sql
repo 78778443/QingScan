@@ -65,13 +65,13 @@ CREATE TABLE `app` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `app_crawlergo`
+-- Table structure for table `scan_spider`
 --
 
-DROP TABLE IF EXISTS `app_crawlergo`;
+DROP TABLE IF EXISTS `scan_spider`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `app_crawlergo` (
+CREATE TABLE `scan_spider` (
   `id` int NOT NULL AUTO_INCREMENT,
   `app_id` int NOT NULL,
   `user_id` int NOT NULL DEFAULT '0',
@@ -91,13 +91,13 @@ CREATE TABLE `app_crawlergo` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `app_dirmap`
+-- Table structure for table `scan_dir`
 --
 
-DROP TABLE IF EXISTS `app_dirmap`;
+DROP TABLE IF EXISTS `scan_dir`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `app_dirmap` (
+CREATE TABLE `scan_dir` (
   `id` int NOT NULL AUTO_INCREMENT,
   `app_id` int NOT NULL,
   `code` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '' COMMENT '状态码',
@@ -111,13 +111,13 @@ CREATE TABLE `app_dirmap` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `app_dismap`
+-- Table structure for table `scan_asset_finger`
 --
 
-DROP TABLE IF EXISTS `app_dismap`;
+DROP TABLE IF EXISTS `scan_asset_finger`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `app_dismap` (
+CREATE TABLE `scan_asset_finger` (
   `id` int NOT NULL AUTO_INCREMENT,
   `app_id` int NOT NULL DEFAULT '0',
   `user_id` int NOT NULL DEFAULT '0',
@@ -168,13 +168,13 @@ DROP TABLE IF EXISTS `app_vulmap`;
 /*!50503 SET character_set_client = utf8mb4 */;
 
 --
--- Table structure for table `app_wafw00f`
+-- Table structure for table `scan_waf`
 --
 
-DROP TABLE IF EXISTS `app_wafw00f`;
+DROP TABLE IF EXISTS `scan_waf`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `app_wafw00f` (
+CREATE TABLE `scan_waf` (
   `id` int NOT NULL AUTO_INCREMENT,
   `app_id` int NOT NULL,
   `user_id` int NOT NULL DEFAULT '0',
@@ -188,13 +188,13 @@ CREATE TABLE `app_wafw00f` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `app_whatweb`
+-- Table structure for table `scan_finger`
 --
 
-DROP TABLE IF EXISTS `app_whatweb`;
+DROP TABLE IF EXISTS `scan_finger`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `app_whatweb` (
+CREATE TABLE `scan_finger` (
   `id` int NOT NULL AUTO_INCREMENT,
   `app_id` int NOT NULL,
   `target` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
@@ -783,13 +783,13 @@ DROP TABLE IF EXISTS `group`;
 /*!50503 SET character_set_client = utf8mb4 */;
 
 --
--- Table structure for table `host_hydra_scan_details`
+-- Table structure for table `scan_weak_pass`
 --
 
-DROP TABLE IF EXISTS `host_hydra_scan_details`;
+DROP TABLE IF EXISTS `scan_weak_pass`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `host_hydra_scan_details` (
+CREATE TABLE `scan_weak_pass` (
   `id` int NOT NULL AUTO_INCREMENT,
   `host_id` int NOT NULL,
   `type` char(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT 'ssh' COMMENT '类型  如：ssh、mysql等',
@@ -1090,13 +1090,13 @@ DROP TABLE IF EXISTS `tool_fofa`;
 /*!50503 SET character_set_client = utf8mb4 */;
 
 --
--- Table structure for table `urls_sqlmap`
+-- Table structure for table `scan_sql_inject`
 --
 
-DROP TABLE IF EXISTS `urls_sqlmap`;
+DROP TABLE IF EXISTS `scan_sql_inject`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `urls_sqlmap` (
+CREATE TABLE `scan_sql_inject` (
   `id` int NOT NULL AUTO_INCREMENT,
   `urls_id` int NOT NULL,
   `create_time` datetime DEFAULT CURRENT_TIMESTAMP,

@@ -12,7 +12,7 @@ class AppDirmapModel extends BaseModel
 {
     public static function dirmapScan()
     {
-        $where = ['tool' => 'scan_app_dirmap', 'status' => 0];
+        $where = ['tool' => 'scan_scan_dir', 'status' => 0];
         $list = Db::table('task_scan')->where($where)->limit(10)->select()->toArray();
         foreach ($list as $task) {
             Db::table('task_scan')->where(['id' => $task['id']])->update(['status' => 1]);
@@ -45,7 +45,7 @@ class AppDirmapModel extends BaseModel
                 ];
             }
             if ($data) {
-                Db::name('app_dirmap')->insertAll($data);
+                Db::name('scan_dir')->insertAll($data);
             }
             PluginModel::addScanLog($v['id'], __METHOD__, 0, 1);
         }

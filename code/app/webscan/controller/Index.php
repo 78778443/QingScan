@@ -61,7 +61,7 @@ class Index extends Common
         $data['serverArr'] = array_column($data['serverArr'], 'server');
         foreach ($data['list'] as &$v) {
             $v['is_waf'] = '否';
-            $wafw00f = Db::name('app_wafw00f')->where('app_id', $v['id'])->find();
+            $wafw00f = Db::name('scan_waf')->where('app_id', $v['id'])->find();
             if ($wafw00f && $wafw00f['detected']) {
                 $v['is_waf'] = '是';
             }
@@ -79,14 +79,14 @@ class Index extends Common
 
             $v['name'] = parse_url($v['url'])['host'];
             $v['oneforall_num'] = Db::table('one_for_all')->where('app_id', $v['id'])->where($where1)->count('id');
-            $v['dirmap_num'] = Db::table('app_dirmap')->where('app_id', $v['id'])->where($where1)->count('id');
-            $v['sqlmap_num'] = Db::table('urls_sqlmap')->where('app_id', $v['id'])->where($where1)->count('id');
+            $v['dirmap_num'] = Db::table('scan_dir')->where('app_id', $v['id'])->where($where1)->count('id');
+            $v['sqlmap_num'] = Db::table('scan_sql_inject')->where('app_id', $v['id'])->where($where1)->count('id');
             $v['vulmap_num'] = Db::table('app_vulmap')->where('app_id', $v['id'])->where($where1)->count('id');
-            //$data['dismap_num'] = Db::table('app_dismap')->where($where1)->count('id');
+            //$data['dismap_num'] = Db::table('scan_asset_finger')->where($where1)->count('id');
             $v['urls_num'] = Db::table('asm_urls')->where('app_id', $v['id'])->where($where1)->count('id');
             $v['xray_num'] = Db::table('xray')->where('app_id', $v['id'])->where($where1)->count('id');
             //$data['nuclei_num'] = Db::table('app_nuclei')->where($where1)->count('id');
-            $v['crawlergo_num'] = Db::table('app_crawlergo')->where('app_id', $v['id'])->where($where1)->count('id');
+            $v['crawlergo_num'] = Db::table('scan_spider')->where('app_id', $v['id'])->where($where1)->count('id');
             $v['awvs_num'] = Db::table('awvs_vuln')->where('app_id', $v['id'])->where($where1)->count('id');
             $v['namp_num'] = Db::table('asm_host_port')->where('app_id', $v['id'])->where($where1)->count('id');
             $v['host_num'] = Db::table('asm_host')->where('app_id', $v['id'])->where($where1)->count('id');
@@ -161,18 +161,18 @@ class Index extends Common
         if (!$data['info']) {
             return $this->error('数据不存在');
         }
-        $data['whatweb'] = Db::table('app_whatweb')->where($where)->where($where1)->order("id", 'desc')->limit(0, 15)->select()->toArray();
+        $data['whatweb'] = Db::table('scan_finger')->where($where)->where($where1)->order("id", 'desc')->limit(0, 15)->select()->toArray();
         $data['oneforall'] = Db::table('one_for_all')->where($where)->order("id", 'desc')->limit(0, 15)->select()->toArray();
-        $data['hydra'] = Db::table('host_hydra_scan_details')->where($where)->order("id", 'desc')->limit(0, 15)->select()->toArray();
-        $data['dirmap'] = Db::table('app_dirmap')->where($where)->where($where1)->order("id", 'desc')->limit(0, 15)->select()->toArray();
-        $data['sqlmap'] = Db::table('urls_sqlmap')->where($where)->order("id", 'desc')->limit(0, 15)->select()->toArray();
+        $data['hydra'] = Db::table('scan_weak_pass')->where($where)->order("id", 'desc')->limit(0, 15)->select()->toArray();
+        $data['dirmap'] = Db::table('scan_dir')->where($where)->where($where1)->order("id", 'desc')->limit(0, 15)->select()->toArray();
+        $data['sqlmap'] = Db::table('scan_sql_inject')->where($where)->order("id", 'desc')->limit(0, 15)->select()->toArray();
         $data['app_info'] = Db::table('app_info')->where($where)->order("app_id", 'desc')->limit(0, 15)->select()->toArray();
         $data['app_vulmap'] = Db::table('app_vulmap')->where($where)->order("app_id", 'desc')->limit(0, 15)->select()->toArray();
-        $data['app_dismap'] = Db::table('app_dismap')->where($where)->order("app_id", 'desc')->limit(0, 15)->select()->toArray();
+        $data['scan_asset_finger'] = Db::table('scan_asset_finger')->where($where)->order("app_id", 'desc')->limit(0, 15)->select()->toArray();
         $data['urls'] = Db::table('asm_urls')->where($where)->order("app_id", 'desc')->limit(0, 15)->select()->toArray();
         $data['xray'] = Db::table('xray')->where($where)->order("app_id", 'desc')->limit(0, 15)->select()->toArray();
         $data['nuclei'] = Db::table('app_nuclei')->where($where)->order("app_id", 'desc')->limit(0, 15)->select()->toArray();
-        $data['crawlergo'] = Db::table('app_crawlergo')->where($where)->order("app_id", 'desc')->limit(0, 15)->select()->toArray();
+        $data['crawlergo'] = Db::table('scan_spider')->where($where)->order("app_id", 'desc')->limit(0, 15)->select()->toArray();
         $data['awvs'] = Db::table('awvs_vuln')->where($where)->order("app_id", 'desc')->limit(0, 15)->select()->toArray();
         $data['pluginScanLog'] = Db::table('plugin_scan_log')->alias('a')
             ->leftJoin('plugin b', 'b.id=a.plugin_id')
@@ -222,24 +222,24 @@ class Index extends Common
         }
         Db::table('app')->where(['id' => $id])->save($array);
         Db::table('app_info')->where(['app_id' => $id])->delete();
-        Db::table('app_crawlergo')->where(['app_id' => $id])->delete();
-        Db::table('app_dirmap')->where(['app_id' => $id])->delete();
-        Db::table('app_dismap')->where(['app_id' => $id])->delete();
+        Db::table('scan_spider')->where(['app_id' => $id])->delete();
+        Db::table('scan_dir')->where(['app_id' => $id])->delete();
+        Db::table('scan_asset_finger')->where(['app_id' => $id])->delete();
         Db::table('app_nuclei')->where(['app_id' => $id])->delete();
         Db::table('app_vulmap')->where(['app_id' => $id])->delete();
-        Db::table('app_wafw00f')->where(['app_id' => $id])->delete();
-        Db::table('app_whatweb')->where(['app_id' => $id])->delete();
-        Db::table('app_whatweb_poc')->where(['app_id' => $id])->delete();
+        Db::table('scan_waf')->where(['app_id' => $id])->delete();
+        Db::table('scan_finger')->where(['app_id' => $id])->delete();
+        Db::table('scan_finger_poc')->where(['app_id' => $id])->delete();
         Db::table('app_xray_agent_port')->where(['app_id' => $id])->delete();
         Db::table('awvs_app')->where(['app_id' => $id])->delete();
         Db::table('awvs_vuln')->where(['app_id' => $id])->delete();
         Db::table('asm_host')->where(['app_id' => $id])->delete();
-        Db::table('host_hydra_scan_details')->where(['app_id' => $id])->delete();
+        Db::table('scan_weak_pass')->where(['app_id' => $id])->delete();
         Db::table('asm_host_port')->where(['app_id' => $id])->delete();
         Db::table('one_for_all')->where(['app_id' => $id])->delete();
         Db::table('plugin_scan_log')->where(['app_id' => $id])->delete();
         Db::table('asm_urls')->where(['app_id' => $id])->delete();
-        Db::table('urls_sqlmap')->where(['app_id' => $id])->delete();
+        Db::table('scan_sql_inject')->where(['app_id' => $id])->delete();
         Db::table('xray')->where(['app_id' => $id])->delete();
         Db::table('plugin_scan_log')->where(['app_id' => $id])->delete();
 
@@ -287,13 +287,13 @@ class Index extends Common
                     'crawler_time' => '2000-01-01 00:00:00'
                 ];
                 Db::table('asm_urls')->where(['app_id' => $id])->delete();
-                Db::table('urls_sqlmap')->where(['app_id' => $id])->delete();
+                Db::table('scan_sql_inject')->where(['app_id' => $id])->delete();
                 break;
             case 'crawlergoScan':
                 $data = [
                     'crawlergo_scan_time' => '2000-01-01 00:00:00',
                 ];
-                Db::table('app_crawlergo')->where(['app_id' => $id])->delete();
+                Db::table('scan_spider')->where(['app_id' => $id])->delete();
                 break;
             case 'awvsScan':
                 $data = [
@@ -324,12 +324,12 @@ class Index extends Common
                 $data = [
                     'whatweb_scan_time' => '2000-01-01 00:00:00',
                 ];
-                Db::table('app_whatweb')->where(['app_id' => $id])->delete();
-                Db::table('app_whatweb_poc')->where(['app_id' => $id])->delete();
+                Db::table('scan_finger')->where(['app_id' => $id])->delete();
+                Db::table('scan_finger_poc')->where(['app_id' => $id])->delete();
                 break;
             case 'sqlmapScan':
                 Db::table('asm_urls')->where(['app_id' => $id])->update(['sqlmap_scan_time' => '2000-01-01 00:00:00']);
-                Db::table('urls_sqlmap')->where(['app_id' => $id])->delete();
+                Db::table('scan_sql_inject')->where(['app_id' => $id])->delete();
                 break;
             case 'subdomainScan':
                 $data = [
@@ -339,13 +339,13 @@ class Index extends Common
                 break;
             case 'sshScan':
                 Db::table('asm_host')->where(['app_id' => $id])->update(['hydra_scan_time' => '2000-01-01 00:00:00']);
-                Db::table('host_hydra_scan_details')->where(['app_id' => $id])->delete();
+                Db::table('scan_weak_pass')->where(['app_id' => $id])->delete();
                 break;
             case 'dirmapScan':
                 $data = [
                     'dirmap_scan_time' => '2000-01-01 00:00:00',
                 ];
-                Db::table('app_dirmap')->where(['app_id' => $id])->delete();
+                Db::table('scan_dir')->where(['app_id' => $id])->delete();
                 break;
             case 'NmapPortScan':
                 Db::table('asm_host_port')->where(['app_id' => $id])->update(['service' => null]);
@@ -359,13 +359,13 @@ class Index extends Common
             case 'autoAddHost':
                 Db::table('asm_host')->where(['app_id' => $id])->delete();
                 Db::table('asm_host_port')->where(['app_id' => $id])->delete();
-                Db::table('host_hydra_scan_details')->where(['app_id' => $id])->delete();
+                Db::table('scan_weak_pass')->where(['app_id' => $id])->delete();
                 break;
             case 'dismapScan':
                 $data = [
                     'dismap_scan_time' => '2000-01-01 00:00:00',
                 ];
-                Db::table('app_dismap')->where(['app_id' => $id])->delete();
+                Db::table('scan_asset_finger')->where(['app_id' => $id])->delete();
                 break;
             case 'plugin':
                 Db::table('plugin_scan_log')->where(['app_id' => $id])->delete();
@@ -413,24 +413,24 @@ class Index extends Common
         }
         Db::table('app')->where($where)->save($array);
         Db::table('app_info')->where($map)->delete();
-        Db::table('app_crawlergo')->where($map)->delete();
-        Db::table('app_dirmap')->where($map)->delete();
-        Db::table('app_dismap')->where($map)->delete();
+        Db::table('scan_spider')->where($map)->delete();
+        Db::table('scan_dir')->where($map)->delete();
+        Db::table('scan_asset_finger')->where($map)->delete();
         Db::table('app_nuclei')->where($map)->delete();
         Db::table('app_vulmap')->where($map)->delete();
-        Db::table('app_wafw00f')->where($map)->delete();
-        Db::table('app_whatweb')->where($map)->delete();
-        Db::table('app_whatweb_poc')->where($map)->delete();
+        Db::table('scan_waf')->where($map)->delete();
+        Db::table('scan_finger')->where($map)->delete();
+        Db::table('scan_finger_poc')->where($map)->delete();
         Db::table('app_xray_agent_port')->where($map)->delete();
         Db::table('awvs_app')->where($map)->delete();
         Db::table('awvs_vuln')->where($map)->delete();
         Db::table('asm_host')->where($map)->delete();
-        Db::table('host_hydra_scan_details')->where($map)->delete();
+        Db::table('scan_weak_pass')->where($map)->delete();
         Db::table('asm_host_port')->where($map)->delete();
         Db::table('one_for_all')->where($map)->delete();
         Db::table('plugin_scan_log')->where($map)->delete();
         Db::table('asm_urls')->where($map)->delete();
-        Db::table('urls_sqlmap')->where($map)->delete();
+        Db::table('scan_sql_inject')->where($map)->delete();
         Db::table('xray')->where($map)->delete();
         Db::table('plugin_scan_log')->where($map)->delete();
         $this->addUserLog('目标管理', "重新扫描[{$ids}]操作成功");
@@ -452,21 +452,21 @@ class Index extends Common
             Db::table('asm_host')->where(['host' => $ip])->delete();
             Db::table('asm_host_port')->where(['host' => $ip])->delete();
         }
-        Db::table('app_crawlergo')->where(['app_id' => $id])->delete();
-        Db::table('app_dirmap')->where(['app_id' => $id])->delete();
+        Db::table('scan_spider')->where(['app_id' => $id])->delete();
+        Db::table('scan_dir')->where(['app_id' => $id])->delete();
         Db::table('app_nuclei')->where(['app_id' => $id])->delete();
         Db::table('app_vulmap')->where(['app_id' => $id])->delete();
-        Db::table('app_wafw00f')->where(['app_id' => $id])->delete();
-        Db::table('app_whatweb')->where(['app_id' => $id])->delete();
-        Db::table('app_whatweb_poc')->where(['app_id' => $id])->delete();
+        Db::table('scan_waf')->where(['app_id' => $id])->delete();
+        Db::table('scan_finger')->where(['app_id' => $id])->delete();
+        Db::table('scan_finger_poc')->where(['app_id' => $id])->delete();
         Db::table('app_xray_agent_port')->where(['app_id' => $id])->delete();
         Db::table('awvs_app')->where(['app_id' => $id])->delete();
         Db::table('awvs_vuln')->where(['app_id' => $id])->delete();
-        Db::table('host_hydra_scan_details')->where(['app_id' => $id])->delete();
+        Db::table('scan_weak_pass')->where(['app_id' => $id])->delete();
         Db::table('one_for_all')->where(['app_id' => $id])->delete();
         Db::table('plugin_scan_log')->where(['app_id' => $id])->delete();
         Db::table('asm_urls')->where(['app_id' => $id])->delete();
-        Db::table('urls_sqlmap')->where(['app_id' => $id])->delete();
+        Db::table('scan_sql_inject')->where(['app_id' => $id])->delete();
         Db::table('xray')->where(['app_id' => $id])->delete();
         Db::table('plugin_scan_log')->where(['app_id' => $id])->delete();
         Db::table('github_keyword_monitor')->where(['app_id' => $id])->delete();
@@ -496,21 +496,21 @@ class Index extends Common
             Db::table('asm_host')->where(['host' => $ip])->delete();
             Db::table('asm_host_port')->where(['host' => $ip])->delete();
         }
-        Db::table('app_crawlergo')->where($map)->delete();
-        Db::table('app_dirmap')->where($map)->delete();
+        Db::table('scan_spider')->where($map)->delete();
+        Db::table('scan_dir')->where($map)->delete();
         Db::table('app_nuclei')->where($map)->delete();
         Db::table('app_vulmap')->where($map)->delete();
-        Db::table('app_wafw00f')->where($map)->delete();
-        Db::table('app_whatweb')->where($map)->delete();
-        Db::table('app_whatweb_poc')->where($map)->delete();
+        Db::table('scan_waf')->where($map)->delete();
+        Db::table('scan_finger')->where($map)->delete();
+        Db::table('scan_finger_poc')->where($map)->delete();
         Db::table('app_xray_agent_port')->where($map)->delete();
         Db::table('awvs_app')->where($map)->delete();
         Db::table('awvs_vuln')->where($map)->delete();
-        Db::table('host_hydra_scan_details')->where($map)->delete();
+        Db::table('scan_weak_pass')->where($map)->delete();
         Db::table('one_for_all')->where($map)->delete();
         Db::table('plugin_scan_log')->where($map)->delete();
         Db::table('asm_urls')->where($map)->delete();
-        Db::table('urls_sqlmap')->where($map)->delete();
+        Db::table('scan_sql_inject')->where($map)->delete();
         Db::table('xray')->where($map)->delete();
         Db::table('plugin_scan_log')->where($map)->delete();
         Db::table('github_keyword_monitor')->where($map)->delete();

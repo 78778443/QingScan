@@ -30,7 +30,7 @@ class WafCheckModel extends BaseModel
                 'manufacturer' => $result['manufacturer'],
                 'create_time' => date('Y-m-d H:i:s', time()),
             ];
-            if (Db::name('app_wafw00f')->insert($data)) {
+            if (Db::name('scan_waf')->insert($data)) {
                 addlog(["WAF识别扫描结果数据写入成功：".json_encode($data)]);
             } else {
                 addlog(["WAF识别扫描结果数据写入失败：".json_encode($data)]);

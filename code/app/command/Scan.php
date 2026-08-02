@@ -70,13 +70,13 @@ class Scan extends Command
             "scan_app_nuclei" => [WebScanModel::class, 'genVulnScan', 'gen_vuln'],
             "scan_app_vulmap" => [WebScanModel::class, 'vulVerifyScan', 'vul_verify'],
             "scan_url_sqlmap" => [UrlsModel::class, 'sqlInjectScan', 'sql_inject'],
-            "scan_app_dirmap" => [AppDirmapModel::class, 'dirmapScan', 'dir_scan'],
-            "scan_app_whatweb" => [AppModel::class, 'fingerScan', 'finger'],
-            "scan_app_dismap" => [WebScanModel::class, 'assetFingerScan', 'asset_finger'],
+            "scan_scan_dir" => [AppDirmapModel::class, 'dirmapScan', 'dir_scan'],
+            "scan_scan_finger" => [AppModel::class, 'fingerScan', 'finger'],
+            "scan_scan_asset_finger" => [WebScanModel::class, 'assetFingerScan', 'asset_finger'],
             // 注意：旧 scan_app_finger（现 scan_app_web_info）与现 scan_app_finger（原 whatweb）键名冲突，
             // 旧数据已由 SQL 迁移到 scan_app_web_info，此处不再追加兼容条目
             "scan_app_rad" => [WebScanModel::class, 'crawlerScan', 'crawler'],
-            "scan_app_crawlergo" => [WebScanModel::class, 'spiderScan', 'spider'],
+            "scan_scan_spider" => [WebScanModel::class, 'spiderScan', 'spider'],
             "scan_ip_hydra" => [WeakPassModel::class, 'weakPassScan', 'weak_pass'],
             "asm_ip_nmap" => [HostPortModel::class, 'portScan', 'port_scan'],
             "asm_domain_oneforall" => [SubdomainModel::class, 'subdomainScan', 'subdomain'],

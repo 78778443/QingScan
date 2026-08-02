@@ -47,11 +47,11 @@ class Webscan extends BaseController
                 // 各扫描结果计数：每个表只查一次，group by app_id
                 $tables = [
                     'web_vuln' => ['scan_vuln', ['source' => 'web_vuln']],
-                    'sql_inject' => ['urls_sqlmap', []],
+                    'sql_inject' => ['scan_sql_inject', []],
                     'vul_verify' => ['scan_vuln', ['source' => 'vul_verify']],
                     'gen_vuln' => ['scan_vuln', ['source' => 'gen_vuln']],
-                    'dir_scan' => ['app_dirmap', []],
-                    'finger' => ['app_whatweb', []],
+                    'dir_scan' => ['scan_dir', []],
+                    'finger' => ['scan_finger', []],
                     'subdomain' => ['scan_subdomain', []],
                     'urls' => ['asm_urls', []],
                     'host' => ['asm_host', []],
@@ -79,7 +79,7 @@ class Webscan extends BaseController
             // waf 检测
             $wafMap = [];
             if ($appIds) {
-                $wafRows = Db::table('app_wafw00f')->whereIn('app_id', $appIds)
+                $wafRows = Db::table('scan_waf')->whereIn('app_id', $appIds)
                     ->field('app_id,detected')->select()->toArray();
                 foreach ($wafRows as $r) {
                     if (!empty($r['detected'])) {
@@ -238,25 +238,25 @@ class Webscan extends BaseController
                 break;
             case 'scan_app_dir_scan':
                 $data = ['dirmap_scan_time' => '2000-01-01 00:00:00'];
-                Db::table('app_dirmap')->where(['app_id' => $id])->delete();
+                Db::table('scan_dir')->where(['app_id' => $id])->delete();
                 break;
             case 'scan_app_finger':
                 $data = ['whatweb_scan_time' => '2000-01-01 00:00:00'];
-                Db::table('app_whatweb')->where(['app_id' => $id])->delete();
-                Db::table('app_whatweb_poc')->where(['app_id' => $id])->delete();
+                Db::table('scan_finger')->where(['app_id' => $id])->delete();
+                Db::table('scan_finger_poc')->where(['app_id' => $id])->delete();
                 break;
             case 'scan_app_asset_finger':
                 $data = ['dismap_scan_time' => '2000-01-01 00:00:00'];
-                Db::table('app_dismap')->where(['app_id' => $id])->delete();
+                Db::table('scan_asset_finger')->where(['app_id' => $id])->delete();
                 break;
             case 'scan_app_crawler':
                 $data = ['crawler_time' => '2000-01-01 00:00:00'];
                 Db::table('asm_urls')->where(['app_id' => $id])->delete();
-                Db::table('urls_sqlmap')->where(['app_id' => $id])->delete();
+                Db::table('scan_sql_inject')->where(['app_id' => $id])->delete();
                 break;
             case 'scan_app_spider':
                 $data = ['crawlergo_scan_time' => '2000-01-01 00:00:00'];
-                Db::table('app_crawlergo')->where(['app_id' => $id])->delete();
+                Db::table('scan_spider')->where(['app_id' => $id])->delete();
                 break;
             case 'scan_app_web_info_extra':
                 $data = ['screenshot_time' => '2000-01-01 00:00:00'];
@@ -264,7 +264,7 @@ class Webscan extends BaseController
                 break;
             case 'scan_url_sql_inject':
                 Db::table('asm_urls')->where(['app_id' => $id])->update(['sqlmap_scan_time' => '2000-01-01 00:00:00']);
-                Db::table('urls_sqlmap')->where(['app_id' => $id])->delete();
+                Db::table('scan_sql_inject')->where(['app_id' => $id])->delete();
                 break;
             case 'asm_domain_subdomain':
                 $data = ['subdomain_scan_time' => '2000-01-01 00:00:00'];
@@ -272,7 +272,7 @@ class Webscan extends BaseController
                 break;
             case 'scan_ip_weak_pass':
                 Db::table('asm_host')->where(['app_id' => $id])->update(['hydra_scan_time' => '2000-01-01 00:00:00']);
-                Db::table('host_hydra_scan_details')->where(['app_id' => $id])->delete();
+                Db::table('scan_weak_pass')->where(['app_id' => $id])->delete();
                 break;
             case 'asm_ip_port_scan':
                 Db::table('asm_host_port')->where(['app_id' => $id])->update(['service' => null]);
@@ -280,7 +280,7 @@ class Webscan extends BaseController
             case 'autoAddHost':
                 Db::table('asm_host')->where(['app_id' => $id])->delete();
                 Db::table('asm_host_port')->where(['app_id' => $id])->delete();
-                Db::table('host_hydra_scan_details')->where(['app_id' => $id])->delete();
+                Db::table('scan_weak_pass')->where(['app_id' => $id])->delete();
                 break;
             case 'plugin':
                 Db::table('plugin_scan_log')->where(['app_id' => $id])->delete();
@@ -423,12 +423,12 @@ class Webscan extends BaseController
     }
 
     /**
-     * SQL 注入结果列表（urls_sqlmap 表，原 sqlmap）
+     * SQL 注入结果列表（scan_sql_inject 表，原 sqlmap）
      * 筛选：search（type/title/payload like）、app_id；行内加 app_name、url
      */
     public function sql_inject_list()
     {
-        $query = Db::table('urls_sqlmap');
+        $query = Db::table('scan_sql_inject');
 
         $search = $this->request->param('search');
         if (!empty($search)) {
@@ -541,12 +541,12 @@ class Webscan extends BaseController
     }
 
     /**
-     * 目录扫描结果列表（app_dirmap 表，原 dirmap）
+     * 目录扫描结果列表（scan_dir 表，原 dirmap）
      * 筛选：search（url/type like）、app_id；行内加 app_name
      */
     public function dir_scan_list()
     {
-        $query = Db::table('app_dirmap');
+        $query = Db::table('scan_dir');
 
         $search = $this->request->param('search');
         if (!empty($search)) {
@@ -573,12 +573,12 @@ class Webscan extends BaseController
     }
 
     /**
-     * 指纹识别结果列表（app_whatweb 表，原 whatweb）
+     * 指纹识别结果列表（scan_finger 表，原 whatweb）
      * 筛选：search（target/plugins like）、app_id；行内加 app_name
      */
     public function finger_list()
     {
-        $query = Db::table('app_whatweb');
+        $query = Db::table('scan_finger');
 
         $search = $this->request->param('search');
         if (!empty($search)) {
@@ -698,20 +698,20 @@ class Webscan extends BaseController
     private function deleteAppResults(array $where, array $appWhere)
     {
         Db::table('app_info')->where($where)->delete();
-        Db::table('app_crawlergo')->where($where)->delete();
-        Db::table('app_dirmap')->where($where)->delete();
-        Db::table('app_dismap')->where($where)->delete();
+        Db::table('scan_spider')->where($where)->delete();
+        Db::table('scan_dir')->where($where)->delete();
+        Db::table('scan_asset_finger')->where($where)->delete();
         Db::table('scan_vuln')->where($where)->where('source', 'gen_vuln')->delete();
         Db::table('scan_vuln')->where($where)->where('source', 'vul_verify')->delete();
-        Db::table('app_wafw00f')->where($where)->delete();
-        Db::table('app_whatweb')->where($where)->delete();
-        Db::table('app_whatweb_poc')->where($where)->delete();
+        Db::table('scan_waf')->where($where)->delete();
+        Db::table('scan_finger')->where($where)->delete();
+        Db::table('scan_finger_poc')->where($where)->delete();
         Db::table('app_xray_agent_port')->where($where)->delete();
-        Db::table('host_hydra_scan_details')->where($where)->delete();
+        Db::table('scan_weak_pass')->where($where)->delete();
         Db::table('scan_subdomain')->where($where)->delete();
         Db::table('plugin_scan_log')->where($where)->delete();
         Db::table('asm_urls')->where($where)->delete();
-        Db::table('urls_sqlmap')->where($where)->delete();
+        Db::table('scan_sql_inject')->where($where)->delete();
         Db::table('scan_vuln')->where($where)->where('source', 'web_vuln')->delete();
         if ($appWhere) {
             Db::table('github_keyword_monitor')->where($appWhere)->delete();

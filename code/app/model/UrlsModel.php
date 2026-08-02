@@ -95,7 +95,7 @@ class UrlsModel extends BaseModel
                     'payload' => $item['payload'],
                     'create_time' => date('Y-m-d H:i:s', time()),
                 ];
-                Db::name('urls_sqlmap')->insert($bbb);
+                Db::name('scan_sql_inject')->insert($bbb);
             }
             addlog(["SQL注入扫描成功数据已写入：", $v['url']]);
             PluginModel::addScanLog($v['id'], __METHOD__, 3, 1);

@@ -270,9 +270,9 @@ class AppModel extends BaseModel
                 'plugins' => json_encode($result['fingerprints'], JSON_UNESCAPED_UNICODE),
                 'create_time' => date('Y-m-d H:i:s', time()),
             ];
-            if (!Db::name('app_whatweb')->insert($data)) {
+            if (!Db::name('scan_finger')->insert($data)) {
                 PluginModel::addScanLog($v['id'], __METHOD__, 0, 2);
-                addlog(["app_whatweb数据写入失败:" . json_encode($data)]);
+                addlog(["scan_finger数据写入失败:" . json_encode($data)]);
             }
             PluginModel::addScanLog($v['id'], __METHOD__, 0, 1);
         }
@@ -284,7 +284,7 @@ class AppModel extends BaseModel
         ini_set('max_execution_time', 0);
         while (true) {
             processSleep(1);
-            $list = Db::name('app_whatweb')->whereTime('poc_scan_time', '<=', date('Y-m-d H:i:s', time() - (86400 * 15)))->limit(1)->orderRand()->select()->toArray();
+            $list = Db::name('scan_finger')->whereTime('poc_scan_time', '<=', date('Y-m-d H:i:s', time() - (86400 * 15)))->limit(1)->orderRand()->select()->toArray();
             foreach ($list as $val) {
 
                 $whatwebArr = whatwebArr($val['plugins']);
@@ -314,7 +314,7 @@ class AppModel extends BaseModel
                             'result' => json_encode($output),
                             'output' => date('Y-m-d H:i:s', time())
                         ];
-                        Db::name('app_whatweb_poc')->insert($data);
+                        Db::name('scan_finger_poc')->insert($data);
                     }
                 }
             }

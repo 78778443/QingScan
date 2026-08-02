@@ -22,15 +22,15 @@ class Index extends BaseController
         // 黑盒Web漏洞数量（统一漏洞表 scan_vuln，source=web_vuln）
         $xrayCount = Db::table('scan_vuln')->where(['source' => 'web_vuln'])->count();
         // 黑盒sqlmap数量
-        $sqlmapCount = Db::table('urls_sqlmap')->where($where)->count();
+        $sqlmapCount = Db::table('scan_sql_inject')->where($where)->count();
         // 黑盒漏洞验证数量（统一漏洞表 scan_vuln，source=vul_verify）
         $vulmapCount = Db::table('scan_vuln')->where(['source' => 'vul_verify'])->count();
         // 黑盒通用漏洞数量（统一漏洞表 scan_vuln，source=gen_vuln）
         $nucleiCount = Db::table('scan_vuln')->where(['source' => 'gen_vuln'])->count();
         // 黑盒dirmap数量
-        $dirmapCount = Db::table('app_dirmap')->where($where)->count();
+        $dirmapCount = Db::table('scan_dir')->where($where)->count();
         // 黑盒whatweb数量
-        $fingerCount = Db::table('app_whatweb')->where($where)->count();
+        $fingerCount = Db::table('scan_finger')->where($where)->count();
         // 子域名数量（scan_subdomain）
         $subdomainCount = Db::table('scan_subdomain')->where($where)->count();
 

@@ -291,7 +291,7 @@ class WebScanModel extends BaseModel
                 ];
             }
             if ($data) {
-                Db::name('app_crawlergo')->insertAll($data);
+                Db::name('scan_spider')->insertAll($data);
             }
             PluginModel::addScanLog($val['id'], __METHOD__, 0, 1);
         }
@@ -318,9 +318,9 @@ class WebScanModel extends BaseModel
                 'create_time' => date('Y-m-d H:i:s', time()),
                 'result' => json_encode(array_merge($result['fingerprints'], array_filter([$result['server'] ?? '', $result['title'] ?? ''])), JSON_UNESCAPED_UNICODE)
             ];
-            if (!Db::name('app_dismap')->insert($data)) {
+            if (!Db::name('scan_asset_finger')->insert($data)) {
                 PluginModel::addScanLog($v['id'], __METHOD__, 0, 2);
-                addlog(["app_dismap数据写入失败:" . json_encode($data)]);
+                addlog(["scan_asset_finger数据写入失败:" . json_encode($data)]);
             };
             PluginModel::addScanLog($v['id'], __METHOD__, 0, 1);
         }
