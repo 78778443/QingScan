@@ -495,8 +495,11 @@ function ChartCard({
         <p className="truncate text-sm font-medium">
           {title}
           {showDemo && (
-            <span className="ml-1.5 rounded-sm bg-muted px-1 py-px text-[10px] font-normal text-muted-foreground">
-              示例
+            <span
+              title="暂无真实数据，展示示例数据供预览"
+              className="ml-1.5 rounded-sm bg-muted/60 px-1.5 py-px text-[10px] font-normal text-muted-foreground/70"
+            >
+              空数据示例
             </span>
           )}
         </p>
@@ -507,7 +510,7 @@ function ChartCard({
       {loading ? (
         <Skeleton className="h-[240px] w-full" />
       ) : points.length > 0 || showDemo ? (
-        <EChart option={option} />
+        <EChart option={option} className={showDemo ? 'opacity-45' : undefined} />
       ) : (
         <EmptyState className="h-[240px]" />
       )}
