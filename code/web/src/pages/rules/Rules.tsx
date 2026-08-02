@@ -54,7 +54,14 @@ const TYPE_LABELS: Record<string, string> = {
   waf: 'WAF识别',
 }
 
-const FALLBACK_TYPES = Object.keys(TYPE_LABELS)
+// 后端 /rules/types 返回 [{key,label}] 对象数组；兜底类型同构
+const FALLBACK_TYPES: { key: string; label: string }[] = [
+  { key: 'code_audit', label: '代码审计' },
+  { key: 'code_audit_taint', label: '污点分析' },
+  { key: 'fingerprint', label: '指纹识别' },
+  { key: 'vuln', label: '漏洞检测' },
+  { key: 'waf', label: 'WAF识别' },
+]
 
 // 各类型"最像名称"的字段
 const NAME_KEYS: Record<string, string> = {
@@ -230,13 +237,13 @@ export default function Rules() {
 
   const { data: typesData } = useQuery({
     queryKey: ['rules-types'],
-    queryFn: () => apiGet<string[]>('/rules/types'),
+    queryFn: () => apiGet<{ key: string; label: string }[]>('/rules/types'),
     retry: false,
   })
   const types = typesData && typesData.length > 0 ? typesData : FALLBACK_TYPES
 
   useEffect(() => {
-    if (types.length > 0 && !types.includes(activeType)) setActiveType(types[0])
+    if (types.length > 0 && !types.some((t) => t.key === activeType)) setActiveType(types[0].key)
   }, [types, activeType])
 
   useEffect(() => {
@@ -377,8 +384,8 @@ export default function Rules() {
         <Tabs value={activeType} onValueChange={setActiveType}>
           <TabsList>
             {types.map((t) => (
-              <TabsTrigger key={t} value={t}>
-                {TYPE_LABELS[t] ?? t}
+              <TabsTrigger key={t.key} value={t.key}>
+                {t.label ?? TYPE_LABELS[t.key] ?? t.key}
               </TabsTrigger>
             ))}
           </TabsList>
