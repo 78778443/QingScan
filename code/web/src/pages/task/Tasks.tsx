@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { apiPage } from '@/lib/api'
-import { DataTable, type Column } from '@/components/DataTable'
+import { DataTable, severityColor, statusBadge, type Column } from '@/components/DataTable'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
@@ -42,12 +42,9 @@ function TaskStatusBadge({ value }: { value: unknown }) {
   if (!matched) {
     return <Badge variant="outline">{text}</Badge>
   }
-  const cls: Record<string, string> = {
-    '待处理': 'bg-gray-500/15 text-gray-600 dark:text-gray-400',
-    '执行中': 'bg-blue-500/15 text-blue-600 dark:text-blue-400',
-    '已完成': 'bg-green-500/15 text-green-600 dark:text-green-400',
-  }
-  return <Badge className={cls[text]}>{text}</Badge>
+  if (text === '待处理') return statusBadge('0')
+  if (text === '已完成') return <Badge className={severityColor('low')}>{text}</Badge>
+  return <Badge className="bg-blue-500/15 text-blue-600 dark:text-blue-400">{text}</Badge>
 }
 
 const STATUS_OPTIONS = [
@@ -138,7 +135,7 @@ export default function Tasks() {
   }
 
   const toolbar = (
-    <div className="flex flex-wrap items-center gap-2">
+    <div className="flex flex-wrap items-center gap-2 rounded-lg border bg-card p-3">
       <Input
         placeholder="工具名称"
         value={toolDraft}
@@ -146,7 +143,7 @@ export default function Tasks() {
         onKeyDown={(e) => {
           if (e.key === 'Enter') applyFilter()
         }}
-        className="w-40"
+        className="w-56"
       />
       <Select
         value={status}
@@ -179,8 +176,8 @@ export default function Tasks() {
 
   return (
     <div className="space-y-4">
-      <div>
-        <h1 className="text-base font-semibold">扫描任务</h1>
+      <div className="mb-4">
+        <h1 className="text-lg font-semibold">扫描任务</h1>
         <p className="text-xs text-muted-foreground">任务列表 - 扫描工具执行任务记录</p>
       </div>
       <DataTable

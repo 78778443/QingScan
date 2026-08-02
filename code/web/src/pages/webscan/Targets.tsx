@@ -13,7 +13,7 @@ import {
 } from '@phosphor-icons/react'
 
 import { apiPage, apiPost } from '@/lib/api'
-import { DataTable, type Column } from '@/components/DataTable'
+import { DataTable, severityColor, type Column } from '@/components/DataTable'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -115,8 +115,8 @@ function isPaused(row: AppRow): boolean {
 }
 
 function statusInfo(status: number): { label: string; className: string } {
-  if (status === 1) return { label: '正常', className: 'bg-green-500/10 text-green-600' }
-  if (status === 0 || status === 2) return { label: '暂停', className: 'bg-orange-500/10 text-orange-600' }
+  if (status === 1) return { label: '正常', className: severityColor('low') }
+  if (status === 0 || status === 2) return { label: '暂停', className: severityColor('high') }
   return { label: '未知', className: 'bg-muted text-muted-foreground' }
 }
 
@@ -127,9 +127,9 @@ function statuscodeInfo(code: string | number | null | undefined): { label: stri
   const n = Number(code)
   const label = String(code)
   if (!Number.isFinite(n)) return { label, className: 'bg-muted text-muted-foreground' }
-  if (n >= 400) return { label, className: 'bg-red-500/10 text-red-600' }
-  if (n >= 300) return { label, className: 'bg-yellow-500/10 text-yellow-600' }
-  if (n >= 200) return { label, className: 'bg-green-500/10 text-green-600' }
+  if (n >= 400) return { label, className: severityColor('critical') }
+  if (n >= 300) return { label, className: severityColor('medium') }
+  if (n >= 200) return { label, className: severityColor('low') }
   return { label, className: 'bg-muted text-muted-foreground' }
 }
 
@@ -408,7 +408,7 @@ export default function Targets() {
           return (
             <div className="flex max-w-72 flex-wrap gap-1">
               {counts.map((t) => (
-                <Badge key={t} variant="secondary" className="font-mono">
+                <Badge key={t} className="rounded-sm bg-primary/10 px-1.5 font-mono text-xs text-primary">
                   {t}:{getToolCount(row, t)}
                 </Badge>
               ))}
@@ -423,7 +423,7 @@ export default function Targets() {
         render: (row) => (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon-sm" title="操作">
+              <Button variant="ghost" size="icon-sm" className="hover:bg-accent/50" title="操作">
                 <DotsThreeIcon />
               </Button>
             </DropdownMenuTrigger>
@@ -461,11 +461,11 @@ export default function Targets() {
   // ---------- 筛选与操作栏 ----------
 
   const toolbar = (
-    <div className="flex flex-wrap items-center gap-2">
+    <div className="flex flex-wrap items-center gap-2 rounded-lg border bg-card p-3">
       <div className="relative">
         <MagnifyingGlassIcon className="absolute top-1/2 left-2 size-4 -translate-y-1/2 text-muted-foreground" />
         <Input
-          className="h-8 w-64 pl-7"
+          className="h-8 w-56 pl-7"
           placeholder="搜索名称 / URL"
           value={keyword}
           onChange={(e) => setKeyword(e.target.value)}
@@ -516,7 +516,10 @@ export default function Targets() {
           批量删除({selected.size})
         </Button>
       )}
-      <Button className="h-8" onClick={() => setAddOpen(true)}>
+      <Button
+        className="h-8 bg-gradient-to-r from-primary to-blue-500 hover:opacity-90"
+        onClick={() => setAddOpen(true)}
+      >
         <PlusIcon className="size-4" />
         新增目标
       </Button>
@@ -535,16 +538,7 @@ export default function Targets() {
   }
 
   return (
-    <div id="webscan-targets" className="space-y-4">
-      <style>{`
-        #webscan-targets tbody tr {
-          transition: background-color 150ms ease;
-        }
-        #webscan-targets tbody tr:hover {
-          background-color: color-mix(in oklab, var(--accent) 40%, transparent);
-        }
-      `}</style>
-
+    <div className="space-y-4">
       <DataTable<AppRow>
         columns={columns}
         rows={rows}
@@ -554,6 +548,7 @@ export default function Targets() {
         totalPage={data?.total_page}
         onPageChange={setPage}
         rowKey={(row) => row.id}
+        rowClassName={(row) => (selected.has(row.id) ? 'bg-primary/5' : undefined)}
         toolbar={toolbar}
         emptyText="暂无目标数据"
       />

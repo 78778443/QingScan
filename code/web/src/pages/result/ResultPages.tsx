@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { apiPage } from '@/lib/api'
-import { DataTable, type Column } from '@/components/DataTable'
+import { DataTable, severityColor, statusBadge, type Column } from '@/components/DataTable'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
@@ -52,17 +52,11 @@ function vulLevelText(v: unknown): string {
 
 function VulLevelBadge({ value }: { value: unknown }) {
   const text = vulLevelText(value)
-  const cls: Record<string, string> = {
-    '严重': 'bg-red-500/15 text-red-600 dark:text-red-400',
-    '高危': 'bg-orange-500/15 text-orange-600 dark:text-orange-400',
-    '中危': 'bg-yellow-500/15 text-yellow-600 dark:text-yellow-400',
-    '低危': 'bg-blue-500/15 text-blue-600 dark:text-blue-400',
-  }
-  const matched = cls[text]
-  if (!matched) {
+  const LEVELS = ['严重', '高危', '中危', '低危']
+  if (!LEVELS.includes(text)) {
     return <Badge variant="outline">{text}</Badge>
   }
-  return <Badge className={matched}>{text}</Badge>
+  return <Badge className={severityColor(text)}>{text}</Badge>
 }
 
 const idCol: Column<Row> = {
@@ -144,7 +138,11 @@ export default function ResultPages() {
             ),
           },
           { key: 'app_name', header: '应用名称' },
-          { key: 'status', header: '状态' },
+          {
+            key: 'status',
+            header: '状态',
+            render: (row) => statusBadge(row.status),
+          },
           {
             key: 'content',
             header: '扫描内容摘要',
@@ -235,7 +233,7 @@ export default function ResultPages() {
   }
 
   const toolbar = (
-    <div className="flex flex-wrap items-center gap-2">
+    <div className="flex flex-wrap items-center gap-2 rounded-lg border bg-card p-3">
       <Input
         placeholder="搜索关键词"
         value={searchDraft}
@@ -243,7 +241,7 @@ export default function ResultPages() {
         onKeyDown={(e) => {
           if (e.key === 'Enter') applyFilter()
         }}
-        className="w-52"
+        className="w-56"
       />
       {kindKey === 'vulnerable' && (
         <Select
@@ -278,8 +276,8 @@ export default function ResultPages() {
 
   return (
     <div className="space-y-4">
-      <div>
-        <h1 className="text-base font-semibold">{config.title}</h1>
+      <div className="mb-4">
+        <h1 className="text-lg font-semibold">{config.title}</h1>
         <p className="text-xs text-muted-foreground">扫描结果 - {config.title}列表，点击名称查看详情</p>
       </div>
       <DataTable

@@ -42,8 +42,8 @@ foreach ($staticDirs as $dir) {
             readfile($file);
             exit;
         }
-        // SPA fallback：/web/ 下的前端路由刷新时返回 index.html
-        if ($dir === '/web/') {
+        // SPA fallback：/web 及 /web/ 下的前端路由刷新时返回 index.html
+        if ($dir === '/web/' && ($path === '/web' || strpos($path, '/web/') === 0)) {
             $indexFile = $publicDir . '/web/index.html';
             if (is_file($indexFile)) {
                 header('Content-Type: text/html; charset=utf-8');

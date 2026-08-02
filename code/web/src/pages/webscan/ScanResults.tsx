@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query'
 import { ArrowsClockwiseIcon, EyeIcon, InfoIcon, MagnifyingGlassIcon } from '@phosphor-icons/react'
 
 import { apiPage } from '@/lib/api'
-import { DataTable, type Column } from '@/components/DataTable'
+import { DataTable, severityColor, type Column } from '@/components/DataTable'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
@@ -74,13 +74,6 @@ function pretty(value: unknown): string {
 
 // ---------- 严重级别（shared 函数） ----------
 
-const SEVERITY_STYLES: Record<string, string> = {
-  Critical: 'bg-red-500/10 text-red-600',
-  High: 'bg-orange-500/10 text-orange-600',
-  Medium: 'bg-yellow-500/10 text-yellow-600',
-  Low: 'bg-green-500/10 text-green-600',
-}
-
 function normalizeSeverity(value: unknown): string {
   if (value === null || value === undefined || value === '') return ''
   const s = String(value)
@@ -99,7 +92,7 @@ function normalizeSeverity(value: unknown): string {
 function SeverityBadge({ value }: { value: unknown }) {
   const sev = normalizeSeverity(value)
   if (!sev) return <Badge variant="outline">未知</Badge>
-  return <Badge className={SEVERITY_STYLES[sev] ?? 'bg-muted text-muted-foreground'}>{sev}</Badge>
+  return <Badge className={severityColor(sev)}>{sev}</Badge>
 }
 
 // xray 审核状态：0 未审核 / 1 有效漏洞 / 2 无效漏洞
@@ -173,7 +166,7 @@ function UrlCell({ value }: { value: unknown }) {
   const s = text(value)
   if (!s) return <span className="text-muted-foreground">-</span>
   return (
-    <span className="inline-block max-w-64 truncate align-middle font-mono" title={s}>
+    <span className="inline-block max-w-64 truncate align-middle text-primary hover:underline" title={s}>
       {s}
     </span>
   )
@@ -554,11 +547,11 @@ export default function ScanResults() {
           <DialogHeader>
             <DialogTitle>{config.title} · 结果详情</DialogTitle>
           </DialogHeader>
-          <div className="divide-y">
+          <div className="divide-y divide-border">
             {detailRow &&
               Object.entries(detailRow).map(([k, v]) => (
-                <div key={k} className="flex gap-3 py-2">
-                  <span className="w-36 shrink-0 break-all text-muted-foreground">{k}</span>
+                <div key={k} className="flex gap-3 py-2.5">
+                  <span className="w-36 shrink-0 break-all text-xs text-muted-foreground">{k}</span>
                   <span className="min-w-0 break-all font-mono text-xs whitespace-pre-wrap">{pretty(v)}</span>
                 </div>
               ))}

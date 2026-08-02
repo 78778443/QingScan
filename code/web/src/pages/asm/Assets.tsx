@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { apiPage } from '@/lib/api'
-import { DataTable, type Column } from '@/components/DataTable'
+import { DataTable, severityColor, type Column } from '@/components/DataTable'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
@@ -19,7 +19,7 @@ function str(v: unknown): string {
 function PortStatusBadge({ value }: { value: unknown }) {
   const raw = String(value ?? '').trim()
   if (raw === '0' || raw === '开放') {
-    return <Badge className="bg-green-500/15 text-green-600 dark:text-green-400">开放</Badge>
+    return <Badge className={severityColor('low')}>开放</Badge>
   }
   if (raw === '1' || raw === '关闭') {
     return <Badge variant="secondary">关闭</Badge>
@@ -33,13 +33,13 @@ function StatusCodeBadge({ value }: { value: unknown }) {
     return <Badge variant="outline">{str(value)}</Badge>
   }
   if (n >= 400) {
-    return <Badge className="bg-red-500/15 text-red-600 dark:text-red-400">{n}</Badge>
+    return <Badge className={severityColor('critical')}>{n}</Badge>
   }
   if (n >= 300) {
-    return <Badge className="bg-yellow-500/15 text-yellow-600 dark:text-yellow-400">{n}</Badge>
+    return <Badge className={severityColor('medium')}>{n}</Badge>
   }
   if (n === 200) {
-    return <Badge className="bg-green-500/15 text-green-600 dark:text-green-400">{n}</Badge>
+    return <Badge className={severityColor('low')}>{n}</Badge>
   }
   return <Badge variant="outline">{n}</Badge>
 }
@@ -188,7 +188,7 @@ export default function Assets() {
   }
 
   const toolbar = (
-    <div className="flex flex-wrap items-center gap-2">
+    <div className="flex flex-wrap items-center gap-2 rounded-lg border bg-card p-3">
       <Input
         placeholder="搜索关键词"
         value={keywordDraft}
@@ -196,7 +196,7 @@ export default function Assets() {
         onKeyDown={(e) => {
           if (e.key === 'Enter') applyFilter()
         }}
-        className="w-52"
+        className="w-56"
       />
       {kindKey === 'port' && (
         <Input
@@ -233,8 +233,8 @@ export default function Assets() {
 
   return (
     <div className="space-y-4">
-      <div>
-        <h1 className="text-base font-semibold">{config.title}</h1>
+      <div className="mb-4">
+        <h1 className="text-lg font-semibold">{config.title}</h1>
         <p className="text-xs text-muted-foreground">资产管理 - {config.title}列表</p>
       </div>
       <DataTable

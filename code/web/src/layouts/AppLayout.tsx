@@ -7,6 +7,7 @@ import {
   Globe,
   Radar,
   Shield,
+  ShieldCheck,
   Database,
   Bug,
   FolderSearch,
@@ -20,6 +21,7 @@ import {
   Settings,
   LogOut,
   ExternalLink,
+  RefreshCw,
   type LucideIcon,
 } from 'lucide-react'
 import { apiGet, apiPost } from '@/lib/api'
@@ -29,6 +31,7 @@ import { Button } from '@/components/ui/button'
 interface UserInfo {
   username?: string
   nickname?: string
+  role?: string
 }
 
 interface MenuItem {
@@ -104,19 +107,6 @@ function pageTitle(pathname: string): string {
   return 'QingScan'
 }
 
-function UserBadge({ user }: { user?: UserInfo }) {
-  const name = user?.nickname || user?.username || '未登录'
-  const initial = name.charAt(0).toUpperCase()
-  return (
-    <div className="flex min-w-0 items-center gap-2">
-      <div className="flex size-7 shrink-0 items-center justify-center rounded-full bg-primary text-xs font-medium text-primary-foreground">
-        {initial}
-      </div>
-      <span className="truncate text-xs">{name}</span>
-    </div>
-  )
-}
-
 export default function AppLayout() {
   const navigate = useNavigate()
   const { pathname } = useLocation()
@@ -144,16 +134,21 @@ export default function AppLayout() {
     <div className="flex h-screen overflow-hidden">
       {/* 侧边栏 */}
       <aside className="flex w-60 shrink-0 flex-col border-r bg-sidebar text-sidebar-foreground">
-        <div className="flex h-14 shrink-0 items-center gap-2 border-b px-4">
-          <Shield className="size-5 text-primary" />
-          <span className="text-sm font-semibold">QingScan</span>
+        <div className="flex h-14 shrink-0 items-center gap-2.5 border-b px-4">
+          <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-primary/60 shadow-sm">
+            <ShieldCheck className="size-5 text-primary-foreground" />
+          </div>
+          <div className="min-w-0 leading-tight">
+            <p className="text-sm font-bold tracking-tight">QingScan</p>
+            <p className="text-[10px] text-muted-foreground">安全运营平台</p>
+          </div>
         </div>
 
         <nav className="flex-1 overflow-y-auto px-3 py-3">
           {MENU.map((group, gi) => (
             <div key={gi} className="mb-4">
               {group.title && (
-                <p className="mb-1 px-2 text-[11px] font-medium tracking-wider text-muted-foreground/80 uppercase">
+                <p className="mb-1 px-2 text-[11px] font-medium tracking-wider text-muted-foreground uppercase">
                   {group.title}
                 </p>
               )}
@@ -167,7 +162,7 @@ export default function AppLayout() {
                         end={item.path === '/'}
                         className={({ isActive }) =>
                           cn(
-                            'flex items-center gap-2 rounded-sm px-2 py-1.5 text-xs transition-colors',
+                            'flex items-center gap-2 rounded-md px-2 py-1.5 text-[13px] transition-colors',
                             'hover:bg-accent hover:text-accent-foreground',
                             isActive && 'bg-primary/10 font-medium text-primary hover:bg-primary/10 hover:text-primary',
                           )
@@ -185,11 +180,24 @@ export default function AppLayout() {
         </nav>
 
         <div className="shrink-0 border-t p-3">
-          <div className="mb-2 flex items-center justify-between">
-            <UserBadge user={user} />
-            <Button variant="ghost" size="icon-sm" onClick={handleLogout} title="退出登录">
+          <div className="mb-2 flex items-center justify-between gap-2">
+            <div className="flex min-w-0 items-center gap-2.5">
+              <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary/60 text-xs font-semibold text-primary-foreground">
+                {(user?.nickname || user?.username || '未登录').charAt(0).toUpperCase()}
+              </div>
+              <div className="min-w-0">
+                <p className="truncate text-xs font-medium">{user?.nickname || user?.username || '未登录'}</p>
+                <p className="truncate text-[10px] text-muted-foreground">{user?.role || '安全运营'}</p>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={handleLogout}
+              title="退出登录"
+              className="flex size-7 shrink-0 items-center justify-center rounded-none text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive"
+            >
               <LogOut className="size-3.5" />
-            </Button>
+            </button>
           </div>
           <div className="flex items-center justify-between px-1">
             <a
@@ -215,9 +223,13 @@ export default function AppLayout() {
 
       {/* 内容区 */}
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="flex h-14 shrink-0 items-center justify-between border-b px-6">
+        <header className="flex h-14 shrink-0 items-center justify-between border-b bg-background/80 px-6 backdrop-blur">
           <h1 className="text-sm font-semibold">{pageTitle(pathname)}</h1>
-          <UserBadge user={user} />
+          <div className="flex items-center gap-1.5">
+            <Button variant="ghost" size="icon-sm" title="刷新" onClick={() => location.reload()}>
+              <RefreshCw className="size-4" />
+            </Button>
+          </div>
         </header>
         <main className="flex-1 overflow-y-auto p-6">
           <Outlet />
