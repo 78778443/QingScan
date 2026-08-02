@@ -55,14 +55,14 @@ class Bug extends Common
         $data['fileList'] = Db::table('awvs_vuln')->where($where)->group('affects_url')->column('affects_url');
         $data['check_status_list'] = ['未审计', '有效漏洞', '无效漏洞'];
 
-        return View::fetch('awvs_list', $data);
+        return redirect('/web/webscan/xray');
     }
 
     public function awvs_detail(Request $request)
     {
         $id = $request->param('id');
         $data['detail'] = Db::table('awvs_vuln')->where('id', $id)->find();
-        return View::fetch('awvs_detail', $data);
+        return redirect('/web/webscan/xray');
 
     }
 
@@ -90,7 +90,7 @@ class Bug extends Common
         $data['page'] = Db::name('xray')->paginate($pageSize)->render();
 
 
-        return View::fetch('xray_list', $data);
+        return redirect('/web/webscan/xray');
     }
 
     public function pocsuite(Request $request)
@@ -99,6 +99,6 @@ class Bug extends Common
         $pageSize = 25;
         $data['list'] = Db::table('pocsuite3')->limit($pageSize)->page($page)->select()->toArray();
         $data['page'] = Db::name('pocsuite3')->paginate($pageSize)->render();
-        return View::fetch('pocsuite_list', $data);
+        return redirect('/web/webscan/xray');
     }
 }

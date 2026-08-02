@@ -33,7 +33,7 @@ class CodeComposer extends Common
         }
         $data['page'] = $list->render();
         $data['projectList'] = $this->getMyCodeList();
-        return View::fetch('index', $data);
+        return redirect('/web/');
     }
 
     // 批量删除

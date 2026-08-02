@@ -24,7 +24,7 @@ class PocsFile extends Common
         ]);
         $data['list'] = $list->items();
         $data['page'] = $list->render();
-        return View::fetch('index', $data);
+        return redirect('/web/result/plugin');
     }
 
 
@@ -50,7 +50,7 @@ class PocsFile extends Common
             }
         } else {
             ;
-            return View::fetch('add');
+            return redirect('/web/result/plugin');
         }
     }
 
@@ -72,7 +72,7 @@ class PocsFile extends Common
             }
         } else {
             $data['info'] = $info;
-            return View::fetch('edit', $data);
+            return redirect('/web/result/plugin');
         }
     }
 
@@ -89,7 +89,7 @@ class PocsFile extends Common
         $lower_id = Db::name('pocs_file')->where('id', '>', $id)->order('id', 'asc')->value('id');
         $info['lower_id'] = $lower_id ?: $id;
         $data['info'] = $info;
-        return View::fetch('details', $data);
+        return redirect('/web/result/plugin');
     }
 
     public function del(Request $request)

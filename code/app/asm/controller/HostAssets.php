@@ -104,7 +104,7 @@ class HostAssets extends Common
             'hids_installed' => $hids_installed
         ]);
         
-        return View::fetch('index');
+        return redirect('/web/asm/host');
     }
     
     // HIDS列表
@@ -166,7 +166,7 @@ class HostAssets extends Common
             'keyword' => $keyword
         ]);
         
-        return View::fetch('hids');
+        return redirect('/web/asm/host');
     }
     
     // HIDS详情页面
@@ -193,7 +193,7 @@ class HostAssets extends Common
         }
         
         View::assign('hids_data', $hids_data);
-        return View::fetch('hidsDetail');
+        return redirect('/web/asm/host');
     }
     
     // 更新HIDS状态
@@ -225,7 +225,7 @@ class HostAssets extends Common
     // 导入主机资产
     public function import()
     {
-        return View::fetch();
+        return redirect('/web/asm/host');
     }
     
     // 执行导入
@@ -298,13 +298,13 @@ class HostAssets extends Common
             'original_data' => $original_data
         ]);
         
-        return View::fetch();
+        return redirect('/web/asm/host');
     }
     
     // 添加线下IDC主机
     public function addIdcHost()
     {
-        return View::fetch();
+        return redirect('/web/asm/host');
     }
     
     // 保存线下IDC主机
@@ -369,7 +369,7 @@ class HostAssets extends Common
             'host' => $host
         ]);
         
-        return View::fetch();
+        return redirect('/web/asm/host');
     }
     
     // 更新主机资产
@@ -446,6 +446,6 @@ class HostAssets extends Common
             'stats' => $stats
         ]);
         
-        return View::fetch('overview');
+        return redirect('/web/asm/host');
     }
 }

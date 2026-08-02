@@ -43,7 +43,7 @@ class CodeCheck extends Common
             $value['web_url'] = '';
         }
 
-        return View::fetch('index', $data);
+        return redirect('/web/');
     }
 
     public function bug_detail()
@@ -65,7 +65,7 @@ class CodeCheck extends Common
 
         $data['info'] = $info;
         //var_dump($info);exit;
-        return View::fetch('details', $data);
+        return redirect('/web/');
     }
 
     /**

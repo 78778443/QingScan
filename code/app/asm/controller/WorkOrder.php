@@ -85,7 +85,7 @@ class WorkOrder extends Common
             'page_end' => $page_end
         ]);
 
-        return View::fetch();
+        return redirect('/web/');
     }
     
     // 工单详情
@@ -137,7 +137,7 @@ class WorkOrder extends Common
             'work_order_type' => $work_order_type
         ]);
         
-        return View::fetch();
+        return redirect('/web/');
     }
     
     // 飞书机器人一键拉群

@@ -96,7 +96,7 @@ class Index extends Common
         $data['statusArr'] = $this->statusArr;
         $data['tools_list'] = $this->tools;
         $data = array_merge($data, $configArr);
-        return View::fetch('index', $data);
+        return redirect('/web/webscan/targets');
     }
 
     public function _add(Request $request)
@@ -193,7 +193,7 @@ class Index extends Common
 
         $data['monitor_notice'] = Db::table('github_keyword_monitor_notice')->where($where)->order("app_id", 'desc')->limit(0, 15)->select()->toArray();
 
-        return View::fetch('details', $data);
+        return redirect('/web/webscan/targets');
     }
 
     // 重新扫描

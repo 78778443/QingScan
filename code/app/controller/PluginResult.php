@@ -49,14 +49,14 @@ class PluginResult extends Common
         //插件列表数据
         $projectArr = Db::table('plugin')->where($map)->select()->toArray();
         $data['pluginList'] = array_column($projectArr, 'name', 'id');
-        return View::fetch('index', $data);
+        return redirect('/web/');
     }
 
     public function details(Request $request){
         $id = $request->param('id');
         $info = Db::table('plugin_scan_log')->where(['id'=>$id])->find();
         $data['info'] = $info;
-        return View::fetch('detail', $data);
+        return redirect('/web/');
     }
 
     public function del(Request $request){

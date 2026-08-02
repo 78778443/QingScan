@@ -36,14 +36,14 @@ class Urls extends Common
         $data['status400'] = Db::table('asm_urls')->where('status', 'between', [400, 499])->count();
         $data['status500'] = Db::table('asm_urls')->where('status', '>=', 500)->count();
 
-        return View::fetch('index', $data);
+        return redirect('/web/asm/url');
     }
 
 
     public function add()
     {
         $data['app_list'] = Db::table('app')->select()->toArray();
-        return View::fetch('add', $data);
+        return redirect('/web/asm/url');
     }
 
     public function _add(Request $request)

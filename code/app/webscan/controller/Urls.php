@@ -28,7 +28,7 @@ class Urls extends Common
         $data['page'] = $list->render();
         $data['projectList'] = $this->getMyAppList();
 
-        return View::fetch('index', $data);
+        return redirect('/web/asm/url');
     }
 
     public function _add(Request $request)

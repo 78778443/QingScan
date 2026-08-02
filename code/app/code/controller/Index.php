@@ -65,7 +65,7 @@ class Index extends Common
         $data['page'] = $list->render();
         $data['tools_list'] = $this->tools;
 
-        return View::fetch('list', $data);
+        return redirect('/web/');
     }
 
     // 启用-暂停扫描
@@ -151,7 +151,7 @@ class Index extends Common
         $projectArr = Db::table('code')->where($map)->select()->toArray();
         $data['projectArr'] = array_column($projectArr, null, 'id');
 
-        return View::fetch('details', $data);
+        return redirect('/web/');
     }
 
     public function code_del(Request $request)
@@ -328,7 +328,7 @@ class Index extends Common
             'check_status_list' => ['未审计', '有效漏洞', '无效漏洞']
         ];
 
-        return View::fetch('bug_list', $data);
+        return redirect('/web/');
     }
 
     public function bug_details(Request $request)
@@ -359,7 +359,7 @@ class Index extends Common
         $data['projectArr'] = array_column($projectArr, null, 'id');
         //var_dump($info['Source']);exit;
 
-        return View::fetch('bug_details', $data);
+        return redirect('/web/');
     }
 
     public function bug_del(Request $request)
@@ -412,7 +412,7 @@ class Index extends Common
         $info['project_name'] = $projectInfo['name'] ?? '';
 
         $data['info'] = $info;
-        return View::fetch('semgrep_details', $data);
+        return redirect('/web/');
     }
 
     public function semgrep_list(Request $request)
@@ -463,7 +463,7 @@ class Index extends Common
         $data['check_status_list'] = ['未审计', '有效漏洞', '无效漏洞'];
         //查询项目列表
         $data['projectList'] = $this->getMyCodeList();
-        return View::fetch('semgrep_list', $data);
+        return redirect('/web/');
     }
 
     public function semgrep_del(Request $request)
@@ -593,7 +593,7 @@ class Index extends Common
             $value['bugFile'] = $tempStr;
         }
 
-        return View::fetch('hooks', $data);
+        return redirect('/web/');
     }
 
     public function hook_detail(Request $request)
@@ -731,7 +731,7 @@ class Index extends Common
             }
         } else {
             $data['tools_list'] = $this->tools;
-            return View::fetch('add_file', $data);
+            return redirect('/web/');
         }
     }
 

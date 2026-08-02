@@ -53,7 +53,7 @@ class Vulnerable extends Common
         $data['page'] = $list->render();
 
 
-        return View::fetch('index', $data);
+        return redirect('/web/result/vulnerable');
     }
 
     public function pocsuite(Request $request)
@@ -70,7 +70,7 @@ class Vulnerable extends Common
         ]);
         $data['list'] = $list->items();
         $data['page'] = $list->render();
-        return View::fetch('pocsuite_list', $data);
+        return redirect('/web/result/vulnerable');
     }
 
 
@@ -92,7 +92,7 @@ class Vulnerable extends Common
         $info['lower_id'] = $lower_id ?: $id;
 
         $data['info'] = $info;
-        return View::fetch('details', $data);
+        return redirect('/web/result/vulnerable');
     }
 
     public function add(Request $request)
@@ -159,7 +159,7 @@ class Vulnerable extends Common
             }
         } else {
             $data = [];
-            return View::fetch('add', $data);
+            return redirect('/web/result/vulnerable');
         }
     }
 
@@ -234,7 +234,7 @@ class Vulnerable extends Common
             if (!$data['info']) {
                 $this->error('数据不存在');
             }
-            return View::fetch('edit', $data);
+            return redirect('/web/result/vulnerable');
         }
     }
 
@@ -293,7 +293,7 @@ class Vulnerable extends Common
                 return $this->error('数据添加失败');
             }
         } else {
-            return View::fetch('add_pocsuite');
+            return redirect('/web/result/vulnerable');
         }
     }
 

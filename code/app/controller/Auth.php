@@ -24,7 +24,7 @@ class Auth extends Common
         $list = UserModel::getListPage($map);
         $data['list'] = $list->toArray()['data'];
         $data['page'] = $list->render();
-        return View::fetch('auth/user_list', $data);
+        return redirect('/web/');
     }
 
     // 添加管理员
@@ -65,7 +65,7 @@ class Auth extends Common
             ];
             $auth_group = Db::name('auth_group')->where($map)->select();
             $data['authGroup'] = $auth_group;
-            return View::fetch('auth/user_add', $data);
+            return redirect('/web/');
         }
     }
 
@@ -115,7 +115,7 @@ class Auth extends Common
             $map[] = ['id', '=', $id];
             $data['info'] = Db::name('user')->where($map)->find();
             $data['authGroup'] = $auth_group;
-            return View::fetch('auth/user_edit', $data);
+            return redirect('/web/');
         }
     }
 
@@ -146,7 +146,7 @@ class Auth extends Common
         } else {
             $map[] = ['id', '=', $id];
             $data['info'] = Db::name('user')->where($map)->find();
-            return View::fetch('auth/user_info', $data);
+            return redirect('/web/');
         }
     }
 
@@ -177,7 +177,7 @@ class Auth extends Common
                 $this->error('密码修改失败');
             }
         } else {
-            return View::fetch('auth/user_password');
+            return redirect('/web/');
         }
     }
 
@@ -218,7 +218,7 @@ class Auth extends Common
             }
         }
         $data['list'] = $list;
-        return View::fetch('auth/auth_group_list', $data);
+        return redirect('/web/');
     }
 
     //添加用户分组
@@ -235,7 +235,7 @@ class Auth extends Common
                 $this->error('用户组添加失败');
             }
         } else {
-            return View::fetch('auth_group_add');
+            return redirect('/web/');
         }
     }
 
@@ -255,7 +255,7 @@ class Auth extends Common
         } else {
             $auth_group_id = $request->param('auth_group_id');
             $data['info'] = Db::name('auth_group')->where('auth_group_id', $auth_group_id)->find();
-            return View::fetch('auth_group_edit', $data);
+            return redirect('/web/');
         }
     }
 
@@ -296,7 +296,7 @@ class Auth extends Common
         );
         $data['auth_group_id'] = $auth_group_id;
         $data['data'] = $arr;
-        return View::fetch('auth_group_access', $data);
+        return redirect('/web/');
     }
 
     // 用户组状态操作
@@ -323,7 +323,7 @@ class Auth extends Common
         $map['is_delete'] = 0;
         $authRule = Db::name('auth_rule')->where($map)->order('sort', 'asc')->select()->toArray();
         $data['list'] = $nav->menu($authRule);
-        return View::fetch('auth/auth_rule_list', $data);
+        return redirect('/web/');
     }
 
     public function ruleAdd(Request $request)
@@ -376,7 +376,7 @@ class Auth extends Common
                 }
             }
             $data['auth_rule'] = $arr;
-            return View::fetch('auth/auth_rule_add', $data);
+            return redirect('/web/');
         }
     }
 
@@ -432,7 +432,7 @@ class Auth extends Common
             }
             $data['list'] = $list;
             $data['info'] = $info;
-            return View::fetch('auth_rule_edit', $data);
+            return redirect('/web/');
         }
     }
 

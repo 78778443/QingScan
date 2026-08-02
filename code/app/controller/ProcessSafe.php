@@ -30,7 +30,7 @@ class ProcessSafe extends Common
         ]);
         $data['list'] = $list->items();
         $data['page'] = $list->render();
-        return View::fetch('index', $data);
+        return redirect('/web/');
     }
 
 
@@ -51,7 +51,7 @@ class ProcessSafe extends Common
             }
         } else {
             ;
-            return View::fetch('add');
+            return redirect('/web/');
         }
     }
 
@@ -72,7 +72,7 @@ class ProcessSafe extends Common
         } else {
             $map[] = ['id', '=', $id];
             $data['info'] = Db::name('process_safe')->where($map)->find();
-            return View::fetch('edit', $data);
+            return redirect('/web/');
         }
     }
 
@@ -104,7 +104,7 @@ class ProcessSafe extends Common
         $cmd = "ps -ef | grep -v def  | grep -v 'ps -ef' | grep -v 'UID'";
         exec($cmd,$info);
         $data['info'] = $info;
-        return View::fetch('show_process', $data);
+        return redirect('/web/');
     }
 
     public function kill(Request $request){

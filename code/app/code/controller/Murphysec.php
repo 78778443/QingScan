@@ -75,7 +75,7 @@ class Murphysec extends Common
         $data['show_level'] = $this->show_level;
         //查询项目数据
         $data['projectList'] = $this->getMyCodeList();
-        return View::fetch('index', $data);
+        return redirect('/web/');
     }
 
     /**
@@ -96,7 +96,6 @@ class Murphysec extends Common
         $info['code_name'] = Db::table('code')->where('id', $info['code_id'])->value('name');
         return json(['code' => 1, 'data' => $info]);
     }
-}
 
     public function batch_repair(Request $request){
         $ids = $request->param('ids');

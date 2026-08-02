@@ -63,7 +63,7 @@ class Xray extends Common
         }
         $data['projectList'] = $this->getMyAppList();
         $data['check_status_list'] = ['未审计','有效漏洞','无效漏洞'];
-        return View::fetch('index', $data);
+        return redirect('/web/webscan/xray');
     }
 
 
@@ -90,7 +90,7 @@ class Xray extends Common
         $info['lower_id'] = $lower_id?:$id;
 
         $data['info'] = $info;
-        return View::fetch('details', $data);
+        return redirect('/web/webscan/xray');
     }
 
 

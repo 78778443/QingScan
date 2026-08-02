@@ -27,7 +27,7 @@ class Cloud extends BaseController
         View::assign('list', $list->items());
         View::assign('page', $list);
         
-        return View::fetch('cloud/huoshan');
+        return redirect('/web/asm/host');
     }
     
     // 天翼云列表页
@@ -54,7 +54,7 @@ class Cloud extends BaseController
         View::assign('page', $list);
         View::assign('current_team', $teamId);
         
-        return View::fetch('cloud/tianyi');
+        return redirect('/web/asm/host');
     }
     
     // 阿里云列表页
@@ -74,7 +74,7 @@ class Cloud extends BaseController
         View::assign('list', $list->items());
         View::assign('page', $list);
         
-        return View::fetch('cloud/aliyun');
+        return redirect('/web/asm/host');
     }
     
     // 移动云列表页
@@ -94,7 +94,7 @@ class Cloud extends BaseController
         View::assign('list', $list->items());
         View::assign('page', $list);
         
-        return View::fetch('cloud/yidong');
+        return redirect('/web/asm/host');
     }
     
     // 百度云列表页
@@ -114,6 +114,6 @@ class Cloud extends BaseController
         View::assign('list', $list->items());
         View::assign('page', $list);
         
-        return View::fetch('cloud/baidu');
+        return redirect('/web/asm/host');
     }
  }

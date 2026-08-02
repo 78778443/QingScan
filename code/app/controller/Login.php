@@ -30,7 +30,7 @@ class Login extends BaseController
         }
 
 
-        return View::fetch('user/login');
+        return redirect('/web/login');
     }
 
     public function doLogin(Request $request)
@@ -96,7 +96,7 @@ class Login extends BaseController
 //                $this->error('注册失败');
 //            }
         } else {
-            return View::fetch('user/register');
+            return redirect('/web/login');
         }
     }
 

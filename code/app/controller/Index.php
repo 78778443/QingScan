@@ -120,7 +120,7 @@ class Index extends Common
             ]
         ];
 
-        return View::fetch('index', ['data' => $data]);
+        return redirect('/web/');
     }
 
     /**
@@ -173,7 +173,7 @@ class Index extends Common
         ];
 
         // 不带任何参数 自动定位当前操作的模板文件
-        return View::fetch('index', ['list' => $data, 'zanzhu' => $zanzhu]);
+        return redirect('/web/');
 //        $this->show('index/index', ['list' => $data]);
     }
 

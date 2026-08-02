@@ -24,7 +24,7 @@ class UserLog extends Common
         $data['list'] = $list->items();
         $data['page'] = $list->render();
         $data['paginator'] = $list;
-        return View::fetch('userlog/index', $data);
+        return redirect('/web/');
     }
 
     public function clear_all(){

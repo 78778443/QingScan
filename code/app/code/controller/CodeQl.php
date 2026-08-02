@@ -30,7 +30,7 @@ class CodeQl extends Common
 
         $data = ['countList' => $countList, 'bugList' => $bugList, 'page' => $page];
 
-        return View::fetch('index', $data);
+        return redirect('/web/');
     }
 
 
@@ -41,7 +41,7 @@ class CodeQl extends Common
         $info = Db::table('codeql')->where($where)->find();
 
         if (empty($info)) {
-            return View::fetch('detail', ['info' => null, 'error' => '记录不存在']);
+            return redirect('/web/');
         }
 
         $info['codeFlows'] = json_decode($info['codeFlows'], true);
@@ -63,7 +63,7 @@ class CodeQl extends Common
         $info['prompt'] = isset($info['prompt']) ? str_replace("\n","<br>",$info['prompt']) : '';
 
 
-        return View::fetch('detail', ['info' => $info]);
+        return redirect('/web/');
     }
 
     private function parseSarif($list)

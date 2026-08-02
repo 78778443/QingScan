@@ -34,7 +34,7 @@ class VulTarget extends Common
         $data['list'] = $list->items();
         $data['page'] = $list->render();
 
-        return View::fetch('index', $data);
+        return redirect('/web/webscan/targets');
     }
 
 
@@ -54,7 +54,7 @@ class VulTarget extends Common
                 return $this->error('数据添加失败');
             }
         } else {
-            return View::fetch('add');
+            return redirect('/web/webscan/targets');
         }
     }
 

@@ -33,7 +33,7 @@ class CodeWebshell extends Common
         $data['page'] = $list->render();
         //查询项目数据
         $data['projectList'] = $this->getMyCodeList();
-        return View::fetch('index', $data);
+        return redirect('/web/');
     }
 
 

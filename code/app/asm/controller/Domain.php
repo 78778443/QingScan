@@ -35,7 +35,7 @@ class Domain extends Common
         $data['pending_count'] = $data['total']; // 全部待扫描
         $data['vuln_count'] = 0; // 可根据实际漏洞表统计
 
-        return View::fetch('index', $data);
+        return redirect('/web/asm/domain');
     }
 
 

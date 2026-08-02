@@ -92,7 +92,7 @@ class Fortify extends Common
             'check_status_list' => ['未审计', '有效漏洞', '无效漏洞']
         ];
 
-        return View::fetch('index', $data);
+        return redirect('/web/');
     }
 
 
@@ -119,7 +119,7 @@ class Fortify extends Common
         $data['info'] = $info;
         $projectArr = Db::table('code')->where($map)->select()->toArray();
         $data['projectArr'] = array_column($projectArr, null, 'id');
-        return View::fetch('details', $data);
+        return redirect('/web/');
     }
 
     public function batch_audit(Request $request){

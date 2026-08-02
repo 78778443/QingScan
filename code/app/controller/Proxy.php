@@ -29,7 +29,7 @@ class Proxy extends Common
         ]);
         $data['list'] = $list->items();
         $data['page'] = $list->render();
-        return View::fetch('index', $data);
+        return redirect('/web/');
     }
 
     public function add(Request $request)
@@ -54,7 +54,7 @@ class Proxy extends Common
                 $this->error('代理添加失败，请稍候再试');
             }
         } else {
-            return View::fetch('add');
+            return redirect('/web/');
         }
     }
 
@@ -87,7 +87,7 @@ class Proxy extends Common
             }
         } else {
             $data['info'] = $info;
-            return View::fetch('edit', $data);
+            return redirect('/web/');
         }
     }
 
@@ -125,7 +125,7 @@ class Proxy extends Common
         }
         Db::name('proxy')->where('id', $id)->update(['status'=>$status]);
         $data['info'] = $info;
-        return View::fetch('test_speed', $data);
+        return redirect('/web/');
     }
 
 

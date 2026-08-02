@@ -33,7 +33,7 @@ class Vulmap extends Common
         $data['page'] = $list->render();
         //查询项目数据
         $data['projectList'] = $this->getMyAppList();
-        return View::fetch('index', $data);
+        return redirect('/web/webscan/vulmap');
     }
 
     public function del(Request $request)

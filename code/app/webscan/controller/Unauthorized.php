@@ -32,7 +32,7 @@ class Unauthorized extends Common
         $data['page'] = $list->render();
         //查询项目数据
         $data['projectList'] = $this->getMyAppList();
-        return View::fetch('index', $data);
+        return redirect('/web/asm/host');
     }
     public function del(Request $request)
     {

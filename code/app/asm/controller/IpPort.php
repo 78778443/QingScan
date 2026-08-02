@@ -27,7 +27,7 @@ class IpPort extends Common
         $data['list'] = $list->items();
         $data['page'] = $list->render();
         $data['paginator'] = $list;
-        return View::fetch('ip_port/index', $data);
+        return redirect('/web/');
     }
 
     /**

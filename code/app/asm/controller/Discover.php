@@ -34,7 +34,7 @@ class Discover extends Common
         $data['keyword'] = $request->param('keyword', 'dedecms');
 
         $this->autoInsertData($data['list']);
-        return View::fetch('index', $data);
+        return redirect('/web/asm/host');
     }
 
     private function autoInsertData($list)
@@ -71,7 +71,7 @@ class Discover extends Common
         $data['fofa_user'] = ConfigModel::value('fofa_user');
         $data['fofa_token'] = ConfigModel::value('fofa_token');
 
-        return View::fetch('keyword_conf', $data);
+        return redirect('/web/asm/host');
     }
 
 

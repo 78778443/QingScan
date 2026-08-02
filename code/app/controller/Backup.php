@@ -35,7 +35,7 @@ class Backup extends Common
         }
         rsort($list);
         $data['list'] = $list;
-        return View::fetch('index', $data);
+        return redirect('/web/');
     }
 
     // 备份

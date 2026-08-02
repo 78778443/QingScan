@@ -40,7 +40,7 @@ class Plugin extends Common
         ]);
         $data['list'] = $list->items();
         $data['page'] = $list->render();
-        return View::fetch('index', $data);
+        return redirect('/web/');
     }
 
     public function add(Request $request)
@@ -64,7 +64,7 @@ class Plugin extends Common
                 $this->error('数据添加失败，请稍候再试');
             }
         } else {
-            return View::fetch('add');
+            return redirect('/web/');
         }
     }
 
@@ -97,7 +97,7 @@ class Plugin extends Common
             }
         } else {
             $data['info'] = $info;
-            return View::fetch('edit', $data);
+            return redirect('/web/');
         }
     }
 

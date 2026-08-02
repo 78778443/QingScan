@@ -33,7 +33,7 @@ class Host extends Common
         $data['page'] = $list->render();
         $data['paginator'] = $list;
         $data['projectList'] = $this->getMyAppList();
-        return View::fetch('index', $data);
+        return redirect('/web/asm/host');
     }
 
     public function add()

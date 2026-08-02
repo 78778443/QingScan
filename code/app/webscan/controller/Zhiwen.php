@@ -25,7 +25,7 @@ class Zhiwen extends Common
         ]);
         $data['list'] = $list->items();
         $data['page'] = $list->render();
-        return View::fetch('index', $data);
+        return redirect('/web/');
     }
 
     // 批量删除

@@ -47,7 +47,7 @@ class Sqlmap extends Common
 
         $data['projectList'] = $this->getMyAppList();
 
-        return View::fetch('index', $data);
+        return redirect('/web/webscan/sqlmap');
     }
 
 

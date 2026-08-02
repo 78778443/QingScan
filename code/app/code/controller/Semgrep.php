@@ -57,7 +57,7 @@ class Semgrep extends Common
         $data['check_status_list'] = ['未审计', '有效漏洞', '无效漏洞'];
         //查询项目列表
         $data['projectList'] = $this->getMyCodeList();
-        return View::fetch('index', $data);
+        return redirect('/web/');
     }
 
 
@@ -83,7 +83,7 @@ class Semgrep extends Common
         $info['project_name'] = $projectInfo['name'] ?? '';
 
         $data['info'] = $info;
-        return View::fetch('details', $data);
+        return redirect('/web/');
     }
 
     public function batch_audit(Request $request){
