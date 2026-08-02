@@ -10,6 +10,7 @@ class ToolsCheckModel extends BaseModel
     private const BUILTIN_TOOLS = [
         'nmap', 'oneforall', 'dirmap', 'whatweb', 'dismap',
         'sqlmap', 'hydra', 'nuclei', 'xray', 'vulmap',
+        'wafw00f', 'rad', 'crawlergo', 'semgrep',
     ];
 
     /**

@@ -10,12 +10,7 @@ class WebScanModel extends BaseModel
 {
     public static function rad()
     {
-        $path = "cd " . trim(`pwd`) . "/extend/tools/rad/ && ";
-        //判断rad运行环境是否安装
-        $radPath = trim(`pwd`) . '/extend/tools/rad/';
-        if (!file_exists($radPath)) die("工具RAD不存在：{$radPath}");
-        if (!file_exists("/usr/bin/google-chrome")) die("RAD 运行依赖环境不存在，请安装chrome环境~");
-
+        //使用内置爬虫引擎替代外部 rad 工具（基础爬虫，不做 JS 渲染）
         $where = ['tool' => 'scan_app_rad', 'status' => 0];
         $list = Db::table('task_scan')->where($where)->limit(10)->select()->toArray();
 
@@ -26,45 +21,32 @@ class WebScanModel extends BaseModel
             $url = $value['url'];
             $id = $value['id'];
             $user_id = $value['user_id'];
-            $pathArr = getSavePath($url, "rad", $id);
-            //初始化清理目录
-            if (file_exists($pathArr['tool_result'])) {
-                addlog(["清理老文件", $pathArr['tool_result']]);
-                @unlink($pathArr['tool_result']);
-            }
 
-
-            $cmd = "{$path} ./rad_linux_amd64 -t  \"{$url}\" -json {$pathArr['tool_result']}";
-            echo "开始执行抓取URL地址命令:" . $cmd . PHP_EOL;
-
-            $result = [];
-            execLog($cmd, $result);
-
-            if (!file_exists($pathArr['tool_result'])) {
-                addlog(["rad扫描失败,结果文件不存在", $pathArr['tool_result']]);
+            $urlList = \app\scan\CrawlerScan::crawl($url);
+            if (empty($urlList)) {
+                addlog(["rad扫描失败,未提取到URL", $url]);
                 PluginModel::addScanLog($value['id'], __METHOD__, 0, 2);
                 continue;
             }
 
-            $urlList = json_decode(file_get_contents($pathArr['tool_result']), true);
+            $blackExt = ['.js', '.css', '.png', '.jpg', '.jpeg', '.gif', '.mp3', '.mp4', '.ico', '.bmp', '.wmv', '.avi', '.psd'];
             foreach ($urlList as $val) {
-                $val['URL'] = rtrim($val['URL'], '/');
-                $arr = parse_url($val['URL']);
-                $blackExt = ['.js', '.css', '.png', '.jpg', '.jpeg', '.gif', '.mp3', '.mp4', '.ico', '.bmp', '.wmv', '.avi', '.psd'];
-                if (isset($arr['path']) && in_array_strpos(strtolower($arr['path']), $blackExt) || in_array_strpos(strtolower($val['URL']), $blackExt)) {
-                    addlog(["rad扫描跳过无意义URL", $val['URL']]);
+                $val['url'] = rtrim($val['url'], '/');
+                $arr = parse_url($val['url']);
+                if (isset($arr['path']) && in_array_strpos(strtolower($arr['path']), $blackExt) || in_array_strpos(strtolower($val['url']), $blackExt)) {
+                    addlog(["rad扫描跳过无意义URL", $val['url']]);
                     continue;
                 }
 
                 $newData = [
                     'app_id' => $id,
-                    'method' => $val['Method'],
-                    'url' => $val['URL'],
+                    'method' => $val['method'],
+                    'url' => $val['url'],
                     'status' => 1,
-                    'hash' => md5($val['URL']),
+                    'hash' => md5($val['url']),
                     'crawl_status' => 1,
                     'scan_status' => 0,
-                    'header' => isset($val['Header']) ? json_encode($val['Header']) : "",
+                    'header' => "",
                     'user_id' => $user_id
                 ];
                 Db::name('asm_urls')->extra('IGNORE')->insert($newData);
@@ -306,40 +288,33 @@ class WebScanModel extends BaseModel
 
     public static function crawlergoScan()
     {
-        $tools = "./extend/tools/crawlergo/";
+        //使用内置爬虫引擎替代外部 crawlergo 工具（基础爬虫，不做 JS 渲染；
+        //原 crawlergo 依赖 chrome 浏览器渲染，request 头字段缺失时置空）
         $list = self::getAppStayScanList('crawlergo_scan_time');
         foreach ($list as $val) {
-
-
             PluginModel::addScanLog($val['id'], __METHOD__, 0);
 
-
-            $filename = $tools . 'crawlergo.json';
-            @unlink($filename);
-
-            $cmd = "cd $tools && ./cmd/crawlergo/crawlergo_cmd -c /usr/bin/google-chrome -o none --output-json $filename -f 'strict' -t 10 {$val['url']}";
-            systemLog($cmd);
-            if (!file_exists($filename)) {
+            $urlList = \app\scan\CrawlerScan::crawl($val['url']);
+            if (empty($urlList)) {
                 PluginModel::addScanLog($val['id'], __METHOD__, 0, 2);
                 addlog(["crawlergo扫描失败，url:{$val['url']}"]);
                 continue;
             }
-            $result = json_decode(file_get_contents($filename), true);
             $data = [];
-            foreach ($result['all_req_list'] as $v) {
+            foreach ($urlList as $v) {
                 $data[] = [
                     'app_id' => $val['id'],
                     'user_id' => $val['user_id'],
                     'url' => $v['url'],
                     'method' => $v['method'],
-                    'accept' => isset($v['headers']['Accept']) ? $v['headers']['Accept'] : '',
-                    'cache_control' => isset($v['headers']['Cache-Control']) ? $v['headers']['Cache-Control'] : '',
-                    'cookie' => isset($v['headers']['Cookie']) ? $v['headers']['Cookie'] : '',
-                    'referer' => isset($v['headers']['Referer']) ? $v['headers']['Referer'] : '',
-                    'spider_name' => isset($v['headers']['Spider-Name']) ? $v['headers']['Spider-Name'] : '',
-                    'user_agent' => isset($v['headers']['User-Agent']) ? $v['headers']['User-Agent'] : '',
-                    'data' => $v['data'],
-                    'source' => $v['source'],
+                    'accept' => '',
+                    'cache_control' => '',
+                    'cookie' => '',
+                    'referer' => '',
+                    'spider_name' => 'qingscan',
+                    'user_agent' => '',
+                    'data' => '',
+                    'source' => '',
                     'create_time' => date('Y-n-d H:i:s', time())
                 ];
             }
