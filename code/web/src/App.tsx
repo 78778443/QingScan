@@ -7,6 +7,7 @@ import ScanResults from '@/pages/webscan/ScanResults'
 import Assets from '@/pages/asm/Assets'
 import CodeAudit from '@/pages/code/CodeAudit'
 import Workorders from '@/pages/workorder/Workorders'
+import Rules from '@/pages/rules/Rules'
 
 export default function App() {
   return (
@@ -19,6 +20,7 @@ export default function App() {
         <Route path="asm/:kind" element={<Assets />} />
         <Route path="code" element={<CodeAudit />} />
         <Route path="workorder" element={<Workorders />} />
+        <Route path="rules" element={<Rules />} />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

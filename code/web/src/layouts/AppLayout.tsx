@@ -17,6 +17,7 @@ import {
   Link,
   Code2,
   Ticket,
+  ScrollText,
   Settings,
   LogOut,
   RefreshCw,
@@ -44,8 +45,12 @@ interface MenuGroup {
 }
 
 const MENU: MenuGroup[] = [
-  { items: [{ label: '主页', path: '/', icon: LayoutDashboard }] },
-  { items: [{ label: '网站扫描', path: '/webscan/targets', icon: Globe }] },
+  {
+    items: [
+      { label: '主页', path: '/', icon: LayoutDashboard },
+      { label: '网站扫描', path: '/webscan/targets', icon: Globe },
+    ],
+  },
   {
     title: '扫描结果',
     items: [
@@ -72,6 +77,7 @@ const MENU: MenuGroup[] = [
     items: [
       { label: '代码审计', path: '/code', icon: Code2 },
       { label: '工单管理', path: '/workorder', icon: Ticket },
+      { label: '规则管理', path: '/rules', icon: ScrollText },
     ],
   },
 ]
@@ -92,6 +98,7 @@ const TITLES: Record<string, string> = {
   '/asm/url': 'URL资产',
   '/code': '代码审计',
   '/workorder': '工单管理',
+  '/rules': '规则管理',
 }
 
 function pageTitle(pathname: string): string {

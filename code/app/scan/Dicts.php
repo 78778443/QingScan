@@ -59,6 +59,19 @@ class Dicts
         ]);
     }
 
+    /** 加载自定义规则文件（extend/rules/{name}.php），与内置合并 */
+    private static function mergeCustom(string $name, array $builtin): array
+    {
+        $file = dirname(__DIR__, 2) . '/extend/rules/' . $name . '.php';
+        if (is_file($file)) {
+            $rules = @include $file;
+            if (is_array($rules)) {
+                return array_merge($builtin, $rules);
+            }
+        }
+        return $builtin;
+    }
+
     /** 常用 Web 路径字典 */
     public static function dirs(): array
     {
@@ -106,10 +119,17 @@ class Dicts
         ]);
     }
 
-    /** 指纹规则：match 任一命中即算识别成功 */
+    /** 指纹规则：match 任一命中即算识别成功（内置 + 自定义合并） */
     public static function fingerprints(): array
     {
+        return self::mergeCustom('fingerprint', self::builtinFingerprints());
+    }
+
+    /** 内置指纹规则（供规则管理界面展示） */
+    public static function builtinFingerprints(): array
+    {
         return [
+
             ['name' => 'nginx', 'headers' => ['server' => 'nginx'], 'body' => []],
             ['name' => 'apache', 'headers' => ['server' => 'apache'], 'body' => []],
             ['name' => 'IIS', 'headers' => ['server' => 'iis'], 'body' => []],
@@ -167,6 +187,19 @@ class Dicts
             ['name' => 'React', 'headers' => [], 'body' => ['react', '__nxtg']],
             ['name' => 'Angular', 'headers' => [], 'body' => ['angular']],
         ];
+    }
+
+    /** 自定义指纹规则（extend/rules/fingerprint.php，供规则管理界面展示） */
+    public static function customFingerprints(): array
+    {
+        $file = dirname(__DIR__, 2) . '/extend/rules/fingerprint.php';
+        if (is_file($file)) {
+            $rules = @include $file;
+            if (is_array($rules)) {
+                return $rules;
+            }
+        }
+        return [];
     }
 
     /** 常见弱口令密码字典 */

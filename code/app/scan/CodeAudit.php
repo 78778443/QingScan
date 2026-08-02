@@ -145,6 +145,7 @@ class CodeAudit
 
             // L2：PHP 文件先做 tokenizer 污点分析，并收集注释行供 L1 过滤
             $commentLines = [];
+            $mergedRules = array_merge(self::RULES, self::customRules('code_audit'));
             if ($ext === 'php') {
                 $commentLines = self::commentLines($content);
                 foreach (self::taintAnalyze($content) as $hit) {
@@ -171,7 +172,7 @@ class CodeAudit
                 'php.lang.security.file-inclusion',
             ] : [];
 
-            foreach (self::RULES as $rule) {
+            foreach ($mergedRules as $rule) {
                 if ($total >= self::MAX_TOTAL) break 2;
                 if (!self::extMatch($rule['ext'], $ext)) continue;
                 if (in_array($rule['id'], $skipL1, true)) continue;
@@ -202,6 +203,19 @@ class CodeAudit
 
         self::writeJson($outPath, $results);
         return $total;
+    }
+
+    /** 加载自定义规则（extend/rules/{name}.php，返回数组与内置规则结构一致） */
+    private static function customRules(string $name): array
+    {
+        $file = dirname(__DIR__, 2) . '/extend/rules/' . $name . '.php';
+        if (is_file($file)) {
+            $rules = @include $file;
+            if (is_array($rules)) {
+                return $rules;
+            }
+        }
+        return [];
     }
 
     /** 收集 PHP 代码中注释所在的行号集合 */
@@ -284,6 +298,8 @@ class CodeAudit
         if (empty($tokens)) {
             return [];
         }
+        // 合并自定义污点规则（格式与 TAINT_RULES 一致）
+        $taintRules = array_merge(self::TAINT_RULES, self::customRules('code_audit_taint'));
 
         $hits = [];
         $n = count($tokens);
@@ -347,7 +363,7 @@ class CodeAudit
             $isEchoStmt = in_array($id, [T_ECHO, T_PRINT], true);
             if (in_array($id, $sinkIds, true) && ($isEchoStmt || self::isCallParen($tokens, $i))) {
                 $fname = strtolower($text);
-                $sinkRule = self::sinkRuleOf($fname);
+                $sinkRule = self::sinkRuleOf($fname, $taintRules);
                 if ($sinkRule !== null) {
                     [$tainted, $srcLine] = self::exprTaint($tokens, $i + 1, $varTaint, $line);
                     if ($tainted) {
@@ -472,10 +488,11 @@ class CodeAudit
     }
 
     /** 查找函数名对应的污点规则（含 SQL 关键字语句匹配） */
-    private static function sinkRuleOf(string $fname): ?array
+    private static function sinkRuleOf(string $fname, array $taintRules = []): ?array
     {
+        $taintRules = $taintRules ?: self::TAINT_RULES;
         // 直接函数名匹配
-        foreach (self::TAINT_RULES as $rule) {
+        foreach ($taintRules as $rule) {
             if (in_array($fname, $rule['sinks'], true)) {
                 return $rule;
             }
@@ -490,5 +507,21 @@ class CodeAudit
         $lines = explode("\n", $code);
         $text = $lines[$line - 1] ?? '';
         return substr(trim($text), 0, self::LINE_MAX_LEN);
+    }
+
+    /**
+     * 返回内置污点分析规则（L2，供规则管理界面展示）
+     */
+    public static function taintRules(): array
+    {
+        return self::TAINT_RULES;
+    }
+
+    /**
+     * 返回自定义污点分析规则（extend/rules/code_audit_taint.php）
+     */
+    public static function customTaintRules(): array
+    {
+        return self::customRules('code_audit_taint');
     }
 }

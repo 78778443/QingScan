@@ -20,7 +20,7 @@ services:
       --default-authentication-plugin=mysql_native_password
       --init-file=/docker-entrypoint-initdb.d/init.sql
   qingscan:
-    image: registry.cn-beijing.aliyuncs.com/daxia/qingscan:latest
+    image: ubuntu:24.04
     container_name: qingscan
     links:
       - mysql_server:mysql_addr

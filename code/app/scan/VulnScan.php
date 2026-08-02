@@ -131,7 +131,8 @@ class VulnScan
         }
 
         // 1. 路径探测类规则
-        foreach (self::RULES as $rule) {
+        $rules = array_merge(self::RULES, self::customRules('vuln'));
+        foreach ($rules as $rule) {
             foreach ($rule['paths'] as $path) {
                 $resp = self::requestPath($root, $path, $cache);
                 if (!self::isCandidate($resp, $baseBody)) {
@@ -269,5 +270,35 @@ class VulnScan
             'payload' => $payload,
             'description' => $description,
         ];
+    }
+    /** 返回规则库（内置 + 自定义，供管理界面展示） */
+    public static function rules(): array
+    {
+        return array_merge(self::RULES, self::customRules('vuln'));
+    }
+
+    /** 返回内置漏洞检测规则（供规则管理界面展示） */
+    public static function builtinRules(): array
+    {
+        return self::RULES;
+    }
+
+    /** 返回自定义漏洞检测规则（extend/rules/vuln.php，供规则管理界面展示） */
+    public static function customRulesPublic(): array
+    {
+        return self::customRules('vuln');
+    }
+
+    /** 加载自定义规则（extend/rules/vuln.php） */
+    private static function customRules(string $name): array
+    {
+        $file = dirname(__DIR__, 2) . '/extend/rules/' . $name . '.php';
+        if (is_file($file)) {
+            $rules = @include $file;
+            if (is_array($rules)) {
+                return $rules;
+            }
+        }
+        return [];
     }
 }

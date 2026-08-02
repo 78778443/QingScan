@@ -78,7 +78,7 @@ class WafScan
         $body = substr((string)($baseline['body'] ?? ''), 0, self::BODY_LIMIT);
 
         // 1. 响应头 / Cookie / body 特征检测
-        foreach (self::RULES as $rule) {
+        foreach (array_merge(self::RULES, self::customRules('waf')) as $rule) {
             if (self::matchHeaders($headers, $rule['headers'])
                 || self::matchCookies($headers, $rule['cookie'])
                 || self::matchBody($body, $rule['body'])) {
@@ -183,5 +183,35 @@ class WafScan
             }
         }
         return false;
+    }
+    /** 返回规则库（内置 + 自定义，供管理界面展示） */
+    public static function rules(): array
+    {
+        return array_merge(self::RULES, self::customRules('waf'));
+    }
+
+    /** 返回内置 WAF 识别规则（供规则管理界面展示） */
+    public static function builtinRules(): array
+    {
+        return self::RULES;
+    }
+
+    /** 返回自定义 WAF 识别规则（extend/rules/waf.php，供规则管理界面展示） */
+    public static function customRulesPublic(): array
+    {
+        return self::customRules('waf');
+    }
+
+    /** 加载自定义规则（extend/rules/waf.php） */
+    private static function customRules(string $name): array
+    {
+        $file = dirname(__DIR__, 2) . '/extend/rules/' . $name . '.php';
+        if (is_file($file)) {
+            $rules = @include $file;
+            if (is_array($rules)) {
+                return $rules;
+            }
+        }
+        return [];
     }
 }
