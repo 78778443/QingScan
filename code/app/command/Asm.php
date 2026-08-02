@@ -3,7 +3,6 @@ declare (strict_types=1);
 
 namespace app\command;
 
-use app\asm\model\CloudModel;
 use app\asm\model\HostAssetsModel;
 use app\asm\model\HostAssetsSyncModel;
 use app\asm\model\VulnerabilityModel;

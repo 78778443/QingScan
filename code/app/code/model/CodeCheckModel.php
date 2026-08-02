@@ -206,59 +206,6 @@ class CodeCheckModel extends BaseModel
         Db::table(self::$tableName)->insert($data);
     }
 
-    public static function fortifyScan()
-    {
-        $codePath = trim(`pwd`) . "/data/codeCheck";
-        $fortifyRetDir = trim(`pwd`) . "/data/fortify_result";
-        if (!file_exists($codePath)) mkdir($codePath, 0777, true);
-        if (!file_exists($fortifyRetDir)) mkdir($fortifyRetDir, 0777, true);
-
-        $where = ['tool' => 'code_fortify', 'status' => 0];
-        $list = Db::table('task_scan')->where($where)->limit(10)->select()->toArray();
-        foreach ($list as $task) {
-            Db::table('task_scan')->where(['id' => $task['id']])->update(['status' => 1]);
-            $value = json_decode($task['ext_info'], true);
-
-            if (empty($value['ssh_url'])) continue;
-            echo $value['ssh_url'] . PHP_EOL;
-            PluginModel::addScanLog($value['id'], __METHOD__, 2, 0);
-            
-
-            $prName = cleanString($value['name']);
-            $codeUrl = $value['ssh_url'];
-            addlog("开始执行扫描代码任务:{$prName}..." . PHP_EOL);
-            $filepath = "{$codePath}/{$prName}";
-            if (!file_exists($filepath)) {
-                //1. 拉取代码
-                downCode($codePath, $prName, $codeUrl, $value['is_private'], $value['username'], $value['password'], $value['private_key']);
-            }
-
-            if (!file_exists($filepath)) continue;
-            //2. 扫描代码
-            FortifyModel::startScan($filepath, "{$fortifyRetDir}/{$prName}");
-
-            $xmlFile = "{$fortifyRetDir}/{$prName}.xml";
-            if (file_exists($xmlFile) === false) {
-                PluginModel::addScanLog($value['id'], __METHOD__, 2, 2);
-                addlog(["fortify的XML文件不存在:{$xmlFile}", $value]);
-                continue;
-            }
-            $bugList = FortifyModel::getFortifData("{$fortifyRetDir}/{$prName}.xml");
-
-            //4. 存储结果
-            FortifyModel::addDataAll($value['id'], $bugList, $value['user_id']);
-
-            //5. 更新
-            if (file_exists("{$fortifyRetDir}/{$prName}.xml")) {
-                
-            }
-            PluginModel::addScanLog($value['id'], __METHOD__, 2, 1);
-        }
-
-        addlog("fortify 完成本次扫描任务");
-
-    }
-
     public static function semgrep()
     {
         $codePath = trim(`pwd`)."/data/codeCheck";

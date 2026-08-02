@@ -4,7 +4,6 @@ namespace app\webscan\controller;
 
 use app\controller\Common;
 use app\model\ConfigModel;
-use app\webscan\model\XrayModel;
 use Org\Util\Date;
 use think\facade\Db;
 use think\facade\View;
@@ -580,7 +579,7 @@ class Index extends Common
                     'user_id' => $info['user_id'],
                     'poc' => $value['detail']['payload']
                 ];
-                XrayModel::addXray($newData);
+                Db::table('xray')->extra('IGNORE')->insert($newData);
             }
             return $this->apiReturn(1, [], "代理已关闭，数据导入成功");
         } else { // 开启代理
@@ -604,7 +603,22 @@ class Index extends Common
     public function batch_import(Request $request)
     {
         $file = $_FILES["file"]["tmp_name"];
-        $result = $this->importExecl($file);
+        if (empty($file) or !file_exists($file)) {
+            $this->error('文件不存在!');
+        }
+        // 直接解析CSV文件(原importExecl已移除)
+        $result = ['code' => 1, 'data' => [], 'msg' => ''];
+        $fh = fopen($file, 'r');
+        if ($fh) {
+            while (($row = fgetcsv($fh)) !== false) {
+                $line = [];
+                foreach ($row as $i => $cell) {
+                    $line[chr(65 + $i)] = trim($cell);
+                }
+                $result['data'][] = $line;
+            }
+            fclose($fh);
+        }
         if ($result['code'] == 0) {
             $this->error($result['msg']);
         }

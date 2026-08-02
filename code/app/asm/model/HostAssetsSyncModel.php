@@ -2,7 +2,6 @@
 
 namespace app\asm\model;
 
-use app\asm\model\CloudModel;
 use app\asm\model\HidsQingtengModel;
 use app\model\BaseModel;
 use GuzzleHttp\Client;
@@ -700,7 +699,7 @@ class HostAssetsSyncModel extends BaseModel
                     Db::table('asm_cloud_tianyi')->where('id', $existing['id'])->update($resource);
                 } else {
                     // 添加新记录
-                    CloudModel::addTianyi($resource);
+                    Db::table('asm_cloud_tianyi')->insertGetId($resource);
                 }
             }
 

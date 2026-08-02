@@ -7,10 +7,7 @@ use app\asm\model\WebInfo;
 use app\asm\model\Fofa;
 use app\asm\model\IpModel;
 use app\code\model\CodeCheckModel;
-use app\code\model\MurphysecModel;
 use app\model\AppModel;
-use app\model\CveModel;
-use app\model\GoogleModel;
 use app\model\HostPortModel;
 use app\model\WeakPassModel;
 use app\model\SubdomainModel;
@@ -19,7 +16,6 @@ use app\model\ToolsCheckModel;
 use app\model\UrlsModel;
 use app\model\WebScanModel;
 use app\webscan\model\AppDirmapModel;
-use app\webscan\model\AwvsModel;
 use think\console\Command;
 use think\console\Input;
 use think\console\input\Argument;
@@ -48,10 +44,8 @@ class Scan extends Command
             "start_task" => [TaskModel::class, 'startTask'],
 
             // asm扫描
-            "asm_discover_fofa" => [Fofa::class, 'discover', 'fofa'],
-            "asm_domain_subdomain" => [SubdomainModel::class, 'subdomainScan', 'subdomain'],
-            "asm_domain_fofa" => [CveModel::class, 'fofaSearch', 'fofa'],
-            "asm_ip_info" => [IpModel::class, 'ip_location'],
+                        "asm_domain_subdomain" => [SubdomainModel::class, 'subdomainScan', 'subdomain'],
+                        "asm_ip_info" => [IpModel::class, 'ip_location'],
             "asm_ip_port_scan" => [HostPortModel::class, 'portScan', 'port_scan'],
             "nmap" => [HostPortModel::class, 'portScan', 'port_scan'],
 
@@ -62,20 +56,16 @@ class Scan extends Command
             "scan_app_vul_verify" => [WebScanModel::class, 'vulVerifyScan', 'vul_verify'],
             "scan_app_asset_finger" => [WebScanModel::class, 'assetFingerScan', 'asset_finger'],
             "scan_app_web_vuln" => [WebScanModel::class, 'webVulnScan', 'web_vuln'],
-            "scan_app_awvs" => [AwvsModel::class, 'awvsScan', 'awvs'],
-            "scan_app_crawler" => [WebScanModel::class, 'crawlerScan', 'crawler'],
-            "scan_app_screenshot" => [GoogleModel::class, 'jietu'],
-            "scan_app_finger" => [AppModel::class, 'fingerScan', 'finger'],
-            "scan_app_web_info_extra" => [GoogleModel::class, 'getBaseInfo'],
-            "scan_ip_weak_pass" => [WeakPassModel::class, 'weakPassScan', 'weak_pass'],
+                        "scan_app_crawler" => [WebScanModel::class, 'crawlerScan', 'crawler'],
+                        "scan_app_finger" => [AppModel::class, 'fingerScan', 'finger'],
+            "scan_app_waf" => [WafCheckModel::class, 'wafCheckScan', 'waf'],
+
+                        "scan_ip_weak_pass" => [WeakPassModel::class, 'weakPassScan', 'weak_pass'],
             "scan_url_sql_inject" => [UrlsModel::class, 'sqlInjectScan', 'sql_inject'],
 
             // 代码扫描
-            "code_fortify" => [CodeCheckModel::class, 'fortifyScan', 'fortify'],
-            "code_audit" => [CodeCheckModel::class, 'semgrep', 'code_audit'],
-            "code_murphysec" => [MurphysecModel::class, 'murphysec_scan', 'murphysec'],
-            "code_codeql" => [MurphysecModel::class, 'murphysec_scan', 'codeql'],
-
+                        "code_audit" => [CodeCheckModel::class, 'semgrep', 'code_audit'],
+                        
             // 旧工具名兼容（历史任务数据已通过 SQL 迁移，此处兜底处理未迁移的存量数据）
             "scan_app_xray" => [WebScanModel::class, 'webVulnScan', 'web_vuln'],
             "scan_app_nuclei" => [WebScanModel::class, 'genVulnScan', 'gen_vuln'],
@@ -92,9 +82,7 @@ class Scan extends Command
             "asm_ip_nmap" => [HostPortModel::class, 'portScan', 'port_scan'],
             "asm_domain_oneforall" => [SubdomainModel::class, 'subdomainScan', 'subdomain'],
             "code_semgrep" => [CodeCheckModel::class, 'semgrep', 'code_audit'],
-            "scan_app_jietu" => [GoogleModel::class, 'jietu'],
-            "scan_app_google" => [GoogleModel::class, 'getBaseInfo'],
-        ];
+                                ];
     }
 
     protected function execute(Input $input, Output $output): void

@@ -34,11 +34,10 @@ class TaskModel extends BaseModel
         //列出每个表对应的扫描工具
         $data = [
             'app' => ['scan_app_web_info', 'scan_app_dir_scan', 'scan_app_gen_vuln', 'scan_app_vul_verify',
-                'scan_app_asset_finger', 'scan_app_web_vuln', 'scan_app_awvs', 'scan_app_crawler', 'scan_app_screenshot',
-                'scan_app_finger', 'scan_url_sql_inject', 'scan_app_web_info_extra'],
-            'code' => ['code_fortify', 'code_audit', 'code_murphysec'],
-            'asm_discover' => ['asm_discover'],
-            'asm_domain' => ['asm_domain_subdomain', 'asm_domain_fofa'],
+                'scan_app_asset_finger', 'scan_app_web_vuln', 'scan_app_crawler', 'scan_app_finger',
+                'scan_app_waf', 'scan_url_sql_inject'],
+            'code' => ['code_audit'],
+            'asm_domain' => ['asm_domain_subdomain'],
             'asm_ip' => ['asm_ip_info', 'asm_ip_port_scan', 'scan_ip_weak_pass'],
             'asm_urls' => ['scan_url_sql_inject'],
         ];

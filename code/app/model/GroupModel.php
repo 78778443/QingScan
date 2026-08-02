@@ -2,7 +2,7 @@
 
 namespace app\model;
 
-use app\webscan\model\XrayModel;
+use think\facade\Db;
 
 class GroupModel extends BaseModel
 {
@@ -48,7 +48,7 @@ class GroupModel extends BaseModel
         $count = 0;
         if ($appIds) {
             $where = ['app_id' => ['in', $appIds]];
-            $count = XrayModel::getCount($where);
+            $count = Db::table('xray')->where($where)->count();
         }
         return $count;
     }

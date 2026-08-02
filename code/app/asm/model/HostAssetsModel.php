@@ -4,7 +4,6 @@ namespace app\asm\model;
 
 use app\model\BaseModel;
 use think\facade\Db;
-use app\asm\model\CloudModel;
 
 class HostAssetsModel extends BaseModel
 {
@@ -296,7 +295,7 @@ class HostAssetsModel extends BaseModel
                 Db::table('asm_cloud_huoshan')->where('id', $existingHuoshan['id'])->update($huoshanResource);
             } else {
                 // 添加新记录
-                CloudModel::addHuoshan($huoshanResource);
+                Db::table('asm_cloud_huoshan')->insertGetId($huoshanResource);
             }
         }
         
@@ -574,7 +573,7 @@ class HostAssetsModel extends BaseModel
                 echo '更新阿里云资源结果: ' . $updateResult . PHP_EOL;
             } else {
                 // 添加新记录
-                $addResult = CloudModel::addAliyun($aliyunResource);
+                $addResult = Db::table('asm_cloud_aliyun')->insertGetId($aliyunResource);
                 echo '添加阿里云资源结果: ' . $addResult . PHP_EOL;
             }
         }

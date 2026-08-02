@@ -18,6 +18,8 @@ import {
   FileSearch,
   AlertTriangle,
   ListTodo,
+  Code2,
+  Ticket,
   Settings,
   LogOut,
   ExternalLink,
@@ -77,6 +79,13 @@ const MENU: MenuGroup[] = [
     ],
   },
   { items: [{ label: '扫描任务', path: '/task', icon: ListTodo }] },
+  {
+    title: '安全运营',
+    items: [
+      { label: '代码审计', path: '/code', icon: Code2 },
+      { label: '工单管理', path: '/workorder', icon: Ticket },
+    ],
+  },
 ]
 
 const TITLES: Record<string, string> = {
@@ -96,6 +105,8 @@ const TITLES: Record<string, string> = {
   '/result/plugin': '插件扫描',
   '/result/vulnerable': '漏洞情报',
   '/task': '扫描任务',
+  '/code': '代码审计',
+  '/workorder': '工单管理',
 }
 
 function pageTitle(pathname: string): string {
@@ -104,6 +115,8 @@ function pageTitle(pathname: string): string {
   if (pathname.startsWith('/asm/')) return '资产管理'
   if (pathname.startsWith('/result/')) return '漏洞结果'
   if (pathname.startsWith('/task')) return '扫描任务'
+  if (pathname.startsWith('/code')) return '代码审计'
+  if (pathname.startsWith('/workorder')) return '工单管理'
   return 'QingScan'
 }
 

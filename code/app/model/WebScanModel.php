@@ -3,7 +3,6 @@
 namespace app\model;
 
 
-use app\webscan\model\XrayModel;
 use think\facade\Db;
 
 class WebScanModel extends BaseModel
@@ -133,7 +132,7 @@ class WebScanModel extends BaseModel
             ];
             $addr[] = $newData;
             echo "xray添加漏洞结果:" . json_encode($newData, 256) . PHP_EOL;
-            XrayModel::addXray($newData);
+            Db::table('xray')->extra('IGNORE')->insert($newData);
         }
         addlog(["xray扫描数据写入成功:" . json_encode($addr, 256)]);
     }

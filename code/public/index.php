@@ -55,10 +55,23 @@ foreach ($staticDirs as $dir) {
 }
 
 // SPA 前端路由 fallback：不带 /web 前缀访问前端路由（如 /webscan/nuclei、/asm/host）时也返回 SPA。
-// 以 /index 结尾的老版 URL 不拦截，仍走控制器 302 重定向。
+// 仍存活控制器的路径（webscan/asm/result/task/code/workorder 等）以 /index 结尾时走控制器 302；
+// 已删除控制器的老路径（vulnerable/plugin/backup 等）一律 fallback 到 SPA。
 $lastSeg = substr($path, (int)strrpos($path, '/') + 1);
-if ($lastSeg !== 'index' && strpos($path, '.') === false) {
-    $spaPrefixes = ['/webscan', '/asm', '/result', '/task', '/code'];
+if (strpos($path, '.') === false) {
+    $spaPrefixes = ['/webscan', '/asm', '/result', '/task', '/code', '/workorder'];
+    // login/index、index/index 仍由存活控制器 302 重定向，其余 /index 结尾老 URL 一律 fallback
+    if ($lastSeg === 'index' && (strpos($path, '/login') === 0 || strpos($path, '/index') === 0)) {
+        $spaPrefixes = [];
+    }
+    $spaPrefixes = array_merge($spaPrefixes, [
+        '/vulnerable', '/pocs_file', '/plugin', '/plugin_result', '/backup', '/config',
+        '/node', '/proxy', '/process_safe', '/vul_target', '/github_notice', '/to_examine',
+        '/log', '/user', '/zhiwen', '/sqlmap', '/app_nuclei', '/one_for_all', '/pocsuite',
+        '/unauthorized', '/hydra', '/urls', '/dirmap', '/vulmap', '/xray', '/whatweb',
+        '/app_crawlergo', '/github_keyword_monitor', '/fortify', '/semgrep', '/mobsfscan',
+        '/murphysec', '/codeql', '/code_webshell', '/code_composer', '/code_java', '/code_python',
+    ]);
     foreach ($spaPrefixes as $prefix) {
         if ($path === $prefix || strpos($path, $prefix . '/') === 0) {
             $indexFile = $publicDir . '/web/index.html';
