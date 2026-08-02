@@ -28,10 +28,6 @@ INSERT INTO `system_config` (`name`, `key`, `value`) VALUES
 ('自动备份开关', 'auto_backup', '1'),
 ('备份间隔（小时）', 'backup_interval', '24'),
 
--- 扫描工具配置
-('Xray扫描策略', 'xray_policy', 'default'),
-('Nuclei模板路径', 'nuclei_template_path', './extend/tools/nuclei-templates'),
-('SQLMap超时时间（秒）', 'sqlmap_timeout', '300'),
 
 -- 安全配置
 ('登录失败次数限制', 'login_fail_limit', '5'),
