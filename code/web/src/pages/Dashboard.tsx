@@ -467,7 +467,10 @@ function ChartCard({
   demoKey,
 }: ChartCardProps) {
   const navigate = useNavigate()
-  const isEmpty = !loading && (data === undefined || data.length === 0)
+  // 空数据判定：无数据或全部为 0（趋势/分布类接口会补 0 值条目）
+  const isEmpty =
+    !loading &&
+    (data === undefined || data.length === 0 || data.every((d) => Number(d.value) === 0))
   const showDemo = isEmpty && !!demoKey
   const points = useMemo(() => {
     const source = showDemo ? (DEFAULT_DATA[demoKey!] ?? []) : (data ?? [])
