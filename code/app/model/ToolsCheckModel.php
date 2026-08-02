@@ -6,12 +6,32 @@ use think\facade\Db;
 
 class ToolsCheckModel extends BaseModel
 {
+    /** 已提供内置引擎的工具：外部工具未安装时由内置引擎兜底 */
+    private const BUILTIN_TOOLS = [
+        'nmap', 'oneforall', 'dirmap', 'whatweb', 'dismap',
+        'sqlmap', 'hydra', 'nuclei', 'xray', 'vulmap',
+    ];
+
     /**
-     * 检查工具是否已安装
+     * 检查工具是否可用：外部工具已安装，或已提供内置引擎兜底
      * @param string $toolName 工具名称
-     * @return bool 是否已安装
+     * @return bool 是否可用
      */
     public static function checkToolInstalled(string $toolName): bool
+    {
+        if (self::isToolAvailable($toolName)) {
+            return true;
+        }
+        return in_array($toolName, self::BUILTIN_TOOLS, true);
+    }
+
+    /**
+     * 外部工具是否已安装/可配置（不含内置引擎兜底）
+     * 模型方法内据此判断：外部工具可用则优先使用，否则走内置引擎
+     * @param string $toolName 工具名称
+     * @return bool 外部工具是否可用
+     */
+    public static function isToolAvailable(string $toolName): bool
     {
         $methods = [
             'rad' => 'checkRad',
@@ -36,7 +56,7 @@ class ToolsCheckModel extends BaseModel
             'google' => 'checkGoogle'
         ];
 
-        // 如果没有对应的检查方法，默认返回true
+        // 如果没有对应的检查方法，默认认为外部工具可用
         if (!isset($methods[$toolName])) {
             return true;
         }
@@ -228,7 +248,13 @@ class ToolsCheckModel extends BaseModel
      */
     private static function checkDismap(): bool
     {
-        // 已由内置指纹识别引擎替代外部工具
+        $dismapPath = "./extend/tools/dismap/";
+
+        if (!file_exists($dismapPath)) {
+            self::log(["工具检查失败: Dismap 未安装", $dismapPath]);
+            return false;
+        }
+
         return true;
     }
 
@@ -238,7 +264,13 @@ class ToolsCheckModel extends BaseModel
      */
     private static function checkWhatweb(): bool
     {
-        // 已由内置指纹识别引擎替代外部工具
+        // Whatweb 是系统命令，检查是否存在
+        $result = shell_exec("which whatweb 2>/dev/null");
+        if (empty($result)) {
+            self::log(["工具检查失败: Whatweb 未安装"]);
+            return false;
+        }
+
         return true;
     }
 
@@ -294,7 +326,13 @@ class ToolsCheckModel extends BaseModel
      */
     private static function checkOneForAll(): bool
     {
-        // 已由内置引擎替代外部工具
+        $oneforallPath = '/data/tools/oneforall/';
+
+        if (!file_exists($oneforallPath)) {
+            self::log(["工具检查失败: OneForAll 未安装", $oneforallPath]);
+            return false;
+        }
+
         return true;
     }
 
@@ -336,7 +374,13 @@ class ToolsCheckModel extends BaseModel
      */
     private static function checkNmap(): bool
     {
-        // 已由内置引擎替代外部工具
+        // Nmap 是系统命令，检查是否存在
+        $result = shell_exec("which nmap 2>/dev/null");
+        if (empty($result)) {
+            self::log(["工具检查失败: Nmap 未安装"]);
+            return false;
+        }
+
         return true;
     }
 
@@ -346,7 +390,13 @@ class ToolsCheckModel extends BaseModel
      */
     private static function checkDirmap(): bool
     {
-        // 已由内置指纹识别引擎替代外部工具
+        $dirmapPath = "./extend/tools/dirmap/";
+
+        if (!file_exists($dirmapPath)) {
+            self::log(["工具检查失败: Dirmap 未安装", $dirmapPath]);
+            return false;
+        }
+
         return true;
     }
 

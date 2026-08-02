@@ -51,20 +51,15 @@ class UrlsModel extends BaseModel
 
     public static function sqlmapScan()
     {
-        $tools = './extend/tools/sqlmap/';
-        //判断目录是否存在
-        if (!is_dir($tools)) {
-            addlog(["sqlmap目录不存在", $tools],true);
-            return;
-        }
-        $file_path = $tools . 'result/';
-
         $where = ['tool' => 'scan_url_sqlmap', 'status' => 0];
         $list = Db::table('task_scan')->where($where)->limit(10)->select()->toArray();
         foreach ($list as $task) {
             Db::table('task_scan')->where(['id' => $task['id']])->update(['status' => 1]);
             $v = json_decode($task['ext_info'], true);
 
+            if (!self::checkToolAuth(1, $v['app_id'], 'sqlmap')) {
+                continue;
+            }
             PluginModel::addScanLog($v['id'], __METHOD__, 3);
 
 
@@ -76,45 +71,33 @@ class UrlsModel extends BaseModel
                 addlog(["URL地址不存在可以注入的参数", $v['url']]);
                 continue;
             }
-            $cmd = "cd {$tools}  && python3 ./sqlmap.py -u '{$v['url']}' --batch  --random-agent --output-dir={$file_path}";
-            systemLog($cmd);
-            $host = $arr['host'];
-            $outdir = $file_path . "{$host}/";
-            $outfilename = "{$outdir}/log";
 
-            //sqlmap输出异常
-            if (!is_dir($outdir) or !file_exists($outfilename) or !filesize($outfilename)) {
+            // 使用内置纯 PHP SQL 注入检测引擎，替代外部 sqlmap 工具
+            $result = \app\scan\SqlInjectScan::scan($v['url']);
+
+            //未发现注入点
+            if (empty($result)) {
                 PluginModel::addScanLog($v['id'], __METHOD__, 3, 1);
                 addlog(["sqlmap没有找到注入点", $v['url']]);
                 continue;
             }
-            $ddd = file_get_contents($outfilename);
-            $arr = explode("\n", $ddd);
 
-            $data = [];
-            foreach ($arr as $tmp) {
-                $tempv2 = explode(":", $tmp);
-                if (count($tempv2) == 2) {
-                    $data[trim($tempv2[0])][] = trim($tempv2[1]);
-                }
-            }
-
-            $bbb = [
-                'system' => isset($data['web server operating system']) ? $data['web server operating system'][0] : '',
-                'application' => isset($data['web application technology']) ? $data['web application technology'][0] : '',
-                'dbms' => isset($data['back-end DBMS']) ? $data['back-end DBMS'][0] : '',
-                'urls_id' => $v['id'],
-                'app_id' => $v['app_id'],
-                'user_id' => $v['user_id'],
-            ];
-            foreach ($data['Payload'] as $key => $value) {
-                $bbb['payload'] = $value;
-                $bbb['title'] = $data['Title'][$key];
-                $bbb['type'] = $data['Type'][$key];
+            foreach ($result as $item) {
+                $bbb = [
+                    'system' => '',
+                    'application' => '',
+                    'dbms' => '',
+                    'urls_id' => $v['id'],
+                    'app_id' => $v['app_id'],
+                    'user_id' => $v['user_id'],
+                    'title' => $item['result'],
+                    'type' => $item['result'],
+                    'payload' => $item['payload'],
+                    'create_time' => date('Y-m-d H:i:s', time()),
+                ];
                 Db::name('urls_sqlmap')->insert($bbb);
             }
             addlog(["sqlmap扫描成功数据已写入：", $v['url']]);
-            systemLog("rm -rf $outdir");
             PluginModel::addScanLog($v['id'], __METHOD__, 3, 1);
         }
 

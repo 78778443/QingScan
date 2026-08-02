@@ -5,13 +5,35 @@ namespace app\scan;
 
 /**
  * 内置扫描引擎使用的字典数据
+ *
+ * 社区生态兼容：可在 extend/dicts/ 目录放置同名 .txt 文件追加自定义字典
+ * （如 extend/dicts/subdomains.txt、extend/dicts/dirs.txt、extend/dicts/passwords.txt），
+ * 每行一个，自动与内置字典合并去重。
  */
 class Dicts
 {
+    /** extend/dicts/ 目录下自定义字典与内置字典合并 */
+    private static function mergeDict(string $name, array $default): array
+    {
+        $path = dirname(__DIR__, 2) . '/extend/dicts/' . $name . '.txt';
+        if (is_file($path)) {
+            $lines = file($path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+            if ($lines) {
+                foreach ($lines as $line) {
+                    $line = trim($line);
+                    if ($line !== '') {
+                        $default[] = $line;
+                    }
+                }
+            }
+        }
+        return array_values(array_unique($default));
+    }
+
     /** 常用子域名字典 */
     public static function subdomains(): array
     {
-        return [
+        return self::mergeDict('subdomains', [
             'www', 'mail', 'webmail', 'smtp', 'pop3', 'imap', 'ftp', 'ssh', 'vpn', 'sslvpn', 'webvpn',
             'ns1', 'ns2', 'dns', 'mx', 'mail1', 'mail2', 'news', 'blog', 'bbs', 'forum', 'shop', 'store',
             'oa', 'office', 'erp', 'crm', 'hr', 'mis', 'portal', 'home', 'm', 'mobile', 'wap', 'app', 'api',
@@ -34,13 +56,13 @@ class Dicts
             'vote', 'activity', 'event', 'game', 'games', 'lottery', 'coupon', 'ticket', 'train', 'bus',
             'travel', 'hotel', 'movie', 'film', 'music', 'radio', 'tv', 'iptv', 'ebook', 'read', 'novel',
             'auth', 'authorization', 'oauth', 'token', 'session', 'verify', 'captcha', 'code', 'codes',
-        ];
+        ]);
     }
 
     /** 常用 Web 路径字典 */
     public static function dirs(): array
     {
-        return [
+        return self::mergeDict('dirs', [
             'admin', 'administrator', 'manage', 'manager', 'management', 'backend', 'system', 'sys',
             'index', 'index.php', 'index.html', 'login', 'login.php', 'login.html', 'logout', 'register',
             'user', 'users', 'member', 'members', 'account', 'passport', 'profile', 'admin/login.php',
@@ -81,7 +103,7 @@ class Dicts
             'druid', 'druid/', 'druid/index.html', 'swagger-ui', 'v2/api-docs', 'v3/api-docs', 'openapi.json',
             'actuator/gateway', 'nacos/', 'nacos/v1', 'eureka/', 'apollo', 'apollo/', 'xxljob', 'ddos',
             'shell', 'hack', 'hacker', 'hackme', 'toy', 'waf', 'waf/',
-        ];
+        ]);
     }
 
     /** 指纹规则：match 任一命中即算识别成功 */
@@ -145,6 +167,32 @@ class Dicts
             ['name' => 'React', 'headers' => [], 'body' => ['react', '__nxtg']],
             ['name' => 'Angular', 'headers' => [], 'body' => ['angular']],
         ];
+    }
+
+    /** 常见弱口令密码字典 */
+    public static function passwords(): array
+    {
+        return self::mergeDict('passwords', [
+            '123456', 'password', 'admin', '12345678', '123456789', '12345', '1234', '111111',
+            '1234567', 'password1', 'qwerty', 'abc123', 'admin123', 'root', 'toor', 'test',
+            'guest', '123123', '654321', '11111111', 'admin888', 'admin666', 'admin@123',
+            'admin123456', 'root123', 'root123456', '1234567890', '1qaz2wsx', 'qwe123',
+            'p@ssw0rd', 'passw0rd', '1234qwer', 'zaq12wsx', 'woaini1314', 'woaini520',
+            'a123456', 'a123456789', 'abcd1234', 'abcd123', '123qwe', 'qwer1234', 'asdf1234',
+            'zxcv1234', '!@#$%^&*', '666666', '888888', '000000', '112233', '1314520',
+            '5201314', 'a1b2c3', 'abc', 'administrator', 'manager', 'system', '123321',
+            '147258369', 'abcabc', 'iloveyou', 'wang123', 'zhang123',
+        ]);
+    }
+
+    /** 常见用户名/账号字典 */
+    public static function usernames(): array
+    {
+        return self::mergeDict('usernames', [
+            'admin', 'root', 'test', 'guest', 'administrator', 'user', 'oracle', 'mysql',
+            'postgres', 'ftp', 'www', 'web', 'tomcat', 'jenkins', 'redis', 'default',
+            'sa', 'system', 'manager', 'operator',
+        ]);
     }
 
     /** 端口默认服务映射（无 banner 时兜底） */
