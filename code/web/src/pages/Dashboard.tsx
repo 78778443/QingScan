@@ -55,6 +55,56 @@ const CARD_META: { icon: LucideIcon; gradient: string; shadow: string }[] = [
 
 const ANIM = 'animate-in fade-in slide-in-from-bottom-2 duration-500'
 
+/** 空数据时的默认示例数据（标注"示例"避免误读为真实数据） */
+const DEFAULT_DATA: Record<string, { name: string; value: number }[]> = {
+  vuln_severity: [
+    { name: 'low', value: 12 }, { name: 'medium', value: 8 },
+    { name: 'high', value: 5 }, { name: 'critical', value: 2 },
+  ],
+  vuln_source: [
+    { name: 'Web漏洞检测', value: 15 }, { name: '通用漏洞扫描', value: 8 }, { name: '漏洞验证', value: 3 },
+  ],
+  vuln_trend: Array.from({ length: 14 }, (_, i) => ({
+    name: `${String((new Date().getMonth() + 1) % 12 + 1).padStart(2, '0')}-${String(i + 1).padStart(2, '0')}`,
+    value: 2 + Math.round(i * 0.8),
+  })),
+  asset_overview: [
+    { name: '主机', value: 24 }, { name: '端口', value: 86 }, { name: '域名', value: 32 },
+    { name: '子域名', value: 128 }, { name: 'URL', value: 256 },
+  ],
+  port_top: [
+    { name: '80', value: 32 }, { name: '443', value: 28 }, { name: '22', value: 18 },
+    { name: '3306', value: 12 }, { name: '6379', value: 8 }, { name: '8080', value: 6 },
+  ],
+  service_dist: [
+    { name: 'http', value: 40 }, { name: 'https', value: 28 }, { name: 'ssh', value: 18 },
+    { name: 'mysql', value: 12 }, { name: 'redis', value: 8 },
+  ],
+  workorder_status: [
+    { name: '待派发', value: 3 }, { name: '已派发', value: 5 }, { name: '已确认', value: 4 },
+    { name: '修复待确认', value: 2 }, { name: '已修复', value: 8 },
+  ],
+  workorder_type: [
+    { name: '漏洞', value: 12 }, { name: '系统', value: 5 }, { name: '其他', value: 2 },
+  ],
+  workorder_trend: Array.from({ length: 14 }, (_, i) => ({
+    name: `${String((new Date().getMonth() + 1) % 12 + 1).padStart(2, '0')}-${String(i + 1).padStart(2, '0')}`,
+    value: Math.max(0, 4 - Math.round(i * 0.3)),
+  })),
+  audit_rules: [
+    { name: 'php.lang.security.eval', value: 9 }, { name: 'php.lang.security.sql-concat', value: 7 },
+    { name: 'php.lang.taint.command-injection', value: 5 }, { name: 'php.lang.security.xss', value: 4 },
+    { name: 'php.lang.taint.ssrf', value: 3 },
+  ],
+  audit_severity: [
+    { name: 'error', value: 18 }, { name: 'warning', value: 32 },
+  ],
+  audit_files: [
+    { name: 'index.php', value: 8 }, { name: 'app.php', value: 6 }, { name: 'api/user.php', value: 5 },
+    { name: 'admin/login.php', value: 4 }, { name: 'config/db.php', value: 3 },
+  ],
+}
+
 /** 14 个图表注册表（顺序即展示顺序） */
 const CHART_SPECS: ChartSpec[] = [
   // 漏洞扫描
@@ -387,6 +437,8 @@ function EmptyState({ className }: { className?: string }) {
 interface ChartCardProps {
   title: string
   data: DataPoint[] | undefined
+  /** 展示默认示例数据的 key（真实数据为空时） */
+  demoKey?: string
   type: ChartType
   href?: string
   /** CHART_COLORS 下标，未指定时用第一个 */
@@ -412,12 +464,15 @@ function ChartCard({
   colors,
   loading,
   delay = 0,
+  demoKey,
 }: ChartCardProps) {
   const navigate = useNavigate()
-  const points = useMemo(
-    () => (data ?? []).map((d) => ({ name: d.name, value: Number(d.value) || 0 })),
-    [data],
-  )
+  const isEmpty = !loading && (data === undefined || data.length === 0)
+  const showDemo = isEmpty && !!demoKey
+  const points = useMemo(() => {
+    const source = showDemo ? (DEFAULT_DATA[demoKey!] ?? []) : (data ?? [])
+    return source.map((d) => ({ name: d.name, value: Number(d.value) || 0 }))
+  }, [data, showDemo, demoKey])
   const option = useMemo(
     () => buildOption(type, points, [colors[color], ...colors.filter((_, i) => i !== color)], colorFor, gradient),
     [type, points, colors, color, colorFor, gradient],
@@ -434,14 +489,21 @@ function ChartCard({
       title={href ? '点击查看详情' : undefined}
     >
       <div className="flex items-center justify-between gap-2">
-        <p className="truncate text-sm font-medium">{title}</p>
+        <p className="truncate text-sm font-medium">
+          {title}
+          {showDemo && (
+            <span className="ml-1.5 rounded-sm bg-muted px-1 py-px text-[10px] font-normal text-muted-foreground">
+              示例
+            </span>
+          )}
+        </p>
         {href && (
           <ExternalLink className="size-3.5 shrink-0 text-muted-foreground transition-colors group-hover:text-foreground" />
         )}
       </div>
       {loading ? (
         <Skeleton className="h-[240px] w-full" />
-      ) : points.length > 0 ? (
+      ) : points.length > 0 || showDemo ? (
         <EChart option={option} />
       ) : (
         <EmptyState className="h-[240px]" />
@@ -618,6 +680,7 @@ export default function Dashboard() {
                     key={spec.key}
                     title={item?.title ?? spec.key}
                     data={item?.data}
+                    demoKey={spec.key}
                     type={spec.type}
                     href={spec.href}
                     color={spec.color}
