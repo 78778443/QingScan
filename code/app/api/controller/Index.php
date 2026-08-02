@@ -72,8 +72,8 @@ class Index extends BaseController
                 // 不单独展示
             }
         }
-        // 白盒审计子项：最多 6 项（审计总量 + 5 个分类，无数据时值为 0）
-        $auditSubInfo = [["name" => "审计总量", "value" => $semgrepCount, "href" => "/code"]];
+        // 白盒审计子项：5 个分类（大数字即总量，无数据时值为 0）
+        $auditSubInfo = [];
         foreach (array_keys($auditTypeMap) as $label) {
             $auditSubInfo[] = ["name" => $label, "value" => $auditTypeCounts[$label] ?? 0, "href" => "/code"];
         }
