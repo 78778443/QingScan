@@ -75,6 +75,11 @@ class Index extends BaseController
                 $auditTypeCounts['其他'] = ($auditTypeCounts['其他'] ?? 0) + (int)$ar['cnt'];
             }
         }
+        // 白盒审计子项：始终展示全部分类（无数据时值为 0）
+        $auditSubInfo = [["name" => "审计总量", "value" => $semgrepCount, "href" => "/code"]];
+        foreach (array_keys($auditTypeMap) as $label) {
+            $auditSubInfo[] = ["name" => $label, "value" => $auditTypeCounts[$label] ?? 0, "href" => "/code"];
+        }
 
         // 工单统计
         $workOrderCount = Db::table('asm_work_order')->count();
@@ -113,10 +118,7 @@ class Index extends BaseController
             [
                 "name" => "白盒审计",
                 "value" => $codeCount,
-                "subInfo" => array_merge(
-                    [["name" => "审计总量", "value" => $semgrepCount, "href" => "/code"]],
-                    array_map(fn($label, $cnt) => ["name" => $label, "value" => $cnt, "href" => "/code"], array_keys($auditTypeCounts), array_values($auditTypeCounts))
-                ),
+                "subInfo" => $auditSubInfo,
             ],
             [
                 "name" => "工单管理",
