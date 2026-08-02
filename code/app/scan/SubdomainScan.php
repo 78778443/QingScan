@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace app\scan;
 
 /**
- * 内置 PHP 子域名枚举引擎（替代 oneforall python 外部工具调用）
+ * 内置 PHP 子域名枚举引擎（替代外部子域名收集工具调用）
  */
 class SubdomainScan
 {
@@ -86,7 +86,7 @@ class SubdomainScan
     }
 
     /**
-     * 从 URL 提取根域名（参考原 OneForAllModel 逻辑：取 host、过滤 IP、去 www 前缀）
+     * 从 URL 提取根域名（参考原 SubdomainModel 逻辑：取 host、过滤 IP、去 www 前缀）
      *
      * @param string $url
      * @return string 根域名；无法解析（IP 或空 host）时返回空字符串

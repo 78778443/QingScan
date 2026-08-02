@@ -112,7 +112,7 @@ class Index extends Common
         ];
         Db::table('code')->where(['id' => $id])->save($array);
         Db::table('fortify')->where(['code_id' => $id])->delete();
-        Db::table('semgrep')->where(['code_id' => $id])->delete();
+        Db::table('scan_code_audit')->where(['code_id' => $id])->delete();
         Db::table('code_webshell')->where(['code_id' => $id])->delete();
         Db::table('code_composer')->where(['code_id' => $id])->delete();
         Db::table('code_python')->where(['code_id' => $id])->delete();
@@ -141,7 +141,7 @@ class Index extends Common
             $data['info']['status'] = '禁用';
         }
         $data['fortify'] = Db::table('fortify')->where($where)->order("id", 'desc')->limit(0, 10)->select()->toArray();
-        $data['semgrep'] = Db::table('semgrep')->where($where)->order("id", 'desc')->limit(0, 10)->select()->toArray();
+        $data['semgrep'] = Db::table('scan_code_audit')->where($where)->order("id", 'desc')->limit(0, 10)->select()->toArray();
         $data['mobsfscan'] = Db::table('mobsfscan')->where($where)->order("id", 'desc')->limit(0, 10)->select()->toArray();
         $data['murphysec'] = Db::table('murphysec')->where($where)->order("id", 'desc')->limit(0, 10)->select()->toArray();
         $data['hema'] = Db::table('code_webshell')->where($where)->order("id", 'desc')->limit(0, 10)->select()->toArray();
@@ -161,7 +161,7 @@ class Index extends Common
 
         if (Db::name('code')->where($map)->delete()) {
             Db::table('fortify')->where(['code_id' => $id])->delete();
-            Db::table('semgrep')->where(['code_id' => $id])->delete();
+            Db::table('scan_code_audit')->where(['code_id' => $id])->delete();
             Db::table('mobsfscan')->where(['code_id' => $id])->delete();
             Db::table('murphysec')->where(['code_id' => $id])->delete();
             Db::table('murphysec_vuln')->where(['code_id' => $id])->delete();
@@ -190,7 +190,7 @@ class Index extends Common
 
         if (Db::name('code')->where($where)->delete()) {
             Db::table('fortify')->where($map)->delete();
-            Db::table('semgrep')->where($map)->delete();
+            Db::table('scan_code_audit')->where($map)->delete();
             Db::table('mobsfscan')->where($map)->delete();
             Db::table('murphysec')->where($map)->delete();
             Db::table('murphysec_vuln')->where($map)->delete();
@@ -229,7 +229,7 @@ class Index extends Common
         ];
         Db::table('code')->where($where)->save($array);
         Db::table('fortify')->where($map)->delete();
-        Db::table('semgrep')->where($map)->delete();
+        Db::table('scan_code_audit')->where($map)->delete();
         Db::table('mobsfscan')->where($map)->delete();
         Db::table('murphysec')->where($map)->delete();
         Db::table('murphysec_vuln')->where($map)->delete();
@@ -399,13 +399,13 @@ class Index extends Common
         $where[] = ['id', '=', $id];
         $map = [];
 
-        $info = Db::table('semgrep')->where($where)->find();
+        $info = Db::table('scan_code_audit')->where($where)->find();
         if (!$info) {
             $this->error('数据不存在');
         }
-        $upper_id = Db::name('semgrep')->where('id', '<', $id)->where($map)->order('id', 'desc')->value('id');
+        $upper_id = Db::name('scan_code_audit')->where('id', '<', $id)->where($map)->order('id', 'desc')->value('id');
         $info['upper_id'] = $upper_id ?: $id;
-        $lower_id = Db::name('semgrep')->where('id', '>', $id)->where($map)->order('id', 'asc')->value('id');
+        $lower_id = Db::name('scan_code_audit')->where('id', '>', $id)->where($map)->order('id', 'asc')->value('id');
         $info['lower_id'] = $lower_id ?: $id;
         $projectInfo = Db::name('code')->where($map)->where('id', $info['code_id'])->find();
         $data['project'] = $projectInfo;
@@ -450,16 +450,16 @@ class Index extends Common
             $where[] = ['check_id', 'like', "%{$search}%"];
         }
 
-        $list = Db::table('semgrep')->where($where)->order('id', 'desc')->paginate(['list_rows' => $pageSize, 'query' => $request->param()]);
+        $list = Db::table('scan_code_audit')->where($where)->order('id', 'desc')->paginate(['list_rows' => $pageSize, 'query' => $request->param()]);
         $data['list'] = $list->items();
         $data['page'] = $list->render();
 
         $projectArr = Db::table('code')->where($map)->select()->toArray();
         $projectArr = array_column($projectArr, null, 'id');
         $data['projectArr'] = $projectArr;
-        $data['CategoryList'] = Db::table('semgrep')->where($map)->group('check_id')->column('check_id');
+        $data['CategoryList'] = Db::table('scan_code_audit')->where($map)->group('check_id')->column('check_id');
 
-        $data['fileList'] = Db::table('semgrep')->where($map)->group('path')->column('path');
+        $data['fileList'] = Db::table('scan_code_audit')->where($map)->group('path')->column('path');
         $data['check_status_list'] = ['未审计', '有效漏洞', '无效漏洞'];
         //查询项目列表
         $data['projectList'] = $this->getMyCodeList();
@@ -471,7 +471,7 @@ class Index extends Common
         $id = $request->param('id');
         $map[] = ['id', '=', $id];
 
-        if (Db::name('semgrep')->where($map)->update(['is_delete' => 1])) {
+        if (Db::name('scan_code_audit')->where($map)->update(['is_delete' => 1])) {
             return redirect($_SERVER['HTTP_REFERER']);
         } else {
             $this->error('删除失败');
@@ -487,7 +487,7 @@ class Index extends Common
         }
         $map[] = ['id', 'in', $ids];
 
-        if (Db::name('semgrep')->where($map)->update(['is_delete' => 1])) {
+        if (Db::name('scan_code_audit')->where($map)->update(['is_delete' => 1])) {
             return $this->apiReturn(1, [], '批量删除成功');
         } else {
             return $this->apiReturn(0, [], '批量删除失败');
@@ -755,7 +755,7 @@ class Index extends Common
                 exit($content);
                 break;
             case 2:
-                $info = Db::name('semgrep')->where('id', $id)->find();
+                $info = Db::name('scan_code_audit')->where('id', $id)->find();
                 if (!$info) {
                     $this->error('数据不存在');
                 }
@@ -945,7 +945,7 @@ class Index extends Common
                 break;
             case 'semgrep':
                 $data['semgrep_scan_time'] = '2000-01-01 00:00:00';
-                Db::table('semgrep')->where(['code_id' => $id])->delete();
+                Db::table('scan_code_audit')->where(['code_id' => $id])->delete();
                 break;
             case 'mobsfscan':
                 $data['mobsfscan_scan_time'] = '2000-01-01 00:00:00';

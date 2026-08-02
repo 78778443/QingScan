@@ -7,16 +7,16 @@ namespace app\model;
 use app\scan\BruteScan;
 use think\facade\Db;
 
-class HydraModel extends BaseModel
+class WeakPassModel extends BaseModel
 {
-    public static function sshScan()
+    public static function weakPassScan()
     {
 
         // 内置弱口令爆破引擎支持的端口（ssh 22 暂不支持）
         $supportPorts = [21, 23, 3306, 6379];
         $defaultPorts = [21, 23, 6379, 3306];
 
-        $where = ['tool' => 'scan_ip_hydra', 'status' => 0];
+        $where = ['tool' => 'scan_ip_weak_pass', 'status' => 0];
         $list = Db::table('task_scan')->where($where)->limit(10)->select()->toArray();
         foreach ($list as $task) {
             Db::table('task_scan')->where(['id' => $task['id']])->update(['status' => 1]);
@@ -28,7 +28,7 @@ class HydraModel extends BaseModel
             $appId = $v['app_id'] ?? 0;
 
             // 项目工具授权检查（仅在有项目归属时校验，不阻塞 asm_ip 全量任务）
-            if (!empty($appId) && !self::checkToolAuth(1, $appId, 'hydra')) {
+            if (!empty($appId) && !self::checkToolAuth(1, $appId, 'weak_pass')) {
                 PluginModel::addScanLog($hostId, __METHOD__, 1, 2);
                 addlog(["项目 {$appId} 未授权 hydra 工具，跳过任务 task_id:{$task['id']}"]);
                 continue;

@@ -18,7 +18,7 @@ class AppDirmapModel extends BaseModel
             Db::table('task_scan')->where(['id' => $task['id']])->update(['status' => 1]);
             $v = json_decode($task['ext_info'], true);
 
-            if (!self::checkToolAuth(1, $v['id'], 'dirmap')) {
+            if (!self::checkToolAuth(1, $v['id'], 'dir_scan')) {
                 continue;
             }
 

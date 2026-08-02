@@ -63,50 +63,50 @@ interface AppRow extends Record<string, unknown> {
 
 // 新增目标时可选的扫描任务（value 为后端内部标识）
 const TOOL_OPTIONS = [
-  { label: '通用漏洞扫描', value: 'nuclei' },
-  { label: '漏洞验证', value: 'vulmap' },
-  { label: 'Web漏洞检测', value: 'xray' },
+  { label: '通用漏洞扫描', value: 'scan_app_gen_vuln' },
+  { label: '漏洞验证', value: 'scan_app_vul_verify' },
+  { label: 'Web漏洞检测', value: 'scan_app_web_vuln' },
   { label: 'AWVS 扫描', value: 'awvs' },
-  { label: 'SQL注入检测', value: 'sqlmap' },
-  { label: '目录扫描', value: 'dirmap' },
-  { label: '指纹识别', value: 'whatweb' },
-  { label: '爬虫抓取', value: 'rad' },
-  { label: '子域名枚举', value: 'oneforall' },
+  { label: 'SQL注入检测', value: 'scan_url_sql_inject' },
+  { label: '目录扫描', value: 'scan_app_dir_scan' },
+  { label: '指纹识别', value: 'scan_app_finger' },
+  { label: '爬虫抓取', value: 'scan_app_crawler' },
+  { label: '子域名枚举', value: 'asm_domain_subdomain' },
   { label: 'FOFA 资产', value: 'fofa' },
-  { label: '弱口令爆破', value: 'hydra' },
+  { label: '弱口令爆破', value: 'scan_ip_weak_pass' },
 ]
 
 // 重新扫描任务（对应后端 app_rescan 的 tools_name）
 const RESCAN_TOOL_OPTIONS = [
-  { label: 'Web漏洞检测', value: 'xray' },
-  { label: '通用漏洞扫描', value: 'nucleiScan' },
-  { label: '漏洞验证', value: 'vulmapPocTest' },
-  { label: 'SQL注入检测', value: 'sqlmapScan' },
-  { label: '目录扫描', value: 'dirmapScan' },
-  { label: '指纹识别', value: 'whatweb' },
-  { label: 'AWVS 扫描', value: 'awvsScan' },
-  { label: '爬虫抓取', value: 'rad' },
-  { label: '子域名枚举', value: 'subdomainScan' },
-  { label: '弱口令爆破', value: 'sshScan' },
-  { label: '基础信息获取', value: 'getBaseInfo' },
+  { label: 'Web漏洞检测', value: 'scan_app_web_vuln' },
+  { label: '通用漏洞扫描', value: 'scan_app_gen_vuln' },
+  { label: '漏洞验证', value: 'scan_app_vul_verify' },
+  { label: 'SQL注入检测', value: 'scan_url_sql_inject' },
+  { label: '目录扫描', value: 'scan_app_dir_scan' },
+  { label: '指纹识别', value: 'scan_app_finger' },
+  { label: 'AWVS 扫描', value: 'scan_app_awvs' },
+  { label: '爬虫抓取', value: 'scan_app_crawler' },
+  { label: '子域名枚举', value: 'asm_domain_subdomain' },
+  { label: '弱口令爆破', value: 'scan_ip_weak_pass' },
+  { label: '基础信息获取', value: 'scan_app_web_info_extra' },
 ]
 
-// 工具结果计数展示顺序与显示名（后端返回 xray_num / sqlmap_num 等内部标识）
+// 扫描结果计数展示顺序与显示名（后端返回 web_vuln_num / sql_inject_num 等字段）
 const TOOL_COUNT_KEYS: [string, string][] = [
-  ['xray', 'Web漏洞'],
-  ['nuclei', '通用漏洞'],
-  ['vulmap', '漏洞验证'],
-  ['sqlmap', 'SQL注入'],
+  ['web_vuln', 'Web漏洞'],
+  ['gen_vuln', '通用漏洞'],
+  ['vul_verify', '漏洞验证'],
+  ['sql_inject', 'SQL注入'],
   ['awvs', 'AWVS'],
-  ['dirmap', '目录'],
-  ['whatweb', '指纹'],
-  ['oneforall', '子域名'],
-  ['rad', '爬虫'],
+  ['dir_scan', '目录'],
+  ['finger', '指纹'],
+  ['subdomain', '子域名'],
+  ['crawler', '爬虫'],
 ]
 
 // ---------- 容错取值工具函数 ----------
 
-// 工具计数：兼容 xray_num / count_xray / xray 三种字段形态
+// 结果计数：兼容 xxx_num / count_xxx / xxx 三种字段形态
 function getToolCount(row: AppRow, tool: string): number {
   const raw = row[`${tool}_num`] ?? row[`count_${tool}`] ?? row[tool] ?? 0
   const n = Number(raw)
@@ -210,7 +210,7 @@ export default function Targets() {
   const [batchDelOpen, setBatchDelOpen] = useState(false)
   const [qingkongTarget, setQingkongTarget] = useState<AppRow | null>(null)
   const [rescanTarget, setRescanTarget] = useState<AppRow | null>(null)
-  const [rescanTool, setRescanTool] = useState('xray')
+  const [rescanTool, setRescanTool] = useState('scan_app_web_vuln')
 
   const invalidateAppList = () => {
     queryClient.invalidateQueries({ queryKey: ['app_list'] })
@@ -441,7 +441,7 @@ export default function Targets() {
               <DropdownMenuLabel>目标操作</DropdownMenuLabel>
               <DropdownMenuItem
                 onClick={() => {
-                  setRescanTool('xray')
+                  setRescanTool('scan_app_web_vuln')
                   setRescanTarget(row)
                 }}
               >

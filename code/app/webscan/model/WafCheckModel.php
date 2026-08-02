@@ -7,13 +7,13 @@ use app\model\PluginModel;
 use app\scan\WafScan;
 use think\facade\Db;
 
-class AppWafw00fModel extends BaseModel
+class WafCheckModel extends BaseModel
 {
-    public static function wafw00fScan()
+    public static function wafCheckScan()
     {
         $list = self::getAppStayScanList('wafw00f_scan_time');
         foreach ($list as $v) {
-            if (!self::checkToolAuth(1,$v['id'],'wafw00f')) {
+            if (!self::checkToolAuth(1,$v['id'],'waf')) {
                 continue;
             }
 
@@ -31,9 +31,9 @@ class AppWafw00fModel extends BaseModel
                 'create_time' => date('Y-m-d H:i:s', time()),
             ];
             if (Db::name('app_wafw00f')->insert($data)) {
-                addlog(["wafw00f扫描结果数据写入成功：".json_encode($data)]);
+                addlog(["WAF识别扫描结果数据写入成功：".json_encode($data)]);
             } else {
-                addlog(["wafw00f扫描结果数据写入失败：".json_encode($data)]);
+                addlog(["WAF识别扫描结果数据写入失败：".json_encode($data)]);
             }
             PluginModel::addScanLog($v['id'], __METHOD__, 0,1);
         }

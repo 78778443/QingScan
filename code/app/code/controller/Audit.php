@@ -7,7 +7,7 @@ use think\facade\Db;
 use think\facade\View;
 use think\Request;
 
-class Semgrep extends Common
+class Audit extends Common
 {
     public function index(Request $request){
         $data = [];

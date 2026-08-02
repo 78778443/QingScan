@@ -8,10 +8,10 @@ use think\facade\Db;
 
 class WebScanModel extends BaseModel
 {
-    public static function rad()
+    public static function crawlerScan()
     {
-        //使用内置爬虫引擎替代外部 rad 工具（基础爬虫，不做 JS 渲染）
-        $where = ['tool' => 'scan_app_rad', 'status' => 0];
+        //使用内置爬虫引擎（基础爬虫，不做 JS 渲染）
+        $where = ['tool' => 'scan_app_crawler', 'status' => 0];
         $list = Db::table('task_scan')->where($where)->limit(10)->select()->toArray();
 
         foreach ($list as $task) {
@@ -24,7 +24,7 @@ class WebScanModel extends BaseModel
 
             $urlList = \app\scan\CrawlerScan::crawl($url);
             if (empty($urlList)) {
-                addlog(["rad扫描失败,未提取到URL", $url]);
+                addlog(["爬虫扫描失败,未提取到URL", $url]);
                 PluginModel::addScanLog($value['id'], __METHOD__, 0, 2);
                 continue;
             }
@@ -34,7 +34,7 @@ class WebScanModel extends BaseModel
                 $val['url'] = rtrim($val['url'], '/');
                 $arr = parse_url($val['url']);
                 if (isset($arr['path']) && in_array_strpos(strtolower($arr['path']), $blackExt) || in_array_strpos(strtolower($val['url']), $blackExt)) {
-                    addlog(["rad扫描跳过无意义URL", $val['url']]);
+                    addlog(["爬虫扫描跳过无意义URL", $val['url']]);
                     continue;
                 }
 
@@ -50,7 +50,7 @@ class WebScanModel extends BaseModel
                     'user_id' => $user_id
                 ];
                 Db::name('asm_urls')->extra('IGNORE')->insert($newData);
-                addlog(["rad扫描数据写入成功", json_encode($newData)]);
+                addlog(["爬虫扫描数据写入成功", json_encode($newData)]);
 
             }
             PluginModel::addScanLog($value['id'], __METHOD__, 0, 1, 1, ['content' => $urlList]);
@@ -60,10 +60,10 @@ class WebScanModel extends BaseModel
     }
 
 
-    public static function xray()
+    public static function webVulnScan()
     {
-        //使用内置漏洞检测引擎替代外部 xray 工具
-        $where = ['tool' => 'scan_app_xray', 'status' => 0];
+        //使用内置漏洞检测引擎
+        $where = ['tool' => 'scan_app_web_vuln', 'status' => 0];
         $list = Db::table('task_scan')->where($where)->limit(10)->select()->toArray();
         foreach ($list as $task) {
             Db::table('task_scan')->where(['id' => $task['id']])->update(['status' => 1]);
@@ -74,7 +74,7 @@ class WebScanModel extends BaseModel
             $result = \app\scan\VulnScan::scan($val['url']);
             if (empty($result)) {
                 PluginModel::addScanLog($val['id'], __METHOD__, 0, 1);
-                addlog(["xray扫描未发现漏洞:{$val['url']}，数据结构：" . json_encode($result)]);
+                addlog(["Web漏洞扫描未发现漏洞:{$val['url']}，数据结构：" . json_encode($result)]);
                 continue;
             }
 
@@ -91,15 +91,15 @@ class WebScanModel extends BaseModel
                     'severity' => $item['severity'],
                     'payload' => $item['payload'],
                     'description' => $item['description'],
-                    'source' => 'xray',
+                    'source' => 'web_vuln',
                     'check_status' => 0,
                     'create_time' => date('Y-m-d H:i:s', time()),
                     'is_delete' => 0,
                 ];
                 Db::name('scan_vuln')->insert($newData);
-                echo "xray添加漏洞结果:" . json_encode($newData, 256) . PHP_EOL;
+                echo "web_vuln添加漏洞结果:" . json_encode($newData, 256) . PHP_EOL;
             }
-            addlog(["xray扫描数据写入成功:" . json_encode($result)]);
+            addlog(["Web漏洞扫描数据写入成功:" . json_encode($result)]);
             PluginModel::addScanLog($val['id'], __METHOD__, 0, 1);
         }
 
@@ -139,10 +139,10 @@ class WebScanModel extends BaseModel
     }
 
 
-    public static function nucleiScan()
+    public static function genVulnScan()
     {
-        //使用内置漏洞检测引擎替代外部 nuclei 工具
-        $where = ['tool' => 'scan_app_nuclei', 'status' => 0];
+        //使用内置漏洞检测引擎
+        $where = ['tool' => 'scan_app_gen_vuln', 'status' => 0];
         $list = Db::table('task_scan')->where($where)->limit(10)->select()->toArray();
         foreach ($list as $task) {
             Db::table('task_scan')->where(['id' => $task['id']])->update(['status' => 1]);
@@ -153,7 +153,7 @@ class WebScanModel extends BaseModel
             $result = \app\scan\VulnScan::scan($v['url']);
             if (empty($result)) {
                 PluginModel::addScanLog($v['id'], __METHOD__, 0, 1);
-                addlog(["nuclei扫描未发现漏洞:{$v['url']}，数据结构：" . json_encode($result)]);
+                addlog(["通用漏洞扫描未发现漏洞:{$v['url']}，数据结构：" . json_encode($result)]);
                 continue;
             }
 
@@ -170,14 +170,14 @@ class WebScanModel extends BaseModel
                     'severity' => $item['severity'],
                     'payload' => $item['payload'],
                     'description' => $item['description'],
-                    'source' => 'nuclei',
+                    'source' => 'gen_vuln',
                     'check_status' => 0,
                     'create_time' => date('Y-m-d H:i:s', time()),
                     'is_delete' => 0,
                 ];
                 Db::name('scan_vuln')->insert($data);
             }
-            addlog(["nuclei扫描数据写入成功:" . json_encode($result)]);
+            addlog(["通用漏洞扫描数据写入成功:" . json_encode($result)]);
             PluginModel::addScanLog($v['id'], __METHOD__, 0, 1);
         }
     }
@@ -209,16 +209,16 @@ class WebScanModel extends BaseModel
         Db::name('app_nuclei')->insert($data);
     }
 
-    public static function vulmapPocTest()
+    public static function vulVerifyScan()
     {
-        //使用内置漏洞检测引擎替代外部 vulmap 工具
-        $where = ['tool' => 'scan_app_vulmap', 'status' => 0];
+        //使用内置漏洞检测引擎
+        $where = ['tool' => 'scan_app_vul_verify', 'status' => 0];
         $list = Db::table('task_scan')->where($where)->limit(10)->select()->toArray();
         foreach ($list as $task) {
             Db::table('task_scan')->where(['id' => $task['id']])->update(['status' => 1]);
             $v = json_decode($task['ext_info'], true);
 
-            if (!self::checkToolAuth(1, $v['id'], 'vulmap')) {
+            if (!self::checkToolAuth(1, $v['id'], 'vul_verify')) {
                 continue;
             }
 
@@ -227,7 +227,7 @@ class WebScanModel extends BaseModel
             $result = \app\scan\VulnScan::scan($v['url']);
             if (empty($result)) {
                 PluginModel::addScanLog($v['id'], __METHOD__, 0, 1);
-                addlog(["vulmap扫描完成,没有发现漏洞，url:{$v['url']}"]);
+                addlog(["漏洞验证扫描完成,没有发现漏洞，url:{$v['url']}"]);
                 continue;
             }
 
@@ -244,7 +244,7 @@ class WebScanModel extends BaseModel
                     'severity' => $item['severity'],
                     'payload' => $item['payload'],
                     'description' => $item['description'],
-                    'source' => 'vulmap',
+                    'source' => 'vul_verify',
                     'check_status' => 0,
                     'create_time' => date('Y-m-d H:i:s', time()),
                     'is_delete' => 0,
@@ -260,10 +260,9 @@ class WebScanModel extends BaseModel
     }
 
 
-    public static function crawlergoScan()
+    public static function spiderScan()
     {
-        //使用内置爬虫引擎替代外部 crawlergo 工具（基础爬虫，不做 JS 渲染；
-        //原 crawlergo 依赖 chrome 浏览器渲染，request 头字段缺失时置空）
+        //使用内置爬虫引擎（基础爬虫，不做 JS 渲染；request 头字段缺失时置空）
         $list = self::getAppStayScanList('crawlergo_scan_time');
         foreach ($list as $val) {
             PluginModel::addScanLog($val['id'], __METHOD__, 0);
@@ -271,7 +270,7 @@ class WebScanModel extends BaseModel
             $urlList = \app\scan\CrawlerScan::crawl($val['url']);
             if (empty($urlList)) {
                 PluginModel::addScanLog($val['id'], __METHOD__, 0, 2);
-                addlog(["crawlergo扫描失败，url:{$val['url']}"]);
+                addlog(["爬虫扫描失败，url:{$val['url']}"]);
                 continue;
             }
             $data = [];
@@ -299,20 +298,20 @@ class WebScanModel extends BaseModel
         }
     }
 
-    public static function dismapScan()
+    public static function assetFingerScan()
     {
-        $where = ['tool' => 'scan_app_dismap', 'status' => 0];
+        $where = ['tool' => 'scan_app_asset_finger', 'status' => 0];
         $list = Db::table('task_scan')->where($where)->limit(10)->select()->toArray();
         foreach ($list as $task) {
             Db::table('task_scan')->where(['id' => $task['id']])->update(['status' => 1]);
             $v = json_decode($task['ext_info'], true);
-            if (!self::checkToolAuth(1, $v['id'], 'dismap')) {
+            if (!self::checkToolAuth(1, $v['id'], 'asset_finger')) {
                 continue;
             }
 
             PluginModel::addScanLog($v['id'], __METHOD__, 0);
 
-            // 使用内置指纹识别引擎，替代外部 dismap 工具
+            // 使用内置指纹识别引擎
             $result = \app\scan\FingerScan::scan($v['url']);
             $data = [
                 'app_id' => $v['id'],

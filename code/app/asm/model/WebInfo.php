@@ -10,14 +10,14 @@ use think\Model;
 /**
  * @mixin \think\Model
  */
-class Finger extends Model
+class WebInfo extends Model
 {
     // 设置当前模型对应的完整数据表名称
     protected $table = 'asm_finger';
 
-    public static function start()
+    public static function webInfoScan()
     {
-        $where = ['tool' => 'scan_app_finger', 'status' => 0];
+        $where = ['tool' => 'scan_app_web_info', 'status' => 0];
         $list = Db::table('task_scan')->where($where)->limit(10)->select()->toArray();
         foreach ($list as $task) {
             Db::table('task_scan')->where(['id' => $task['id']])->update(['status' => 1]);
@@ -48,7 +48,7 @@ class Finger extends Model
         $isHaveData = Db::name('asm_finger')->where(['url' => $baseUrl])->find();
         if ($isHaveData) return $isHaveData;
 
-        // 使用内置指纹识别引擎，替代外部 Finger.py 工具
+        // 使用内置指纹识别引擎
         $result = \app\scan\FingerScan::scan($baseUrl);
 
         // 写入 asm_finger 表（仅写表结构存在的字段）

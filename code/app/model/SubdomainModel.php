@@ -7,12 +7,12 @@ namespace app\model;
 use think\facade\App;
 use think\facade\Db;
 
-class OneForAllModel extends BaseModel
+class SubdomainModel extends BaseModel
 {
-    // OneForAll子域名扫描
+    // 子域名扫描
     public static function subdomainScan()
     {
-        $where = ['tool' => 'asm_domain_oneforall', 'status' => 0];
+        $where = ['tool' => 'asm_domain_subdomain', 'status' => 0];
         $list = Db::table('task_scan')->where($where)->limit(10)->select()->toArray();
         foreach ($list as $task) {
             Db::table('task_scan')->where(['id' => $task['id']])->update(['status' => 1]);

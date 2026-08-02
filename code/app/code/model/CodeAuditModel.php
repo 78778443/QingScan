@@ -15,13 +15,13 @@ use PhpAmqpLib\Message\AMQPMessage;
 use think\facade\Db;
 
 
-class SemgrepModel extends BaseModel
+class CodeAuditModel extends BaseModel
 {
     public static function startScan(string $codePath, string $outPath)
     {
         if (file_exists($outPath)) return false;
-        // 内置代码审计引擎（纯 PHP 实现）替代外部 semgrep 工具：
-        // 递归扫描代码文件并按内置规则库逐行匹配，输出 JSON 结构与 semgrep --json 兼容
+        // 内置代码审计引擎（纯 PHP 实现）：
+        // 递归扫描代码文件并按内置规则库逐行匹配，输出 JSON 结构
         // （check_id/path/start.line/end.line/extra），addDataAll() 解析入库逻辑无需任何改动
         return \app\scan\CodeAudit::scan($codePath, $outPath);
     }

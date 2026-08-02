@@ -24,7 +24,7 @@ class Mobsfscan extends Common
         $data['projectList'] = $this->getMyCodeList();
         $data['fileList'] = [];
         $data['check_status_list'] = ['未审计', '有效漏洞', '无效漏洞'];
-        $data['CategoryList'] = Db::table('semgrep')->where($map)->group('check_id')->column('check_id');
+        $data['CategoryList'] = Db::table('scan_code_audit')->where($map)->group('check_id')->column('check_id');
         return redirect('/web/');
     }
 

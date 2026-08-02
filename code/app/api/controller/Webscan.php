@@ -44,22 +44,25 @@ class Webscan extends BaseController
             $appIds = array_values(array_unique(array_filter(array_column($items, 'id'))));
             $counts = [];
             if ($appIds) {
-                // 各工具结果计数：每个表只查一次，group by app_id
+                // 各扫描结果计数：每个表只查一次，group by app_id
                 $tables = [
-                    'xray' => 'xray',
-                    'sqlmap' => 'urls_sqlmap',
-                    'awvs' => 'awvs_vuln',
-                    'vulmap' => 'app_vulmap',
-                    'nuclei' => 'app_nuclei',
-                    'dirmap' => 'app_dirmap',
-                    'whatweb' => 'app_whatweb',
-                    'oneforall' => 'one_for_all',
-                    'urls' => 'asm_urls',
-                    'host' => 'asm_host',
+                    'web_vuln' => ['scan_vuln', ['source' => 'web_vuln']],
+                    'sql_inject' => ['urls_sqlmap', []],
+                    'awvs' => ['awvs_vuln', []],
+                    'vul_verify' => ['scan_vuln', ['source' => 'vul_verify']],
+                    'gen_vuln' => ['scan_vuln', ['source' => 'gen_vuln']],
+                    'dir_scan' => ['app_dirmap', []],
+                    'finger' => ['app_whatweb', []],
+                    'subdomain' => ['scan_subdomain', []],
+                    'urls' => ['asm_urls', []],
+                    'host' => ['asm_host', []],
                 ];
-                foreach ($tables as $key => $table) {
-                    $rows = Db::table($table)->whereIn('app_id', $appIds)
-                        ->field('app_id,count(*) as num')->group('app_id')->select()->toArray();
+                foreach ($tables as $key => [$table, $extra]) {
+                    $query = Db::table($table)->whereIn('app_id', $appIds);
+                    foreach ($extra as $k => $v) {
+                        $query->where($k, $v);
+                    }
+                    $rows = $query->field('app_id,count(*) as num')->group('app_id')->select()->toArray();
                     $counts[$key] = array_column($rows, 'num', 'app_id');
                 }
             }
@@ -92,14 +95,14 @@ class Webscan extends BaseController
                 $row['cms'] = $infoMap[$id]['cms'] ?? '';
                 $row['server'] = $infoMap[$id]['server'] ?? '';
                 $row['is_waf'] = !empty($wafMap[$id]) ? '是' : '否';
-                $row['xray_num'] = $counts['xray'][$id] ?? 0;
-                $row['sqlmap_num'] = $counts['sqlmap'][$id] ?? 0;
+                $row['web_vuln_num'] = $counts['web_vuln'][$id] ?? 0;
+                $row['sql_inject_num'] = $counts['sql_inject'][$id] ?? 0;
                 $row['awvs_num'] = $counts['awvs'][$id] ?? 0;
-                $row['vulmap_num'] = $counts['vulmap'][$id] ?? 0;
-                $row['nuclei_num'] = $counts['nuclei'][$id] ?? 0;
-                $row['dirmap_num'] = $counts['dirmap'][$id] ?? 0;
-                $row['whatweb_num'] = $counts['whatweb'][$id] ?? 0;
-                $row['oneforall_num'] = $counts['oneforall'][$id] ?? 0;
+                $row['vul_verify_num'] = $counts['vul_verify'][$id] ?? 0;
+                $row['gen_vuln_num'] = $counts['gen_vuln'][$id] ?? 0;
+                $row['dir_scan_num'] = $counts['dir_scan'][$id] ?? 0;
+                $row['finger_num'] = $counts['finger'][$id] ?? 0;
+                $row['subdomain_num'] = $counts['subdomain'][$id] ?? 0;
                 $row['urls_num'] = $counts['urls'][$id] ?? 0;
                 $row['host_num'] = $counts['host'][$id] ?? 0;
             }
@@ -223,68 +226,68 @@ class Webscan extends BaseController
         $data = [];
 
         switch ($tools_name) {
-            case 'rad':
-                $data = ['crawler_time' => '2000-01-01 00:00:00'];
-                Db::table('asm_urls')->where(['app_id' => $id])->delete();
-                Db::table('urls_sqlmap')->where(['app_id' => $id])->delete();
-                break;
-            case 'crawlergoScan':
-                $data = ['crawlergo_scan_time' => '2000-01-01 00:00:00'];
-                Db::table('app_crawlergo')->where(['app_id' => $id])->delete();
-                break;
-            case 'awvsScan':
-                $data = ['awvs_scan_time' => '2000-01-01 00:00:00'];
-                Db::table('awvs_app')->where(['app_id' => $id])->delete();
-                Db::table('awvs_vuln')->where(['app_id' => $id])->delete();
-                break;
-            case 'nucleiScan':
-                $data = ['nuclei_scan_time' => '2000-01-01 00:00:00'];
-                Db::table('app_nuclei')->where(['app_id' => $id])->delete();
-                break;
-            case 'xray':
+            case 'scan_app_web_vuln':
                 $data = ['xray_scan_time' => '2000-01-01 00:00:00'];
-                Db::table('xray')->where(['app_id' => $id])->delete();
+                Db::table('scan_vuln')->where(['app_id' => $id, 'source' => 'web_vuln'])->delete();
                 break;
-            case 'getBaseInfo':
-                $data = ['screenshot_time' => '2000-01-01 00:00:00'];
-                Db::table('app_info')->where(['app_id' => $id])->delete();
+            case 'scan_app_gen_vuln':
+                $data = ['nuclei_scan_time' => '2000-01-01 00:00:00'];
+                Db::table('scan_vuln')->where(['app_id' => $id, 'source' => 'gen_vuln'])->delete();
                 break;
-            case 'whatweb':
+            case 'scan_app_vul_verify':
+                $data = ['vulmap_scan_time' => '2000-01-01 00:00:00'];
+                Db::table('scan_vuln')->where(['app_id' => $id, 'source' => 'vul_verify'])->delete();
+                break;
+            case 'scan_app_dir_scan':
+                $data = ['dirmap_scan_time' => '2000-01-01 00:00:00'];
+                Db::table('app_dirmap')->where(['app_id' => $id])->delete();
+                break;
+            case 'scan_app_finger':
                 $data = ['whatweb_scan_time' => '2000-01-01 00:00:00'];
                 Db::table('app_whatweb')->where(['app_id' => $id])->delete();
                 Db::table('app_whatweb_poc')->where(['app_id' => $id])->delete();
                 break;
-            case 'sqlmapScan':
+            case 'scan_app_asset_finger':
+                $data = ['dismap_scan_time' => '2000-01-01 00:00:00'];
+                Db::table('app_dismap')->where(['app_id' => $id])->delete();
+                break;
+            case 'scan_app_crawler':
+                $data = ['crawler_time' => '2000-01-01 00:00:00'];
+                Db::table('asm_urls')->where(['app_id' => $id])->delete();
+                Db::table('urls_sqlmap')->where(['app_id' => $id])->delete();
+                break;
+            case 'scan_app_spider':
+                $data = ['crawlergo_scan_time' => '2000-01-01 00:00:00'];
+                Db::table('app_crawlergo')->where(['app_id' => $id])->delete();
+                break;
+            case 'scan_app_awvs':
+                $data = ['awvs_scan_time' => '2000-01-01 00:00:00'];
+                Db::table('awvs_app')->where(['app_id' => $id])->delete();
+                Db::table('awvs_vuln')->where(['app_id' => $id])->delete();
+                break;
+            case 'scan_app_web_info_extra':
+                $data = ['screenshot_time' => '2000-01-01 00:00:00'];
+                Db::table('app_info')->where(['app_id' => $id])->delete();
+                break;
+            case 'scan_url_sql_inject':
                 Db::table('asm_urls')->where(['app_id' => $id])->update(['sqlmap_scan_time' => '2000-01-01 00:00:00']);
                 Db::table('urls_sqlmap')->where(['app_id' => $id])->delete();
                 break;
-            case 'subdomainScan':
+            case 'asm_domain_subdomain':
                 $data = ['subdomain_scan_time' => '2000-01-01 00:00:00'];
-                Db::table('one_for_all')->where(['app_id' => $id])->delete();
+                Db::table('scan_subdomain')->where(['app_id' => $id])->delete();
                 break;
-            case 'sshScan':
+            case 'scan_ip_weak_pass':
                 Db::table('asm_host')->where(['app_id' => $id])->update(['hydra_scan_time' => '2000-01-01 00:00:00']);
                 Db::table('host_hydra_scan_details')->where(['app_id' => $id])->delete();
                 break;
-            case 'dirmapScan':
-                $data = ['dirmap_scan_time' => '2000-01-01 00:00:00'];
-                Db::table('app_dirmap')->where(['app_id' => $id])->delete();
-                break;
-            case 'NmapPortScan':
+            case 'asm_ip_port_scan':
                 Db::table('asm_host_port')->where(['app_id' => $id])->update(['service' => null]);
-                break;
-            case 'vulmapPocTest':
-                $data = ['vulmap_scan_time' => '2000-01-01 00:00:00'];
-                Db::table('app_vulmap')->where(['app_id' => $id])->delete();
                 break;
             case 'autoAddHost':
                 Db::table('asm_host')->where(['app_id' => $id])->delete();
                 Db::table('asm_host_port')->where(['app_id' => $id])->delete();
                 Db::table('host_hydra_scan_details')->where(['app_id' => $id])->delete();
-                break;
-            case 'dismapScan':
-                $data = ['dismap_scan_time' => '2000-01-01 00:00:00'];
-                Db::table('app_dismap')->where(['app_id' => $id])->delete();
                 break;
             case 'plugin':
                 Db::table('plugin_scan_log')->where(['app_id' => $id])->delete();
@@ -334,12 +337,12 @@ class Webscan extends BaseController
     }
 
     /**
-     * xray 漏洞列表（scan_vuln 统一漏洞表，source=xray）
+     * Web 漏洞列表（scan_vuln 统一漏洞表，source=web_vuln，原 xray）
      * 筛选：search（url/name like）、app_id、level/severity（low/medium/high/critical）、check_status
      */
-    public function xray_list()
+    public function web_vuln_list()
     {
-        $query = Db::table('scan_vuln')->where('source', '=', 'xray');
+        $query = Db::table('scan_vuln')->where('source', '=', 'web_vuln');
 
         $search = $this->request->param('search');
         if (!empty($search)) {
@@ -381,12 +384,12 @@ class Webscan extends BaseController
     }
 
     /**
-     * nuclei 漏洞列表（scan_vuln 统一漏洞表，source=nuclei）
+     * 通用漏洞列表（scan_vuln 统一漏洞表，source=gen_vuln，原 nuclei）
      * 筛选：search（url/name like）、app_id、level/severity（low/medium/high/critical）、check_status
      */
-    public function nuclei_list()
+    public function gen_vuln_list()
     {
-        $query = Db::table('scan_vuln')->where('source', '=', 'nuclei');
+        $query = Db::table('scan_vuln')->where('source', '=', 'gen_vuln');
 
         $search = $this->request->param('search');
         if (!empty($search)) {
@@ -428,10 +431,10 @@ class Webscan extends BaseController
     }
 
     /**
-     * sqlmap 结果列表（urls_sqlmap 表）
+     * SQL 注入结果列表（urls_sqlmap 表，原 sqlmap）
      * 筛选：search（type/title/payload like）、app_id；行内加 app_name、url
      */
-    public function sqlmap_list()
+    public function sql_inject_list()
     {
         $query = Db::table('urls_sqlmap');
 
@@ -482,12 +485,12 @@ class Webscan extends BaseController
     }
 
     /**
-     * vulmap 漏洞列表（scan_vuln 统一漏洞表，source=vulmap）
+     * 漏洞验证列表（scan_vuln 统一漏洞表，source=vul_verify，原 vulmap）
      * 筛选：search（url/name like）、app_id、level/severity（low/medium/high/critical）、check_status
      */
-    public function vulmap_list()
+    public function vul_verify_list()
     {
-        $query = Db::table('scan_vuln')->where('source', '=', 'vulmap');
+        $query = Db::table('scan_vuln')->where('source', '=', 'vul_verify');
 
         $search = $this->request->param('search');
         if (!empty($search)) {
@@ -546,10 +549,10 @@ class Webscan extends BaseController
     }
 
     /**
-     * dirmap 结果列表（app_dirmap 表）
+     * 目录扫描结果列表（app_dirmap 表，原 dirmap）
      * 筛选：search（url/type like）、app_id；行内加 app_name
      */
-    public function dirmap_list()
+    public function dir_scan_list()
     {
         $query = Db::table('app_dirmap');
 
@@ -578,10 +581,10 @@ class Webscan extends BaseController
     }
 
     /**
-     * whatweb 结果列表（app_whatweb 表）
+     * 指纹识别结果列表（app_whatweb 表，原 whatweb）
      * 筛选：search（target/plugins like）、app_id；行内加 app_name
      */
-    public function whatweb_list()
+    public function finger_list()
     {
         $query = Db::table('app_whatweb');
 
@@ -607,6 +610,38 @@ class Webscan extends BaseController
             }
             return $items;
         });
+    }
+
+    // ---------- 旧接口兼容别名（转发到新功能化命名方法，社区/老前端可继续调用） ----------
+
+    public function xray_list()
+    {
+        return $this->web_vuln_list();
+    }
+
+    public function nuclei_list()
+    {
+        return $this->gen_vuln_list();
+    }
+
+    public function vulmap_list()
+    {
+        return $this->vul_verify_list();
+    }
+
+    public function sqlmap_list()
+    {
+        return $this->sql_inject_list();
+    }
+
+    public function dirmap_list()
+    {
+        return $this->dir_scan_list();
+    }
+
+    public function whatweb_list()
+    {
+        return $this->finger_list();
     }
 
     // ---------- 私有辅助方法 ----------
@@ -674,8 +709,8 @@ class Webscan extends BaseController
         Db::table('app_crawlergo')->where($where)->delete();
         Db::table('app_dirmap')->where($where)->delete();
         Db::table('app_dismap')->where($where)->delete();
-        Db::table('app_nuclei')->where($where)->delete();
-        Db::table('app_vulmap')->where($where)->delete();
+        Db::table('scan_vuln')->where($where)->where('source', 'gen_vuln')->delete();
+        Db::table('scan_vuln')->where($where)->where('source', 'vul_verify')->delete();
         Db::table('app_wafw00f')->where($where)->delete();
         Db::table('app_whatweb')->where($where)->delete();
         Db::table('app_whatweb_poc')->where($where)->delete();
@@ -683,11 +718,11 @@ class Webscan extends BaseController
         Db::table('awvs_app')->where($where)->delete();
         Db::table('awvs_vuln')->where($where)->delete();
         Db::table('host_hydra_scan_details')->where($where)->delete();
-        Db::table('one_for_all')->where($where)->delete();
+        Db::table('scan_subdomain')->where($where)->delete();
         Db::table('plugin_scan_log')->where($where)->delete();
         Db::table('asm_urls')->where($where)->delete();
         Db::table('urls_sqlmap')->where($where)->delete();
-        Db::table('xray')->where($where)->delete();
+        Db::table('scan_vuln')->where($where)->where('source', 'web_vuln')->delete();
         if ($appWhere) {
             Db::table('github_keyword_monitor')->where($appWhere)->delete();
             Db::table('github_keyword_monitor_notice')->where($appWhere)->delete();

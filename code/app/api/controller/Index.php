@@ -19,16 +19,16 @@ class Index extends BaseController
         $appCount = Db::table('app')->where($where)->count();
         // 黑盒rad数量
         $urlsCount = Db::table('asm_urls')->where($where)->count();
-        // 黑盒xray数量（统一漏洞表 scan_vuln）
-        $xrayCount = Db::table('scan_vuln')->where(['source' => 'xray'])->count();
+        // 黑盒Web漏洞数量（统一漏洞表 scan_vuln，source=web_vuln）
+        $xrayCount = Db::table('scan_vuln')->where(['source' => 'web_vuln'])->count();
         // 黑盒sqlmap数量
         $sqlmapCount = Db::table('urls_sqlmap')->where($where)->count();
         // 黑盒awvs数量
         $awvsCount = Db::table('awvs_app')->where($where)->count();
-        // 黑盒vulmap数量（统一漏洞表 scan_vuln）
-        $vulmapCount = Db::table('scan_vuln')->where(['source' => 'vulmap'])->count();
-        // 黑盒nuclei数量（统一漏洞表 scan_vuln）
-        $nucleiCount = Db::table('scan_vuln')->where(['source' => 'nuclei'])->count();
+        // 黑盒漏洞验证数量（统一漏洞表 scan_vuln，source=vul_verify）
+        $vulmapCount = Db::table('scan_vuln')->where(['source' => 'vul_verify'])->count();
+        // 黑盒通用漏洞数量（统一漏洞表 scan_vuln，source=gen_vuln）
+        $nucleiCount = Db::table('scan_vuln')->where(['source' => 'gen_vuln'])->count();
         // 黑盒dirmap数量
         $dirmapCount = Db::table('app_dirmap')->where($where)->count();
         // 黑盒whatweb数量
@@ -67,13 +67,13 @@ class Index extends BaseController
                 "name" => "网站扫描",
                 "value" => $appCount,
                 "subInfo" => [
-                    ["name" => "Web漏洞", "value" => $xrayCount, "href" => "/webscan/xray"],
-                    ["name" => "SQL注入", "value" => $sqlmapCount, "href" => "/webscan/sqlmap"],
+                    ["name" => "Web漏洞", "value" => $xrayCount, "href" => "/webscan/web-vuln"],
+                    ["name" => "SQL注入", "value" => $sqlmapCount, "href" => "/webscan/sql-inject"],
                     ["name" => "awvs", "value" => $awvsCount, "href" => "/webscan/awvs"],
-                    ["name" => "漏洞验证", "value" => $vulmapCount, "href" => "/webscan/vulmap"],
-                    ["name" => "通用漏洞", "value" => $nucleiCount, "href" => "/webscan/nuclei"],
-                    ["name" => "目录扫描", "value" => $dirmapCount, "href" => "/webscan/dirmap"],
-                    ["name" => "指纹识别", "value" => $whatwebCount, "href" => "/webscan/whatweb"],
+                    ["name" => "漏洞验证", "value" => $vulmapCount, "href" => "/webscan/vul-verify"],
+                    ["name" => "通用漏洞", "value" => $nucleiCount, "href" => "/webscan/gen-vuln"],
+                    ["name" => "目录扫描", "value" => $dirmapCount, "href" => "/webscan/dir-scan"],
+                    ["name" => "指纹识别", "value" => $whatwebCount, "href" => "/webscan/finger"],
                 ]
             ],
             [

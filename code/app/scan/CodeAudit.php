@@ -5,9 +5,9 @@ namespace app\scan;
 
 /**
  * 内置代码审计引擎（纯 PHP 实现，自研，不依赖任何外部工具/命令）
- * 替代外部 semgrep 工具：递归扫描代码目录，按内置规则库逐行正则匹配，
- * 输出与 semgrep --json 兼容的结果结构（check_id/path/start.line/end.line/extra），
- * 可直接被 SemgrepModel::addDataAll() 解析入库，任务流程无需改动。
+ * 递归扫描代码目录，按内置规则库逐行正则匹配，
+ * 输出与外部代码审计工具 --json 兼容的结果结构（check_id/path/start.line/end.line/extra），
+ * 可直接被 CodeAuditModel::addDataAll() 解析入库，任务流程无需改动。
  */
 class CodeAudit
 {

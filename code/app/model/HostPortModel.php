@@ -257,9 +257,9 @@ class HostPortModel extends BaseModel
     }
 
 
-    public static function NmapPortScan()
+    public static function portScan()
     {
-        $where = ['tool' => 'asm_ip_nmap', 'status' => 0];
+        $where = ['tool' => 'asm_ip_port_scan', 'status' => 0];
         $list = Db::table('task_scan')->where($where)->limit(10)->select()->toArray();
         foreach ($list as $task) {
             Db::table('task_scan')->where(['id' => $task['id']])->update(['status' => 1]);
@@ -291,7 +291,7 @@ class HostPortModel extends BaseModel
         $endTime = date('Y-m-d', time() - 86400 * 15);
         $hostLit = Db::table('asm_host')->whereTime('port_scan_time', '<=', $endTime)->limit(5)->orderRand()->select()->toArray();
         foreach ($hostLit as $val) {
-            if (!self::checkToolAuth(1, $val['app_id'], 'masscan')) {
+            if (!self::checkToolAuth(1, $val['app_id'], 'port_scan')) {
                 continue;
             }
             PluginModel::addScanLog($val['id'], __METHOD__, 1, 0);

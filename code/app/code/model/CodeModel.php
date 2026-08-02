@@ -291,7 +291,7 @@ class CodeModel extends BaseModel
             ->group('code_id')->select()->toArray();
         $data['fortifyNum'] = array_column($tempArr, 'num', 'code_id');
 
-        $tempArr = Db::table('semgrep')->whereIn('code_id', $codeIdStr)
+        $tempArr = Db::table('scan_code_audit')->whereIn('code_id', $codeIdStr)
             ->field('code_id,count(code_id) as num')
             ->group('code_id')->select()->toArray();
         $data['semgrepNum'] = array_column($tempArr, 'num', 'code_id');

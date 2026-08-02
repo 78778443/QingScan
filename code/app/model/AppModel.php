@@ -240,20 +240,20 @@ class AppModel extends BaseModel
 
 
     // web指纹识别
-    public static function whatweb()
+    public static function fingerScan()
     {
         ini_set('max_execution_time', 0);
-        $where = ['tool' => 'scan_app_whatweb', 'status' => 0];
+        $where = ['tool' => 'scan_app_finger', 'status' => 0];
         $list = Db::table('task_scan')->where($where)->limit(10)->select()->toArray();
         foreach ($list as $task) {
             Db::table('task_scan')->where(['id' => $task['id']])->update(['status' => 1]);
             $v = json_decode($task['ext_info'], true);
-            if (!self::checkToolAuth(1, $v['id'], 'whatweb')) {
+            if (!self::checkToolAuth(1, $v['id'], 'finger')) {
                 continue;
             }
             PluginModel::addScanLog($v['id'], __METHOD__, 0);
 
-            // 使用内置指纹识别引擎，替代外部 whatweb 工具
+            // 使用内置指纹识别引擎
             $result = \app\scan\FingerScan::scan($v['url']);
             // request_config 列是 varchar(255)，只存摘要
             $configSummary = [

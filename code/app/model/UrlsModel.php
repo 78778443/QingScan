@@ -49,15 +49,15 @@ class UrlsModel extends BaseModel
         Db::table(self::$tableName)->extra('IGNORE')->insert($data, 'IGNORE');
     }
 
-    public static function sqlmapScan()
+    public static function sqlInjectScan()
     {
-        $where = ['tool' => 'scan_url_sqlmap', 'status' => 0];
+        $where = ['tool' => 'scan_url_sql_inject', 'status' => 0];
         $list = Db::table('task_scan')->where($where)->limit(10)->select()->toArray();
         foreach ($list as $task) {
             Db::table('task_scan')->where(['id' => $task['id']])->update(['status' => 1]);
             $v = json_decode($task['ext_info'], true);
 
-            if (!self::checkToolAuth(1, $v['app_id'], 'sqlmap')) {
+            if (!self::checkToolAuth(1, $v['app_id'], 'sql_inject')) {
                 continue;
             }
             PluginModel::addScanLog($v['id'], __METHOD__, 3);
@@ -72,13 +72,13 @@ class UrlsModel extends BaseModel
                 continue;
             }
 
-            // 使用内置纯 PHP SQL 注入检测引擎，替代外部 sqlmap 工具
+            // 使用内置纯 PHP SQL 注入检测引擎
             $result = \app\scan\SqlInjectScan::scan($v['url']);
 
             //未发现注入点
             if (empty($result)) {
                 PluginModel::addScanLog($v['id'], __METHOD__, 3, 1);
-                addlog(["sqlmap没有找到注入点", $v['url']]);
+                addlog(["SQL注入检测未发现注入点", $v['url']]);
                 continue;
             }
 
@@ -97,7 +97,7 @@ class UrlsModel extends BaseModel
                 ];
                 Db::name('urls_sqlmap')->insert($bbb);
             }
-            addlog(["sqlmap扫描成功数据已写入：", $v['url']]);
+            addlog(["SQL注入扫描成功数据已写入：", $v['url']]);
             PluginModel::addScanLog($v['id'], __METHOD__, 3, 1);
         }
 

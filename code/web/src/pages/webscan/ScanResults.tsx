@@ -25,7 +25,7 @@ import { cn } from '@/lib/utils'
 
 // ---------- 类型与配置 ----------
 
-type ToolKey = 'xray' | 'nuclei' | 'sqlmap' | 'vulmap' | 'dirmap' | 'whatweb'
+type ToolKey = 'web-vuln' | 'gen-vuln' | 'sql-inject' | 'vul-verify' | 'dir-scan' | 'finger'
 
 type ScanRow = Record<string, unknown>
 
@@ -92,7 +92,7 @@ function SeverityBadge({ value }: { value: unknown }) {
   return <Badge className={severityColor(sev)}>{sev}</Badge>
 }
 
-// xray 审核状态：0 未审核 / 1 有效漏洞 / 2 无效漏洞
+// 漏洞审核状态：0 未审核 / 1 有效漏洞 / 2 无效漏洞
 const CHECK_STATUS_META: Record<string, { label: string; className: string }> = {
   '0': { label: '未审核', className: 'bg-muted text-muted-foreground' },
   '1': { label: '有效漏洞', className: 'bg-green-500/10 text-green-600' },
@@ -187,7 +187,7 @@ function buildColumns(cfg: ToolConfig, openDetail: (row: ScanRow) => void): Colu
   ]
 }
 
-// xray / nuclei / vulmap 已统一到 scan_vuln 表，行字段一致，共用同一套列与详情字段
+// Web漏洞检测 / 通用漏洞扫描 / 漏洞验证 已统一到 scan_vuln 表，行字段一致，共用同一套列与详情字段
 const VULN_DETAIL_FIELDS = [
   'url',
   'name',
@@ -201,9 +201,9 @@ const VULN_DETAIL_FIELDS = [
 
 // 引擎内部标识 → 功能名（淡化工具名）
 const SOURCE_LABELS: Record<string, string> = {
-  xray: 'Web漏洞检测',
-  nuclei: '通用漏洞扫描',
-  vulmap: '漏洞验证',
+  web_vuln: 'Web漏洞检测',
+  gen_vuln: '通用漏洞扫描',
+  vul_verify: '漏洞验证',
 }
 
 function vulnColumns(): Column<ScanRow>[] {
@@ -234,7 +234,7 @@ function vulnColumns(): Column<ScanRow>[] {
   ]
 }
 
-function makeVulnConfig(key: 'xray' | 'nuclei' | 'vulmap', title: string, api: string): ToolConfig {
+function makeVulnConfig(key: 'web-vuln' | 'gen-vuln' | 'vul-verify', title: string, api: string): ToolConfig {
   return {
     key,
     title,
@@ -248,12 +248,12 @@ function makeVulnConfig(key: 'xray' | 'nuclei' | 'vulmap', title: string, api: s
 }
 
 const TOOL_CONFIGS: Record<ToolKey, ToolConfig> = {
-  xray: makeVulnConfig('xray', 'Web漏洞检测', '/api/webscan/xray_list'),
-  nuclei: makeVulnConfig('nuclei', '通用漏洞扫描', '/api/webscan/nuclei_list'),
-  sqlmap: {
-    key: 'sqlmap',
+  'web-vuln': makeVulnConfig('web-vuln', 'Web漏洞检测', '/api/webscan/web_vuln_list'),
+  'gen-vuln': makeVulnConfig('gen-vuln', '通用漏洞扫描', '/api/webscan/gen_vuln_list'),
+  'sql-inject': {
+    key: 'sql-inject',
     title: 'SQL注入检测',
-    api: '/api/webscan/sqlmap_list',
+    api: '/api/webscan/sql_inject_list',
     showLevel: false,
     levelApiValues: {},
     showCheckStatus: false,
@@ -287,11 +287,11 @@ const TOOL_CONFIGS: Record<ToolKey, ToolConfig> = {
       },
     ],
   },
-  vulmap: makeVulnConfig('vulmap', '漏洞验证', '/api/webscan/vulmap_list'),
-  dirmap: {
-    key: 'dirmap',
+  'vul-verify': makeVulnConfig('vul-verify', '漏洞验证', '/api/webscan/vul_verify_list'),
+  'dir-scan': {
+    key: 'dir-scan',
     title: '目录扫描',
-    api: '/api/webscan/dirmap_list',
+    api: '/api/webscan/dir_scan_list',
     showLevel: false,
     levelApiValues: {},
     showCheckStatus: false,
@@ -317,20 +317,20 @@ const TOOL_CONFIGS: Record<ToolKey, ToolConfig> = {
       },
     ],
   },
-  whatweb: {
-    key: 'whatweb',
+  finger: {
+    key: 'finger',
     title: '指纹识别',
-    api: '/api/webscan/whatweb_list',
+    api: '/api/webscan/finger_list',
     showLevel: false,
     levelApiValues: {},
     showCheckStatus: false,
     columns: [
       {
-        key: 'whatweb',
+        key: 'finger',
         header: '指纹结果',
         render: (r) => (
-          <span className="inline-block max-w-96 truncate align-middle text-muted-foreground" title={text(r.whatweb ?? r.result)}>
-            {truncate(text(r.whatweb ?? r.result), 100) || '-'}
+          <span className="inline-block max-w-96 truncate align-middle text-muted-foreground" title={text(r.finger ?? r.result)}>
+            {truncate(text(r.finger ?? r.result), 100) || '-'}
           </span>
         ),
       },

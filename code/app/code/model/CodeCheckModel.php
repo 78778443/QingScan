@@ -264,7 +264,7 @@ class CodeCheckModel extends BaseModel
         $codePath = trim(`pwd`)."/data/codeCheck";
         $fortifyRetDir = trim(`pwd`)."/data/semgrep_result";
 
-        $where = ['tool' => 'code_semgrep', 'status' => 0];
+        $where = ['tool' => 'code_audit', 'status' => 0];
         $list = Db::table('task_scan')->where($where)->limit(10)->select()->toArray();
         foreach ($list as $task) {
             Db::table('task_scan')->where(['id' => $task['id']])->update(['status' => 1]);
@@ -282,10 +282,10 @@ class CodeCheckModel extends BaseModel
 
             //2. 扫描代码
             $outJson = "{$fortifyRetDir}/{$prName}.json";
-            SemgrepModel::startScan($filepath, $outJson);
+            CodeAuditModel::startScan($filepath, $outJson);
 
             //4. 存储结果
-            SemgrepModel::addDataAll($value['id'], $outJson, $value['user_id']);
+            CodeAuditModel::addDataAll($value['id'], $outJson, $value['user_id']);
 
             //5. 更新
             if (file_exists($outJson)) {
