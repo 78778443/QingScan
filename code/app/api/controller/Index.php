@@ -88,7 +88,7 @@ class Index extends BaseController
     }
 
     /**
-     * 统计图表（6 组）
+     * 统计图表（20 组：6 组原有 + 14 组新增大盘图表）
      * 复用 app\controller\Index::tongji() 的图表查询逻辑
      */
     public function tongji()
@@ -125,6 +125,107 @@ class Index extends BaseController
             array_multisort(array_column($serviceCount, 'value'), SORT_DESC, $serviceCount);
             $serviceCount = array_slice($serviceCount, 0, 10);
 
+            // ==================== 新增 14 组（Dashboard 大盘） ====================
+
+            // 1. 漏洞严重级别（scan_vuln GROUP BY severity，无数据补 0）
+            $vulnSeverity = [];
+            $severityCount = Db::table('scan_vuln')->field('severity as name,count(id) as value')->group('severity')->select()->toArray();
+            $severityMap = array_column($severityCount, 'value', 'name');
+            foreach (['low', 'medium', 'high', 'critical'] as $severity) {
+                $vulnSeverity[] = ['name' => $severity, 'value' => (int)($severityMap[$severity] ?? 0)];
+            }
+
+            // 2. 漏洞来源（source 中文映射）
+            $sourceMap = [
+                'web_vuln' => 'Web漏洞检测',
+                'gen_vuln' => '通用漏洞扫描',
+                'vul_verify' => '漏洞验证',
+            ];
+            $vulnSource = [];
+            $sourceCount = Db::table('scan_vuln')->field('source as name,count(id) as value')->group('source')->select()->toArray();
+            foreach ($sourceCount as $row) {
+                $vulnSource[] = ['name' => $sourceMap[$row['name']] ?? $row['name'], 'value' => (int)$row['value']];
+            }
+
+            // 3. 漏洞新增趋势（近 14 天，无数据补 0）
+            $vulnTrend = [];
+            for ($i = 13; $i >= 0; $i--) {
+                $vulnTrendDate = date('Y-m-d', strtotime("-{$i} days"));
+                $vulnTrend[] = [
+                    'name' => date('m-d', strtotime($vulnTrendDate)),
+                    'value' => Db::table('scan_vuln')->whereDay('create_time', $vulnTrendDate)->count('id'),
+                ];
+            }
+
+            // 4. 资产概览（主机/端口/域名/子域名/URL）
+            $assetOverview = [
+                ['name' => '主机', 'value' => Db::table('asm_host')->count()],
+                ['name' => '端口', 'value' => Db::table('asm_host_port')->count()],
+                ['name' => '域名', 'value' => Db::table('asm_domain')->count()],
+                ['name' => '子域名', 'value' => Db::table('scan_subdomain')->count()],
+                ['name' => 'URL', 'value' => Db::table('asm_urls')->count()],
+            ];
+
+            // 6. 端口 Top10
+            $portTop = Db::table('asm_host_port')->field('port as name,count(port) as value')->group('port')->select()->toArray();
+            array_multisort(array_column($portTop, 'value'), SORT_DESC, $portTop);
+            $portTop = array_slice($portTop, 0, 10);
+
+            // 7. 服务分布（service 非空 Top10）
+            $serviceDist = Db::table('asm_host_port')->where('service', '<>', '')->field('service as name,count(service) as value')->group('service')->select()->toArray();
+            array_multisort(array_column($serviceDist, 'value'), SORT_DESC, $serviceDist);
+            $serviceDist = array_slice($serviceDist, 0, 10);
+
+            // 8. 工单状态（中文映射）
+            $statusMap = [
+                'pending_dispatch' => '待派发',
+                'dispatched' => '已派发',
+                'confirmed' => '已确认',
+                'fixed_unconfirmed' => '修复待确认',
+                'fixed_confirmed' => '已修复',
+            ];
+            $workorderStatus = [];
+            $statusCount = Db::table('asm_work_order')->field('status as name,count(id) as value')->group('status')->select()->toArray();
+            foreach ($statusCount as $row) {
+                $workorderStatus[] = ['name' => $statusMap[$row['name']] ?? $row['name'], 'value' => (int)$row['value']];
+            }
+
+            // 10. 工单类型（中文映射）
+            $typeMap = [
+                'vulnerability' => '漏洞',
+                'system' => '系统',
+                'other' => '其他',
+            ];
+            $workorderType = [];
+            $typeCount = Db::table('asm_work_order')->field('type as name,count(id) as value')->group('type')->select()->toArray();
+            foreach ($typeCount as $row) {
+                $workorderType[] = ['name' => $typeMap[$row['name']] ?? $row['name'], 'value' => (int)$row['value']];
+            }
+
+            // 11. 工单趋势（近 14 天，按 created_at，无数据补 0）
+            $workorderTrend = [];
+            for ($i = 13; $i >= 0; $i--) {
+                $workorderTrendDate = date('Y-m-d', strtotime("-{$i} days"));
+                $workorderTrend[] = [
+                    'name' => date('m-d', strtotime($workorderTrendDate)),
+                    'value' => Db::table('asm_work_order')->whereDay('created_at', $workorderTrendDate)->count('id'),
+                ];
+            }
+
+            // 12. 审计规则 Top10
+            $auditRules = Db::table('scan_code_audit')->field('rule_id as name,count(rule_id) as value')->group('rule_id')->select()->toArray();
+            array_multisort(array_column($auditRules, 'value'), SORT_DESC, $auditRules);
+            $auditRules = array_slice($auditRules, 0, 10);
+
+            // 13. 审计级别（error/warning）
+            $auditSeverity = Db::table('scan_code_audit')->field('severity as name,count(severity) as value')->group('severity')->select()->toArray();
+            array_multisort(array_column($auditSeverity, 'value'), SORT_DESC, $auditSeverity);
+
+            // 14. 高危文件 Top10（severity=error 按文件）
+            $auditFiles = Db::table('scan_code_audit')->where('severity', 'error')->field('file as name,count(file) as value')->group('file')->select()->toArray();
+            array_multisort(array_column($auditFiles, 'value'), SORT_DESC, $auditFiles);
+            $auditFiles = array_slice($auditFiles, 0, 10);
+
             $data = [
                 ['key' => 'folderCount', 'data' => $folderCount, 'title' => "审计规则"],
                 ['key' => 'shijianCount', 'data' => $shijianCount, 'title' => "新增统计"],
@@ -132,6 +233,18 @@ class Index extends BaseController
                 ['key' => 'portCount', 'data' => $portCount, 'title' => "端口统计"],
                 ['key' => 'hostCount', 'data' => $hostCount, 'title' => "主机统计"],
                 ['key' => 'serviceCount', 'data' => $serviceCount, 'title' => "服务统计"],
+                ['key' => 'vuln_severity', 'data' => $vulnSeverity, 'title' => "漏洞严重级别"],
+                ['key' => 'vuln_source', 'data' => $vulnSource, 'title' => "漏洞来源"],
+                ['key' => 'vuln_trend', 'data' => $vulnTrend, 'title' => "漏洞新增趋势"],
+                ['key' => 'asset_overview', 'data' => $assetOverview, 'title' => "资产概览"],
+                ['key' => 'port_top', 'data' => $portTop, 'title' => "端口 Top10"],
+                ['key' => 'service_dist', 'data' => $serviceDist, 'title' => "服务分布"],
+                ['key' => 'workorder_status', 'data' => $workorderStatus, 'title' => "工单状态"],
+                ['key' => 'workorder_type', 'data' => $workorderType, 'title' => "工单类型"],
+                ['key' => 'workorder_trend', 'data' => $workorderTrend, 'title' => "工单趋势"],
+                ['key' => 'audit_rules', 'data' => $auditRules, 'title' => "审计规则 Top10"],
+                ['key' => 'audit_severity', 'data' => $auditSeverity, 'title' => "审计级别"],
+                ['key' => 'audit_files', 'data' => $auditFiles, 'title' => "高危文件 Top10"],
             ];
 
             return $this->apiReturn(1, $data);

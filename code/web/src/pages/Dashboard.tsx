@@ -2,11 +2,11 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import * as echarts from 'echarts'
-import { Bug, Code2, Globe, Inbox, Server, ShieldCheck, type LucideIcon } from 'lucide-react'
+import { Bug, Code2, ExternalLink, Globe, Inbox, Server, ShieldCheck, type LucideIcon } from 'lucide-react'
 import { apiGet } from '@/lib/api'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
-import { Card, CardAction, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 
 interface SubInfo {
@@ -21,10 +21,28 @@ interface DashboardGroup {
   subInfo: SubInfo[]
 }
 
+interface DataPoint {
+  name: string
+  value: number
+}
+
 interface TongjiItem {
   key: string
-  data: { name: string; value: number }[]
+  data: DataPoint[]
   title: string
+}
+
+type ChartType = 'bar' | 'hbar' | 'pie' | 'line' | 'gauge'
+
+interface ChartSpec {
+  key: string
+  type: ChartType
+  group: string
+  href?: string
+  /** CHART_COLORS 下标（非自定义配色的图表使用） */
+  color?: number
+  /** 柱状图是否使用渐变 */
+  gradient?: boolean
 }
 
 /** 统计卡图标块：蓝 / 青 / 紫 / 橙 */
@@ -37,60 +55,297 @@ const CARD_META: { icon: LucideIcon; gradient: string; shadow: string }[] = [
 
 const ANIM = 'animate-in fade-in slide-in-from-bottom-2 duration-500'
 
-/** 读取主题 CSS 变量（--chart-1..5），读不到用兜底色 */
-function chartCssVar(name: string, fallback: string): string {
-  if (typeof document === 'undefined') return fallback
-  const value = getComputedStyle(document.documentElement).getPropertyValue(name).trim()
-  return value || fallback
+/** 14 个图表注册表（顺序即展示顺序） */
+const CHART_SPECS: ChartSpec[] = [
+  // 漏洞扫描
+  { key: 'vuln_severity', type: 'pie', group: '漏洞扫描', href: '/webscan/web-vuln' },
+  { key: 'vuln_source', type: 'bar', group: '漏洞扫描', href: '/webscan/web-vuln', color: 0, gradient: true },
+  { key: 'vuln_trend', type: 'line', group: '漏洞扫描', href: '/webscan/web-vuln', color: 0 },
+  // 资产清点
+  { key: 'asset_overview', type: 'bar', group: '资产清点', href: '/asm/host', color: 0, gradient: true },
+  { key: 'port_top', type: 'hbar', group: '资产清点', href: '/asm/port', color: 2 },
+  { key: 'service_dist', type: 'pie', group: '资产清点', href: '/asm/port' },
+  // 工单管理
+  { key: 'workorder_status', type: 'pie', group: '工单管理', href: '/workorder' },
+  { key: 'workorder_type', type: 'bar', group: '工单管理', href: '/workorder', color: 2 },
+  { key: 'workorder_trend', type: 'line', group: '工单管理', href: '/workorder', color: 2 },
+  // 代码审计
+  { key: 'audit_rules', type: 'hbar', group: '代码审计', href: '/code', color: 1 },
+  { key: 'audit_severity', type: 'pie', group: '代码审计', href: '/code' },
+  { key: 'audit_files', type: 'hbar', group: '代码审计', href: '/code', color: 4 },
+]
+
+const CHART_GROUPS = ['漏洞扫描', '资产清点', '工单管理', '代码审计']
+
+const AXIS_LABEL = { color: '#94a3b8', fontSize: 11 }
+const SPLIT_LINE = { lineStyle: { color: '#f1f5f9' } }
+const AXIS_LINE = { lineStyle: { color: '#e2e8f0' } }
+const TOOLTIP_AXIS = {
+  trigger: 'axis',
+  axisPointer: { type: 'shadow' },
+  backgroundColor: 'rgba(255,255,255,0.95)',
+  borderColor: '#e2e8f0',
+  textStyle: { color: '#334155', fontSize: 12 },
+}
+const TOOLTIP_ITEM = {
+  trigger: 'item',
+  backgroundColor: 'rgba(255,255,255,0.95)',
+  borderColor: '#e2e8f0',
+  textStyle: { color: '#334155', fontSize: 12 },
 }
 
-function barOption(
-  data: { name: string; value: number }[],
-  opts: { gradient?: [string, string]; color?: string },
-): echarts.EChartsOption {
-  const itemStyle = opts.gradient
-    ? {
-        borderRadius: [6, 6, 0, 0],
-        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-          { offset: 0, color: opts.gradient[0] },
-          { offset: 1, color: opts.gradient[1] },
-        ]),
-      }
-    : { borderRadius: [6, 6, 0, 0], color: opts.color ?? '#3b82f6' }
+/** oklch(...) → #rrggbb(aa)，zrender 不识别 oklch，须转为 hex */
+function oklchToHex(raw: string): string | null {
+  const m = raw.match(/^oklch\(\s*([\d.]+%?)\s+([\d.]+%?)\s+([\d.]+)(?:\s*\/\s*([\d.]+%?))?\s*\)$/i)
+  if (!m) return null
+  const L = m[1].endsWith('%') ? parseFloat(m[1]) / 100 : parseFloat(m[1])
+  let C = parseFloat(m[2])
+  if (m[2].endsWith('%')) C = (C / 100) * 0.4
+  const H = parseFloat(m[3])
+  const alpha = m[4] ? (m[4].endsWith('%') ? parseFloat(m[4]) / 100 : parseFloat(m[4])) : 1
+  // oklch → oklab → linear sRGB → sRGB
+  const a = C * Math.cos((H * Math.PI) / 180)
+  const b = C * Math.sin((H * Math.PI) / 180)
+  const labL = L + 0.3963377774 * a + 0.2158037573 * b
+  const labM = L - 0.1055613458 * a - 0.0638541728 * b
+  const labS = L - 0.0894841775 * a - 1.291485548 * b
+  const linL = labL ** 3
+  const linM = labM ** 3
+  const linS = labS ** 3
+  const toSrgb = (c: number) => {
+    const v = c <= 0.0031308 ? 12.92 * c : 1.055 * Math.pow(c, 1 / 2.4) - 0.055
+    return Math.round(Math.min(1, Math.max(0, v)) * 255)
+      .toString(16)
+      .padStart(2, '0')
+  }
+  const rgb =
+    toSrgb(4.0767416621 * linL - 3.3077115913 * linM + 0.2309699292 * linS) +
+    toSrgb(-1.2684380046 * linL + 2.6097574011 * linM - 0.3413193965 * linS) +
+    toSrgb(-0.0041960863 * linL - 0.7034186147 * linM + 1.707614701 * linS)
+  if (alpha >= 1) return `#${rgb}`
+  const aHex = Math.round(Math.min(1, Math.max(0, alpha)) * 255)
+    .toString(16)
+    .padStart(2, '0')
+  return `#${rgb}${aHex}`
+}
+
+/** 读取主题 CSS 变量（--chart-1..5），转成 echarts 可用的颜色 */
+function cssVar(name: string, fallback: string): string {
+  if (typeof document === 'undefined') return fallback
+  const raw = getComputedStyle(document.documentElement).getPropertyValue(name).trim()
+  if (!raw) return fallback
+  return oklchToHex(raw) ?? raw
+}
+
+/** 主题色板：监听 .dark 类变化，深色模式切换时重新读取 CSS 变量 */
+function useChartColors(): string[] {
+  const [tick, setTick] = useState(0)
+  useEffect(() => {
+    const el = document.documentElement
+    const observer = new MutationObserver(() => setTick((n) => n + 1))
+    observer.observe(el, { attributes: true, attributeFilter: ['class'] })
+    return () => observer.disconnect()
+  }, [])
+  return useMemo(
+    () => [
+      cssVar('--chart-1', '#3b82f6'),
+      cssVar('--chart-2', '#10b981'),
+      cssVar('--chart-3', '#8b5cf6'),
+      cssVar('--chart-4', '#f59e0b'),
+      cssVar('--chart-5', '#ef4444'),
+    ],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [tick],
+  )
+}
+
+/** 漏洞严重级别配色：low=绿 medium=黄 high=橙 critical=红 */
+function severityColor(name: string, colors: string[]): string {
+  const n = name.toLowerCase()
+  if (n.includes('low') || n.includes('低')) return colors[1]
+  if (n.includes('medium') || n.includes('中')) return colors[3]
+  if (n.includes('critical') || n.includes('严重') || n.includes('致命')) return '#dc2626'
+  if (n.includes('high') || n.includes('高')) return colors[4]
+  return colors[0]
+}
+
+/** 审计级别配色：error=红 warning=黄 */
+function auditSeverityColor(name: string, colors: string[]): string {
+  const n = name.toLowerCase()
+  if (n.includes('error') || n.includes('错误') || n.includes('危险')) return colors[4]
+  if (n.includes('warn') || n.includes('警告')) return colors[3]
+  return colors[2]
+}
+
+function gradientOf(color: string): echarts.graphic.LinearGradient {
+  return new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+    { offset: 0, color },
+    { offset: 1, color: `${color}44` },
+  ])
+}
+
+function barOption(data: DataPoint[], color: string, gradient = false): any {
   return {
-    tooltip: {
-      trigger: 'axis',
-      axisPointer: { type: 'shadow' },
-      backgroundColor: 'rgba(255,255,255,0.95)',
-      borderColor: '#e2e8f0',
-      textStyle: { color: '#334155', fontSize: 12 },
-    },
+    tooltip: TOOLTIP_AXIS,
     grid: { left: 8, right: 16, top: 32, bottom: 8, containLabel: true },
     xAxis: {
       type: 'category',
       data: data.map((d) => d.name),
-      axisLine: { lineStyle: { color: '#e2e8f0' } },
+      axisLine: AXIS_LINE,
       axisTick: { show: false },
-      axisLabel: { color: '#94a3b8', fontSize: 11 },
+      axisLabel: AXIS_LABEL,
     },
-    yAxis: {
-      type: 'value',
-      splitLine: { lineStyle: { color: '#f1f5f9' } },
-      axisLabel: { color: '#94a3b8', fontSize: 11 },
-    },
+    yAxis: { type: 'value', splitLine: SPLIT_LINE, axisLabel: AXIS_LABEL },
     series: [
       {
         type: 'bar',
         data: data.map((d) => d.value),
         barMaxWidth: 32,
-        itemStyle,
+        itemStyle: {
+          borderRadius: [4, 4, 0, 0],
+          color: gradient ? gradientOf(color) : color,
+        },
         emphasis: { itemStyle: { opacity: 0.85 } },
       },
     ],
   }
 }
 
-function EChart({ option, className }: { option: echarts.EChartsOption; className?: string }) {
+function hbarOption(data: DataPoint[], color: string): any {
+  return {
+    tooltip: TOOLTIP_AXIS,
+    grid: { left: 8, right: 16, top: 8, bottom: 8, containLabel: true },
+    xAxis: { type: 'value', splitLine: SPLIT_LINE, axisLabel: AXIS_LABEL },
+    yAxis: {
+      type: 'category',
+      inverse: true,
+      data: data.map((d) => d.name),
+      axisLine: { show: false },
+      axisTick: { show: false },
+      axisLabel: AXIS_LABEL,
+    },
+    series: [
+      {
+        type: 'bar',
+        data: data.map((d) => d.value),
+        barMaxWidth: 14,
+        itemStyle: { borderRadius: [0, 4, 4, 0], color },
+      },
+    ],
+  }
+}
+
+function lineOption(data: DataPoint[], color: string): any {
+  return {
+    tooltip: TOOLTIP_AXIS,
+    grid: { left: 8, right: 16, top: 32, bottom: 8, containLabel: true },
+    xAxis: {
+      type: 'category',
+      boundaryGap: false,
+      data: data.map((d) => d.name),
+      axisLine: AXIS_LINE,
+      axisTick: { show: false },
+      axisLabel: AXIS_LABEL,
+    },
+    yAxis: { type: 'value', splitLine: SPLIT_LINE, axisLabel: AXIS_LABEL },
+    series: [
+      {
+        type: 'line',
+        smooth: true,
+        data: data.map((d) => d.value),
+        symbol: 'circle',
+        symbolSize: 6,
+        lineStyle: { width: 2, color },
+        itemStyle: { color },
+        areaStyle: {
+          color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+            { offset: 0, color: `${color}66` },
+            { offset: 1, color: `${color}00` },
+          ]),
+        },
+      },
+    ],
+  }
+}
+
+function pieOption(
+  data: DataPoint[],
+  colors: string[],
+  colorFor?: (name: string, colors: string[]) => string,
+): any {
+  const colorOf = (name: string, i: number) =>
+    colorFor ? colorFor(name, colors) : colors[i % colors.length]
+  return {
+    tooltip: { ...TOOLTIP_ITEM, formatter: '{b}: {c} ({d}%)' },
+    legend: {
+      bottom: 0,
+      icon: 'circle',
+      itemWidth: 8,
+      itemHeight: 8,
+      textStyle: { color: '#94a3b8', fontSize: 11 },
+    },
+    series: [
+      {
+        type: 'pie',
+        radius: ['45%', '70%'],
+        center: ['50%', '44%'],
+        avoidLabelOverlap: true,
+        itemStyle: { borderRadius: 4, borderWidth: 2, borderColor: 'transparent' },
+        label: { show: true, formatter: '{b}: {d}%', color: '#94a3b8', fontSize: 11 },
+        labelLine: { length: 8, length2: 8, lineStyle: { color: '#94a3b8' } },
+        data: data.map((d, i) => ({
+          name: d.name,
+          value: d.value,
+          itemStyle: { color: colorOf(d.name, i) },
+        })),
+      },
+    ],
+  }
+}
+
+function gaugeOption(data: DataPoint[]): any {
+  const first = data[0]
+  return {
+    series: [
+      {
+        type: 'gauge',
+        min: 0,
+        max: Math.max(100, ...data.map((d) => d.value)),
+        progress: { show: true, width: 8 },
+        axisLine: { lineStyle: { width: 8 } },
+        axisTick: { show: false },
+        splitLine: { length: 6 },
+        axisLabel: { fontSize: 9, color: '#94a3b8' },
+        detail: { fontSize: 14, color: '#334155' },
+        data: first ? [{ value: first.value, name: first.name }] : [],
+      },
+    ],
+  }
+}
+
+function buildOption(
+  type: ChartType,
+  data: DataPoint[],
+  colors: string[],
+  colorFor?: (name: string, colors: string[]) => string,
+  gradient = false,
+): any {
+  switch (type) {
+    case 'hbar':
+      return hbarOption(data, colors[0])
+    case 'pie':
+      return pieOption(data, colors, colorFor)
+    case 'line':
+      return lineOption(data, colors[0])
+    case 'gauge':
+      return gaugeOption(data)
+    case 'bar':
+    default:
+      return barOption(data, colors[0], gradient)
+  }
+}
+
+function EChart({ option, className }: { option: any; className?: string }) {
   const containerRef = useRef<HTMLDivElement>(null)
   const chartRef = useRef<echarts.ECharts | null>(null)
 
@@ -112,7 +367,7 @@ function EChart({ option, className }: { option: echarts.EChartsOption; classNam
     chartRef.current?.setOption(option, true)
   }, [option])
 
-  return <div ref={containerRef} className={cn('h-[300px] w-full', className)} />
+  return <div ref={containerRef} className={cn('h-[240px] w-full', className)} />
 }
 
 function EmptyState({ className }: { className?: string }) {
@@ -129,23 +384,67 @@ function EmptyState({ className }: { className?: string }) {
   )
 }
 
-function MiniChart({
+interface ChartCardProps {
+  title: string
+  data: DataPoint[] | undefined
+  type: ChartType
+  href?: string
+  /** CHART_COLORS 下标，未指定时用第一个 */
+  color?: number
+  /** 柱状图是否使用渐变 */
+  gradient?: boolean
+  /** 饼图自定义配色（如漏洞严重级别） */
+  colorFor?: (name: string, colors: string[]) => string
+  colors: string[]
+  loading: boolean
+  /** 入场动画延迟（ms） */
+  delay?: number
+}
+
+function ChartCard({
   title,
   data,
-  color,
-}: {
-  title: string
-  data: { name: string; value: number }[] | undefined
-  color: string
-}) {
-  const option = useMemo(() => barOption(data ?? [], { color }), [data, color])
+  type,
+  href,
+  color = 0,
+  gradient = false,
+  colorFor,
+  colors,
+  loading,
+  delay = 0,
+}: ChartCardProps) {
+  const navigate = useNavigate()
+  const points = useMemo(
+    () => (data ?? []).map((d) => ({ name: d.name, value: Number(d.value) || 0 })),
+    [data],
+  )
+  const option = useMemo(
+    () => buildOption(type, points, [colors[color], ...colors.filter((_, i) => i !== color)], colorFor, gradient),
+    [type, points, colors, color, colorFor, gradient],
+  )
   return (
-    <div>
-      <p className="mb-1 text-xs font-medium text-muted-foreground">{title}</p>
-      {data && data.length > 0 ? (
-        <EChart option={option} className="h-[130px] w-full" />
+    <div
+      className={cn(
+        'flex flex-col gap-3 rounded-lg border bg-card p-4 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md animate-in fade-in slide-in-from-bottom-2 duration-500',
+        href && 'cursor-pointer',
+      )}
+      style={delay > 0 ? { animationDelay: `${delay}ms` } : undefined}
+      onClick={() => href && navigate(href)}
+      role={href ? 'button' : undefined}
+      title={href ? '点击查看详情' : undefined}
+    >
+      <div className="flex items-center justify-between gap-2">
+        <p className="truncate text-sm font-medium">{title}</p>
+        {href && (
+          <ExternalLink className="size-3.5 shrink-0 text-muted-foreground transition-colors group-hover:text-foreground" />
+        )}
+      </div>
+      {loading ? (
+        <Skeleton className="h-[240px] w-full" />
+      ) : points.length > 0 ? (
+        <EChart option={option} />
       ) : (
-        <EmptyState className="h-[130px]" />
+        <EmptyState className="h-[240px]" />
       )}
     </div>
   )
@@ -153,7 +452,7 @@ function MiniChart({
 
 export default function Dashboard() {
   const navigate = useNavigate()
-  const [activeKey, setActiveKey] = useState('portCount')
+  const colors = useChartColors()
 
   const { data: groups, isLoading: groupsLoading, isError: groupsError, refetch: refetchGroups } = useQuery({
     queryKey: ['index-dashboard'],
@@ -168,36 +467,19 @@ export default function Dashboard() {
   const loading = groupsLoading || tongjiLoading
   const failed = groupsError || tongjiError
 
-  // 图表列表（忽略 zanzhu）
-  const chartList = useMemo(() => (tongji ?? []).filter((t) => t.key !== 'zanzhu'), [tongji])
-  const activeChart = chartList.find((t) => t.key === activeKey) ?? chartList[0]
-  const hostChart = tongji?.find((t) => t.key === 'hostCount')
-  const serviceChart = tongji?.find((t) => t.key === 'serviceCount')
+  // 按 key 索引统计接口数据，图表区按注册表取用（未知 key 自动忽略）
+  const tongjiMap = useMemo(() => {
+    const map = new Map<string, TongjiItem>()
+    for (const t of tongji ?? []) {
+      if (t && t.key) map.set(t.key, t)
+    }
+    return map
+  }, [tongji])
 
   const assetTotal = useMemo(() => (groups ?? []).reduce((sum, g) => sum + (g.value ?? 0), 0), [groups])
   const scanTotal = useMemo(
     () => (groups ?? []).reduce((sum, g) => sum + (g.subInfo ?? []).reduce((s, i) => s + (i.value ?? 0), 0), 0),
     [groups],
-  )
-
-  // 主题色（CSS 变量，读不到兜底 #3b82f6）
-  const chartColors = useMemo(
-    () => ({
-      c1: chartCssVar('--chart-1', '#3b82f6'),
-      c2: chartCssVar('--chart-2', '#3b82f6'),
-      c3: chartCssVar('--chart-3', '#3b82f6'),
-      c4: chartCssVar('--chart-4', '#3b82f6'),
-      c5: chartCssVar('--chart-5', '#3b82f6'),
-    }),
-    [],
-  )
-
-  const activeOption = useMemo(
-    () =>
-      activeChart && activeChart.data.length > 0
-        ? barOption(activeChart.data, { gradient: ['#60a5fa', '#3b82f6'] })
-        : null,
-    [activeChart],
   )
 
   const welcomeStats = useMemo(
@@ -323,69 +605,39 @@ export default function Dashboard() {
             })}
       </section>
 
-      {/* 图表区 */}
-      <section className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-        {/* 左侧：可切换图表 */}
-        <Card className={cn('rounded-xl border shadow-sm', ANIM)}>
-          <CardHeader>
-            <CardTitle>{activeChart?.title ?? '统计图表'}</CardTitle>
-            <CardAction>
-              <div className="flex flex-wrap gap-1">
-                {chartList.map((t) => (
-                  <Button
-                    key={t.key}
-                    size="xs"
-                    variant={t.key === activeChart?.key ? 'default' : 'ghost'}
-                    className="rounded-full px-2.5"
-                    onClick={() => setActiveKey(t.key)}
-                  >
-                    {t.title}
-                  </Button>
-                ))}
-              </div>
-            </CardAction>
-          </CardHeader>
-          <CardContent>
-            {loading ? (
-              <Skeleton className="h-[300px] w-full" />
-            ) : activeOption ? (
-              <EChart option={activeOption} />
-            ) : (
-              <EmptyState className="h-[300px]" />
-            )}
-          </CardContent>
-        </Card>
-
-        {/* 右侧：主机统计 + 服务统计 */}
-        <Card
-          className="rounded-xl border shadow-sm animate-in fade-in slide-in-from-bottom-2 duration-500"
-          style={{ animationDelay: '80ms' }}
-        >
-          <CardHeader>
-            <CardTitle>主机与服务统计</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-5">
-            {loading ? (
-              <>
-                <Skeleton className="h-[150px] w-full" />
-                <Skeleton className="h-[150px] w-full" />
-              </>
-            ) : (
-              <>
-                <MiniChart
-                  title={hostChart?.title ?? '主机统计'}
-                  data={hostChart?.data}
-                  color={chartColors.c1}
-                />
-                <MiniChart
-                  title={serviceChart?.title ?? '服务统计'}
-                  data={serviceChart?.data}
-                  color={chartColors.c2}
-                />
-              </>
-            )}
-          </CardContent>
-        </Card>
+      {/* 图表区：14 个图表按维度分组，3 列网格 */}
+      <section className="space-y-6">
+        {CHART_GROUPS.map((group) => (
+          <div key={group} className="space-y-3">
+            <h3 className="text-xs font-medium text-muted-foreground">{group}</h3>
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {CHART_SPECS.filter((spec) => spec.group === group).map((spec, i) => {
+                const item = tongjiMap.get(spec.key)
+                return (
+                  <ChartCard
+                    key={spec.key}
+                    title={item?.title ?? spec.key}
+                    data={item?.data}
+                    type={spec.type}
+                    href={spec.href}
+                    color={spec.color}
+                    gradient={spec.gradient}
+                    colors={colors}
+                    colorFor={
+                      spec.key === 'vuln_severity'
+                        ? severityColor
+                        : spec.key === 'audit_severity'
+                          ? auditSeverityColor
+                          : undefined
+                    }
+                    loading={tongjiLoading}
+                    delay={i * 50}
+                  />
+                )
+              })}
+            </div>
+          </div>
+        ))}
       </section>
     </div>
   )

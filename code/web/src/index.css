@@ -8,6 +8,12 @@
 @theme inline {
     --font-sans: 'PingFang SC', 'Microsoft YaHei', -apple-system, 'Segoe UI', sans-serif;
     --font-mono: 'JetBrains Mono Variable', 'SFMono-Regular', Consolas, monospace;
+    /* 语义配色体系：主色调 / 次色调 / 浅色调 / 加强色 / 警示色 */
+    --color-brand: var(--brand);
+    --color-brand-secondary: var(--brand-secondary);
+    --color-brand-light: var(--brand-light);
+    --color-brand-strong: var(--brand-strong);
+    --color-brand-warning: var(--brand-warning);
     --color-sidebar-ring: var(--sidebar-ring);
     --color-sidebar-border: var(--sidebar-border);
     --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -50,6 +56,11 @@
 
 /* QingScan 蓝色系主题 */
 :root {
+    --brand: oklch(0.546 0.245 262.881);
+    --brand-secondary: oklch(0.696 0.17 162.48);
+    --brand-light: oklch(0.936 0.032 257.717);
+    --brand-strong: oklch(0.488 0.243 264.376);
+    --brand-warning: oklch(0.769 0.188 70.08);
     --background: oklch(0.985 0.002 247.839);
     --foreground: oklch(0.21 0.034 264.665);
     --card: oklch(1 0 0);
@@ -85,6 +96,11 @@
 }
 
 .dark {
+    --brand: oklch(0.67 0.17 250.89);
+    --brand-secondary: oklch(0.696 0.17 162.48);
+    --brand-light: oklch(0.279 0.041 260.031);
+    --brand-strong: oklch(0.769 0.188 70.08);
+    --brand-warning: oklch(0.769 0.188 70.08);
     --background: oklch(0.192 0.031 264.652);
     --foreground: oklch(0.985 0.002 247.839);
     --card: oklch(0.224 0.034 264.463);
