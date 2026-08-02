@@ -59,7 +59,7 @@ foreach ($staticDirs as $dir) {
 // 已删除控制器的老路径（vulnerable/plugin/backup 等）一律 fallback 到 SPA。
 $lastSeg = substr($path, (int)strrpos($path, '/') + 1);
 if (strpos($path, '.') === false) {
-    $spaPrefixes = ['/webscan', '/asm', '/result', '/task', '/code', '/workorder'];
+    $spaPrefixes = ['/webscan', '/asm', '/result', '/task', '/code', '/workorder', '/rules'];
     // login/index、index/index 仍由存活控制器 302 重定向，其余 /index 结尾老 URL 一律 fallback
     if ($lastSeg === 'index' && (strpos($path, '/login') === 0 || strpos($path, '/index') === 0)) {
         $spaPrefixes = [];
