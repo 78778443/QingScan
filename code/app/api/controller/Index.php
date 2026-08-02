@@ -67,13 +67,13 @@ class Index extends BaseController
                 "name" => "网站扫描",
                 "value" => $appCount,
                 "subInfo" => [
-                    ["name" => "xray", "value" => $xrayCount, "href" => "/webscan/xray"],
-                    ["name" => "sqlmap", "value" => $sqlmapCount, "href" => "/webscan/sqlmap"],
+                    ["name" => "Web漏洞", "value" => $xrayCount, "href" => "/webscan/xray"],
+                    ["name" => "SQL注入", "value" => $sqlmapCount, "href" => "/webscan/sqlmap"],
                     ["name" => "awvs", "value" => $awvsCount, "href" => "/webscan/awvs"],
-                    ["name" => "vulmap", "value" => $vulmapCount, "href" => "/webscan/vulmap"],
-                    ["name" => "nuclei", "value" => $nucleiCount, "href" => "/webscan/nuclei"],
-                    ["name" => "dirmap", "value" => $dirmapCount, "href" => "/webscan/dirmap"],
-                    ["name" => "whatweb", "value" => $whatwebCount, "href" => "/webscan/whatweb"],
+                    ["name" => "漏洞验证", "value" => $vulmapCount, "href" => "/webscan/vulmap"],
+                    ["name" => "通用漏洞", "value" => $nucleiCount, "href" => "/webscan/nuclei"],
+                    ["name" => "目录扫描", "value" => $dirmapCount, "href" => "/webscan/dirmap"],
+                    ["name" => "指纹识别", "value" => $whatwebCount, "href" => "/webscan/whatweb"],
                 ]
             ],
             [
@@ -83,7 +83,7 @@ class Index extends BaseController
                     ["name" => "主机", "value" => $hostCount, "href" => "/asm/host"],
                     ["name" => "子域名", "value" => $oneforallCount, "href" => "/asm/subdomain"],
                     ["name" => "URL", "value" => $urlsCount, "href" => "/asm/url"],
-                    ["name" => "port", "value" => $portCount, "href" => "/asm/port"],
+                    ["name" => "端口", "value" => $portCount, "href" => "/asm/port"],
                     ["name" => "中间件", "value" => $serviceCount, "href" => "/asm/port"],
                     ["name" => "未授权漏洞", "value" => $unauthorizedCount, "href" => "/result/unauthorized"],
                 ]
@@ -92,9 +92,9 @@ class Index extends BaseController
                 "name" => "白盒审计",
                 "value" => $codeCount,
                 "subInfo" => [
-                    ["name" => "fortify", "value" => $fortifyCount, "href" => "/code"],
-                    ["name" => "semgrep", "value" => $semgrepCount, "href" => "/code"],
-                    ["name" => "mobsfscan", "value" => $mobsfscanCount, "href" => "/code"],
+                    ["name" => "代码审计", "value" => $fortifyCount, "href" => "/code"],
+                    ["name" => "规则扫描", "value" => $semgrepCount, "href" => "/code"],
+                    ["name" => "移动应用", "value" => $mobsfscanCount, "href" => "/code"],
                     ["name" => "软件依赖", "value" => $murphysecCount, "href" => "/code"],
                     ["name" => "webshell", "value" => $hemaCount, "href" => "/code"],
                 ]

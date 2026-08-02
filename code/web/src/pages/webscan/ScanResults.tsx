@@ -220,7 +220,7 @@ function buildColumns(cfg: ToolConfig, openDetail: (row: ScanRow) => void): Colu
 const TOOL_CONFIGS: Record<ToolKey, ToolConfig> = {
   xray: {
     key: 'xray',
-    title: 'XRay 漏洞',
+    title: 'Web漏洞检测',
     api: '/api/webscan/xray_list',
     showLevel: true,
     levelApiValues: { Low: 'Low', Medium: 'Medium', High: 'High', Critical: 'Critical' },
@@ -258,7 +258,7 @@ const TOOL_CONFIGS: Record<ToolKey, ToolConfig> = {
   },
   nuclei: {
     key: 'nuclei',
-    title: 'Nuclei 漏洞',
+    title: '通用漏洞扫描',
     api: '/api/webscan/nuclei_list',
     showLevel: true,
     // 后端按 severity 精确匹配（存储为小写）
@@ -292,7 +292,7 @@ const TOOL_CONFIGS: Record<ToolKey, ToolConfig> = {
   },
   sqlmap: {
     key: 'sqlmap',
-    title: 'Sqlmap 注入',
+    title: 'SQL注入检测',
     api: '/api/webscan/sqlmap_list',
     showLevel: false,
     levelApiValues: {},
@@ -329,7 +329,7 @@ const TOOL_CONFIGS: Record<ToolKey, ToolConfig> = {
   },
   vulmap: {
     key: 'vulmap',
-    title: 'Vulmap 漏洞',
+    title: '漏洞验证',
     api: '/api/webscan/vulmap_list',
     showLevel: true,
     levelApiValues: { Low: 'low', Medium: 'medium', High: 'high', Critical: 'critical' },
@@ -362,7 +362,7 @@ const TOOL_CONFIGS: Record<ToolKey, ToolConfig> = {
   },
   dirmap: {
     key: 'dirmap',
-    title: 'Dirmap 目录',
+    title: '目录扫描',
     api: '/api/webscan/dirmap_list',
     showLevel: false,
     levelApiValues: {},
@@ -391,7 +391,7 @@ const TOOL_CONFIGS: Record<ToolKey, ToolConfig> = {
   },
   whatweb: {
     key: 'whatweb',
-    title: 'WhatWeb 指纹',
+    title: '指纹识别',
     api: '/api/webscan/whatweb_list',
     showLevel: false,
     levelApiValues: {},
