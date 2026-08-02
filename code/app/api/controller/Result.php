@@ -14,11 +14,11 @@ class Result extends BaseController
     public function plugin_list()
     {
         $query = Db::table('plugin_scan_log')->alias('a')
-            ->field('a.*,b.name,b.result_file');
+            ->field('a.*');
 
         $search = $this->request->param('search');
         if (!empty($search)) {
-            $query->where('a.content|b.name', 'like', "%{$search}%");
+            $query->where('a.content|a.plugin_name', 'like', "%{$search}%");
         }
         $plugin_id = $this->request->param('plugin_id');
         if (!empty($plugin_id)) {
