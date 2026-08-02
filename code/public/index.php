@@ -54,6 +54,23 @@ foreach ($staticDirs as $dir) {
     }
 }
 
+// SPA 前端路由 fallback：不带 /web 前缀访问前端路由（如 /webscan/nuclei、/asm/host）时也返回 SPA。
+// 以 /index 结尾的老版 URL 不拦截，仍走控制器 302 重定向。
+$lastSeg = substr($path, (int)strrpos($path, '/') + 1);
+if ($lastSeg !== 'index' && strpos($path, '.') === false) {
+    $spaPrefixes = ['/webscan', '/asm', '/result', '/task', '/code'];
+    foreach ($spaPrefixes as $prefix) {
+        if ($path === $prefix || strpos($path, $prefix . '/') === 0) {
+            $indexFile = $publicDir . '/web/index.html';
+            if (is_file($indexFile)) {
+                header('Content-Type: text/html; charset=utf-8');
+                readfile($indexFile);
+                exit;
+            }
+        }
+    }
+}
+
 require __DIR__ . '/../vendor/autoload.php';
 
 // 执行HTTP应用并响应
