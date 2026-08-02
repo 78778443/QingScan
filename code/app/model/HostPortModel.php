@@ -12,6 +12,7 @@ namespace app\model;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Message\AMQPMessage;
 use QingPHP\Lib\MysqlLib;
+use app\scan\PortScan;
 use think\facade\Db;
 
 class HostPortModel extends BaseModel
@@ -258,9 +259,6 @@ class HostPortModel extends BaseModel
 
     public static function NmapPortScan()
     {
-        $checkTool = systemLog("nmap 127.0.0.1 -P 22 2>&1 | grep -i error");
-        if ($checkTool) die('检测到nmap暂时无法运行');
-
         $where = ['tool' => 'asm_ip_nmap', 'status' => 0];
         $list = Db::table('task_scan')->where($where)->limit(10)->select()->toArray();
         foreach ($list as $task) {
@@ -270,20 +268,14 @@ class HostPortModel extends BaseModel
             //扫描当前存活主机
             $portStr = "21,22,23,25,53,80,81,110,111,123,135,137,139,161,389,443,445,465,500,515,520,523,548,623,636,873,902,1080,1099,1433,1521,1604,1645,1701,1883,1900,2049,2181,2375,2379,2425,3128,3306,3389,4730,5060,5222,5351,5353,5432,5555,5601,5672,5683,5900,5938,5984,6000,6379,7001,7077,8080,8081,8443,8545,8686,9000,9001,9042,9092,9100,9200,9418,9999,11211,27017,37777,50000,50070,61616";
             PluginModel::addScanLog($value['id'], __METHOD__, 1, 1);
-            $result = [];
-            $cmd = "nmap -sS -Pn -T4  -p {$portStr} {$value['ip']} | grep open | grep -v Discovered |grep -v grep";
-            echo $cmd . PHP_EOL;
-            execLog($cmd, $result);
 
-            foreach ($result as $item) {
-                $item = str_replace("  ", " ", $item);
-                $aaa = explode(" ", $item);
-                if (count($aaa) != 3) continue;
+            //使用内置PHP引擎扫描端口
+            $ports = array_map('intval', explode(',', $portStr));
+            $scanResult = PortScan::scan($value['ip'], $ports);
 
-                $data = ['service' => $aaa[2]];
-
-                $where = ['host' => $value['host'], 'port' => $value['port']];
-                Db::table('asm_host_port')->where($where)->update($data);
+            foreach ($scanResult as $item) {
+                $where = ['host' => $value['host'], 'port' => $item['port']];
+                Db::table('asm_host_port')->where($where)->update(['service' => $item['service']]);
             }
             PluginModel::addScanLog($value['id'], __METHOD__, 1, 1);
         }
@@ -294,6 +286,7 @@ class HostPortModel extends BaseModel
     public static function scanHostPort()
     {
         $portStr = "21,22,23,25,53,80,81,110,111,123,135,137,139,161,389,443,445,465,500,515,520,523,548,623,636,873,902,1080,1099,1433,1521,1604,1645,1701,1883,1900,2049,2181,2375,2379,2425,3128,3306,3389,4730,5060,5222,5351,5353,5432,5555,5601,5672,5683,5900,5938,5984,6000,6379,7001,7077,8000,8001,8080,8081,8443,8545,8686,8888,9000,9001,9042,9092,9100,9200,9418,9999,11211,27017,37777,50000,50070,61616";
+        $portList = array_map('intval', explode(',', $portStr));
 
         $endTime = date('Y-m-d', time() - 86400 * 15);
         $hostLit = Db::table('asm_host')->whereTime('port_scan_time', '<=', $endTime)->limit(5)->orderRand()->select()->toArray();
@@ -304,15 +297,15 @@ class HostPortModel extends BaseModel
             PluginModel::addScanLog($val['id'], __METHOD__, 1, 0);
 
             $host = gethostbyname($val['host']);
-            $cmd = "masscan --ports {$portStr} {$host}  --max-rate 2000 |grep Discovered";
-            execLog($cmd, $result);
-            foreach ($result as $value) {
-                $aaa = explode(" ", $value);
-                $typeArr = explode("/", $aaa[3]);
-                $data = ['host' => $aaa[5], 'type' => $typeArr[1], 'port' => $typeArr[0], 'user_id' => $val['user_id'], 'app_id' => $val['app_id']];
+            //使用内置PHP引擎扫描端口
+            $scanResult = PortScan::scan($host, $portList);
+            foreach ($scanResult as $item) {
+                $data = ['host' => $host, 'type' => 'tcp', 'port' => $item['port'], 'user_id' => $val['user_id'], 'app_id' => $val['app_id']];
                 addlog(["发现主机开放端口", $data]);
                 Db::table('asm_host_port')->extra("IGNORE")->insert($data);
             }
+            //更新端口扫描时间
+            Db::table('asm_host')->where(['id' => $val['id']])->update(['port_scan_time' => date('Y-m-d H:i:s')]);
             PluginModel::addScanLog($val['id'], __METHOD__, 1, 1);
         }
 

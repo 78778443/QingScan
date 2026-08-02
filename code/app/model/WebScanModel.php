@@ -346,9 +346,6 @@ class WebScanModel extends BaseModel
 
     public static function dismapScan()
     {
-        $tools = "./extend/tools/dismap/";
-        $filename = $tools . 'dismap.txt';
-
         $where = ['tool' => 'scan_app_dismap', 'status' => 0];
         $list = Db::table('task_scan')->where($where)->limit(10)->select()->toArray();
         foreach ($list as $task) {
@@ -360,45 +357,15 @@ class WebScanModel extends BaseModel
 
             PluginModel::addScanLog($v['id'], __METHOD__, 0);
 
-
-            @unlink($filename);
-            $cmd = "cd $tools && ./dismap -url {$v['url']} -output dismap.txt";
-            systemLog($cmd);
-            if (!file_exists($filename)) {
-                PluginModel::addScanLog($v['id'], __METHOD__, 0, 2);
-                addlog(["dismap扫描失败，url:{$v['url']}"]);
-                continue;
-            }
-            //打开一个文件
-            $file = fopen($filename, "r");
-            //检测指正是否到达文件的未端
-            $data = [];
-            while (!feof($file)) {
-                $result = fgets($file);
-                if (empty($result)) {
-                    PluginModel::addScanLog($v['id'], __METHOD__, 0, 2);
-                    addlog(["dismap 扫描目标结果为空", $v['url']]);
-                    continue;
-                }
-                if (preg_match('/^\[/', trim($result))) {
-                    $regex = "/(?:\[)(.*?)(?:\])/i";
-                    preg_match_all($regex, trim($result), $acontent);
-                    $data[] = [
-                        'app_id' => $v['id'],
-                        'user_id' => $v['user_id'],
-                        'create_time' => date('Y-m-d H:i:s', time()),
-                        'result' => json_encode($acontent[1], JSON_UNESCAPED_UNICODE)
-                    ];
-                }
-            }
-            //关闭被打开的文件
-            fclose($file);
-            if (!$data) {
-                PluginModel::addScanLog($v['id'], __METHOD__, 0, 2);
-                addlog(["dismap扫描数据不存在，url:{$v['url']}"]);
-                continue;
-            }
-            if (!Db::name('app_dismap')->insertAll($data)) {
+            // 使用内置指纹识别引擎，替代外部 dismap 工具
+            $result = \app\scan\FingerScan::scan($v['url']);
+            $data = [
+                'app_id' => $v['id'],
+                'user_id' => $v['user_id'],
+                'create_time' => date('Y-m-d H:i:s', time()),
+                'result' => json_encode(array_merge($result['fingerprints'], array_filter([$result['server'] ?? '', $result['title'] ?? ''])), JSON_UNESCAPED_UNICODE)
+            ];
+            if (!Db::name('app_dismap')->insert($data)) {
                 PluginModel::addScanLog($v['id'], __METHOD__, 0, 2);
                 addlog(["app_dismap数据写入失败:" . json_encode($data)]);
             };

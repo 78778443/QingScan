@@ -243,9 +243,6 @@ class AppModel extends BaseModel
     public static function whatweb()
     {
         ini_set('max_execution_time', 0);
-        $file_path = './extend/tools/whatweb';
-
-        @mkdir($file_path, 0777, true);
         $where = ['tool' => 'scan_app_whatweb', 'status' => 0];
         $list = Db::table('task_scan')->where($where)->limit(10)->select()->toArray();
         foreach ($list as $task) {
@@ -256,46 +253,27 @@ class AppModel extends BaseModel
             }
             PluginModel::addScanLog($v['id'], __METHOD__, 0);
 
-
-            $filename = "{$file_path}/whatweb.json";
-            $cmd = "whatweb {$v['url']} --log-json $filename";
-            systemLog($cmd);
-            if (file_exists($filename) == false) {
+            // 使用内置指纹识别引擎，替代外部 whatweb 工具
+            $result = \app\scan\FingerScan::scan($v['url']);
+            // request_config 列是 varchar(255)，只存摘要
+            $configSummary = [
+                'server' => $result['server'] ?? '',
+                'title' => $result['title'] ?? '',
+                'fingerprints' => $result['fingerprints'] ?? [],
+            ];
+            $data = [
+                'app_id' => $v['id'],
+                'user_id' => $v['user_id'],
+                'target' => json_encode([$v['url']], JSON_UNESCAPED_UNICODE),
+                'http_status' => json_encode([$result['code']], JSON_UNESCAPED_UNICODE),
+                'request_config' => mb_substr(json_encode([$configSummary], JSON_UNESCAPED_UNICODE), 0, 255),
+                'plugins' => json_encode($result['fingerprints'], JSON_UNESCAPED_UNICODE),
+                'create_time' => date('Y-m-d H:i:s', time()),
+            ];
+            if (!Db::name('app_whatweb')->insert($data)) {
                 PluginModel::addScanLog($v['id'], __METHOD__, 0, 2);
-                addlog(["whatweb扫描结果文件不存在:{$filename}"]);
-                continue;
+                addlog(["app_whatweb数据写入失败:" . json_encode($data)]);
             }
-
-            $contents = file_get_contents($filename);
-            $arr = json_decode($contents, true);
-            if ($contents && is_array($arr)) {
-                $target = [];
-                $http_status = [];
-                $request_config = [];
-                $plugins = [];
-                foreach ($arr as $val) {
-                    $target[] = isset($val['target']) ? $val['target'] : [];
-                    $http_status[] = isset($val['http_status']) ? $val['http_status'] : [];
-                    $request_config[] = isset($val['request_config']) ? $val['request_config'] : [];
-                    $plugins[] = isset($val['plugins']) ? $val['plugins'] : [];
-                }
-                $data = [
-                    'app_id' => $v['id'],
-                    'user_id' => $v['user_id'],
-                    'target' => json_encode($target, JSON_UNESCAPED_UNICODE),
-                    'http_status' => json_encode($http_status, JSON_UNESCAPED_UNICODE),
-                    'request_config' => json_encode($request_config, JSON_UNESCAPED_UNICODE),
-                    'plugins' => json_encode($plugins, JSON_UNESCAPED_UNICODE),
-                    'create_time' => date('Y-m-d H:i:s', time()),
-                ];
-                if ($data) {
-                    Db::name('app_whatweb')->insert($data);
-                }
-            } else {
-                PluginModel::addScanLog($v['id'], __METHOD__, 0, 2);
-                addlog(["whatweb扫描结果文件内容格式错误:{$filename}"]);
-            }
-            @unlink($filename);
             PluginModel::addScanLog($v['id'], __METHOD__, 0, 1);
         }
 

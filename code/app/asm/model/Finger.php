@@ -36,55 +36,31 @@ class Finger extends Model
         }
     }
 
-    public static function autoInstall($toolPath)
-    {
-        // 判断工具是否安装
-        if (!file_exists($toolPath)) {
-            $dirName = dirname($toolPath);
-            !file_exists($dirName) && mkdir($dirName, 0777, true);
-
-            $cmd = "cd {$dirName} && git clone --depth=1 https://github.com/EASY233/Finger.git  && chmod -R 777 Finger";
-            exec($cmd, $result);
-            $cmd = "cd {$toolPath} && pip install -r requirements.txt -i http://pypi.douban.com/simple/  ";
-            exec($cmd, $result);
-
-        }
-    }
-
     public static function fingerScan($url)
     {
-        $toolPath = app()->getRootPath() . "extend/tools/Finger";
-        self::autoInstall($toolPath);
-
         $parsedUrl = parse_url($url);
         $baseUrl = $parsedUrl['scheme'] . '://' . $parsedUrl['host'];
         if (isset($parsedUrl['port'])) {
             $baseUrl .= ':' . $parsedUrl['port'] . '/';
         }
 
-        //从数据库中获取
+        //从数据库中获取缓存
         $isHaveData = Db::name('asm_finger')->where(['url' => $baseUrl])->find();
         if ($isHaveData) return $isHaveData;
 
-        $cmd = "cd {$toolPath} && rm -rf output/* && python3 ./Finger.py -u {$baseUrl}  -o json";
-        echo $cmd . PHP_EOL;
-        exec($cmd, $result);
-        // 扫描$con目录下的所有文件
-        $path = "{$toolPath}/output/";
-        $files = scandir($path);
-        $info = [];
-        foreach ($files as $k => $v) {
-            // 跳过两个特殊目录   continue跳出循环
-            if ($v == "." || $v == "..") {
-                continue;
-            }
-            $result = file_get_contents($path . $v);
-            $info = json_decode($result, true)[0];
-            foreach ($info as $key => $val) {
-                if (is_string($val)) $info[$key] = json_encode($val, 256);
-            }
-            Db::name('asm_finger')->extra('IGNORE')->insert($info);
-        }
+        // 使用内置指纹识别引擎，替代外部 Finger.py 工具
+        $result = \app\scan\FingerScan::scan($baseUrl);
+
+        // 写入 asm_finger 表（仅写表结构存在的字段）
+        $info = [
+            'url' => $baseUrl,
+            'title' => $result['title'],
+            'status' => (int)$result['code'],
+            'headers' => json_encode($result['headers'], JSON_UNESCAPED_UNICODE),
+            'body' => json_encode($result['body_preview'], JSON_UNESCAPED_UNICODE),
+        ];
+        Db::name('asm_finger')->extra('IGNORE')->insert($info);
+
         return $info;
     }
 }

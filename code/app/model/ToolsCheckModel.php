@@ -228,13 +228,7 @@ class ToolsCheckModel extends BaseModel
      */
     private static function checkDismap(): bool
     {
-        $dismapPath = "./extend/tools/dismap/";
-
-        if (!file_exists($dismapPath)) {
-            self::log(["工具检查失败: Dismap 未安装", $dismapPath]);
-            return false;
-        }
-
+        // 已由内置指纹识别引擎替代外部工具
         return true;
     }
 
@@ -244,13 +238,7 @@ class ToolsCheckModel extends BaseModel
      */
     private static function checkWhatweb(): bool
     {
-        // Whatweb 是系统命令，检查是否存在
-        $result = shell_exec("which whatweb 2>/dev/null");
-        if (empty($result)) {
-            self::log(["工具检查失败: Whatweb 未安装"]);
-            return false;
-        }
-
+        // 已由内置指纹识别引擎替代外部工具
         return true;
     }
 
@@ -306,13 +294,7 @@ class ToolsCheckModel extends BaseModel
      */
     private static function checkOneForAll(): bool
     {
-        $oneforallPath = '/data/tools/oneforall/';
-
-        if (!file_exists($oneforallPath)) {
-            self::log(["工具检查失败: OneForAll 未安装", $oneforallPath]);
-            return false;
-        }
-
+        // 已由内置引擎替代外部工具
         return true;
     }
 
@@ -354,13 +336,7 @@ class ToolsCheckModel extends BaseModel
      */
     private static function checkNmap(): bool
     {
-        // Nmap 是系统命令，检查是否存在
-        $result = shell_exec("which nmap 2>/dev/null");
-        if (empty($result)) {
-            self::log(["工具检查失败: Nmap 未安装"]);
-            return false;
-        }
-
+        // 已由内置引擎替代外部工具
         return true;
     }
 
@@ -370,12 +346,7 @@ class ToolsCheckModel extends BaseModel
      */
     private static function checkDirmap(): bool
     {
-        // 如果配置文件中没有设置路径，则检查默认路径
-        $defaultPath = "./extend/tools/dirmap/";
-        if (!file_exists($defaultPath)) {
-            self::log(["工具检查失败: Dirmap 未安装或路径配置错误", $defaultPath]);
-            return false;
-        }
+        // 已由内置指纹识别引擎替代外部工具
         return true;
     }
 
