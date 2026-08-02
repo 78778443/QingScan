@@ -203,16 +203,16 @@ class Index extends Common
             'crawler_time' => '2000-01-01 00:00:00',
             'awvs_scan_time' => '2000-01-01 00:00:00',
             'subdomain_time' => '2000-01-01 00:00:00',
-            'whatweb_scan_time' => '2000-01-01 00:00:00',
+            'finger_scan_time' => '2000-01-01 00:00:00',
             'subdomain_scan_time' => '2000-01-01 00:00:00',
             'screenshot_time' => '2000-01-01 00:00:00',
-            'xray_scan_time' => '2000-01-01 00:00:00',
-            'dirmap_scan_time' => '2000-01-01 00:00:00',
-            'wafw00f_scan_time' => '2000-01-01 00:00:00',
-            'nuclei_scan_time' => '2000-01-01 00:00:00',
-            'dismap_scan_time' => '2000-01-01 00:00:00',
-            'crawlergo_scan_time' => '2000-01-01 00:00:00',
-            'vulmap_scan_time' => '2000-01-01 00:00:00',
+            'web_vuln_scan_time' => '2000-01-01 00:00:00',
+            'dir_scan_time' => '2000-01-01 00:00:00',
+            'waf_scan_time' => '2000-01-01 00:00:00',
+            'gen_vuln_scan_time' => '2000-01-01 00:00:00',
+            'asset_finger_scan_time' => '2000-01-01 00:00:00',
+            'spider_scan_time' => '2000-01-01 00:00:00',
+            'vul_verify_scan_time' => '2000-01-01 00:00:00',
         );
         $where[] = ['id', '=', $id];
 
@@ -291,7 +291,7 @@ class Index extends Common
                 break;
             case 'crawlergoScan':
                 $data = [
-                    'crawlergo_scan_time' => '2000-01-01 00:00:00',
+                    'spider_scan_time' => '2000-01-01 00:00:00',
                 ];
                 Db::table('scan_spider')->where(['app_id' => $id])->delete();
                 break;
@@ -304,13 +304,13 @@ class Index extends Common
                 break;
             case 'nucleiScan':
                 $data = [
-                    'nuclei_scan_time' => '2000-01-01 00:00:00',
+                    'gen_vuln_scan_time' => '2000-01-01 00:00:00',
                 ];
                 Db::table('app_nuclei')->where(['app_id' => $id])->delete();
                 break;
             case 'xray':
                 $data = [
-                    'xray_scan_time' => '2000-01-01 00:00:00',
+                    'web_vuln_scan_time' => '2000-01-01 00:00:00',
                 ];
                 Db::table('xray')->where(['app_id' => $id])->delete();
                 break;
@@ -322,13 +322,13 @@ class Index extends Common
                 break;
             case 'whatweb':
                 $data = [
-                    'whatweb_scan_time' => '2000-01-01 00:00:00',
+                    'finger_scan_time' => '2000-01-01 00:00:00',
                 ];
                 Db::table('scan_finger')->where(['app_id' => $id])->delete();
                 Db::table('scan_finger_poc')->where(['app_id' => $id])->delete();
                 break;
             case 'sqlmapScan':
-                Db::table('asm_urls')->where(['app_id' => $id])->update(['sqlmap_scan_time' => '2000-01-01 00:00:00']);
+                Db::table('asm_urls')->where(['app_id' => $id])->update(['sql_inject_scan_time' => '2000-01-01 00:00:00']);
                 Db::table('scan_sql_inject')->where(['app_id' => $id])->delete();
                 break;
             case 'subdomainScan':
@@ -338,12 +338,12 @@ class Index extends Common
                 Db::table('one_for_all')->where(['app_id' => $id])->delete();
                 break;
             case 'sshScan':
-                Db::table('asm_host')->where(['app_id' => $id])->update(['hydra_scan_time' => '2000-01-01 00:00:00']);
+                Db::table('asm_host')->where(['app_id' => $id])->update(['weak_pass_scan_time' => '2000-01-01 00:00:00']);
                 Db::table('scan_weak_pass')->where(['app_id' => $id])->delete();
                 break;
             case 'dirmapScan':
                 $data = [
-                    'dirmap_scan_time' => '2000-01-01 00:00:00',
+                    'dir_scan_time' => '2000-01-01 00:00:00',
                 ];
                 Db::table('scan_dir')->where(['app_id' => $id])->delete();
                 break;
@@ -352,7 +352,7 @@ class Index extends Common
                 break;
             case 'vulmapPocTest':
                 $data = [
-                    'vulmap_scan_time' => '2000-01-01 00:00:00',
+                    'vul_verify_scan_time' => '2000-01-01 00:00:00',
                 ];
                 Db::table('app_vulmap')->where(['app_id' => $id])->delete();
                 break;
@@ -363,7 +363,7 @@ class Index extends Common
                 break;
             case 'dismapScan':
                 $data = [
-                    'dismap_scan_time' => '2000-01-01 00:00:00',
+                    'asset_finger_scan_time' => '2000-01-01 00:00:00',
                 ];
                 Db::table('scan_asset_finger')->where(['app_id' => $id])->delete();
                 break;
@@ -389,16 +389,16 @@ class Index extends Common
             'crawler_time' => '2000-01-01 00:00:00',
             'awvs_scan_time' => '2000-01-01 00:00:00',
             'subdomain_time' => '2000-01-01 00:00:00',
-            'whatweb_scan_time' => '2000-01-01 00:00:00',
+            'finger_scan_time' => '2000-01-01 00:00:00',
             'subdomain_scan_time' => '2000-01-01 00:00:00',
             'screenshot_time' => '2000-01-01 00:00:00',
-            'xray_scan_time' => '2000-01-01 00:00:00',
-            'dirmap_scan_time' => '2000-01-01 00:00:00',
-            'wafw00f_scan_time' => '2000-01-01 00:00:00',
-            'nuclei_scan_time' => '2000-01-01 00:00:00',
-            'dismap_scan_time' => '2000-01-01 00:00:00',
-            'crawlergo_scan_time' => '2000-01-01 00:00:00',
-            'vulmap_scan_time' => '2000-01-01 00:00:00',
+            'web_vuln_scan_time' => '2000-01-01 00:00:00',
+            'dir_scan_time' => '2000-01-01 00:00:00',
+            'waf_scan_time' => '2000-01-01 00:00:00',
+            'gen_vuln_scan_time' => '2000-01-01 00:00:00',
+            'asset_finger_scan_time' => '2000-01-01 00:00:00',
+            'spider_scan_time' => '2000-01-01 00:00:00',
+            'vul_verify_scan_time' => '2000-01-01 00:00:00',
         );
         $ids = $request->param('ids');
         if (!$ids) {
@@ -644,19 +644,19 @@ class Index extends Common
 
             /*$datetime = date('Y-m-d H:i:s', time() + 86400 * 365);
             if ($is_xray == 0) {
-                $data['xray_scan_time'] = $datetime;
+                $data['web_vuln_scan_time'] = $datetime;
             }
             if ($is_awvs == 0) {
                 $data['awvs_scan_time'] = $datetime;
             }
             if ($is_whatweb == 0) {
-                $data['whatweb_scan_time'] = $datetime;
+                $data['finger_scan_time'] = $datetime;
             }
             if ($is_one_for_all == 0) {
                 $data['subdomain_scan_time'] = $datetime;
             }
             if ($is_dirmap == 0) {
-                $data['dirmap_scan_time'] = $datetime;
+                $data['dir_scan_time'] = $datetime;
             }*/
             $data['user_id'] = $this->userId;
             $temp_data[] = $data;

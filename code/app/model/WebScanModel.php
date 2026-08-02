@@ -110,7 +110,7 @@ class WebScanModel extends BaseModel
         //如果结果文件不存在
         if (!file_exists($pathArr['tool_result'])) {
             addlog("xray扫描结果文件不存在:{$pathArr['tool_result']},扫描URL失败: {$val['url']}");
-            Db::table('app')->where(['id' => $val['id']])->save(['xray_scan_time' => date('2048-m-d H:i:s')]);
+            Db::table('app')->where(['id' => $val['id']])->save(['web_vuln_scan_time' => date('2048-m-d H:i:s')]);
             PluginModel::addScanLog($val['id'], __METHOD__, 0, 2);
             return false;
         }
@@ -262,7 +262,7 @@ class WebScanModel extends BaseModel
     public static function spiderScan()
     {
         //使用内置爬虫引擎（基础爬虫，不做 JS 渲染；request 头字段缺失时置空）
-        $list = self::getAppStayScanList('crawlergo_scan_time');
+        $list = self::getAppStayScanList('spider_scan_time');
         foreach ($list as $val) {
             PluginModel::addScanLog($val['id'], __METHOD__, 0);
 

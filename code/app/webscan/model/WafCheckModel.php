@@ -11,7 +11,7 @@ class WafCheckModel extends BaseModel
 {
     public static function wafCheckScan()
     {
-        $list = self::getAppStayScanList('wafw00f_scan_time');
+        $list = self::getAppStayScanList('waf_scan_time');
         foreach ($list as $v) {
             if (!self::checkToolAuth(1,$v['id'],'waf')) {
                 continue;

@@ -225,28 +225,28 @@ class Webscan extends BaseController
 
         switch ($tools_name) {
             case 'scan_app_web_vuln':
-                $data = ['xray_scan_time' => '2000-01-01 00:00:00'];
+                $data = ['web_vuln_scan_time' => '2000-01-01 00:00:00'];
                 Db::table('scan_vuln')->where(['app_id' => $id, 'source' => 'web_vuln'])->delete();
                 break;
             case 'scan_app_gen_vuln':
-                $data = ['nuclei_scan_time' => '2000-01-01 00:00:00'];
+                $data = ['gen_vuln_scan_time' => '2000-01-01 00:00:00'];
                 Db::table('scan_vuln')->where(['app_id' => $id, 'source' => 'gen_vuln'])->delete();
                 break;
             case 'scan_app_vul_verify':
-                $data = ['vulmap_scan_time' => '2000-01-01 00:00:00'];
+                $data = ['vul_verify_scan_time' => '2000-01-01 00:00:00'];
                 Db::table('scan_vuln')->where(['app_id' => $id, 'source' => 'vul_verify'])->delete();
                 break;
             case 'scan_app_dir_scan':
-                $data = ['dirmap_scan_time' => '2000-01-01 00:00:00'];
+                $data = ['dir_scan_time' => '2000-01-01 00:00:00'];
                 Db::table('scan_dir')->where(['app_id' => $id])->delete();
                 break;
             case 'scan_app_finger':
-                $data = ['whatweb_scan_time' => '2000-01-01 00:00:00'];
+                $data = ['finger_scan_time' => '2000-01-01 00:00:00'];
                 Db::table('scan_finger')->where(['app_id' => $id])->delete();
                 Db::table('scan_finger_poc')->where(['app_id' => $id])->delete();
                 break;
             case 'scan_app_asset_finger':
-                $data = ['dismap_scan_time' => '2000-01-01 00:00:00'];
+                $data = ['asset_finger_scan_time' => '2000-01-01 00:00:00'];
                 Db::table('scan_asset_finger')->where(['app_id' => $id])->delete();
                 break;
             case 'scan_app_crawler':
@@ -255,7 +255,7 @@ class Webscan extends BaseController
                 Db::table('scan_sql_inject')->where(['app_id' => $id])->delete();
                 break;
             case 'scan_app_spider':
-                $data = ['crawlergo_scan_time' => '2000-01-01 00:00:00'];
+                $data = ['spider_scan_time' => '2000-01-01 00:00:00'];
                 Db::table('scan_spider')->where(['app_id' => $id])->delete();
                 break;
             case 'scan_app_web_info_extra':
@@ -263,7 +263,7 @@ class Webscan extends BaseController
                 Db::table('app_info')->where(['app_id' => $id])->delete();
                 break;
             case 'scan_url_sql_inject':
-                Db::table('asm_urls')->where(['app_id' => $id])->update(['sqlmap_scan_time' => '2000-01-01 00:00:00']);
+                Db::table('asm_urls')->where(['app_id' => $id])->update(['sql_inject_scan_time' => '2000-01-01 00:00:00']);
                 Db::table('scan_sql_inject')->where(['app_id' => $id])->delete();
                 break;
             case 'asm_domain_subdomain':
@@ -271,7 +271,7 @@ class Webscan extends BaseController
                 Db::table('scan_subdomain')->where(['app_id' => $id])->delete();
                 break;
             case 'scan_ip_weak_pass':
-                Db::table('asm_host')->where(['app_id' => $id])->update(['hydra_scan_time' => '2000-01-01 00:00:00']);
+                Db::table('asm_host')->where(['app_id' => $id])->update(['weak_pass_scan_time' => '2000-01-01 00:00:00']);
                 Db::table('scan_weak_pass')->where(['app_id' => $id])->delete();
                 break;
             case 'asm_ip_port_scan':
@@ -312,16 +312,16 @@ class Webscan extends BaseController
         $array = [
             'crawler_time' => '2000-01-01 00:00:00',
             'subdomain_time' => '2000-01-01 00:00:00',
-            'whatweb_scan_time' => '2000-01-01 00:00:00',
+            'finger_scan_time' => '2000-01-01 00:00:00',
             'subdomain_scan_time' => '2000-01-01 00:00:00',
             'screenshot_time' => '2000-01-01 00:00:00',
-            'xray_scan_time' => '2000-01-01 00:00:00',
-            'dirmap_scan_time' => '2000-01-01 00:00:00',
-            'wafw00f_scan_time' => '2000-01-01 00:00:00',
-            'nuclei_scan_time' => '2000-01-01 00:00:00',
-            'dismap_scan_time' => '2000-01-01 00:00:00',
-            'crawlergo_scan_time' => '2000-01-01 00:00:00',
-            'vulmap_scan_time' => '2000-01-01 00:00:00',
+            'web_vuln_scan_time' => '2000-01-01 00:00:00',
+            'dir_scan_time' => '2000-01-01 00:00:00',
+            'waf_scan_time' => '2000-01-01 00:00:00',
+            'gen_vuln_scan_time' => '2000-01-01 00:00:00',
+            'asset_finger_scan_time' => '2000-01-01 00:00:00',
+            'spider_scan_time' => '2000-01-01 00:00:00',
+            'vul_verify_scan_time' => '2000-01-01 00:00:00',
         ];
         Db::table('app')->where(['id' => $id])->update($array);
         $this->deleteAppResults(['app_id' => $id], []);

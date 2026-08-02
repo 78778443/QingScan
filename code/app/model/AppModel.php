@@ -215,13 +215,13 @@ class AppModel extends BaseModel
     {
         /*$datetime = date('Y-m-d H:i:s', time() + 86400 * 365);
         if ($data['is_xray'] == 0) {
-            $data['xray_scan_time'] = $datetime;
+            $data['web_vuln_scan_time'] = $datetime;
         }
         if ($data['is_awvs'] == 0) {
             $data['awvs_scan_time'] = $datetime;
         }
         if ($data['is_whatweb'] == 0) {
-            $data['whatweb_scan_time'] = $datetime;
+            $data['finger_scan_time'] = $datetime;
         }
         if ($data['is_one_for_all'] == 0) {
             $data['subdomain_scan_time'] = $datetime;
@@ -232,7 +232,7 @@ class AppModel extends BaseModel
 //            }
 //        }
         /*if ($data['is_dirmap'] == 0) {
-            $data['dirmap_scan_time'] = $datetime;
+            $data['dir_scan_time'] = $datetime;
         }*/
         //return Db::table(self::$tableName)->insert($data);
         return Db::table(self::$tableName)->insertGetId($data);
