@@ -1,0 +1,26 @@
+import { Routes, Route, Navigate } from 'react-router-dom'
+import AppLayout from '@/layouts/AppLayout'
+import LoginPage from '@/pages/Login'
+import Dashboard from '@/pages/Dashboard'
+import Targets from '@/pages/webscan/Targets'
+import ScanResults from '@/pages/webscan/ScanResults'
+import Assets from '@/pages/asm/Assets'
+import ResultPages from '@/pages/result/ResultPages'
+import Tasks from '@/pages/task/Tasks'
+
+export default function App() {
+  return (
+    <Routes>
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/" element={<AppLayout />}>
+        <Route index element={<Dashboard />} />
+        <Route path="webscan/targets" element={<Targets />} />
+        <Route path="webscan/:tool" element={<ScanResults />} />
+        <Route path="asm/:kind" element={<Assets />} />
+        <Route path="result/:kind" element={<ResultPages />} />
+        <Route path="task" element={<Tasks />} />
+      </Route>
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
+  )
+}

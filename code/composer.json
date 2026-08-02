@@ -21,8 +21,6 @@
     "topthink/framework": "^8.1",
     "topthink/think-orm": "^4.0",
     "topthink/think-view": "^2.0",
-    "xaboy/form-builder": "^2.1",
-    "rmccue/requests": "*",
     "jeremykendall/php-domain-parser": "^6.1",
     "ext-json": "*",
     "topthink/think-multi-app": "^1.1",
@@ -30,12 +28,7 @@
     "zoujingli/ip2region": "^2.0",
     "symfony/yaml": "^6.3",
     "symfony/http-foundation": "^6.0",
-    "topthink/think-migration": "^3.1",
-    "ecloudsdk/tag": "1.0.0",
-    "ecloud/ecloud-sdk-core": "*",
-    "ecloudsdk/ecs": "*",
-    "volcengine/volcengine-php-sdk": "v1.0.94",
-    "alibabacloud/ecs-20140526": "7.5.1"
+    "topthink/think-migration": "^3.1"
   },
   "require-dev": {
     "symfony/var-dumper": "^4.2",

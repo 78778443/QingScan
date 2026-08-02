@@ -21,7 +21,7 @@ $requestUri = $_SERVER['REQUEST_URI'] ?? '';
 $parsed = parse_url($requestUri);
 $path = $parsed['path'] ?? '/';
 $publicDir = __DIR__;
-$staticDirs = ['/icon/', '/static/', '/favicon.ico'];
+$staticDirs = ['/icon/', '/static/', '/web/', '/favicon.ico'];
 foreach ($staticDirs as $dir) {
     if (strpos($path, $dir) === 0) {
         $file = $publicDir . $path;
@@ -34,12 +34,22 @@ foreach ($staticDirs as $dir) {
                 'ico' => 'image/x-icon',
                 'css' => 'text/css',
                 'js'  => 'application/javascript',
+                'html' => 'text/html',
             ];
             $mime = $mimeTypes[$ext] ?? 'application/octet-stream';
             header('Content-Type: ' . $mime);
             header('Content-Length: ' . filesize($file));
             readfile($file);
             exit;
+        }
+        // SPA fallback：/web/ 下的前端路由刷新时返回 index.html
+        if ($dir === '/web/') {
+            $indexFile = $publicDir . '/web/index.html';
+            if (is_file($indexFile)) {
+                header('Content-Type: text/html; charset=utf-8');
+                readfile($indexFile);
+                exit;
+            }
         }
     }
 }
