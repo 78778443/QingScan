@@ -47,8 +47,6 @@ class Index extends BaseController
         $semgrepCount = Db::table('scan_code_audit')->count();
 
         // 漏洞信息库
-        $vulnerableCount = Db::table('vulnerable')->count();
-        $targetCount = Db::table('vul_target')->count();
 
         $data = [
             [
@@ -81,14 +79,6 @@ class Index extends BaseController
                     ["name" => "代码审计", "value" => $semgrepCount, "href" => "/code"],
                 ]
             ],
-            [
-                "name" => "漏洞情报",
-                "value" => $vulnerableCount,
-                "subInfo" => [
-                    ["name" => "漏洞情报", "value" => $vulnerableCount, "href" => "/result/vulnerable"],
-                    ["name" => "漏洞数量", "value" => $targetCount, "href" => "/webscan/targets"],
-                ]
-            ]
         ];
 
             return $this->apiReturn(1, $data);

@@ -15,8 +15,6 @@ import {
   Network,
   Layers,
   Link,
-  FileSearch,
-  AlertTriangle,
   ListTodo,
   Code2,
   Ticket,
@@ -71,13 +69,6 @@ const MENU: MenuGroup[] = [
       { label: 'URL资产', path: '/asm/url', icon: Link },
     ],
   },
-  {
-    title: '漏洞结果',
-    items: [
-      { label: '插件扫描', path: '/result/plugin', icon: FileSearch },
-      { label: '漏洞情报', path: '/result/vulnerable', icon: AlertTriangle },
-    ],
-  },
   { items: [{ label: '扫描任务', path: '/task', icon: ListTodo }] },
   {
     title: '安全运营',
@@ -102,8 +93,6 @@ const TITLES: Record<string, string> = {
   '/asm/domain': '域名资产',
   '/asm/subdomain': '子域名',
   '/asm/url': 'URL资产',
-  '/result/plugin': '插件扫描',
-  '/result/vulnerable': '漏洞情报',
   '/task': '扫描任务',
   '/code': '代码审计',
   '/workorder': '工单管理',

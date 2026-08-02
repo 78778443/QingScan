@@ -136,13 +136,6 @@ class HostAssetsModel extends BaseModel
         }
         $stats['daily_trend'] = $trend;
         
-        // 漏洞数量统计（通过vul_target表关联）
-        $stats['vul_count'] = Db::name('vul_target')
-            ->alias('vt')
-            ->join('asm_host_assets ha', 'vt.ip = ha.private_ip')
-            ->where('vt.is_vul', 1)
-            ->count('DISTINCT vt.id');
-        
         // VPC分布
         $stats['vpc_stats'] = Db::table('asm_host_assets')
             ->field('vpc_name, count(*) as count')
